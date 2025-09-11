@@ -79,7 +79,7 @@ export const TopSellingProducts = () => {
       {products.map((p, idx) => (
         <div
           key={idx}
-          className="w-[60px] h-[70px] lg:w-[90px] lg:h-[110px] 2xl:w-[122.7px] 2xl:h-[169.1px] rounded-[16.81px] flex-shrink-0 snap-start"
+          className="w-[60px] h-[90px] lg:w-[90px] lg:h-[110px] 2xl:w-[122.7px] 2xl:h-[169.1px] rounded-[16.81px] flex-shrink-0 snap-start"
         >
           <img
             src={p.src}

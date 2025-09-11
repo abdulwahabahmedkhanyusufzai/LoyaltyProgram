@@ -6,7 +6,6 @@ import { TopSellingProducts } from "../components/topSellingProduct";
 import { LoyalCustomer } from "../components/loyalcustomers";
 import { LoyaltyTable } from "../components/TableLoyalty";
 import { ActivityCalendar } from "../components/LoyalCalendar";
-import { Header } from "../components/Header";
 
 const stats = [
   { label: "Loyalty Program", content: <LoyaltyProgram /> },
@@ -14,7 +13,7 @@ const stats = [
   {
     label: "Total Registered Customers",
     content: (
-      <div className="text-center flex items-center justify-center mt-6 text-[28px] sm:text-[36px] lg:text-[51px] 2xl:text-[71px] font-extrabold text-[#2C2A25]">
+      <div className="text-center flex items-center justify-center mt-6 text-[45px] sm:text-[36px] lg:text-[51px] 2xl:text-[71px] font-extrabold text-[#2C2A25]">
         25K+
       </div>
     ),
@@ -48,9 +47,6 @@ const WaroPage = () => {
 
   return (
     <div className="p-4 sm:p-6 lg:p-7 space-y-8 bg-[#ffffff] min-h-screen">
-      {/* Header */}
-    
-
       {/* Scrollable Stats */}
       <div
         ref={scrollRef}
@@ -68,7 +64,7 @@ const WaroPage = () => {
                 stat.label === "Top Selling Products"
                   ? "bg-[#2C2A25]"
                   : "bg-[#E8E6D9]"
-              } rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 shadow-lg w-[180px] sm:w-[220px] 2xl:w-[320px] h-[160px] sm:h-[200px] 2xl:h-[280px] flex flex-col flex-shrink-0`}
+              } rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 shadow-lg w-[180px] sm:w-[220px] 2xl:w-[320px] h-[200px] sm:h-[200px] 2xl:h-[280px] flex flex-col flex-shrink-0`}
             >
               {/* Heading + arrow */}
               <div className="flex items-center justify-between">
