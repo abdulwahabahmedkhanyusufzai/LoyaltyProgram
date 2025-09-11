@@ -27,21 +27,35 @@ export default function Tabs({ type = "default", activeTab, onChange }: TabsProp
   };
 
   return (
-    <div className="my-[10px] flex justify-center mb-6 overflow-x-auto">
-      <div className="inline-flex flex-nowrap rounded-full border border-gray-300 overflow-hidden shadow-sm">
-        {tabList.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => handleClick(tab)}
-            className={`min-w-[100px] sm:min-w-[120px] px-4 sm:px-6 py-2 text-sm sm:text-base font-medium transition-colors ${
-              currentActive === tab
-                ? "bg-[#6a4e1e] text-white"
-                : "bg-white text-gray-600 hover:bg-gray-100"
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
+    <div className="my-[10px] mb-6">
+      <div
+        className="
+          flex justify-center 
+          lg:justify-center  /* desktop: center align */
+          overflow-x-auto lg:overflow-visible /* mobile: scroll, desktop: normal */
+        "
+      >
+        <div
+          className="
+            inline-flex flex-nowrap rounded-full border border-gray-300 overflow-hidden shadow-sm
+            min-w-max /* ensures buttons can stretch freely */
+          "
+        >
+          {tabList.map((tab) => (
+            <button
+              key={tab}
+              onClick={() => handleClick(tab)}
+              className={`px-4 sm:px-6 py-2 text-sm sm:text-base font-medium transition-colors whitespace-nowrap
+                ${
+                  currentActive === tab
+                    ? "bg-[#6a4e1e] text-white"
+                    : "bg-white text-gray-600 hover:bg-gray-100"
+                }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

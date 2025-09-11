@@ -1,12 +1,11 @@
 "use client";
-import { Abel } from "next/font/google";
-import React from "react";
+import React, { useRef, useState } from "react";
 
 const tiers = [
-  {label:"Welcomed: Less than 20 points",color:"#734A00"},
-  {label:"Guest: Between 20 and 30 points",color:"#B47A11"},
-  {label:"Host: Between 31 and 4500 points",color:"#402A00"},
-  {label:"Test: More than 4500 points",color:"#384551"},
+  { label: "Welcomed: Less than 20 points", color: "#734A00" },
+  { label: "Guest: Between 20 and 30 points", color: "#B47A11" },
+  { label: "Host: Between 31 and 4500 points", color: "#402A00" },
+  { label: "Test: More than 4500 points", color: "#384551" },
 ];
 
 const rows = [
@@ -25,7 +24,12 @@ const rows = [
   },
   {
     label: "Immediate Discount",
-    values: ["5% on the first order", "10% cumulative", "15% + priority access", "-"],
+    values: [
+      "5% on the first order",
+      "10% cumulative",
+      "15% + priority access",
+      "-",
+    ],
   },
   {
     label: "Product Suggestions",
@@ -52,6 +56,30 @@ const rows = [
 ];
 
 const PremiumLoyaltyProgram = () => {
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!scrollRef.current) return;
+    setIsDragging(true);
+    setStartX(e.pageX - scrollRef.current.offsetLeft);
+    setScrollLeft(scrollRef.current.scrollLeft);
+  };
+
+  const handleMouseLeaveOrUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !scrollRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX) * 1.5; // scroll speed multiplier
+    scrollRef.current.scrollLeft = scrollLeft - walk;
+  };
+
   return (
     <div className="p-4 sm:p-6 lg:p-7 space-y-8 bg-[#ffffff] min-h-screen">
       <div className="bg-[#F6F5EF] rounded-2xl border border-[#2C2A25] p-4 sm:p-6 lg:p-8 w-full">
@@ -74,11 +102,20 @@ const PremiumLoyaltyProgram = () => {
           </div>
         </div>
 
-        <p className="my-[15px] text-sm sm:text-base text-[#2C2A25]">€10 = 1 point</p>
+        <p className="my-[15px] text-sm sm:text-base text-[#2C2A25]">
+          €10 = 1 point
+        </p>
 
-        {/* Responsive Table */}
-        <div className="overflow-x-auto lg:overflow-x-hidden">
-          <table className="w-full border-collapse">
+        {/* Responsive Table with drag scroll */}
+        <div
+          ref={scrollRef}
+          className="overflow-x-auto lg:overflow-hidden cursor-grab active:cursor-grabbing"
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeaveOrUp}
+          onMouseUp={handleMouseLeaveOrUp}
+          onMouseMove={handleMouseMove}
+        >
+          <table className="min-w-max border-collapse">
             <thead>
               <tr>
                 <th className="px-3 py-2 text-left text-sm sm:text-[14px] font-semibold text-[#2C2A25]">
@@ -87,8 +124,9 @@ const PremiumLoyaltyProgram = () => {
                 {tiers.map((tier, idx) => (
                   <th
                     key={idx}
-                    className={`px-3 py-2 text-sm sm:text-[14px] font-semibold text-[${tier.color}] whitespace-nowrap"
-                  `}>
+                    style={{ color: tier.color }}
+                    className="px-3 py-2 text-sm sm:text-[14px] font-semibold whitespace-nowrap"
+                  >
                     {tier.label}
                   </th>
                 ))}
@@ -106,7 +144,8 @@ const PremiumLoyaltyProgram = () => {
                   {row.values.map((val, i) => (
                     <td
                       key={i}
-                      className="px-3 py-2 text-[#2C2A25] whitespace-normal"
+                      style={i >= 0 ? { color: tiers[i].color } : {}}
+                      className="px-3 py-2 whitespace-normal"
                     >
                       {val}
                     </td>

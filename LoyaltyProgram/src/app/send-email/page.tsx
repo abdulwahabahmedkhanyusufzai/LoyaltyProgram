@@ -123,7 +123,7 @@ function LoyalCustomersList() {
 
         {/* Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+  <table className="min-w-[900px] w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-gray-200 text-gray-600">
                 <th className="py-3 px-4">Last Name / First Name</th>
