@@ -1,7 +1,9 @@
 import { useState } from "react";
 import RewardsRow from "./RewardBadge";
+import { useRouter } from "next/navigation";
 
 export const ActivityCalendar = () => {
+  const router = useRouter();
   const [currentDate] = useState(new Date());
 
   // Dates to highlight
@@ -31,9 +33,9 @@ export const ActivityCalendar = () => {
         <div className="flex items-center justify-between">
           <h1 className="text-[16px] sm:text-[18px] font-semibold">Activity</h1>
           <div className="flex items-center gap-2 sm:gap-3">
-            <div className="w-[38px] h-[38px] sm:w-[48px] sm:h-[48px] rounded-full border flex items-center justify-center border-[#2C2A25]">
+            <button onClick={() => router.push("/calendar")} className="cursor-pointer hover:bg-[#D9D9D9] w-[38px] h-[38px] sm:w-[48px] sm:h-[48px] rounded-full border flex items-center justify-center border-[#2C2A25]">
               <img src="arrow.png" className="w-4 h-4 sm:w-auto sm:h-auto" alt="arrow" />
-            </div>
+            </button>
           </div>
         </div>
       </div>

@@ -131,7 +131,7 @@ import Tabs from "../components/ButtonGroup";
             </select>
             <span>Showing 1 to 25 of 5 entities</span>
           </div>
-          
+        
         </div>
         </div>
     </div>

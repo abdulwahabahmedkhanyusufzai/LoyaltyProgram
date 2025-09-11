@@ -1,8 +1,10 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, } from "react";
 import { Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 function LoyalCustomersList() {
+  const router = useRouter();
   const [customers] = useState([
     {
       name: "Lorem Ipsum",
@@ -46,31 +48,6 @@ function LoyalCustomersList() {
     },
   ]);
 
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [isDown, setIsDown] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDown(true);
-    setStartX(e.pageX - (scrollRef.current?.offsetLeft || 0));
-    setScrollLeft(scrollRef.current?.scrollLeft || 0);
-  };
-
-  const handleMouseLeaveOrUp = () => {
-    setIsDown(false);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDown) return;
-    e.preventDefault();
-    const x = e.pageX - (scrollRef.current?.offsetLeft || 0);
-    const walk = x - startX;
-    if (scrollRef.current) {
-      scrollRef.current.scrollLeft = scrollLeft - walk;
-    }
-  };
-
   return (
     <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen">
       <div className="max-w-6xl mx-auto bg-[#fffef9] rounded-2xl shadow-sm border border-gray-200 p-6">
@@ -86,7 +63,7 @@ function LoyalCustomersList() {
               Add or Remove Customers
             </h2>
           </div>
-          <button className="flex items-center justify-between px-3 sm:px-4 border rounded-[20px] sm:rounded-[25px] border-[#2C2A25] h-[40px] sm:h-[44px] text-[13px] sm:text-[14px] hover:bg-[#2C2A25] hover:text-white transition">
+          <button onClick={() => router.push("/register-as-customer")} className="cursor-pointer flex items-center justify-between px-3 sm:px-4 border rounded-[20px] sm:rounded-[25px] border-[#2C2A25] h-[40px] sm:h-[44px] text-[13px] sm:text-[14px] hover:bg-[#2C2A25] hover:text-white transition">
             <span>Add New</span>
             <span className="text-[16px] sm:text-[18px]">+</span>
           </button>

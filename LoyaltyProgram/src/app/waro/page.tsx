@@ -6,9 +6,10 @@ import { TopSellingProducts } from "../components/topSellingProduct";
 import { LoyalCustomer } from "../components/loyalcustomers";
 import { LoyaltyTable } from "../components/TableLoyalty";
 import { ActivityCalendar } from "../components/LoyalCalendar";
+import { useRouter } from "next/navigation";
 
 const stats = [
-  { label: "Loyalty Program", content: <LoyaltyProgram /> },
+  { label: "Loyalty Program", content: <LoyaltyProgram />,redirect: "/loyal-customers" },
   { label: "Top Selling Products", content: <TopSellingProducts /> },
   {
     label: "Total Registered Customers",
@@ -17,8 +18,9 @@ const stats = [
         25K+
       </div>
     ),
+    redirect:"/send-email"
   },
-  { label: "Loyal Customers", content: <LoyalCustomer /> },
+  { label: "Loyal Customers", content: <LoyalCustomer /> ,redirect: "/loyal-customers" },
 ];
 
 const WaroPage = () => {
@@ -26,7 +28,7 @@ const WaroPage = () => {
   const [isDown, setIsDown] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-
+  const router = useRouter();
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!scrollRef.current) return;
     setIsDown(true);
@@ -77,12 +79,13 @@ const WaroPage = () => {
                 >
                   {stat.label}
                 </p>
-                <div
+                <button
+                onClick={() => router.push(`${stat.redirect}`)}
                   className={`${
                     stat.label === "Top Selling Products"
                       ? "border-[#E8E6D9]"
                       : "border-[#2C2A25]"
-                  } w-[24px] h-[24px] sm:w-[30px] sm:h-[30px] 2xl:w-[48px] 2xl:h-[48px] rounded-full border flex items-center justify-center`}
+                  }  cursor-pointer w-[24px] h-[24px] sm:w-[30px] sm:h-[30px] 2xl:w-[48px] 2xl:h-[48px] rounded-full border flex items-center justify-center hover:bg-[#D9D9D9] transition`}
                 >
                   <img
                     src={
@@ -92,7 +95,7 @@ const WaroPage = () => {
                     }
                     alt="arrow"
                   />
-                </div>
+                </button>
               </div>
 
               {/* Content */}

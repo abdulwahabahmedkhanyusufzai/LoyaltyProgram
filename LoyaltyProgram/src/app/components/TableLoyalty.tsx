@@ -1,4 +1,7 @@
+import { useRouter } from "next/navigation";
+
 export const LoyaltyTable = () => {
+ const router = useRouter();
   const customers = [
     { id: 1, name: "Zeke Arton", img: "tableimg1.png", points: 539, orders: "$3430.05" },
     { id: 2, name: "Zed Rawe", img: "tableimg2.png", points: 473, orders: "$5218.22" },
@@ -8,23 +11,23 @@ export const LoyaltyTable = () => {
     { id: 6, name: "Yank Luddy", img: "Background.png", points: 462, orders: "$9157.04" },
     { id: 7, name: "Yank Luddy", img: "Background.png", points: 462, orders: "$9157.04" },
   ];
-
+    
   return (
     <div className="w-full lg:w-[724px] lg:h-[500px] 2xl:w-[949px] 2xl:h-[533px] border border-[#2C2A25] rounded-[24px] sm:rounded-[32px] p-3 sm:p-6 flex flex-col">
       {/* Header row */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <h1 className="text-[16px] sm:text-[18px] font-semibold">Customers Overview</h1>
         <div className="flex flex-wrap gap-2 sm:gap-[5px]">
-          <button className="flex items-center justify-between px-3 sm:px-4 border rounded-[20px] sm:rounded-[25px] border-[#2C2A25] h-[40px] sm:h-[44px] text-[13px] sm:text-[14px] hover:bg-[#2C2A25] hover:text-white transition">
+          <button onClick={() => router.push("/register-as-customer")} className="cursor-pointer flex items-center justify-between px-3 sm:px-4 border rounded-[20px] sm:rounded-[25px] border-[#2C2A25] h-[40px] sm:h-[44px] text-[13px] sm:text-[14px] hover:bg-[#2C2A25] hover:text-white transition">
             <span>Add New</span>
             <span className="text-[16px] sm:text-[18px]">+</span>
           </button>
           <button className="border rounded-[20px] sm:rounded-[25px] border-[#2C2A25] px-4 h-[40px] sm:h-[44px] text-[13px] sm:text-[14px] hover:bg-[#2C2A25] hover:text-white transition">
             Aug
           </button>
-          <div className="border-[#2C2A25] w-[40px] h-[40px] sm:w-[48px] sm:h-[48px] rounded-full border flex items-center justify-center">
+          <button onClick={()=> router.push("/add-remove-loyal") } className="cursor-pointer hover:bg-[#D9D9D9] border-[#2C2A25] w-[40px] h-[40px] sm:w-[48px] sm:h-[48px] rounded-full border flex items-center justify-center">
             <img src={`arrow.png`} className="w-[16px] sm:w-auto h-[16px] sm:h-auto" alt="arrow" />
-          </div>
+          </button>
         </div>
       </div>
 

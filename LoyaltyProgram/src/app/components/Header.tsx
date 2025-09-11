@@ -1,12 +1,13 @@
 "use client";
 import { useState } from "react";
-
+import { useRouter } from "next/navigation";
 type HeaderProps = {
   onToggle?: (open: boolean) => void; // optional callback if parent needs to know
 };
 
 export const Header = ({ onToggle }: HeaderProps) => {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
 
   const toggleSidebar = () => {
     const newOpen = !open;
@@ -42,7 +43,7 @@ export const Header = ({ onToggle }: HeaderProps) => {
           <img src="/bell-icon.png" className="h-5 w-5 sm:h-6 sm:w-6" alt="bell" />
         </button>
 
-        <button className="p-1 rounded-full hover:ring-2 hover:ring-gray-300">
+        <button onClick={() => router.push("/account-settings")} className="cursor-pointer p-1 rounded-full hover:ring-2 hover:ring-gray-300">
           <img
             src="/profile.jpg"
             className="h-[45px] w-[45px] sm:h-[50px] sm:w-[50px] lg:h-[55px] lg:w-[55px] object-cover rounded-full"
