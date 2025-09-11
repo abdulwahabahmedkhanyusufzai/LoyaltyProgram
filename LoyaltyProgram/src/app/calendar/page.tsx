@@ -24,9 +24,7 @@ import { Header } from "../components/Header";
   };
 
   return (
-        <div className="p-4 sm:p-7 space-y-6 bg-[#fffef9] min-h-screen lg:ml-[342px]">
-         <Header/>
-    
+        <div className="p-4 sm:p-7 space-y-6 bg-[#fffef9] min-h-screen ">    
       <div className="max-w-5xl mx-auto bg-[#fffef9] rounded-2xl shadow-sm border border-gray-200 p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">

@@ -37,8 +37,8 @@ const Analytics = () => {
   };
 
   return (
-    <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen lg:ml-[342px]">
-      <Header />
+    <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen ">
+      
 
       {/* Heading */}
       <div className="flex items-center gap-2 sm:gap-3 text-[20px] sm:text-[25px] font-medium">

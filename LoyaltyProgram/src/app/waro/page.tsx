@@ -47,9 +47,9 @@ const WaroPage = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-7 2xl:ml-[342px] lg:ml-[330px] space-y-8 bg-[#ffffff] min-h-screen">
+    <div className="p-4 sm:p-6 lg:p-7 space-y-8 bg-[#ffffff] min-h-screen">
       {/* Header */}
-      <Header />
+    
 
       {/* Scrollable Stats */}
       <div

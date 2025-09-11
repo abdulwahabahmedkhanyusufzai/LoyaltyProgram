@@ -48,8 +48,8 @@ import { Header } from "../components/Header";
   ]);
 
   return (
-    <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen lg:ml-[342px]">
-     <Header/>
+    <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen ">
+   
       <div className="max-w-6xl mx-auto bg-[#fffef9] rounded-2xl shadow-sm border border-gray-200 p-6">
         {/* Header */}
           <div className="flex items-start my-[10px] justify-between">

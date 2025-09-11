@@ -17,45 +17,40 @@ const bottomItems = [
   { name: "Logout", icon: "/logout-off.png", icon2: "/logout-off.png", path: "/logout" },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({open,setOpen}) => {
   const router = useRouter();
   const pathname = usePathname();
-  const [activeItem, setActiveItem] = useState<string>("Waro");
-  const [open, setOpen] = useState(false);
 
-  const renderNavItem = (item: { name: string; icon: string; icon2?: string; path: string }) => (
-    <li key={item.name} className="relative">
-      {activeItem === item.name && (
-        <div className="absolute inset-y-[-20px] left-[-30px] right-[-30px] z-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(254,252,237,0.15)_0%,transparent_70%)]"></div>
-      )}
-      {activeItem === item.name && (
-        <div className="absolute left-[-10px] top-0 h-full w-[4px] bg-[#FEFCED] rounded-r z-10"></div>
-      )}
 
-      <button
-        onClick={() => {
-          setActiveItem(item.name);
-          router.push(item.path);
-          setOpen(false); // close on mobile after navigation
-        }}
-        className={`relative z-10 flex items-center gap-[25px] lg:text-[14px] 2xl:text-[18px] w-full text-left transition-colors 
-          ${pathname === item.path || activeItem === item.name ? "text-white" : "text-[#8D8D8D] hover:text-white"}`}
-      >
-        <img src={activeItem === item.name && item.icon2 ? item.icon2 : item.icon} alt={item.name} />
-        {item.name}
-      </button>
-    </li>
-  );
+  const renderNavItem = (item: { name: string; icon: string; icon2?: string; path: string }) => {
+    const isActive = pathname === item.path; // check URL
+
+    return (
+      <li key={item.name} className="relative">
+        {isActive && (
+          <>
+            <div className="absolute inset-y-[-20px] left-[-30px] right-[-30px] z-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(254,252,237,0.15)_0%,transparent_70%)]"></div>
+            <div className="absolute left-[-10px] top-0 h-full w-[4px] bg-[#FEFCED] rounded-r z-10"></div>
+          </>
+        )}
+
+        <button
+          onClick={() => {
+            router.push(item.path);
+            setOpen(false); // close on mobile after navigation
+          }}
+          className={`relative z-10 flex items-center gap-[25px] lg:text-[14px] 2xl:text-[18px] w-full text-left transition-colors
+            ${isActive ? "text-white" : "text-[#8D8D8D] hover:text-white"}`}
+        >
+          <img src={isActive && item.icon2 ? item.icon2 : item.icon} alt={item.name} />
+          {item.name}
+        </button>
+      </li>
+    );
+  };
 
   return (
     <>
-      {/* Mobile Toggle Button */}
-      <button
-        onClick={() => setOpen(!open)}
-        className="fixed top-4 left-4 z-50 lg:hidden bg-[#2C2A25] text-white p-2 rounded-md"
-      >
-        {open ? "✖" : "☰"}
-      </button>
 
       {/* Sidebar */}
       <aside
@@ -66,16 +61,8 @@ const Sidebar = () => {
       >
         {/* Logo Section */}
         <div className="p-4 border-b border-gray-700 flex items-center space-x-3">
-          <img
-            src="/waro2.png"
-            alt="Logo Icon"
-            className="2xl:h-[44.81px] 2xl:w-[72.27px] lg:h-[39px] lg:w-[52px] h-[29px] w-[48px]"
-          />
-          <img
-            src="/waro.png"
-            alt="Logo Text"
-            className="2xl:h-[44.81px] lg:h-[39px] h-[19px] w-auto"
-          />
+          <img src="/waro2.png" alt="Logo Icon" className="2xl:h-[44.81px] 2xl:w-[72.27px] lg:h-[39px] lg:w-[52px] h-[29px] w-[48px]" />
+          <img src="/waro.png" alt="Logo Text" className="2xl:h-[44.81px] lg:h-[39px] h-[19px] w-auto" />
         </div>
 
         {/* Nav Section */}
@@ -90,12 +77,7 @@ const Sidebar = () => {
       </aside>
 
       {/* Overlay on mobile */}
-      {open && (
-        <div
-          className="fixed inset-0  bg-opacity-40 z-30 lg:hidden"
-          onClick={() => setOpen(false)}
-        ></div>
-      )}
+      {open && <div className="fixed inset-0 bg-opacity-40 z-30 lg:hidden" onClick={() => setOpen(false)}></div>}
     </>
   );
 };

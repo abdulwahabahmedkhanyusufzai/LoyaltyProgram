@@ -53,8 +53,7 @@ const rows = [
 
 const PremiumLoyaltyProgram = () => {
   return (
-    <div className="p-4 sm:p-6 lg:p-7 2xl:ml-[342px] lg:ml-[330px] space-y-8 bg-[#ffffff] min-h-screen">
-    <Header/>
+    <div className="p-4 sm:p-6 lg:p-7 space-y-8 bg-[#ffffff] min-h-screen">
     <div className="bg-[#F6F5EF] rounded-2xl border border-[#2C2A25] p-4 sm:p-6 lg:p-8 w-full">
       {/* Heading */}
       <div className="flex items-center justify-between">
