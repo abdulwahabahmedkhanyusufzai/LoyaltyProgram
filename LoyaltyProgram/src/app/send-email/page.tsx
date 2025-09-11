@@ -1,14 +1,110 @@
 "use client";
 import { useState } from "react";
-import { Header } from "../components/Header";
 import Tabs from "../components/ButtonGroup";
 import { Search } from "lucide-react";
+
+const LoginModal = ({ onClose, onLogin }) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [showError, setShowError] = useState(false);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    // Simple validation for demonstration
+    if (username === "admin" && password === "password") {
+      onLogin();
+    } else {
+      setShowError(true);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 transition-opacity duration-300">
+      <div className="bg-[#fffef9] p-8 rounded-2xl shadow-2xl max-w-lg w-full relative transform scale-95 opacity-0 transition-transform duration-300 ease-in-out">
+        {/* Modal content */}
+        <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-3xl font-bold rounded-full w-8 h-8 flex items-center justify-center">
+          &times;
+        </button>
+
+        <div className="text-center">
+          <div className="p-4 bg-gray-200 rounded-full inline-block mb-4">
+            <svg
+              className="w-12 h-12 text-[#734A00]"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 9v2m0 4h.01m-6.938 4.5h13.856c-.53-.787-1.166-1.503-1.898-2.148-1.503-1.353-3.235-2.03-5.06-2.03s-3.557.677-5.06 2.03c-.732.645-1.368 1.361-1.898 2.148zM21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold text-[#2C2A25] mb-2">Log In Required</h2>
+          <p className="text-gray-600 mb-6">Please log in to continue.</p>
+        </div>
+
+        <form onSubmit={handleLogin} className="space-y-4">
+          <input
+            type="text"
+            placeholder="Enter Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="w-full px-5 py-3 border-2 border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#f1dab0] focus:border-transparent transition-all duration-200"
+          />
+          <input
+            type="password"
+            placeholder="Enter Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-5 py-3 border-2 border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#f1dab0] focus:border-transparent transition-all duration-200"
+          />
+          {showError && (
+            <p className="text-red-500 text-sm text-center">
+              Invalid username or password.
+            </p>
+          )}
+          <button
+            type="submit"
+            className="w-full mt-6 bg-[#734A00] text-white py-3 rounded-full font-bold shadow-md hover:bg-[#5a3800] transition-colors duration-200"
+          >
+            Log In
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+const MessageBox = ({ message, onClose }) => {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 transition-opacity duration-300">
+      <div className="bg-[#fffef9] p-8 rounded-2xl shadow-2xl max-w-sm w-full relative">
+        <div className="text-center">
+          <h3 className="text-xl font-bold text-[#2C2A25] mb-4">Message</h3>
+          <p className="text-gray-600 mb-6">{message}</p>
+          <button
+            onClick={onClose}
+            className="w-full bg-[#734A00] text-white py-3 rounded-full font-bold hover:bg-[#5a3800] transition-colors"
+          >
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 function LoyalCustomersList() {
   const [selectedOption, setSelectedOption] = useState("hosts");
   const [step, setStep] = useState(1);
   const [selectedTab, setSelectedTab] = useState("Home");
-
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
+  const [message, setMessage] = useState("");
   const radioOptions = ["hosts", "guests", "welcomed", "A particular person", "test", "all"];
 
   const [form, setForm] = useState({
@@ -24,7 +120,9 @@ function LoyalCustomersList() {
     { name: "Lorem Ipsum", email: "christian_leveque@orange.fr", lastOrder: "-", points: "0 points", purchases: "€0.0", title: "Welcomed" },
     { name: "Lorem Ipsum", email: "maryse.guivarch@gmail.com", lastOrder: "03.11.2024", points: "4 points", purchases: "€48.9", title: "Welcomed" },
   ]);
-
+    const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+  };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
