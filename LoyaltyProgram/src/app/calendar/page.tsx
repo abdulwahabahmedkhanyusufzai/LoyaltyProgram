@@ -31,7 +31,7 @@ import { Header } from "../components/Header";
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
            <div className="flex justify-start items-center">
-           <img src="PremiumLoyalty.png" className="h-[37px] w-[37px]"/>
+           <img alt="" src="PremiumLoyalty.png" className="h-[37px] w-[37px]"/>
           <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
             Advent Calendar
           </h2>

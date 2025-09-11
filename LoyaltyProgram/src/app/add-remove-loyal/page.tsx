@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { Header } from "../components/Header";
-import Tabs, { ToggleNav } from "../components/ButtonGroup";
 
  function LoyalCustomersList() {
   const [customers] = useState([
@@ -54,12 +53,16 @@ import Tabs, { ToggleNav } from "../components/ButtonGroup";
       <div className="max-w-6xl mx-auto bg-[#fffef9] rounded-2xl shadow-sm border border-gray-200 p-6">
         {/* Header */}
           <div className="flex items-start my-[10px] justify-between">
-          <div className="flex items-center justify-start mb-0">
-        <img src="PremiumLoyalty.png" className="h-[37px] w-[37px]"/>
-        <h2 className="text-xl sm:text-2xl font-bold text-[#2C2A25]">
-          Add or Remove Customers
-        </h2>
-        </div>
+            <div className="flex items-center justify-start mb-0">
+          <img 
+            src="PremiumLoyalty.png" 
+            className="h-[37px] w-[37px]"
+            alt="Gold star icon representing premium loyalty, next to the heading Add or Remove Customers in a modern web dashboard interface"
+          />
+          <h2 className="text-xl sm:text-2xl font-bold text-[#2C2A25]">
+            Add or Remove Customers
+          </h2>
+          </div>
           <button className="flex items-center justify-between px-3 sm:px-4 border rounded-[20px] sm:rounded-[25px] border-[#2C2A25] h-[40px] sm:h-[44px] text-[13px] sm:text-[14px] hover:bg-[#2C2A25] hover:text-white transition">
             <span>Add New</span>
             <span className="text-[16px] sm:text-[18px]">+</span>
@@ -118,14 +121,14 @@ import Tabs, { ToggleNav } from "../components/ButtonGroup";
                   <td className="py-3 px-4">{c.purchases}</td>
                   <td className="py-3 px-4 text-[#2C2A25] font-medium">
                     <div className="flex items-center justify-center gap-[5px]">
-                    <img src="Edit.png" className="flex items-center justify-center w-[36px] w-[33px]"/>
+                    <img src="Edit.png" alt="" className="flex items-center justify-center w-[33px]"/>
                     {c.title}
                   </div>
                   </td>
                    <td className="py-3 px-4 text-[#2C2A25] font-medium">
                     <div className="flex items-center justify-center">
-                    <img src="dustbinpremium.png" className="flex items-center justify-center w-[36px] w-[33px]"/>
-                    <img src="printpremium.png" className="flex items-center justify-center w-[36px] w-[33px]"/>
+                    <img alt="" src="dustbinpremium.png" className="flex items-center justify-center w-[33px]"/>
+                    <img alt="" src="printpremium.png" className="flex items-center justify-center w-[33px]"/>
                      </div>
                    </td>
                 </tr>

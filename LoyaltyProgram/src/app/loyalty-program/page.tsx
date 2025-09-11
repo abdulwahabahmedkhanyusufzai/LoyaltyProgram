@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { LoyaltyProgram } from "../components/loyaltyprogramcard";
 import { Header } from "../components/Header";
 
 const tiers = [
@@ -60,7 +59,7 @@ const PremiumLoyaltyProgram = () => {
       {/* Heading */}
       <div className="flex items-center justify-between">
       <div className="flex items-center justify-start mb-6">
-        <img src="PremiumLoyalty.png" className="h-[37px] w-[37px]"/>
+        <img src="PremiumLoyalty.png" alt="" className="h-[37px] w-[37px]"/>
         <h2 className="text-xl sm:text-2xl font-bold text-[#2C2A25]">
           Premium Loyalty Program
         </h2>

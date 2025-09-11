@@ -14,7 +14,7 @@ export const TopSellingProducts = () => {
   const startX = useRef(0);
   const scrollLeft = useRef(0);
 
-  const getClientX = (e: any) => {
+  const getClientX = (e) => {
     if (e.touches?.length) return e.touches[0].clientX;
     if (e.changedTouches?.length) return e.changedTouches[0].clientX;
     if (typeof e.clientX === 'number') return e.clientX;
@@ -22,7 +22,7 @@ export const TopSellingProducts = () => {
     return 0;
   };
 
-  const startDrag = (e: any) => {
+  const startDrag = (e) => {
     const el = scrollerRef.current;
     if (!el) return;
     isDown.current = true;
@@ -37,7 +37,7 @@ export const TopSellingProducts = () => {
     }
   };
 
-  const moveDrag = (e: any) => {
+  const moveDrag = (e) => {
     const el = scrollerRef.current;
     if (!el || !isDown.current) return;
     e.preventDefault?.();
@@ -46,7 +46,7 @@ export const TopSellingProducts = () => {
     el.scrollLeft = scrollLeft.current - walk;
   };
 
-  const endDrag = (e: any) => {
+  const endDrag = (e) => {
     const el = scrollerRef.current;
     if (!el) return;
     isDown.current = false;

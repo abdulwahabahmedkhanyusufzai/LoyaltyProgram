@@ -2,7 +2,7 @@ import { useState } from "react";
 import RewardsRow from "./RewardBadge";
 
 export const ActivityCalendar = () => {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate] = useState(new Date());
 
   // Dates to highlight
   const markedDates = [2, 4, 6, 10, 11, 12, 17, 20, 25, 26, 27, 29, 30, 31];

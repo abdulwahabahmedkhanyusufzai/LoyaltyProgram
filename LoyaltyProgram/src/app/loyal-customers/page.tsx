@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { Header } from "../components/Header";
-import Tabs, { ToggleNav } from "../components/ButtonGroup";
+import Tabs from "../components/ButtonGroup";
 
  function LoyalCustomersList() {
   const [customers] = useState([
@@ -55,7 +55,7 @@ import Tabs, { ToggleNav } from "../components/ButtonGroup";
         {/* Header */}
           <div className="">
           <div className="flex items-center justify-start mb-0">
-        <img src="PremiumLoyalty.png" className="h-[37px] w-[37px]"/>
+        <img src="PremiumLoyalty.png" alt="" className="h-[37px] w-[37px]"/>
         <h2 className="text-xl sm:text-2xl font-bold text-[#2C2A25]">
           Loyal Customers List
         </h2>

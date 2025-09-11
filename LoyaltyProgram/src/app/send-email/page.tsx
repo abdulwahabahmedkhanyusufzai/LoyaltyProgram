@@ -77,7 +77,7 @@ function LoyalCustomersList() {
         {/* Header */}
         <div className="flex items-start my-[10px] justify-between">
           <div className="flex items-center justify-start mb-0">
-            <img src="PremiumLoyalty.png" className="h-[37px] w-[37px]" />
+            <img src="PremiumLoyalty.png" alt="" className="h-[37px] w-[37px]" />
             <h2 className="text-xl sm:text-2xl font-bold text-[#2C2A25]">
               Send an Email
             </h2>
@@ -151,7 +151,7 @@ function LoyalCustomersList() {
                     {c.title}
                   </td>
                    <td className="py-3 px-4 text-[#2C2A25] font-medium">
-                    <img src="Emailbtn.png" className="w-[36px] h-[36px]"/>
+                    <img src="Emailbtn.png" alt="" className="w-[36px] h-[36px]"/>
                   </td>
                 </tr>
               ))}
