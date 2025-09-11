@@ -1,3 +1,4 @@
+import { LotaltyProgramCustomers } from "../data/customData";
 // Reusable item component
 const CustomerItem = ({ src, name, email }: { src: string; name: string; email: string }) => (
   <div className="flex items-center gap-5 xl:gap-8">
@@ -18,15 +19,11 @@ const CustomerItem = ({ src, name, email }: { src: string; name: string; email: 
 );
 
 export const LoyalCustomer = () => {
-  const customers = [
-    { src: "profile.jpg", name: "Emily Mark", email: "Emilymark@mail.com" },
-    { src: "christopher.jpg", name: "Christopher", email: "Christopher@mail.com" },
-    { src: "zeyanda.jpg", name: "Zeyenda", email: "Zeyenda@mail.com" },
-  ];
+  
 
   return (
     <div className="flex flex-col divide-y w-full divide-[#D2D1CA]">
-      {customers.map((customer, index) => (
+      {LotaltyProgramCustomers.map((customer, index) => (
         <CustomerItem key={index} {...customer} />
       ))}
     </div>

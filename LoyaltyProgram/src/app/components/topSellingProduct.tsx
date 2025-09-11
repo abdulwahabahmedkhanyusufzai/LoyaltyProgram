@@ -1,12 +1,7 @@
 'use client';
 import React, { useRef } from 'react';
+import { products } from '../data/customData';
 
-const products = [
-  { src: 'grainbag.png', alt: 'Grain Bag' },
-  { src: 'towel.png', alt: 'Towel' },
-  { src: 'shawl.png', alt: 'Shawl' },
-  { src: 'towel.png', alt: 'Towel' }, // duplicate if needed
-];
 
 export const TopSellingProducts = () => {
   const scrollerRef = useRef<HTMLDivElement | null>(null);

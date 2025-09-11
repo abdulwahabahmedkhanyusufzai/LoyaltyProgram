@@ -3,6 +3,7 @@ import { useState } from "react";
 import Tabs from "../components/ButtonGroup";
 import { Search } from "lucide-react";
 import LoginList from "../components/login";
+import {CustomerEmailData} from "../data/customData";
 
 
 function LoyalCustomersList() {
@@ -17,13 +18,7 @@ function LoyalCustomersList() {
     message: "",
   });
 
-  const [customers] = useState([
-    { name: "Lorem Ipsum", email: "johanne@yahoo.com", lastOrder: "-", points: "0 points", purchases: "€0.0", title: "Welcomed" },
-    { name: "Lorem Ipsum", email: "shleysyze@hotmail.com", lastOrder: "-", points: "0 points", purchases: "€0.0", title: "Welcomed" },
-    { name: "Lorem Ipsum", email: "nath.zolo@free.fr", lastOrder: "-", points: "0 points", purchases: "€0.0", title: "Welcomed" },
-    { name: "Lorem Ipsum", email: "christian_leveque@orange.fr", lastOrder: "-", points: "0 points", purchases: "€0.0", title: "Welcomed" },
-    { name: "Lorem Ipsum", email: "maryse.guivarch@gmail.com", lastOrder: "03.11.2024", points: "4 points", purchases: "€48.9", title: "Welcomed" },
-  ]);
+  const [customers] = useState(CustomerEmailData);
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });

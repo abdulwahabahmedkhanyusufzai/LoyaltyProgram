@@ -1,26 +1,7 @@
 'use client';
 import React from 'react';
+import {offers} from "../data/customData"
 
-const offers = [
-  {
-    src: 'coins.jpg',
-    alt: 'Cashback per point',
-    title: 'Cashback per point',
-    desc: 'Euro 10 = 01 Point',
-  },
-  {
-    src: 'birthday.jpg',
-    alt: 'Birthday Offer',
-    title: 'Birthday Offer',
-    desc: '15% on the order',
-  },
-  {
-    src: 'loyaltyoffers.jpg',
-    alt: 'Loyalty Offer',
-    title: 'Loyalty Offer',
-    desc: '5% on the 3rd order',
-  },
-];
 
 export const LoyaltyProgram = () => {
   return (

@@ -1,52 +1,11 @@
 "use client";
 import { useState } from "react";
 import { Search } from "lucide-react";
-import { Header } from "../components/Header";
 import Tabs from "../components/ButtonGroup";
+import { LoyalCustomer } from "../data/customData";
 
  function LoyalCustomersList() {
-  const [customers] = useState([
-    {
-      name: "Lorem Ipsum",
-      email: "johanne@yahoo.com",
-      lastOrder: "-",
-      points: "0 points",
-      purchases: "€0.0",
-      title: "Welcomed",
-    },
-    {
-      name: "Lorem Ipsum",
-      email: "shleysyze@hotmail.com",
-      lastOrder: "-",
-      points: "0 points",
-      purchases: "€0.0",
-      title: "Welcomed",
-    },
-    {
-      name: "Lorem Ipsum",
-      email: "nath.zolo@free.fr",
-      lastOrder: "-",
-      points: "0 points",
-      purchases: "€0.0",
-      title: "Welcomed",
-    },
-    {
-      name: "Lorem Ipsum",
-      email: "christian_leveque@orange.fr",
-      lastOrder: "-",
-      points: "0 points",
-      purchases: "€0.0",
-      title: "Welcomed",
-    },
-    {
-      name: "Lorem Ipsum",
-      email: "maryse.guivarch@gmail.com",
-      lastOrder: "03.11.2024",
-      points: "4 points",
-      purchases: "€48.9",
-      title: "Welcomed",
-    },
-  ]);
+  const [customers] = useState(LoyalCustomer);
 
   return (
     <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen">

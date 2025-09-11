@@ -1,16 +1,8 @@
 import { useRouter } from "next/navigation";
-
+import { LoyaltyTableCustomers } from "../data/customData";
 export const LoyaltyTable = () => {
  const router = useRouter();
-  const customers = [
-    { id: 1, name: "Zeke Arton", img: "tableimg1.png", points: 539, orders: "$3430.05" },
-    { id: 2, name: "Zed Rawe", img: "tableimg2.png", points: 473, orders: "$5218.22" },
-    { id: 3, name: "Yank Luddy", img: "Background.png", points: 462, orders: "$9157.04" },
-    { id: 4, name: "Yank Luddy", img: "Background.png", points: 462, orders: "$9157.04" },
-    { id: 5, name: "Yank Luddy", img: "Background.png", points: 462, orders: "$9157.04" },
-    { id: 6, name: "Yank Luddy", img: "Background.png", points: 462, orders: "$9157.04" },
-    { id: 7, name: "Yank Luddy", img: "Background.png", points: 462, orders: "$9157.04" },
-  ];
+ 
     
   return (
     <div className="w-full lg:w-[724px] lg:h-[500px] 2xl:w-[949px] 2xl:h-[533px] border border-[#2C2A25] rounded-[24px] sm:rounded-[32px] p-3 sm:p-6 flex flex-col">
@@ -46,7 +38,7 @@ export const LoyaltyTable = () => {
 
           {/* Table Body */}
           <tbody className="text-[13px] sm:text-[15px] text-[#2C2A25]">
-            {customers.map((customer) => (
+            {LoyaltyTableCustomers.map((customer) => (
               <tr key={customer.id} className="border-b border-[#D2D1CA]">
                 <td className="flex items-center p-2 sm:p-3">
                   <img

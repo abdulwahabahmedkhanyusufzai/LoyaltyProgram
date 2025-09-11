@@ -1,12 +1,9 @@
 "use client";
 import React from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import { PieChartData } from "../data/customData";
 
 
-const data = [
-  { name: "Active Users", value: 85 },
-  { name: "Inactive Users", value: 15 },
-];
 
 const COLORS = ["#7B5C00", "#C2A46B"]; // Adjust shades like in figma
 
@@ -29,7 +26,7 @@ export const ActiveCustomersCard = () => {
         <ResponsiveContainer>
           <PieChart>
             <Pie
-              data={data}
+              data={PieChartData}
               innerRadius={50}
               outerRadius={70}
               paddingAngle={2}
@@ -37,7 +34,7 @@ export const ActiveCustomersCard = () => {
               startAngle={90}
               endAngle={-270}
             >
-              {data.map((entry, index) => (
+              {PieChartData.map((entry, index) => (
                 <Cell key={index} fill={COLORS[index]} />
               ))}
             </Pie>

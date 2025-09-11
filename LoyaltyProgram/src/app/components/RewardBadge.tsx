@@ -1,11 +1,7 @@
 "use client";
 import React from "react";
+import { rewards } from "../data/customData";
 
-const rewards = [
-  { count: "2", label: "10% OFF" },
-  { count: "4", label: "15% OFF" },
-  { count: "6", label: "20% OFF" },
-];
 
 const RewardBadge = ({ count, label }: { count: string; label: string }) => {
   return (

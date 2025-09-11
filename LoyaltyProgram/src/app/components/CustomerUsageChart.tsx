@@ -8,14 +8,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { CustomersUsageChartData } from "../data/customData";
 
-const data = [
-  { date: "Jun 01 2025", customers: 120000 },
-  { date: "Jun 08 2025", customers: 60000 },
-  { date: "Jun 15 2025", customers: 95000 },
-  { date: "Jun 22 2025", customers: 85000 },
-  { date: "Jun 29 2025", customers: 20000 },
-];
 
 export const CustomersUsageChart = () => {
   return (
@@ -32,7 +26,7 @@ export const CustomersUsageChart = () => {
       {/* Chart */}
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
-          data={data}
+          data={CustomersUsageChartData}
           margin={{ top: 20, right: 15, left: 25, bottom: 30 }}
         >
           <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />

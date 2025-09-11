@@ -1,21 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { useRouter, usePathname } from "next/navigation";
-
-const navItems = [
-  { name: "Waro", icon: "/waro-off.png", icon2: "/waro_on.png", path: "/waro" },
-  { name: "Analytics", icon: "/analytics-off.png", icon2: "/analytics-on.png", path: "/analytics" },
-  { name: "View the loyalty program", icon: "/viewloyaltyoff.png", icon2: "/viewloyaltyon.png", path: "/loyalty-program" },
-  { name: "View the list of loyal customers", icon: "/loyal-customers-off.png", icon2: "/loyal-customers-on.png", path: "/loyal-customers" },
-  { name: "Add or remove a loyal customer", icon: "/addorremoveloyal.png", icon2: "/addorremoveloyal-on.png", path: "/add-remove-loyal" },
-  { name: "Send an email", icon: "/email.png", icon2: "/email-on.png", path: "/send-email" },
-  { name: "Advent calendar", icon: "/calendar.png", icon2: "/calendar-on.png", path: "/calendar" },
-];
-
-const bottomItems = [
-  { name: "Account Settings", icon: "/calendar.png", icon2: "/calendar-on.png", path: "/account-settings" },
-  { name: "Logout", icon: "/logout-off.png", icon2: "/logout-off.png", path: "/logout" },
-];
+import { navItems,bottomItems } from "../data/customData";
 
 const Sidebar = ({open,setOpen}) => {
   const router = useRouter();
