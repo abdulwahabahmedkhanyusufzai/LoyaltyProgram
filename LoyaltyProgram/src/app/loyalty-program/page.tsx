@@ -1,12 +1,12 @@
 "use client";
+import { Abel } from "next/font/google";
 import React from "react";
-import { Header } from "../components/Header";
 
 const tiers = [
-  "Welcomed: Less than 20 points",
-  "Guest: Between 20 and 30 points",
-  "Host: Between 31 and 4500 points",
-  "Test: More than 4500 points",
+  {label:"Welcomed: Less than 20 points",color:"#734A00"},
+  {label:"Guest: Between 20 and 30 points",color:"#B47A11"},
+  {label:"Host: Between 31 and 4500 points",color:"#402A00"},
+  {label:"Test: More than 4500 points",color:"#384551"},
 ];
 
 const rows = [
@@ -54,69 +54,69 @@ const rows = [
 const PremiumLoyaltyProgram = () => {
   return (
     <div className="p-4 sm:p-6 lg:p-7 space-y-8 bg-[#ffffff] min-h-screen">
-    <div className="bg-[#F6F5EF] rounded-2xl border border-[#2C2A25] p-4 sm:p-6 lg:p-8 w-full">
-      {/* Heading */}
-      <div className="flex items-center justify-between">
-      <div className="flex items-center justify-start mb-6">
-        <img src="PremiumLoyalty.png" alt="" className="h-[37px] w-[37px]"/>
-        <h2 className="text-xl sm:text-2xl font-bold text-[#2C2A25]">
-          Premium Loyalty Program
-        </h2>
-        </div>
-           <div className="flex justify-center items-center gap-5">
-          <button className="flex items-center justify-between px-3 sm:px-4 border rounded-[20px] sm:rounded-[25px] border-[#2C2A25] h-[40px] sm:h-[44px] text-[13px] sm:text-[14px] hover:bg-[#2C2A25] hover:text-white transition">
-            <span>Add New</span>
-            <span className="text-[16px] sm:text-[18px]">+</span>
-          </button>
-          <button className="border rounded-[20px] sm:rounded-[25px] border-[#2C2A25] px-4 h-[40px] sm:h-[44px] text-[13px] sm:text-[14px] hover:bg-[#2C2A25] hover:text-white transition">
-            Edit
-          </button>
+      <div className="bg-[#F6F5EF] rounded-2xl border border-[#2C2A25] p-4 sm:p-6 lg:p-8 w-full">
+        {/* Heading */}
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <div className="flex items-center space-x-[10px] justify-start">
+            <img src="PremiumLoyalty.png" alt="" className="h-[37px] w-[37px]" />
+            <h2 className="text-[14px] sm:text-2xl font-bold text-[#2C2A25]">
+              Premium Loyalty Program
+            </h2>
+          </div>
+          <div className="flex justify-center items-center gap-3 sm:gap-5">
+            <button className="flex items-center justify-between px-3 sm:px-4 border rounded-[20px] sm:rounded-[25px] border-[#2C2A25] h-[36px] sm:h-[44px] text-[12px] sm:text-[14px] hover:bg-[#2C2A25] hover:text-white transition">
+              <span>Add New</span>
+              <span className="text-[14px] sm:text-[18px]">+</span>
+            </button>
+            <button className="border rounded-[20px] sm:rounded-[25px] border-[#2C2A25] px-4 h-[36px] sm:h-[44px] text-[12px] sm:text-[14px] hover:bg-[#2C2A25] hover:text-white transition">
+              Edit
+            </button>
           </div>
         </div>
-        <p className="my-[20px] text-sm sm:text-base text-[#2C2A25] mt-1">€10 = 1 point</p>
-      
 
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse">
-          {/* Header */}
-          <thead>
-            <tr>
-              <th className="border border-[#D2D1CA] px-3 py-2 text-left text-sm sm:text-base font-semibold text-[#2C2A25]">
-                Advantages
-              </th>
-              {tiers.map((tier, idx) => (
-                <th
-                  key={idx}
-                  className="border border-[#D2D1CA] px-3 py-2 text-sm sm:text-base font-semibold text-[#B07C0D]"
-                >
-                  {tier}
+        <p className="my-[15px] text-sm sm:text-base text-[#2C2A25]">€10 = 1 point</p>
+
+        {/* Responsive Table */}
+        <div className="overflow-x-auto lg:overflow-x-hidden">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr>
+                <th className="px-3 py-2 text-left text-sm sm:text-[14px] font-semibold text-[#2C2A25]">
+                  Advantages
                 </th>
-              ))}
-            </tr>
-          </thead>
-
-          {/* Body */}
-          <tbody>
-            {rows.map((row, idx) => (
-              <tr key={idx} className="text-xs sm:text-sm lg:text-base">
-                <td className="border border-[#D2D1CA] px-3 py-2 font-medium text-[#2C2A25]">
-                  {row.label}
-                </td>
-                {row.values.map((val, i) => (
-                  <td
-                    key={i}
-                    className="border border-[#D2D1CA] px-3 py-2 text-[#2C2A25]"
-                  >
-                    {val}
-                  </td>
+                {tiers.map((tier, idx) => (
+                  <th
+                    key={idx}
+                    className={`px-3 py-2 text-sm sm:text-[14px] font-semibold text-[${tier.color}] whitespace-nowrap"
+                  `}>
+                    {tier.label}
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {rows.map((row, idx) => (
+                <tr
+                  key={idx}
+                  className="text-xs sm:text-sm lg:text-[12px] 2xl:text-[14px]"
+                >
+                  <td className="px-3 py-2 font-medium text-[#2C2A25] whitespace-normal">
+                    {row.label}
+                  </td>
+                  {row.values.map((val, i) => (
+                    <td
+                      key={i}
+                      className="px-3 py-2 text-[#2C2A25] whitespace-normal"
+                    >
+                      {val}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
     </div>
   );
 };

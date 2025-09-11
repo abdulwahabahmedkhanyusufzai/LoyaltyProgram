@@ -67,11 +67,11 @@ const Analytics = () => {
             >
               {/* Heading + arrow */}
               <div className="flex items-center justify-between">
-                <p className="text-[11px] xs:text-[12px] sm:text-[14px] 2xl:text-[18px] font-semibold text-black">
+                <p className="text-[11px] xs:text-[12px] sm:text-[12px] 2xl:text-[18px] font-semibold text-black">
                   {stat.label}
                 </p>
                 <div className="w-[20px] h-[20px] sm:w-[30px] sm:h-[30px] 2xl:w-[48px] 2xl:h-[48px] rounded-full border border-[#2C2A25] flex items-center justify-center">
-                  <img src="arrow.png" alt="arrow" />
+                  <img src="arrow.png" alt="arrow" className="2xl:h-[25px] 2xl:w-[25px] lg:h-[10px] lg:w-[10px] w-[8px] h-[8px]" />
                 </div>
               </div>
 
@@ -86,7 +86,7 @@ const Analytics = () => {
         </div>
       </div>
  {/* Responsive charts section */}
-<div className="flex flex-col lg:flex-row justify-center items-stretch gap-5">
+<div className="flex flex-col lg:flex-row justify-center items-stretch gap-5 w-full">
   <div className="flex-1">
     <CustomersUsageChart />
   </div>
