@@ -54,7 +54,7 @@ import { Header } from "../components/Header";
             return (
               <div
                 key={day}
-                className={`relative border p-2 text-center text-sm h-24 flex flex-col justify-between ${
+                className={`relative border p-2 text-center text-sm h-[60px] lg:h-24 flex flex-col justify-between ${
                   info?.type === "discount"
                     ? "bg-[#734A00] text-white"
                     : "bg-[#fdfdf9] text-[#8B8B8B]"

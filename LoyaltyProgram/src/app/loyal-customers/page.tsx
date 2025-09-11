@@ -113,22 +113,27 @@ import Tabs from "../components/ButtonGroup";
       ))}
     </tbody>
   </table>
+  <span>Total Customers: 620</span>
 </div>
 
 
         {/* Footer */}
-        <div className="flex justify-between items-center mt-4 text-sm text-gray-500">
-          <span>Total Customers: 620</span>
+        
+      </div>
+      <div className="">
+      <div className="flex justify-between items-center mt-4 text-sm text-gray-500">
+          
           <div className="flex items-center space-x-2">
-            <select className="border border-gray-300 rounded-md px-2 py-1">
+            <select className="border border-gray-300 rounded-full w-[77px] h-[39px] px-2 py-1">
               <option>25</option>
               <option>50</option>
               <option>100</option>
             </select>
             <span>Showing 1 to 25 of 5 entities</span>
           </div>
+          
         </div>
-      </div>
+        </div>
     </div>
     
   );

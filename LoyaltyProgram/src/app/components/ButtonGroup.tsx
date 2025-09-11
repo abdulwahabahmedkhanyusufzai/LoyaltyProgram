@@ -45,7 +45,7 @@ export default function Tabs({ type = "default", activeTab, onChange }: TabsProp
             <button
               key={tab}
               onClick={() => handleClick(tab)}
-              className={`px-4 sm:px-6 py-2 text-sm sm:text-base font-medium transition-colors whitespace-nowrap
+              className={`px-4 sm:px-6 py-2 rounded-full text-sm sm:text-base font-medium transition-colors whitespace-nowrap
                 ${
                   currentActive === tab
                     ? "bg-[#6a4e1e] text-white"
