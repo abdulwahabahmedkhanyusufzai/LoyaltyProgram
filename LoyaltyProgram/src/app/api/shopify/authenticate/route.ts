@@ -13,7 +13,7 @@ export async function GET(req) {
     // Ensure the 'shop' parameter is provided
     if (!shop) {
       console.warn("No shop param detected.Redirecting to storeCreation");
-      return NextResponse.redirect(`${process.env.NEXT_PUBLIC_API_URL}storeCreationProcess`);
+      return NextResponse.redirect(`${process.env.NEXT_PUBLIC_API_URL}`);
     }else{
     const existingShop = await prisma.shop.findUnique({ where: { shop } });
 
