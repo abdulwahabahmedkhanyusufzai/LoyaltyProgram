@@ -3,7 +3,15 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 
 // 🔹 Reusable Input Component
-const Input = ({ label, type, name, value, onChange }: any) => (
+interface InputProps {
+  label: string;
+  type: string;
+  name: string;
+  value: string | number;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+const Input = ({ label, type, name, value, onChange }: InputProps) => (
   <input
     type={type}
     name={name}
@@ -15,7 +23,11 @@ const Input = ({ label, type, name, value, onChange }: any) => (
 );
 
 // 🔹 Reusable Loading Button
-const LoadingButton = ({ loading, children, ...props }: any) => (
+const LoadingButton = ({
+  loading,
+  children,
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & { loading: boolean }) => (
   <button
     disabled={loading}
     className={`mt-6 w-full flex items-center justify-center gap-2 bg-[#734A00] text-white py-3 rounded-full font-semibold transition ${
@@ -215,8 +227,20 @@ const RegisterAsaCustomer = () => {
               value={form.password}
               onChange={handleChange}
             />
-            <Input type="password" label="New Password" value={form.confirmPassword} />
-            <Input type="password" label="Confirm New Password" value={form.confirmNewPassword}/>
+            <Input
+              type="password"
+              name="confirmPassword"
+              label="New Password"
+              value={form.confirmPassword}
+              onChange={handleChange}
+            />
+            <Input
+              type="password"
+              name="confirmNewPassword"
+              label="Confirm New Password"
+              value={form.confirmNewPassword}
+              onChange={handleChange}
+            />
           </div>
           <LoadingButton loading={loading} onClick={handleRegister}>
             Save Password
