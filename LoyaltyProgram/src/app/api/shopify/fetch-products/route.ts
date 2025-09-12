@@ -110,7 +110,7 @@ export async function GET(req: Request) {
     console.log("[API] Successfully fetched products count:", products?.edges?.length ?? 0);
 
     return NextResponse.json(products, { status: 200 });
-  } catch (err: any) {
+  } catch (err) {
     console.error("[API] Shopify API error (catch block):", err);
     return NextResponse.json(
       { error: "Failed to fetch products", details: err.message || String(err) },
