@@ -1,83 +1,38 @@
-//app /api /shopify /save - shop / route.js
-
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function POST(req) {
+export async function POST(request) {
   try {
-    const body = await req.json();
-    const { shop } = body;
+    const { shopName } = await request.json();
+
+    if (!shopName) {
+      return NextResponse.json(
+        { error: 'Missing shopName in request body' },
+        { status: 400 }
+      );
+    }
+
+    // Fetch the shop from the database using shopName
+    const shop = await prisma.shop.findUnique({
+      where: { shop: shopName },
+    });
 
     if (!shop) {
-      return NextResponse.json({ message: 'Shop is required' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Shop not found' },
+        { status: 404 }
+      );
     }
 
-    // First try to find existing shop and user
-    let shopResponse = await prisma.shop.findFirst({
-      where: { shop },
-      include: {
-        users: true
-      }
-    });
-
-    if (shopResponse && shopResponse.users && shopResponse.users.length > 0) {
-      // Shop and user already exist, return existing data
-      return NextResponse.json({
-        message: 'Shop and user already exist',
-        userId: shopResponse.users[0].id,
-        shop: shopResponse
-      }, { status: 200 });
-    }
-
-    // Transaction to ensure both shop and user are created or neither is
-    const result = await prisma.$transaction(async (prisma) => {
-      // Create or update shop
-      const shopData = await prisma.shop.upsert({
-        where: { shop },
-        update: {},
-        create: {
-          shop,
-          accessToken: 'defaultAccessToken',
-          scope: 'defaultScope',
-        },
-      });
-
-      // Create user only if it doesn't exist for this shop
-      const userData = await prisma.user.create({
-        data: {
-          shop:{
-            connect:{id:shopData.id},
-          }
-        },
-      });
-
-      return { shop: shopData, user: userData };
-    });
-
-    return NextResponse.json({
-      message: 'Shop and user saved successfully',
-      userId: result.user.email,
-      shop: result.shop
-    }, { status: 200 });
-
+    // Return the shop URL
+    return NextResponse.json({ shopUrl: shop.shop });
   } catch (error) {
-    console.error('Error saving shop:', error);
-    
-    // Handle specific error cases
-    if (error.code === 'P2002') {
-      return NextResponse.json({
-        message: 'A unique constraint violation occurred. Please try again.',
-        error: error.message
-      }, { status: 409 });
-    }
-
-    return NextResponse.json({
-      message: 'Internal Server Error',
-      error: error.message
-    }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
+    console.error('Error fetching shop:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }
