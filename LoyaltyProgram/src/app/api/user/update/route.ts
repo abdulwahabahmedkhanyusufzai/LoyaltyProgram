@@ -53,9 +53,9 @@ export async function POST(req: Request) {
         message: "User created successfully",
         user: {
           id: newUser.id,
-          fullname: newUser.fullname,
+          fullname: newUser.fullName,
           email: newUser.email,
-          phoneNumber: newUser.phone,
+          phoneNumber: newUser.phoneNumber,
           username: newUser.username,
           profilePicUrl: newUser.profilePicUrl,
         },
