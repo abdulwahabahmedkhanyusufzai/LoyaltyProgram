@@ -6,7 +6,7 @@ type ProductNode = {
   id: string;
   title: string;
   images: {
-    edges: { node: { id: string; originalSrc: string; altText?: string | null } }[];
+    edges: { node: { id: string; url: string; altText?: string | null } }[];
   };
 };
 
