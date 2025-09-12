@@ -1,79 +1,149 @@
 "use client";
 import { useState } from "react";
+import toast from "react-hot-toast";
+
+// 🔹 Reusable Input Component
+const Input = ({ label, type, name, value, onChange }: any) => (
+  <input
+    type={type}
+    name={name}
+    placeholder={label}
+    value={value}
+    onChange={onChange}
+    className="text-[#734A00] placeholder-[#734A00] w-full border border-gray-300 rounded-full px-4 py-3 outline-none"
+  />
+);
+
+// 🔹 Reusable Loading Button
+const LoadingButton = ({ loading, children, ...props }: any) => (
+  <button
+    disabled={loading}
+    className={`mt-6 w-full flex items-center justify-center gap-2 bg-[#734A00] text-white py-3 rounded-full font-semibold transition ${
+      loading ? "opacity-70 cursor-not-allowed" : "hover:bg-[#5a3800]"
+    }`}
+    {...props}
+  >
+    {loading ? (
+      <>
+        <svg
+          className="animate-spin h-5 w-5 text-white"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          ></circle>
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8v8H4z"
+          ></path>
+        </svg>
+        Saving...
+      </>
+    ) : (
+      children
+    )}
+  </button>
+);
+
+const initialForm = {
+  fullName: "",
+  email: "",
+  phone: "",
+  currentPassword:"",
+  password: "",
+  confirmPassword:"",
+  confirmNewPassword:"",
+  tier: "",
+  points: "",
+  expiry: "",
+  profilePic: "",
+  notifications: {
+    systemAlerts: false,
+    notifications: false,
+    weeklyReports: false,
+  },
+  language: "English",
+};
 
 const RegisterAsaCustomer = () => {
-  const [form, setForm] = useState({
-    fullName: "",
-    email: "",
-    phone: "",
-    password: "",
-    tier: "",
-    points: "",
-    expiry: "",
-    profilePic: "",
-    notifications: {
-      systemAlerts: false,
-      notifications: false,
-      weeklyReports: false,
-    },
-    language: "English",
-  });
+  const [form, setForm] = useState(initialForm);
+  const [loading, setLoading] = useState(false);
 
+  // 🔹 Handle input updates
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value, type, checked } = e.target as HTMLInputElement;
     if (name in form.notifications) {
-      setForm({
-        ...form,
-        notifications: { ...form.notifications, [name]: checked },
-      });
+      setForm((prev) => ({
+        ...prev,
+        notifications: { ...prev.notifications, [name]: checked },
+      }));
     } else {
-      setForm({ ...form, [name]: type === "checkbox" ? checked : value });
+      setForm((prev) => ({
+        ...prev,
+        [name]: type === "checkbox" ? checked : value,
+      }));
     }
   };
 
+  // 🔹 Handle image upload
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const imgUrl = URL.createObjectURL(e.target.files[0]);
-      setForm({ ...form, profilePic: imgUrl });
+      setForm((prev) => ({ ...prev, profilePic: imgUrl }));
     }
   };
 
-  const handleRegister = () => {
-    alert(`Customer Registered: ${form.fullName}, ${form.email}`);
-  };
+  const handleCancel = () => setForm(initialForm);
 
-  const handleCancel = () => {
-    setForm({
-      fullName: "",
-      email: "",
-      phone: "",
-      password: "",
-      tier: "",
-      points: "",
-      expiry: "",
-      profilePic: "",
-      notifications: {
-        systemAlerts: false,
-        notifications: false,
-        weeklyReports: false,
-      },
-      language: "English",
-    });
+  // 🔹 API call
+  const handleRegister = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch("/api/user/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: form.fullName,
+          email: form.email,
+          phone: form.phone,
+          profilePicUrl: form.profilePic,
+          password: form.confirmNewPassword,
+          confirmPassword: form.confirmNewPassword,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Request failed");
+      
+      toast.success("✅ User saved successfully!");
+      console.log("✅ Saved User:", data.user);
+      handleCancel();
+    } catch (err) {
+       toast.error(`❌ ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen">
       <div className="max-w-3xl mx-auto bg-[#fffef9] rounded-2xl shadow-sm border border-gray-200 p-6">
         {/* Header */}
-        <div className="flex justify-between items-center gap-2 mb-6">
-          <div className="flex items-center space-x-[10px]">
-            <img src="account-btn.png" alt="" className="h-[37px] w-[37px]" />
-            <h2 className="text-xl sm:text-2xl font-bold text-[#2C2A25]">
-              Account Settings
-            </h2>
-          </div>
+        <div className="flex items-center gap-2 mb-6">
+          <img src="account-btn.png" alt="" className="h-[37px] w-[37px]" />
+          <h2 className="text-xl sm:text-2xl font-bold text-[#2C2A25]">
+            Account Settings
+          </h2>
         </div>
 
         {/* Personal Details */}
@@ -82,35 +152,31 @@ const RegisterAsaCustomer = () => {
             Personal Details
           </h3>
           <div className="flex flex-col sm:flex-row gap-6">
-            {/* Inputs */}
             <div className="flex-1 space-y-4">
-              <input
+              <Input
                 type="text"
                 name="fullName"
-                placeholder="Full Name"
+                label="Full Name"
                 value={form.fullName}
                 onChange={handleChange}
-                className="text-[#734A00] placeholder-[#734A00] w-full border border-gray-300 rounded-full px-4 py-3 outline-none"
               />
-              <input
+              <Input
                 type="email"
                 name="email"
-                placeholder="Email Address"
+                label="Email Address"
                 value={form.email}
                 onChange={handleChange}
-                className="text-[#734A00] placeholder-[#734A00] w-full border border-gray-300 rounded-full px-4 py-3 outline-none"
               />
-              <input
+              <Input
                 type="tel"
                 name="phone"
-                placeholder="Phone Number"
+                label="Phone Number"
                 value={form.phone}
                 onChange={handleChange}
-                className="text-[#734A00] placeholder-[#734A00] w-full border border-gray-300 rounded-full px-4 py-3 outline-none"
               />
             </div>
 
-            {/* Profile Picture Upload */}
+            {/* Profile Pic */}
             <div className="flex flex-col items-center">
               <div className="h-[120px] w-[120px] sm:h-[150px] sm:w-[150px] rounded-full overflow-hidden border-2 border-gray-300">
                 {form.profilePic ? (
@@ -142,31 +208,19 @@ const RegisterAsaCustomer = () => {
         <div className="mb-8">
           <h3 className="text-lg font-bold text-[#2C2A25] mb-4">Security</h3>
           <div className="space-y-4">
-            <input
+            <Input
               type="password"
               name="password"
-              placeholder="Current Password"
+              label="Current Password"
               value={form.password}
               onChange={handleChange}
-              className="text-[#734A00] placeholder-[#734A00] w-full border rounded-full px-4 py-3"
             />
-            <input
-              type="password"
-              placeholder="New Password"
-              className="text-[#734A00] placeholder-[#734A00] w-full border rounded-full px-4 py-3"
-            />
-            <input
-              type="password"
-              placeholder="Confirm New Password"
-              className="text-[#734A00] placeholder-[#734A00] w-full border rounded-full px-4 py-3"
-            />
+            <Input type="password" label="New Password" value={form.confirmPassword} />
+            <Input type="password" label="Confirm New Password" value={form.confirmNewPassword}/>
           </div>
-          <button
-            onClick={handleRegister}
-            className="mt-6 w-full bg-[#734A00] text-white py-3 rounded-full font-semibold hover:bg-[#5a3800] transition"
-          >
+          <LoadingButton loading={loading} onClick={handleRegister}>
             Save Password
-          </button>
+          </LoadingButton>
         </div>
 
         {/* Notifications */}

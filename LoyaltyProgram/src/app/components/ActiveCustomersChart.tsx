@@ -3,8 +3,6 @@ import React from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { PieChartData } from "../data/customData";
 
-
-
 const COLORS = ["#7B5C00", "#C2A46B"]; // Adjust shades like in figma
 
 export const ActiveCustomersCard = () => {
