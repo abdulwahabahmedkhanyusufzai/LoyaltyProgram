@@ -84,13 +84,10 @@ const ProgramLoyal2 = () => {
                   className="flex items-center gap-4 py-3 hover:bg-[#ECE9DF] rounded-lg transition"
                 >
                   {/* Image */}
-                  <button className="p-1 rounded-full hover:ring-2 hover:ring-[#2C2A25] transition">
-                    <img
-                      src={offer.image ? `${offer.image}` : "/default.png"}
-                      alt={offer.name}
-                      className="2xl:h-[60px] 2xl:w-[60px] lg:h-[40px] lg:w-[40px] h-[32px] w-[32px] object-cover rounded-full"
-                    />
-                  </button>
+                   <button
+                className="rounded-full min-w-[50px] aspect-square bg-center bg-cover bg-no-repeat"
+                style={{ backgroundImage: `url(${offer.image})` }}
+              />    
 
                   {/* Text */}
                   <div className="flex flex-col items-start justify-center">
