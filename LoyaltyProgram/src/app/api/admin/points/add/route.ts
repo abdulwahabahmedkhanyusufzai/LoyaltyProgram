@@ -7,9 +7,9 @@ const prisma = new PrismaClient();
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, description, pointsCost, discount, startDate, endDate, tiers } = body;
+    const { name, description, pointsCost, discount, startDate, endDate, tiers, image } = body;
 
-    if (!name || !description || !startDate || !endDate) {
+    if (!name || !description || !startDate || !endDate || !image) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
@@ -22,6 +22,7 @@ export async function POST(req: Request) {
         startDate: new Date(startDate),
         endDate: new Date(endDate),
         tiers,
+        image,
       },
     });
 
