@@ -74,3 +74,14 @@ body {
 .inputGroup :is(input:focus, input:valid) {
   border-color: rgb(150, 150, 200);
 }
+/* For Chrome, Safari, Edge */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}
+
+/* For Firefox */
+input[type="date"] {
+  -moz-appearance: textfield;
+}
+

@@ -9,7 +9,7 @@ import { ActivityCalendar } from "../components/LoyalCalendar";
 import { useRouter } from "next/navigation";
 
 const stats = [
-  { label: "Loyalty Program", content: <LoyaltyProgram />,redirect: "/loyal-customers" },
+  { label: "Loyalty Program", content: <LoyaltyProgram />,redirect: "/loyal-customers/program" },
   { label: "Top Selling Products", content: <TopSellingProducts /> },
   {
     label: "Total Registered Customers",
