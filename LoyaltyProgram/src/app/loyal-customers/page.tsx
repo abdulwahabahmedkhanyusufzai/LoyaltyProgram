@@ -3,10 +3,12 @@ import { useState } from "react";
 import { Search } from "lucide-react";
 import Tabs from "../components/ButtonGroup";
 import { LoyalCustomer } from "../data/customData";
+import ProgramLoyal2 from "./program/page";
 
  function LoyalCustomersList() {
   const [customers] = useState(LoyalCustomer);
-
+    const [step, setStep] = useState(1);
+     const [selectedTab, setSelectedTab] = useState("Home");
   return (
     <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen">
       <div className="max-w-6xl mx-auto bg-[#fffef9] rounded-2xl shadow-sm border border-gray-200 p-6">
@@ -22,8 +24,18 @@ import { LoyalCustomer } from "../data/customData";
        </div>
 
         {/* Tabs */}
-       <Tabs/>
-
+       <Tabs       
+       type="default"
+          onChange={(tab) => {
+            setSelectedTab(tab);
+            if (tab === "Program") setStep(2);
+            if (tab === "Home") setStep(1);
+            if (tab === "Client") setStep(2);
+          }}
+          activeTab={selectedTab}
+        />
+          {selectedTab === "Home" && step === 1 && (
+            <>
         {/* Search Bar */}
          <div className="flex flex-col lg:flex-row lg:justify-between gap-3">
           <p className="text-gray-500 text-sm lg:text-lg">Customers Registered in the loyalty program</p>
@@ -39,10 +51,8 @@ import { LoyalCustomer } from "../data/customData";
             </button>
           </div>
         </div>
-
         
 
-        {/* Table */}
        {/* Table */}
 <div className="overflow-x-auto">
   <table className="min-w-[900px] w-full text-left border-collapse">
@@ -74,11 +84,16 @@ import { LoyalCustomer } from "../data/customData";
   </table>
   <span>Total Customers: 620</span>
 </div>
+</>
+      )}
 
-
+ {selectedTab === "Program" && step === 2 && (
+<><ProgramLoyal2/></>
+ )}
         {/* Footer */}
         
       </div>
+      
       <div className="">
       <div className="flex justify-between items-center mt-4 text-sm text-gray-500">
           
@@ -93,6 +108,9 @@ import { LoyalCustomer } from "../data/customData";
         
         </div>
         </div>
+        
+
+    
     </div>
     
   );

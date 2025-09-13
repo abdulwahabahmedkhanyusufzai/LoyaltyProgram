@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  
 }
 
 datasource db {
@@ -9,24 +8,86 @@ datasource db {
 }
 
 model User {
-  id           String      @id @default(cuid())
-  fullName    String
-  email       String   @unique
-  phoneNumber String
-  password    String
-  username    String   @unique
-  profilePicUrl String? 
+  id             String          @id @default(cuid())
+  fullName       String
+  email          String          @unique
+  phoneNumber    String
+  password       String
+  username       String          @unique
+  profilePicUrl  String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  shopId         Int?
+  shop           Shop?           @relation(fields: [shopId], references: [id])
+
+  // Relations for loyalty program
+  pointsLedger   PointsLedger[]
+  walletCredits  WalletCredit[]
+}
+
+model Shop {
+  id          Int      @id @default(autoincrement())
+  shop        String   @unique
+  accessToken String
+  scope       String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  shopId      Int?
-  shop        Shop?    @relation(fields: [shopId], references: [id])
+
+  users       User[]
 }
-model Shop {
-  id              Int              @id @default(autoincrement())
-  shop            String           @unique
-  accessToken     String
-  scope           String
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  users           User[]
+
+model PointsLedger {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+
+  change      Int      // +points earned, -points spent/expired
+  balanceAfter Int     // balance snapshot after this transaction
+  reason      String?  // e.g. "order.created", "manual admin add"
+  sourceType  String?  // e.g. "order", "referral", "campaign"
+  sourceId    String?  // reference to order/referral id
+  earnedAt    DateTime @default(now())
+  expiresAt   DateTime?
+  metadata    Json?
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model WalletCredit {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+
+  amount    Float
+  currency  String   @default("EUR")
+  source    String?  // refund, manual, etc.
+  createdAt DateTime @default(now())
+}
+
+model LoyaltyLevel {
+  id              Int      @id @default(autoincrement())
+  name            String
+  pointsRequired  Int
+  benefits        Json?
+}
+
+model PointRule {
+  id          Int      @id @default(autoincrement())
+  key         String   @unique // e.g. "order.created"
+  description String?
+  points      Int
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  metadata    Json?
+}
+
+model Campaign {
+  id         Int      @id @default(autoincrement())
+  name       String
+  multiplier Float    @default(1.0) // e.g. 2.0 = double points
+  startAt    DateTime
+  endAt      DateTime
+  createdAt  DateTime @default(now())
 }

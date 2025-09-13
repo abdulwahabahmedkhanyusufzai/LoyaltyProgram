@@ -1,8 +1,10 @@
 "use client";
 import React, { useRef, useState } from "react";
 import { tiers,rows } from "../data/customData";
+import { useRouter } from "next/navigation";
 
 const PremiumLoyaltyProgram = () => {
+   const router = useRouter();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -39,7 +41,7 @@ const PremiumLoyaltyProgram = () => {
             </h2>
           </div>
           <div className="flex justify-center items-center gap-3 sm:gap-5">
-            <button className="flex items-center justify-between px-3 sm:px-4 border rounded-[20px] sm:rounded-[25px] border-[#2C2A25] h-[36px] sm:h-[44px] text-[12px] sm:text-[14px] hover:bg-[#2C2A25] hover:text-white transition">
+            <button onClick={() => router.push("/loyal-customers/program")} className="flex items-center justify-between px-3 sm:px-4 border rounded-[20px] sm:rounded-[25px] border-[#2C2A25] h-[36px] sm:h-[44px] text-[12px] sm:text-[14px] hover:bg-[#2C2A25] hover:text-white transition">
               <span>Add New</span>
               <span className="text-[14px] sm:text-[18px]">+</span>
             </button>
