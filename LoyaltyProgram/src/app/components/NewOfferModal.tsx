@@ -18,7 +18,7 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen }) => {
   const [preview, setPreview] = useState<string | null>(null);
 
   // ✅ Validation
-  const validateField = (field: string, value: any) => {
+  const validateField = (field: string, value) => {
     let error = "";
 
     if (field === "offerName" && !value.trim()) error = "Offer name is required.";
@@ -53,7 +53,7 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen }) => {
     setErrors((prev) => ({ ...prev, [field]: error }));
   };
 
-  const handleChange = (field: string, value: any) => {
+  const handleChange = (field: string, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     validateField(field, value);
   };

@@ -57,7 +57,7 @@ export async function POST(req: Request) {
     const newOffer = await prisma.offer.create({ data: offerData });
 
     return NextResponse.json({ success: true, offer: newOffer }, { status: 201 });
-  } catch (error: any) {
+  } catch (error) {
     console.error("❌ Error creating offer:", error);
     return NextResponse.json(
       { error: "Internal server error", details: error.message },
@@ -85,7 +85,7 @@ export async function GET() {
     });
 
     return NextResponse.json({ offers });
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
       { error: "Internal server error", details: error.message },
       { status: 500 }
