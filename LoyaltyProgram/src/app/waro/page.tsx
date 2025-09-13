@@ -66,7 +66,7 @@ const WaroPage = () => {
                 stat.label === "Top Selling Products"
                   ? "bg-[#2C2A25]"
                   : "bg-[#E8E6D9]"
-              } rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 shadow-lg w-[180px] sm:w-[220px] 2xl:w-[320px] h-[200px] sm:h-[200px] 2xl:h-[280px] flex flex-col flex-shrink-0`}
+              } rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 shadow-lg w-[180px] sm:w-[220px] 2xl:w-[320px] h-[200px] sm:h-[220px] 2xl:h-[280px] flex flex-col flex-shrink-0`}
             >
               {/* Heading + arrow */}
               <div className="flex items-center justify-between">

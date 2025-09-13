@@ -1,12 +1,45 @@
 "use client";
-import { useState } from "react";
-import { offers } from "@/app/data/customData";
+import { useState, useEffect } from "react";
 import NewOfferModal from "@/app/components/NewOfferModal";
+
+export const Spinner = () => (
+  <div className="flex justify-center items-center p-6">
+    <div className="w-8 h-8 border-4 border-gray-300 border-t-[#734A00] rounded-full animate-spin"></div>
+  </div>
+);
+
+
+type Offer = {
+  id: string | number;
+  name: string;
+  description: string;
+  image?: string;
+};
 
 const ProgramLoyal2 = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [offers, setOffers] = useState<Offer[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
+
+  // 🔍 Fetch offers from API
+  useEffect(() => {
+    const fetchOffers = async () => {
+      try {
+        const res = await fetch("/api/offers");
+        if (!res.ok) throw new Error("Failed to fetch offers");
+        const data = await res.json();
+        setOffers(data.offers || []);
+      } catch (err) {
+        console.error("❌ Error fetching offers:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchOffers();
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col items-center px-4 py-8 gap-6">
@@ -38,42 +71,53 @@ const ProgramLoyal2 = () => {
             </button>
           </div>
 
-          {/* Offers */}
+          {/* Offers List */}
           <div className="flex flex-col divide-y w-full divide-[#D2D1CA]">
-            {offers.map((offer, idx) => (
-              <div
-                key={idx}
-                className="flex items-center gap-4 py-3 hover:bg-[#ECE9DF] rounded-lg transition"
-              >
-                <button className="p-1 rounded-full hover:ring-2 hover:ring-[#2C2A25] transition">
-                  <img
-                    src={`/${offer.src}`}
-                    alt={offer.alt}
-                    className="2xl:h-[60px] 2xl:w-[60px] lg:h-[40px] lg:w-[40px] h-[32px] w-[32px] object-cover rounded-full"
-                  />
-                </button>
-
-                <div className="flex flex-col items-start justify-center">
-                  <h1 className="text-sm font-semibold text-[#2C2A25]">
-                    {offer.title}
-                  </h1>
-                  <p className="text-xs text-[#757575]">{offer.desc}</p>
-                </div>
-
-                <button
-                  className="ml-auto flex items-center gap-1 px-5 py-1.5 text-xs font-medium
-                             border border-black rounded-full text-black
-                             hover:bg-black hover:text-white transition"
+            {loading ? (
+            <Spinner/>
+            ) : offers.length === 0 ? (
+<Spinner/>
+            ) : (
+              offers.map((offer) => (
+                <div
+                  key={offer.id}
+                  className="flex items-center gap-4 py-3 hover:bg-[#ECE9DF] rounded-lg transition"
                 >
-                  Edit
-                </button>
-              </div>
-            ))}
+                  {/* Image */}
+                  <button className="p-1 rounded-full hover:ring-2 hover:ring-[#2C2A25] transition">
+                    <img
+                      src={offer.image ? `${offer.image}` : "/default.png"}
+                      alt={offer.name}
+                      className="2xl:h-[60px] 2xl:w-[60px] lg:h-[40px] lg:w-[40px] h-[32px] w-[32px] object-cover rounded-full"
+                    />
+                  </button>
+
+                  {/* Text */}
+                  <div className="flex flex-col items-start justify-center">
+                    <h1 className="text-sm font-semibold text-[#2C2A25]">
+                      {offer.name}
+                    </h1>
+                    <p className="text-xs text-[#757575]">
+                      {offer.description}
+                    </p>
+                  </div>
+
+                  {/* Edit Button */}
+                  <button
+                    className="ml-auto flex items-center gap-1 px-5 py-1.5 text-xs font-medium
+                               border border-black rounded-full text-black
+                               hover:bg-black hover:text-white transition"
+                  >
+                    Edit
+                  </button>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
 
-    <NewOfferModal closeModal={closeModal} isOpen={isOpen} setIsOpen={setIsOpen}/>
+      <NewOfferModal closeModal={closeModal} isOpen={isOpen} setIsOpen={setIsOpen} />
     </div>
   );
 };
