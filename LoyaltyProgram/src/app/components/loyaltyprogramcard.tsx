@@ -1,7 +1,11 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Spinner } from '../loyal-customers/program/page';
 
+const Spinner = () => (
+  <div className="flex justify-center items-center p-6">
+    <div className="w-8 h-8 border-4 border-gray-300 border-t-[#734A00] rounded-full animate-spin"></div>
+  </div>
+);
 
 type Offer = {
   image: string;
