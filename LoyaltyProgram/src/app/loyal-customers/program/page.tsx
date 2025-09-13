@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import NewOfferModal from "@/app/components/NewOfferModal";
 
-export const Spinner = () => (
+const Spinner = () => (
   <div className="flex justify-center items-center p-6">
     <div className="w-8 h-8 border-4 border-gray-300 border-t-[#734A00] rounded-full animate-spin"></div>
   </div>
