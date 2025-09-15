@@ -37,39 +37,64 @@ export async function POST(req: Request) {
       }
     });
 
-    // Validate fields
-    UserValidator.validateRegistration(body);
+    // Check if user exists by email
+    const existingUser = await userService.getUserByEmail(body.email);
 
-    // Create user with image URL
-    const newUser = await userService.createUser({
-      fullName: body.fullName,
-      email: body.email,
-      phone: body.phone,
-      password: body.password,
-      profilePicUrl,
-    });
+    if (existingUser) {
+      // Validate update (password optional)
+      UserValidator.validateUpdate(body);
 
-    return NextResponse.json(
-      {
-        message: "User created successfully",
-        user: {
-          id: newUser.id,
-          fullname: newUser.fullName,
-          email: newUser.email,
-          phoneNumber: newUser.phoneNumber,
-          username: newUser.username,
-          profilePicUrl: newUser.profilePicUrl,
+      const updatedUser = await userService.updateUser(existingUser.id, {
+        fullName: body.fullName,
+        phone: body.phone,
+        password: body.password || undefined,
+        profilePicUrl: profilePicUrl || existingUser.profilePicUrl,
+      });
+
+      return NextResponse.json(
+        {
+          message: "User updated successfully",
+          user: {
+            id: updatedUser.id,
+            fullname: updatedUser.fullName,
+            email: updatedUser.email,
+            phoneNumber: updatedUser.phoneNumber,
+            username: updatedUser.username,
+            profilePicUrl: updatedUser.profilePicUrl,
+          },
         },
-      },
-      { status: 201 }
-    );
+        { status: 200 }
+      );
+    } else {
+      // Validate registration (all fields required)
+      UserValidator.validateRegistration(body);
+
+      const newUser = await userService.createUser({
+        fullName: body.fullName,
+        email: body.email,
+        phone: body.phone,
+        password: body.password,
+        profilePicUrl,
+      });
+
+      return NextResponse.json(
+        {
+          message: "User created successfully",
+          user: {
+            id: newUser.id,
+            fullname: newUser.fullName,
+            email: newUser.email,
+            phoneNumber: newUser.phoneNumber,
+            username: newUser.username,
+            profilePicUrl: newUser.profilePicUrl,
+          },
+        },
+        { status: 201 }
+      );
+    }
   } catch (error: unknown) {
-    console.error("Error creating user:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Internal Server Error";
-    return NextResponse.json(
-      { error: errorMessage },
-      { status: 500 }
-    );
+    console.error("Error processing user:", error);
+    const errorMessage = error instanceof Error ? error.message : "Internal Server Error";
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

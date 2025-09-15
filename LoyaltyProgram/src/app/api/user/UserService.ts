@@ -19,6 +19,29 @@ export class UserService {
 
     return username;
   }
+ async getUserByEmail(email: string) {
+  return prisma.user.findUnique({ where: { email } });
+}
+
+// Update user
+async updateUser(
+  userId: string,
+  data: { fullName?: string; phone?: string; password?: string; profilePicUrl?: string }
+) {
+  const updateData: any = { fullName: data.fullName, phoneNumber: data.phone };
+
+  if (data.password) {
+    updateData.password = await this.hashPassword(data.password);
+  }
+  if (data.profilePicUrl) {
+    updateData.profilePicUrl = data.profilePicUrl;
+  }
+
+  return prisma.user.update({
+    where: { id: userId },
+    data: updateData,
+  });
+}
 
   async hashPassword(password: string): Promise<string> {
     return bcrypt.hash(password, 10);
@@ -45,7 +68,7 @@ export class UserService {
       },
     });
   }
-
+  
   async login(username: string, password: string) {
     const user = await prisma.user.findUnique({ where: { username } });
 

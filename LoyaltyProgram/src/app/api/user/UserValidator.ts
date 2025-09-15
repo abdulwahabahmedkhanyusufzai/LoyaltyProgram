@@ -11,6 +11,27 @@ export class UserValidator {
     }
   }
 
+   static validateUpdate(data: any) {
+    const { fullName, phone, password, confirmPassword } = data;
+
+    if (!fullName || !phone) {
+      throw new Error("Full name and phone number are required");
+    }
+
+    // Only check passwords if user is trying to update it
+    if (password || confirmPassword) {
+      if (!password || !confirmPassword) {
+        throw new Error("Both password fields are required to update password");
+      }
+      if (password !== confirmPassword) {
+        throw new Error("Passwords do not match");
+      }
+      if (password.length < 6) {
+        throw new Error("Password must be at least 6 characters long");
+      }
+    }
+  }
+
   static validateLogin(data: any) {
     const { username, password } = data;
 

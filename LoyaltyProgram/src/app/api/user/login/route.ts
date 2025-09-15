@@ -19,6 +19,7 @@ export async function POST(req: Request) {
         user: {
           id: user.id,
           fullname: user.fullName,
+          phoneNumber:user.phoneNumber,
           username: user.username,
           email: user.email,
           profilePicUrl: user.profilePicUrl,
