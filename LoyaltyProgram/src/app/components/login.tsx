@@ -29,6 +29,8 @@ const LoginModal = ({ onClose, onLogin }) => {
       const user = await loginManager.login(); // cookie auto set
       toast.success(`Welcome, ${user.fullname}!`);
       onLogin(); // notify parent
+      window.location.reload();
+
       onClose(); // close modal
     } catch (err: any) {
       setError(err.message);
