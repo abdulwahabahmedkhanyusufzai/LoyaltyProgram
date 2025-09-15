@@ -171,4 +171,59 @@ const PieChartData= [
   { name: "Active Users", value: 85 },
   { name: "Inactive Users", value: 15 },
 ];
-export  {PieChartData,CustomersUsageChartData,CustomerEmailData,tiers,rows,LoyalCustomer,products,LoyaltyTableCustomers,navItems,bottomItems,rewards,offers,LotaltyProgramCustomers};
+
+const initialForm = {
+  fullName: "",
+  email: "",
+  phone: "",
+  currentPassword: "",
+  password: "",
+  confirmPassword: "",
+  confirmNewPassword: "",
+  tier: "",
+  points: "",
+  expiry: "",
+  profilePic: "",
+  notifications: {
+    systemAlerts: false,
+    notifications: false,
+    weeklyReports: false,
+  },
+  language: "English",
+};
+
+// data/customData.ts
+const formSections = {
+  personal: {
+    title: "Personal Details",
+    fields: [
+      { type: "text", name: "fullName", label: "Full Name" },
+      { type: "email", name: "email", label: "Email Address" },
+      { type: "tel", name: "phone", label: "Phone Number" },
+    ],
+  },
+  security: {
+    title: "Security",
+    fields: [
+      { type: "password", name: "password", label: "Current Password" },
+      { type: "password", name: "confirmPassword", label: "New Password" },
+      { type: "password", name: "confirmNewPassword", label: "Confirm New Password" },
+    ],
+  },
+  notifications: {
+    title: "Notifications",
+    toggles: [
+      { name: "systemAlerts", label: "Receive system alerts via email" },
+      { name: "notifications", label: "Receive notifications" },
+      { name: "weeklyReports", label: "Weekly reports" },
+    ],
+  },
+  preferences: {
+    title: "Preferences",
+    select: {
+      name: "language",
+      options: ["English", "Spanish", "French", "German", "Arabic"],
+    },
+  },
+};
+export  {PieChartData,CustomersUsageChartData,CustomerEmailData,tiers,rows,LoyalCustomer,products,LoyaltyTableCustomers,navItems,bottomItems,rewards,offers,LotaltyProgramCustomers,initialForm,formSections};

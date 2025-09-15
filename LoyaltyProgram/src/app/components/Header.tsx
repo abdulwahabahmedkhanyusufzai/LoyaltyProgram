@@ -1,12 +1,14 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+
 type HeaderProps = {
-  onToggle?: (open: boolean) => void; // optional callback if parent needs to know
+  onToggle?: (open: boolean) => void; // optional callback
 };
 
 export const Header = ({ onToggle }: HeaderProps) => {
   const [open, setOpen] = useState(false);
+  const [profilePic, setProfilePic] = useState("/profile.jpg");
   const router = useRouter();
 
   const toggleSidebar = () => {
@@ -15,16 +17,30 @@ export const Header = ({ onToggle }: HeaderProps) => {
     onToggle?.(newOpen);
   };
 
+  useEffect(() => {
+    // Load profile from localStorage if available
+    const storedUser = localStorage.getItem("login");
+    if (storedUser) {
+      try {
+        const parsed = JSON.parse(storedUser);
+        if (parsed?.user?.profilePicUrl) {
+          setProfilePic(parsed.user.profilePicUrl);
+        }
+      } catch (e) {
+        console.warn("Failed to parse user from localStorage:", e);
+      }
+    }
+  }, []);
+
   return (
     <div className="ml-0 lg:ml-[290px] 2xl:ml-[342px] flex items-center justify-between px-4 py-3 bg-white shadow-sm">
-      {/* Left side: hamburger only on mobile + title */}
+      {/* Left side: hamburger + title */}
       <div className="flex items-center gap-4">
-        {/* Hamburger - mobile only */}
         <button
           onClick={toggleSidebar}
           className="text-[#2C2A25] text-2xl focus:outline-none lg:hidden"
         >
-           ☰
+          ☰
         </button>
 
         <div className="flex flex-col">
@@ -43,9 +59,12 @@ export const Header = ({ onToggle }: HeaderProps) => {
           <img src="/bell-icon.png" className="h-5 w-5 sm:h-6 sm:w-6" alt="bell" />
         </button>
 
-        <button onClick={() => router.push("/account-settings")} className="cursor-pointer p-1 rounded-full hover:ring-2 hover:ring-gray-300">
+        <button
+          onClick={() => router.push("/account-settings")}
+          className="cursor-pointer p-1 rounded-full hover:ring-2 hover:ring-gray-300"
+        >
           <img
-            src="/profile.jpg"
+            src={profilePic}
             className="h-[45px] w-[45px] sm:h-[50px] sm:w-[50px] lg:h-[55px] lg:w-[55px] object-cover rounded-full"
             alt="profile"
           />

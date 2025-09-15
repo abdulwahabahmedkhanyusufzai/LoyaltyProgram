@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Tabs from "../components/ButtonGroup";
 import { Search } from "lucide-react";
 import LoginList from "../components/login";
@@ -18,6 +18,22 @@ function LoyalCustomersList() {
     message: "",
   });
 
+   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showLogin, setShowLogin] = useState(true);
+
+  useEffect(() => {
+     const user = localStorage.getItem("login");
+    if (user) {
+      setIsLoggedIn(true);
+      setShowLogin(false);
+    }
+  }, []);
+
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+    setShowLogin(false);
+    console.log("✅ User logged in successfully");
+  };
   const [customers] = useState(CustomerEmailData);
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -31,8 +47,13 @@ function LoyalCustomersList() {
   return (
   
     <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen">
-        <LoginList/>
-      <div className="max-w-6xl mx-auto bg-[#fffef9] rounded-2xl shadow-sm border border-gray-200 p-6">
+   {!isLoggedIn && showLogin && (
+  <LoginList
+    onClose={() => setShowLogin(false)}
+    onLogin={handleLoginSuccess}  
+  />
+)}
+     <div className="max-w-6xl mx-auto bg-[#fffef9] rounded-2xl shadow-sm border border-gray-200 p-6">
         {/* Header */}
         <div className="flex items-start my-[10px] justify-between">
           <div className="flex items-center justify-start mb-0 gap-2">

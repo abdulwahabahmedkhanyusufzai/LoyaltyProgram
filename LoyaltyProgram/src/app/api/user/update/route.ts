@@ -1,51 +1,47 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcryptjs";
+import { UserService } from "../UserService";
+import { UserValidator } from "../UserValidator";
+import fs from "fs";
+import path from "path";
+import { v4 as uuidv4 } from "uuid";
 
-const prisma = new PrismaClient();
-
-function generateUsername(fullname: string) {
-  const base = fullname.trim().toLowerCase().replace(/\s+/g, ""); // remove spaces
-  const randomNum = Math.floor(1000 + Math.random() * 9000); // 4-digit number
-  return `${base}${randomNum}`;
-}
+const userService = new UserService();
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { fullname, email, phone, profilePicUrl, password, confirmPassword } = body;
+    // Parse multipart/form-data
+    const formData = await req.formData();
 
-    if (!fullname || !email || !phone || !password || !confirmPassword) {
-      return NextResponse.json({ error: "All fields are required" }, { status: 400 });
+    // Extract file if uploaded
+    const file = formData.get("profilePic") as File | null;
+    let profilePicUrl: string | undefined;
+
+    if (file) {
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const uploadDir = path.join(process.cwd(), "public", "uploads");
+      if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+
+      const ext = file.name.split(".").pop();
+      const filename = `${uuidv4()}.${ext}`;
+      const filepath = path.join(uploadDir, filename);
+
+      fs.writeFileSync(filepath, buffer);
+      profilePicUrl = `/uploads/${filename}`; // Public URL
     }
 
-    if (password !== confirmPassword) {
-      return NextResponse.json({ error: "Passwords do not match" }, { status: 400 });
-    }
+    // Extract other fields
+    const body: Record<string, any> = {};
+    formData.forEach((value, key) => {
+      if (key !== "profilePic") body[key] = value;
+    });
 
-    // 🔑 Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Validate fields
+    UserValidator.validateRegistration(body);
 
-    // 👤 Generate username
-    let username = generateUsername(fullname);
-
-    // Ensure unique username
-    let exists = await prisma.user.findUnique({ where: { username } });
-    while (exists) {
-      username = generateUsername(fullname);
-      exists = await prisma.user.findUnique({ where: { username } });
-    }
-
-    // ✍️ Create user
-    const newUser = await prisma.user.create({
-      data: {
-        fullName:fullname,
-        email,
-        phoneNumber:phone,
-        username,
-        profilePicUrl,
-        password: hashedPassword,
-      },
+    // Create user with image URL
+    const newUser = await userService.createUser({
+      ...body,
+      profilePicUrl,
     });
 
     return NextResponse.json(
@@ -62,8 +58,11 @@ export async function POST(req: Request) {
       },
       { status: 201 }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating user:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message || "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
