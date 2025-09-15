@@ -2,7 +2,7 @@
 import toast from "react-hot-toast";
 import { useState } from "react";
 
-const LoginModal = ({ onClose }) => {
+const LoginModal = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [loading, setLoading] = useState(false);
 
