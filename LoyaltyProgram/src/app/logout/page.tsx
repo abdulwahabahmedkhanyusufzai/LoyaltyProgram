@@ -31,7 +31,6 @@ const LoginModal = () => {
     toast.error("Logout failed");
   } finally {
     setLoading(false);
-    onClose();
   }
 };
 
@@ -43,7 +42,6 @@ const LoginModal = () => {
       >
         {/* Close */}
         <button
-          onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-3xl font-bold rounded-full w-8 h-8 flex items-center justify-center"
         >
           &times;

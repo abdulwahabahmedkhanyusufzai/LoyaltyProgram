@@ -174,7 +174,6 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen }) => {
                 type="date"
                 value={formData.startDate}
                 onChange={(e) => handleChange("startDate", e.target.value)}
-                className="flex-1"
               />
               <FloatingInput
                 id="tillDate"
@@ -182,7 +181,6 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen }) => {
                 type="date"
                 value={formData.tillDate}
                 onChange={(e) => handleChange("tillDate", e.target.value)}
-                className="flex-1"
               />
             </div>
             <ErrorMsg field="startDate" />
