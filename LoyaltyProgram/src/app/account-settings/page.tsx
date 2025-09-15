@@ -33,22 +33,44 @@ const RegisterAsaCustomer = () => {
   const [loading, setLoading] = useState(false);
 
   // Prefill from localStorage if user exists
-  useEffect(() => {
-    const loginData = localStorage.getItem("login");
-    if (loginData) {
-      const parsed = JSON.parse(loginData);
-      if (parsed?.user) {
-        const u = parsed.user;
-        setFormData((prev) => ({
-          ...prev,
-          profilePicPreview: u.profilePicUrl || "",
-          fullName: u.fullname || "",
-          email: u.email || "",
-          phone: u.phoneNumber || "",
-        }));
+useEffect(() => {
+  const fetchUserFromAPI = async () => {
+    try {
+      const res = await fetch("/api/user/me", { credentials: "include" });
+      if (!res.ok) {
+        console.warn("Failed to fetch user from API:", res.status);
+        return;
       }
+
+      const user = await res.json();
+
+      // Update formData to directly populate the inputs
+      setFormData((prev) => ({
+        ...prev,
+        profilePicPreview: user.profilePicUrl || "",
+        fullName: user.fullname || "",
+        email: user.email || "",
+        phone: user.phoneNumber || "",
+        // optional: you can prefill other fields if available
+      }));
+
+      // Optional: sync with your formManager so it knows initial values
+      formManager.setFormValues({
+        fullName: user.fullname || "",
+        email: user.email || "",
+        phone: user.phoneNumber || "",
+        profilePicPreview: user.profilePicUrl || "",
+      });
+    } catch (err) {
+      console.error("Error fetching user:", err);
     }
-  }, []);
+  };
+
+  fetchUserFromAPI();
+}, [formManager]);
+         // then overwrite with fresh API data
+
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type, checked } = e.target as HTMLInputElement;

@@ -19,14 +19,19 @@ function LoyalCustomersList() {
   });
 
    const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [showLogin, setShowLogin] = useState(true);
+  const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => {
-     const user = localStorage.getItem("login");
-    if (user) {
-      setIsLoggedIn(true);
-      setShowLogin(false);
-    }
+    const checkLogin = async () => {
+      try {
+        const res = await fetch("/api/user/me", { credentials: "include" });
+        if (res.ok) setIsLoggedIn(true);
+        else setShowLogin(true); // show login modal if not logged in
+      } catch (err) {
+        setShowLogin(true);
+      }
+    };
+    checkLogin();
   }, []);
 
   const handleLoginSuccess = () => {

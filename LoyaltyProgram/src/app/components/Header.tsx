@@ -18,18 +18,23 @@ export const Header = ({ onToggle }: HeaderProps) => {
   };
 
   useEffect(() => {
-    // Load profile from localStorage if available
-    const storedUser = localStorage.getItem("login");
-    if (storedUser) {
+    const fetchProfile = async () => {
       try {
-        const parsed = JSON.parse(storedUser);
-        if (parsed?.user?.profilePicUrl) {
-          setProfilePic(parsed.user.profilePicUrl);
+        const res = await fetch("/api/user/me", { credentials: "include" });
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.profilePicUrl) {
+            setProfilePic(data.profilePicUrl);
+          }
+        } else {
+          console.warn("User not logged in");
         }
-      } catch (e) {
-        console.warn("Failed to parse user from localStorage:", e);
+      } catch (err) {
+        console.error("Failed to fetch profile:", err);
       }
-    }
+    };
+
+    fetchProfile();
   }, []);
 
   return (

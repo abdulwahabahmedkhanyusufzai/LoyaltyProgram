@@ -11,6 +11,13 @@ export class FormManager {
     return this.form;
   }
 
+  setFormValues(values: Partial<CustomerForm>) {
+  Object.entries(values).forEach(([key, value]) => {
+    this.form.updateField(key as keyof CustomerForm, value);
+  });
+  return this.form;
+}
+
   handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     const { name, value, type, checked } = e.target as HTMLInputElement;
     const fieldValue = type === "checkbox" ? checked : value;

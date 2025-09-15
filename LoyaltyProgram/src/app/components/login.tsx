@@ -10,6 +10,7 @@ const LoginModal = ({ onClose, onLogin }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
+
   const loginManager = new LoginManager();
 
   useEffect(() => {
@@ -25,17 +26,17 @@ const LoginModal = ({ onClose, onLogin }) => {
 
     try {
       setLoading(true);
-      const data = await loginManager.login();
-      localStorage.setItem("login", JSON.stringify(data));
-      toast.success("Logged in successfully!");
-      onLogin();
+      const user = await loginManager.login(); // cookie auto set
+      toast.success(`Welcome, ${user.fullname}!`);
+      onLogin(); // notify parent
+      onClose(); // close modal
     } catch (err: any) {
+      setError(err.message);
       toast.error(err.message);
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
       <div

@@ -26,7 +26,7 @@ export async function POST(req: Request) {
       const filepath = path.join(uploadDir, filename);
 
       fs.writeFileSync(filepath, buffer);
-      profilePicUrl = `/uploads/${filename}`; // Public URL
+      profilePicUrl = `/uploads/${filename}`;
     }
 
     // Extract other fields
@@ -37,61 +37,62 @@ export async function POST(req: Request) {
       }
     });
 
-    // Check if user exists by email
+    let user;
+    let message;
+
     const existingUser = await userService.getUserByEmail(body.email);
 
     if (existingUser) {
-      // Validate update (password optional)
+      // Update user
       UserValidator.validateUpdate(body);
-
-      const updatedUser = await userService.updateUser(existingUser.id, {
+      user = await userService.updateUser(existingUser.id, {
         fullName: body.fullName,
         phone: body.phone,
         password: body.password || undefined,
         profilePicUrl: profilePicUrl || existingUser.profilePicUrl,
       });
-
-      return NextResponse.json(
-        {
-          message: "User updated successfully",
-          user: {
-            id: updatedUser.id,
-            fullname: updatedUser.fullName,
-            email: updatedUser.email,
-            phoneNumber: updatedUser.phoneNumber,
-            username: updatedUser.username,
-            profilePicUrl: updatedUser.profilePicUrl,
-          },
-        },
-        { status: 200 }
-      );
+      message = "User updated successfully";
     } else {
-      // Validate registration (all fields required)
+      // Create user
       UserValidator.validateRegistration(body);
-
-      const newUser = await userService.createUser({
+      user = await userService.createUser({
         fullName: body.fullName,
         email: body.email,
         phone: body.phone,
         password: body.password,
         profilePicUrl,
       });
-
-      return NextResponse.json(
-        {
-          message: "User created successfully",
-          user: {
-            id: newUser.id,
-            fullname: newUser.fullName,
-            email: newUser.email,
-            phoneNumber: newUser.phoneNumber,
-            username: newUser.username,
-            profilePicUrl: newUser.profilePicUrl,
-          },
-        },
-        { status: 201 }
-      );
+      message = "User created successfully";
     }
+
+    // Generate JWT
+    const token = await userService.login(user.username, body.password || "").then(r => r.token);
+
+    // Set cookie
+    const response = NextResponse.json({
+      message,
+      user: {
+        id: user.id,
+        fullname: user.fullName,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        username: user.username,
+        profilePicUrl: user.profilePicUrl,
+      },
+    }, { status: existingUser ? 200 : 201 });
+
+    response.cookies.set({
+      name: "authToken",
+      value: token,
+      httpOnly: true,
+      path: "/",
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    });
+
+    return response;
+
   } catch (error: unknown) {
     console.error("Error processing user:", error);
     const errorMessage = error instanceof Error ? error.message : "Internal Server Error";

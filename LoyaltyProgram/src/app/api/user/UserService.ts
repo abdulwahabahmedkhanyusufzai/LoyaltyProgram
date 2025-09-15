@@ -42,6 +42,9 @@ async updateUser(
     data: updateData,
   });
 }
+async getUserById(id: string) {
+  return prisma.user.findUnique({ where: { id } });
+}
 
   async hashPassword(password: string): Promise<string> {
     return bcrypt.hash(password, 10);
@@ -84,7 +87,7 @@ async updateUser(
     // Generate JWT
     const token = jwt.sign(
       { userId: user.id, username: user.username },
-      process.env.JWT_SECRET || "supersecret",
+      process.env.JWT_SECRET! || "supersecret",
       { expiresIn: "7d" }
     );
 
