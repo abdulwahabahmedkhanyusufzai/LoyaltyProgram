@@ -30,9 +30,11 @@ export async function POST(req: Request) {
     }
 
     // Extract other fields
-    const body: Record<string, any> = {};
+    const body: Record<string, string> = {};
     formData.forEach((value, key) => {
-      if (key !== "profilePic") body[key] = value;
+      if (key !== "profilePic" && typeof value === "string") {
+        body[key] = value;
+      }
     });
 
     // Validate fields
@@ -40,7 +42,10 @@ export async function POST(req: Request) {
 
     // Create user with image URL
     const newUser = await userService.createUser({
-      ...body,
+      fullName: body.fullName,
+      email: body.email,
+      phone: body.phone,
+      password: body.password,
       profilePicUrl,
     });
 
@@ -58,10 +63,12 @@ export async function POST(req: Request) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error creating user:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Internal Server Error";
     return NextResponse.json(
-      { error: error.message || "Internal Server Error" },
+      { error: errorMessage },
       { status: 500 }
     );
   }
