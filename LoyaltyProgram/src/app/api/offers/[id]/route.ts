@@ -8,10 +8,11 @@ const prisma = new PrismaClient();
 
 export async function PUT(
   req: Request,
-  context: { params: { id: string } }
+ context: RouteContext<'/api/offers/[id]'>
 ) {
   try {
-    const { id } = context.params;
+    const params = await context.params;
+    const { id } = params;
     if (!id) {
       return NextResponse.json({ error: "Offer ID is missing in URL" }, { status: 400 });
     }
