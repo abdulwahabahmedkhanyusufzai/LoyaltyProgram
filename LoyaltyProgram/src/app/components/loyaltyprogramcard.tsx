@@ -40,7 +40,7 @@ export const LoyaltyProgram = () => {
         ) : offers.length === 0 ? (
           <Spinner />
         ) : (
-          offers.map((offer, idx) => (
+          offers.slice(0,3).map((offer, idx) => (
             <div key={idx} className="flex items-center gap-8 ">
               <button
                 className="rounded-full min-w-[50px] aspect-square bg-center bg-cover bg-no-repeat"

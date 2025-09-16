@@ -1,7 +1,7 @@
 import { Offer } from "../models/Offer";
 
 export class OfferService {
-  static async saveOffer(offer: Offer) {
+  static async saveOffer(offer: Offer, isUpdate = false, id?: string) {
     const formDataToSend = new FormData();
     formDataToSend.append("name", offer.offerName);
     formDataToSend.append("description", offer.description);
@@ -13,8 +13,11 @@ export class OfferService {
     );
     if (offer.image) formDataToSend.append("image", offer.image);
 
-    const res = await fetch("/api/offers", {
-      method: "POST",
+    const url = isUpdate && id ? `/api/offers/${id}` : "/api/offers";
+    const method = isUpdate ? "PUT" : "POST";
+
+    const res = await fetch(url, {
+      method,
       body: formDataToSend,
     });
 

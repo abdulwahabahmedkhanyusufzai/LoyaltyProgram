@@ -44,23 +44,26 @@ const handleChange = (
 };
 
    const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const validationErrors = offer.validateAll();
-    setErrors(validationErrors);
-    if (Object.keys(validationErrors).length > 0) return;
+  e.preventDefault();
+  const validationErrors = offer.validateAll();
+  setErrors(validationErrors);
+  if (Object.keys(validationErrors).length > 0) return;
 
-    try {
-      await OfferService.saveOffer(offer);
-      alert("✅ Offer saved successfully!");
-      setIsOpen(false);
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        alert("❌ Error: " + err.message);
-      } else {
-        alert("❌ Error: " + String(err));
-      }
+  try {
+    const isUpdate = !!offerToEdit?.id;
+    await OfferService.saveOffer(offer, isUpdate, offerToEdit?.id);
+
+    alert(isUpdate ? "✅ Offer updated successfully!" : "✅ Offer created successfully!");
+    setIsOpen(false);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      alert("❌ Error: " + err.message);
+    } else {
+      alert("❌ Error: " + String(err));
     }
-  };
+  }
+};
+
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   const file = e.target.files?.[0];
