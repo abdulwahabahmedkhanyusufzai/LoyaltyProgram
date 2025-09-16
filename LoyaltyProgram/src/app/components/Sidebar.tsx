@@ -1,15 +1,34 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { navItems,bottomItems } from "../data/customData";
+import { navItems } from "../data/customData";
 
-const Sidebar = ({open,setOpen}) => {
+const Sidebar = ({ open, setOpen }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const [loggedIn, setLoggedIn] = useState<boolean | null>(null); // null while loading
 
+  const bottomItems = [
+    { name: "Account Settings", icon: "/calendar.png", icon2: "/calendar-on.png", path: "/account-settings" },
+  ];
+
+  useEffect(() => {
+    async function fetchAuth() {
+      try {
+        const res = await fetch("/api/user/me", { credentials: "include" });
+        const data = await res.json();
+        setLoggedIn(!!data.id); // true if logged in
+      } catch (err) {
+        console.error("Failed to fetch auth status:", err);
+        setLoggedIn(false);
+      }
+    }
+
+    fetchAuth();
+  }, []);
 
   const renderNavItem = (item: { name: string; icon: string; icon2?: string; path: string }) => {
-    const isActive = pathname === item.path; // check URL
+    const isActive = pathname === item.path;
 
     return (
       <li key={item.name} className="relative">
@@ -19,11 +38,10 @@ const Sidebar = ({open,setOpen}) => {
             <div className="absolute left-[-10px] top-0 h-full w-[4px] bg-[#FEFCED] rounded-r z-10"></div>
           </>
         )}
-
         <button
           onClick={() => {
             router.push(item.path);
-            setOpen(false); // close on mobile after navigation
+            setOpen(false);
           }}
           className={`relative z-10 flex items-center gap-[25px] lg:text-[14px] 2xl:text-[18px] w-full text-left transition-colors
             ${isActive ? "text-white" : "text-[#8D8D8D] hover:text-white"}`}
@@ -35,10 +53,16 @@ const Sidebar = ({open,setOpen}) => {
     );
   };
 
+  // Auth item: dynamically change Login/Logout based on loggedIn
+  const authItem =
+    loggedIn === null
+      ? null
+      : loggedIn
+      ? { name: "Logout", icon: "/logout-off.png", path: "/logout" }
+      : { name: "Login", icon: "/logout-off.png", path: "/login" };
+
   return (
     <>
-
-      {/* Sidebar */}
       <aside
         className={`fixed top-0 left-0 h-screen bg-[#2C2A25] flex flex-col transform transition-transform duration-300 ease-in-out
         2xl:w-[342px] lg:w-[290px] w-[200px] z-40
@@ -53,12 +77,17 @@ const Sidebar = ({open,setOpen}) => {
 
         {/* Nav Section */}
         <nav className="pl-[20px] mt-[45px] flex-1 p-4">
-          <ul className="lg:space-y-[14px] 2xl:space-y-[23px] space-y-[10px]">{navItems.map(renderNavItem)}</ul>
+          <ul className="lg:space-y-[14px] 2xl:space-y-[23px] space-y-[10px]">
+            {navItems.map(renderNavItem)}
+          </ul>
         </nav>
 
         {/* Bottom Section */}
         <div className="lg:pl-[18px] 2xl:pl-[20px] p-4 mt-auto">
-          <ul className="xl:space-y-[23px] space-y-[10px]">{bottomItems.map(renderNavItem)}</ul>
+          <ul className="xl:space-y-[23px] space-y-[10px]">
+            {bottomItems.map(renderNavItem)}
+            {authItem && renderNavItem(authItem)}
+          </ul>
         </div>
       </aside>
 
