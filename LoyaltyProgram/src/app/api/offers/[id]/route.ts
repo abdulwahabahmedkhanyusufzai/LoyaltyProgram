@@ -6,18 +6,12 @@ import path from "path";
 
 const prisma = new PrismaClient();
 
-type RouteContext = {
-  params: {
-    id: string;
-  };
-};
-
 export async function PUT(
   req: Request,
-  context: RouteContext
-){
+  context: { params: { id: string } }
+) {
   try {
-    const { id } = context.params; 
+    const { id } = context.params;
     if (!id) {
       return NextResponse.json({ error: "Offer ID is missing in URL" }, { status: 400 });
     }
