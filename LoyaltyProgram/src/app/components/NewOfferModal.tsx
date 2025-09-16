@@ -1,11 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FloatingInput } from "./FloatingInput";
 import { FloatingTextarea } from "./FloatingTextArea";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Offer } from "../models/Offer";
 import { OfferService } from "../utils/OfferService";
+import toast from "react-hot-toast";
 
 const TIER_OPTIONS = ["Bronze", "Silver", "Gold"];
 
@@ -14,7 +15,8 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen,offerToEdit }) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [preview, setPreview] = useState<string | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
-
+  const [loading, setLoading] = useState(false); 
+  const previewUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (offerToEdit) {
@@ -25,6 +27,7 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen,offerToEdit }) => {
         startDate: offerToEdit.startDate,
         tillDate: offerToEdit.endDate,
         eligibleTiers: offerToEdit.tiers,
+        image:offerToEdit.image ?? null,
       }));
       setPreview(offerToEdit.image || null);
     } else {
@@ -45,6 +48,7 @@ const handleChange = (
 
    const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
+
   const validationErrors = offer.validateAll();
   setErrors(validationErrors);
   if (Object.keys(validationErrors).length > 0) return;
@@ -52,26 +56,41 @@ const handleChange = (
   try {
     const isUpdate = !!offerToEdit?.id;
     await OfferService.saveOffer(offer, isUpdate, offerToEdit?.id);
-
-    alert(isUpdate ? "✅ Offer updated successfully!" : "✅ Offer created successfully!");
+       setLoading(true); 
+    toast.success(isUpdate ? "✅ Offer updated successfully!" : "✅ Offer created successfully!");
     setIsOpen(false);
   } catch (err: unknown) {
     if (err instanceof Error) {
-      alert("❌ Error: " + err.message);
+      toast.error("❌ Error: " + err.message);
     } else {
-      alert("❌ Error: " + String(err));
+      toast.error("❌ Error: " + String(err));
     }
+  }finally{
+       setLoading(false); 
   }
 };
 
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   const file = e.target.files?.[0];
-  if (file) {
-    handleChange("image", file);
-    setPreview(URL.createObjectURL(file));
+  if (!file) return;
+
+  // revoke previous generated object URL
+  if (previewUrlRef.current) {
+    URL.revokeObjectURL(previewUrlRef.current);
   }
+  const obj = URL.createObjectURL(file);
+  previewUrlRef.current = obj;
+
+  handleChange("image", file);      // store the File on the Offer instance
+  setPreview(obj);                  // show preview
 };
+
+useEffect(() => {
+  return () => {
+    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+  };
+}, []);
 
 const handleTierToggle = (tier: string) => {
   const updatedTiers = offer.eligibleTiers.includes(tier)
@@ -96,6 +115,7 @@ const handleTierToggle = (tier: string) => {
       <div className="bg-white rounded-xl p-6 w-full max-w-lg md:max-w-lg lg:max-w-xl relative">
         <button
           onClick={closeModal}
+           disabled={loading} 
           className="cursor-pointer absolute top-3 right-3 text-gray-500 hover:text-gray-800"
         >
           ✕
@@ -242,10 +262,15 @@ const handleTierToggle = (tier: string) => {
             </div>
 
             <button
+            disabled={loading}
               type="submit"
-              className="cursor-pointer w-full bg-[#734A00] text-white py-3 rounded-full hover:bg-[#5a3900] transition text-lg font-medium mt-2"
+              className={`cursor-pointer w-full bg-[#734A00] text-white py-3 rounded-full hover:bg-[#5a3900] transition text-lg font-medium mt-2"  ${
+                loading
+                  ? "bg-gray-400 text-white cursor-not-allowed"
+                  : "bg-[#734A00] text-white hover:bg-[#5a3900]"
+              }`}
             >
-              Save Offer
+            {loading ? "Saving..." : "Save Offer"}
             </button>
           </div>
         </form>

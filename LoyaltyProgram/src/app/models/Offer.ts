@@ -22,29 +22,28 @@ export class Offer {
         return this.description.trim() ? "" : "Description is required.";
 
       case "points": {
-  if (this.points === null || this.points === undefined) {
-    return "Points are required.";
-  }
+        if (this.points === null || this.points === undefined) {
+          return "Points are required.";
+        }
 
-  if (typeof this.points === "number") {
-    // ✅ process as number
-    return this.points >= 0 ? "" : "Points must be a positive number.";
-  }
+        if (typeof this.points === "number") {
+          // ✅ numeric value
+          return this.points >= 0 ? "" : "Points must be a positive number.";
+        }
 
-  if (typeof this.points === "string") {
-    const p = this.points.trim();
-    if (!p) return "Points are required.";
+        if (typeof this.points === "string") {
+          const p = this.points.trim();
+          if (!p) return "Points are required.";
 
-    const isNumber = /^\d+$/.test(p);              // "10", "100"
-    const isPercent = /^([1-9]\d?|100)%$/.test(p); // "1%" .. "100%"
-    return isNumber || isPercent
-      ? ""
-      : "Enter number (100) or % (20%).";
-  }
+          const isNumber = /^\d+$/.test(p);              // "10", "100"
+          const isPercent = /^([1-9]\d?|100)%$/.test(p); // "1%" .. "100%"
+          return isNumber || isPercent
+            ? ""
+            : "Enter number (100) or percentage (20%).";
+        }
 
-  return "Invalid points value.";
-}
-
+        return "Invalid points value.";
+      }
 
       case "startDate":
         return this.startDate ? "" : "Start Date is required.";
@@ -58,7 +57,11 @@ export class Offer {
           : "Select at least one tier.";
 
       case "image":
-        return this.image ? "" : "Image is required.";
+        return (this.image !== null &&
+                this.image !== undefined &&
+                String(this.image).trim() !== "")
+          ? ""
+          : "Image is required.";
 
       default:
         return "";
