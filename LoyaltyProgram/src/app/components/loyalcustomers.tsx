@@ -4,7 +4,7 @@ const CustomerItem = ({ src, name, email }: { src: string; name: string; email: 
   <div className="flex items-center gap-5 xl:gap-8">
      <button
                 className="rounded-full min-w-[50px] aspect-square bg-center bg-cover bg-no-repeat"
-                style={{ backgroundImage: `url(${src})` }}
+                style={{ backgroundImage: `url(/${src})` }}
               /> 
     <div className="flex flex-col items-start justify-center">
       <h1 className="text-[10px] 2xl:text-[14px] lg:text-[12px] font-semibold text-[#2C2A25]">

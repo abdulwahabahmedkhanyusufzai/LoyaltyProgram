@@ -52,11 +52,11 @@ const handleChange = (
   const validationErrors = offer.validateAll();
   setErrors(validationErrors);
   if (Object.keys(validationErrors).length > 0) return;
-
+  setLoading(true); 
   try {
     const isUpdate = !!offerToEdit?.id;
     await OfferService.saveOffer(offer, isUpdate, offerToEdit?.id);
-       setLoading(true); 
+       
     toast.success(isUpdate ? "✅ Offer updated successfully!" : "✅ Offer created successfully!");
     setIsOpen(false);
   } catch (err: unknown) {
@@ -123,7 +123,7 @@ const handleTierToggle = (tier: string) => {
 
         <div className="flex flex-col items-center mb-6 scroll-y-auto">
           <img src="/Login.png" className="w-12 h-12" alt="Offer icon" />
-          <h3 className="text-lg font-semibold">Create New Offer</h3>
+          <h3 className="text-lg font-semibold">  {offerToEdit ? "Edit an Offer" : "Create New Offer"}</h3>
         </div>
 
         <form

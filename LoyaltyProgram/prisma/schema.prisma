@@ -104,3 +104,11 @@ model Campaign {
   endAt      DateTime
   createdAt  DateTime @default(now())
 }
+
+model LoyaltyProgram {
+  id        Int      @id @default(autoincrement())
+  tiers     Json
+  rows      Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

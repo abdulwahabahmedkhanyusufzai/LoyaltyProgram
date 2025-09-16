@@ -58,7 +58,7 @@ const WaroPage = () => {
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
       >
-        <div className="flex justify-start sm:justify-center gap-4 sm:gap-6 w-full min-w-max">
+        <div className="flex justify-start sm:justify-center gap-4 sm:gap-4 w-full min-w-max">
           {stats.map((stat) => (
             <div
               key={stat.label}
@@ -66,7 +66,7 @@ const WaroPage = () => {
                 stat.label === "Top Selling Products"
                   ? "bg-[#2C2A25]"
                   : "bg-[#E8E6D9]"
-              } rounded-[24px] sm:rounded-[32px] p-4 sm:p-3 shadow-lg w-[200px] sm:w-[250px] 2xl:w-[320px] h-[200px] sm:h-[220px] 2xl:h-[280px] flex flex-col flex-shrink-0`}
+              } rounded-[24px] sm:rounded-[32px] p-4 sm:p-3 shadow-lg w-[180px] md:w-[205px] md:h-[200px] lg:w-[235px] 2xl:w-[300px] h-[200px] lg:h-[220px] 2xl:h-[280px] flex flex-col flex-shrink-0`}
             >
               {/* Heading + arrow */}
               <div className="flex items-center justify-between">
