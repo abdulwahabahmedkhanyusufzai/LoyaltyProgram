@@ -6,11 +6,10 @@ import path from "path";
 
 const prisma = new PrismaClient();
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
-  try {
+export async function PUT(req: Request, context: { params: Record<string, string> }) {  try {
     console.log("🚀 [PUT] /api/offers - Update request started");
 
-    const id = params.id;
+    const { id } = context.params; 
     if (!id) {
       return NextResponse.json({ error: "Offer ID is missing in URL" }, { status: 400 });
     }
@@ -55,8 +54,9 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     });
 
     return NextResponse.json({ success: true, offer: updatedOffer });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("❌ Error updating offer:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
