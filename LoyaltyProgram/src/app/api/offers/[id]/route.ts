@@ -6,9 +6,15 @@ import path from "path";
 
 const prisma = new PrismaClient();
 
+type RouteContext = {
+  params: {
+    id: string;
+  };
+};
+
 export async function PUT(
   req: Request,
-  context: { params: { id: string } }
+  context: RouteContext
 ){
   try {
     const { id } = context.params; 
