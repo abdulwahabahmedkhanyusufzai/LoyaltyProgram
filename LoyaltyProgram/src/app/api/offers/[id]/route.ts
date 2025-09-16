@@ -6,8 +6,10 @@ import path from "path";
 
 const prisma = new PrismaClient();
 
-export async function PUT(req: Request, context: { params: Record<string, string> }) {  try {
-    console.log("🚀 [PUT] /api/offers - Update request started");
+export async function PUT(
+  req: Request,
+  context: { params: { id: string } }
+){
 
     const { id } = context.params; 
     if (!id) {
