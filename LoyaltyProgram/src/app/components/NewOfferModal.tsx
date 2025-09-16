@@ -1,98 +1,83 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FloatingInput } from "./FloatingInput";
 import { FloatingTextarea } from "./FloatingTextArea";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { Offer } from "../models/Offer";
+import { OfferService } from "../utils/OfferService";
 
 const TIER_OPTIONS = ["Bronze", "Silver", "Gold"];
 
-const NewOfferModal = ({ closeModal, isOpen, setIsOpen }) => {
-  const [formData, setFormData] = useState({
-    offerName: "",
-    description: "",
-    points: "",
-    startDate: "",
-    tillDate: "",
-    eligibleTiers: [] as string[],
-    image: null as File | null,
-  });
-
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+const NewOfferModal = ({ closeModal, isOpen, setIsOpen,offerToEdit }) => {
+  const [offer, setOffer] = useState(new Offer());
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [preview, setPreview] = useState<string | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const validateField = (field: string, value) => {
-    let error = "";
-    if (field === "offerName" && !value.trim()) error = "Offer name is required.";
-    if (field === "description" && !value.trim()) error = "Description is required.";
-    if (field === "points") {
-      const isNumber = /^[1-9]\d*$/.test(value.trim());
-      const isPercent = /^([1-9]\d?|100)%$/.test(value.trim());
-      if (!isNumber && !isPercent) error = "Enter number (100) or % (20%).";
-    }
-    if (field === "startDate" || field === "tillDate") {
-      if (!value) error = `${field === "startDate" ? "Start Date" : "Till Date"} is required.`;
-    }
-    if (field === "eligibleTiers") {
-      if (!value.length) error = "Select at least one tier.";
-    }
-    if (field === "image" && !value) error = "Image is required.";
-    setErrors((prev) => ({ ...prev, [field]: error }));
-  };
 
-  const handleChange = (field: string, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    validateField(field, value);
-  };
-
-  const handleTierToggle = (tier: string) => {
-    let updatedTiers = [...formData.eligibleTiers];
-    if (updatedTiers.includes(tier)) {
-      updatedTiers = updatedTiers.filter((t) => t !== tier);
+  useEffect(() => {
+    if (offerToEdit) {
+      setOffer(new Offer({
+        offerName: offerToEdit.name,
+        description: offerToEdit.description,
+        points: offerToEdit.pointsCost,
+        startDate: offerToEdit.startDate,
+        tillDate: offerToEdit.endDate,
+        eligibleTiers: offerToEdit.tiers,
+      }));
+      setPreview(offerToEdit.image || null);
     } else {
-      updatedTiers.push(tier);
+      setOffer(new Offer());
+      setPreview(null);
     }
-    handleChange("eligibleTiers", updatedTiers);
+  }, [offerToEdit]);
+
+  
+const handleChange = (field: keyof Offer, value: any) => {
+    const updated = new Offer({ ...offer, [field]: value });
+    setOffer(updated);
+    setErrors((prev) => ({ ...prev, [field]: updated.validateField(field) }));
+  };
+
+   const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const validationErrors = offer.validateAll();
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length > 0) return;
+
+    try {
+      await OfferService.saveOffer(offer);
+      alert("✅ Offer saved successfully!");
+      setIsOpen(false);
+    } catch (err: any) {
+      alert("❌ Error: " + err.message);
+    }
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      handleChange("image", file);
-      setPreview(URL.createObjectURL(file));
-    }
-  };
+  const file = e.target.files?.[0];
+  if (file) {
+    handleChange("image", file);
+    setPreview(URL.createObjectURL(file));
+  }
+};
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    Object.entries(formData).forEach(([key, value]) => validateField(key, value));
-    if (Object.values(errors).some((err) => err)) return;
+const handleTierToggle = (tier: string) => {
+  const updatedTiers = offer.eligibleTiers.includes(tier)
+    ? offer.eligibleTiers.filter((t) => t !== tier)
+    : [...offer.eligibleTiers, tier];
 
-    try {
-      const formDataToSend = new FormData();
-      formDataToSend.append("name", formData.offerName);
-      formDataToSend.append("description", formData.description);
-      formDataToSend.append("startDate", formData.startDate);
-      formDataToSend.append("endDate", formData.tillDate);
-      if (formData.points) formDataToSend.append("pointsCost", formData.points);
-      formData.eligibleTiers.forEach((tier) => formDataToSend.append("tiers", tier));
-      if (formData.image) formDataToSend.append("image", formData.image);
+  handleChange("eligibleTiers", updatedTiers);
+};
 
-      const res = await fetch("/api/offers", { method: "POST", body: formDataToSend });
-      if (!res.ok) {
-        const error = await res.json();
-        alert("❌ Error: " + error.error);
-        return;
-      }
-      alert("✅ Offer created successfully!");
-      setIsOpen(false);
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong!");
-    }
-  };
+
+  if (!isOpen) return null;
 
   const ErrorMsg = ({ field }: { field: string }) =>
-    errors[field] ? <p className="text-red-500 text-sm">{errors[field]}</p> : null;
+    errors[field] ? (
+      <p className="text-red-500 text-sm">{errors[field]}</p>
+    ) : null;
 
   if (!isOpen) return null;
 
@@ -101,7 +86,7 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen }) => {
       <div className="bg-white rounded-xl p-6 w-full max-w-lg md:max-w-lg lg:max-w-xl relative">
         <button
           onClick={closeModal}
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+          className="cursor-pointer absolute top-3 right-3 text-gray-500 hover:text-gray-800"
         >
           ✕
         </button>
@@ -111,7 +96,10 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen }) => {
           <h3 className="text-lg font-semibold">Create New Offer</h3>
         </div>
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6"
+        >
           {/* Left: Image */}
           <div className="flex flex-col items-center gap-3">
             {preview ? (
@@ -121,7 +109,7 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen }) => {
                 className="h-[100px] w-[100px] object-cover rounded-full border"
               />
             ) : (
-              <div className="bg-[#D9D9D9] text-center rounded-full mt-2 w-[100px] h-[100px] flex items-center justify-center border text-black text-sm">
+              <div className="bg-[#D9D9D9] border-[#D2D1CA] text-center rounded-full mt-2 w-[100px] h-[100px] flex items-center justify-center border text-black text-sm">
                 Offer Image
               </div>
             )}
@@ -146,7 +134,7 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen }) => {
             <FloatingInput
               id="offerName"
               placeholder="Offer Name"
-              value={formData.offerName}
+              value={offer.offerName}
               onChange={(e) => handleChange("offerName", e.target.value)}
             />
             <ErrorMsg field="offerName" />
@@ -154,7 +142,7 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen }) => {
             <FloatingTextarea
               id="description"
               placeholder="Description"
-              value={formData.description}
+              value={offer.description}
               onChange={(e) => handleChange("description", e.target.value)}
             />
             <ErrorMsg field="description" />
@@ -162,39 +150,64 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen }) => {
             <FloatingInput
               id="points"
               placeholder="Points Cost / % Discount"
-              value={formData.points}
+              value={offer.points}
               onChange={(e) => handleChange("points", e.target.value)}
             />
             <ErrorMsg field="points" />
 
             <div className="flex gap-4">
-              <FloatingInput
-                id="startDate"
-                placeholder="Start Date"
-                type="date"
-                value={formData.startDate}
-                onChange={(e) => handleChange("startDate", e.target.value)}
-              />
-              <FloatingInput
-                id="tillDate"
-                placeholder="Till Date"
-                type="date"
-                value={formData.tillDate}
-                onChange={(e) => handleChange("tillDate", e.target.value)}
-              />
+              <div className="flex-1">
+                <label className="block text-gray-700 text-sm mb-1">
+                  Start Date
+                </label>
+                <DatePicker
+                  selected={
+                    offer.startDate ? new Date(offer.startDate) : null
+                  }
+                  onChange={(date: Date | null) =>
+                    handleChange(
+                      "startDate",
+                      date ? date.toISOString().split("T")[0] : ""
+                    )
+                  }
+                  dateFormat="yyyy-MM-dd"
+                  className="w-full border rounded-full px-4 py-2"
+                  placeholderText="Select Start Date"
+                />
+                <ErrorMsg field="startDate" />
+              </div>
+
+              <div className="flex-1">
+                <label className="block text-gray-700 text-sm mb-1">
+                  Till Date
+                </label>
+                <DatePicker
+                  selected={
+                    offer.tillDate ? new Date(offer.tillDate) : null
+                  }
+                  onChange={(date: Date | null) =>
+                    handleChange(
+                      "tillDate",
+                      date ? date.toISOString().split("T")[0] : ""
+                    )
+                  }
+                  dateFormat="yyyy-MM-dd"
+                  className="w-full border rounded-full px-4 py-2"
+                  placeholderText="Select Till Date"
+                />
+                <ErrorMsg field="tillDate" />
+              </div>
             </div>
-            <ErrorMsg field="startDate" />
-            <ErrorMsg field="tillDate" />
 
             {/* Multi-select Dropdown */}
             <div className="relative">
               <button
                 type="button"
                 onClick={() => setShowDropdown(!showDropdown)}
-                className="w-full border rounded px-4 py-2 text-left"
+                className="cursor-pointer w-full border-[#D2D1CA] text-gray-500 border rounded-full px-4 py-2 text-left"
               >
-                {formData.eligibleTiers.length
-                  ? formData.eligibleTiers.join(", ")
+                {offer.eligibleTiers.length
+                  ? offer.eligibleTiers.join(", ")
                   : "Select Eligible Tiers"}
               </button>
               {showDropdown && (
@@ -206,7 +219,7 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen }) => {
                     >
                       <input
                         type="checkbox"
-                        checked={formData.eligibleTiers.includes(tier)}
+                        checked={offer.eligibleTiers.includes(tier)}
                         onChange={() => handleTierToggle(tier)}
                         className="mr-2"
                       />
@@ -220,7 +233,7 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen }) => {
 
             <button
               type="submit"
-              className="w-full bg-[#734A00] text-white py-3 rounded-full hover:bg-[#5a3900] transition text-lg font-medium mt-2"
+              className="cursor-pointer w-full bg-[#734A00] text-white py-3 rounded-full hover:bg-[#5a3900] transition text-lg font-medium mt-2"
             >
               Save Offer
             </button>

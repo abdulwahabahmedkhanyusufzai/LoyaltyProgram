@@ -20,10 +20,19 @@ const ProgramLoyal2 = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(true);
-
+  const [offerToEdit, setOfferToEdit] = useState<Offer | null>(null);
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
 
+  const handleEdit = (offer: Offer) => {
+  setOfferToEdit(offer);
+  setIsOpen(true);
+};
+
+  const handleCreateNew = () => {
+  setOfferToEdit(null); // No offer, we are creating a new one
+  setIsOpen(true);
+};
   // 🔍 Fetch offers from API
   useEffect(() => {
     const fetchOffers = async () => {
@@ -63,8 +72,8 @@ const ProgramLoyal2 = () => {
               Loyalty Program
             </h2>
             <button
-              onClick={openModal}
-              className="bg-[#734A00] text-white text-sm px-6 h-11 rounded-full 
+              onClick={handleCreateNew}
+              className="cursor-pointer bg-[#734A00] text-white text-sm px-6 h-11 rounded-full 
                          hover:bg-[#5a3900] transition-colors duration-200"
             >
               Create New Offer
@@ -101,9 +110,10 @@ const ProgramLoyal2 = () => {
 
                   {/* Edit Button */}
                   <button
-                    className="ml-auto flex items-center gap-1 px-5 py-1.5 text-xs font-medium
+                    className="cursor-pointer ml-auto flex items-center gap-1 px-5 py-1.5 text-xs font-medium
                                border border-black rounded-full text-black
                                hover:bg-black hover:text-white transition"
+                  onClick={() => handleEdit(offer)}
                   >
                     Edit
                   </button>
@@ -114,7 +124,7 @@ const ProgramLoyal2 = () => {
         </div>
       </div>
 
-      <NewOfferModal closeModal={closeModal} isOpen={isOpen} setIsOpen={setIsOpen} />
+      <NewOfferModal closeModal={closeModal} isOpen={isOpen} setIsOpen={setIsOpen}  offerToEdit={offerToEdit}/>
     </div>
   );
 };
