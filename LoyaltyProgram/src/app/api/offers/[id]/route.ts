@@ -10,7 +10,7 @@ export async function PUT(
   req: Request,
   context: { params: { id: string } }
 ){
-
+  try {
     const { id } = context.params; 
     if (!id) {
       return NextResponse.json({ error: "Offer ID is missing in URL" }, { status: 400 });
