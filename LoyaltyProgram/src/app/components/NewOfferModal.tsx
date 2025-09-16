@@ -34,11 +34,14 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen,offerToEdit }) => {
   }, [offerToEdit]);
 
   
-const handleChange = (field: keyof Offer, value: any) => {
-    const updated = new Offer({ ...offer, [field]: value });
-    setOffer(updated);
-    setErrors((prev) => ({ ...prev, [field]: updated.validateField(field) }));
-  };
+const handleChange = (
+  field: keyof Offer,
+  value: string | number | File | string[] | null
+) => {
+  const updated = new Offer({ ...offer, [field]: value });
+  setOffer(updated);
+  setErrors((prev) => ({ ...prev, [field]: updated.validateField(field) }));
+};
 
    const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,8 +53,12 @@ const handleChange = (field: keyof Offer, value: any) => {
       await OfferService.saveOffer(offer);
       alert("✅ Offer saved successfully!");
       setIsOpen(false);
-    } catch (err: any) {
-      alert("❌ Error: " + err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        alert("❌ Error: " + err.message);
+      } else {
+        alert("❌ Error: " + String(err));
+      }
     }
   };
 
@@ -150,7 +157,7 @@ const handleTierToggle = (tier: string) => {
             <FloatingInput
               id="points"
               placeholder="Points Cost / % Discount"
-              value={offer.points}
+              value={offer.points !== undefined && offer.points !== null ? String(offer.points) : ""}
               onChange={(e) => handleChange("points", e.target.value)}
             />
             <ErrorMsg field="points" />

@@ -7,7 +7,7 @@ export class OfferService {
     formDataToSend.append("description", offer.description);
     formDataToSend.append("startDate", offer.startDate);
     formDataToSend.append("endDate", offer.tillDate);
-    if (offer.points) formDataToSend.append("pointsCost", offer.points);
+    if (offer.points) formDataToSend.append("pointsCost", offer.points.toString());
     offer.eligibleTiers.forEach((tier) =>
       formDataToSend.append("tiers", tier)
     );
