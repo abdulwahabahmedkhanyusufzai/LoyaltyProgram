@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import Tabs from "../components/ButtonGroup";
 import { LoyalCustomer } from "../data/customData";
@@ -9,6 +9,16 @@ import ProgramLoyal2 from "./program/page";
   const [customers] = useState(LoyalCustomer);
     const [step, setStep] = useState(1);
      const [selectedTab, setSelectedTab] = useState("Home");
+
+     useEffect(() => {
+  const fetchCustomers = async () => {
+    const res = await fetch("/api/customers?shopId=2&first=10");
+    const data = await res.json();
+    console.log("Customers:", data.edges.map((e) => e.node));
+  };
+  fetchCustomers();
+}, []);
+
   return (
     <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen">
       <div className="max-w-6xl mx-auto bg-[#fffef9] rounded-2xl shadow-sm border border-gray-200 p-6">
