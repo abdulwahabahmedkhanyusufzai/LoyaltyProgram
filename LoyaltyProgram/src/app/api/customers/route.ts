@@ -3,55 +3,49 @@ import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
-
 const API_VERSION = "2025-01";
 
-const QUERY = `query GetCustomers($first: Int!, $after: String) {
-  customers(first: $first, after: $after) {
-    pageInfo {
-      hasNextPage
-      endCursor
-    }
-    edges {
-      cursor
-      node {
-        id
-        firstName
-        lastName
-        email
-        phone
-        createdAt
-        numberOfOrders
-        amountSpent {
-          amount
-          currencyCode
+const CUSTOMER_LIST_QUERY = `
+  query getCustomers($first: Int!, $after: String) {
+    customers(first: $first, after: $after) {
+      edges {
+        cursor
+        node {
+          id
+          firstName
+          lastName
+          email
+          numberOfOrders
+          amountSpent {
+            amount
+            currencyCode
+          }
         }
-        tags
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
       }
     }
   }
-}
 `;
 
-async function fetchCustomersFromShop(
+const CUSTOMER_COUNT_QUERY = `
+  query {
+    customersCount {
+      count
+    }
+  }
+`;
+
+async function fetchFromShopify(
   shop: string,
   token: string,
-  first: number,
-  after: string | null
+  query: string,
+  variables: Record<string, any> = {}
 ) {
   const domain = shop.replace(/^https?:\/\//, "").replace(/\/$/, "");
   const url = `https://${domain}/admin/api/${API_VERSION}/graphql.json`;
-
-  console.log("[Shopify] Fetching customers", {
-    shopDomain: domain,
-    first,
-    after,
-    tokenPreview: token?.slice(0, 6) + "...",
-    apiUrl: url,
-  });
-
-  const body = JSON.stringify({ query: QUERY, variables: { first, after } });
-  console.log("[Shopify] Request Body:", body);
 
   const response = await fetch(url, {
     method: "POST",
@@ -59,43 +53,42 @@ async function fetchCustomersFromShop(
       "Content-Type": "application/json",
       "X-Shopify-Access-Token": token,
     },
-    body,
+    body: JSON.stringify({ query, variables }),
   });
 
-  console.log("[Shopify] Response status:", response.status, response.statusText);
+  const json = await response.json();
+  if (json.errors) throw new Error(JSON.stringify(json.errors));
+  return json.data;
+}
 
-  let json;
-  try {
-    json = await response.json();
-  } catch (err) {
-    console.error("[Shopify] ❌ Failed to parse JSON:", err);
-    throw new Error("Invalid JSON response from Shopify");
-  }
+// 🔁 Fetch all pages of customers and flatten nodes
+async function fetchAllCustomers(shop: string, token: string) {
+  let allCustomers: any[] = [];
+  let after: string | null = null;
+  const PAGE_SIZE = 250; // Shopify max per page
 
-  console.log("[Shopify] Raw JSON Response:", JSON.stringify(json, null, 2));
+  do {
+    const data = await fetchFromShopify(shop, token, CUSTOMER_LIST_QUERY, {
+      first: PAGE_SIZE,
+      after,
+    });
 
-  if (json.errors) {
-    console.error("[Shopify] ❌ GraphQL errors:", json.errors);
-    throw new Error(JSON.stringify(json.errors));
-  }
+    const edges = data.customers.edges ?? [];
+    const nodes = edges.map(edge => edge.node); // flatten nodes
+    allCustomers.push(...nodes);
 
-  if (!json.data?.customers) {
-    console.warn("[Shopify] ⚠️ No 'customers' field returned:", json.data);
-  }
+    console.log(`Fetched ${nodes.length} customers, total so far: ${allCustomers.length}`);
 
-  return json.data?.customers;
+    after = data.customers.pageInfo.hasNextPage ? data.customers.pageInfo.endCursor : null;
+  } while (after);
+
+  return allCustomers;
 }
 
 export async function GET(req: Request) {
-  console.log("[API] ➡️ Incoming /api/customers request:", req.url);
-
   try {
     const { searchParams } = new URL(req.url);
-    const shopId = Number(searchParams.get("shopId") ?? 2);
-    const first = Number(searchParams.get("first") ?? 10);
-    const after = searchParams.get("after");
-
-    console.log("[API] Extracted query params", { shopId, first, after });
+    const shopId = Number(searchParams.get("shopId") ?? 4);
 
     // 🗄️ Get shop credentials
     const shop = await prisma.shop.findUnique({
@@ -104,35 +97,23 @@ export async function GET(req: Request) {
     });
 
     if (!shop) {
-      console.warn("[API] ❌ Shop not found for ID:", shopId);
       return NextResponse.json({ error: "Shop not found" }, { status: 404 });
     }
 
-    console.log("[API] Shop credentials loaded", {
-      shopDomain: shop.shop,
-      tokenPreview: shop.accessToken?.slice(0, 6) + "...",
-    });
+    // 🌐 Fetch all customers + total count
+    const [allCustomers, countData] = await Promise.all([
+      fetchAllCustomers(shop.shop, shop.accessToken),
+      fetchFromShopify(shop.shop, shop.accessToken, CUSTOMER_COUNT_QUERY),
+    ]);
 
-    // 🌐 Fetch customers
-    const customers = await fetchCustomersFromShop(
-      shop.shop,
-      shop.accessToken,
-      first,
-      after
+    return NextResponse.json(
+      {
+        customers: allCustomers, // flat array of customer objects
+        count: countData.customersCount.count,
+      },
+      { status: 200 }
     );
-
-    console.log(
-      "[API] ✅ Customers fetched",
-      customers?.edges?.length ?? 0,
-      "customers"
-    );
-
-    return NextResponse.json(customers, { status: 200 });
   } catch (err: any) {
-    console.error("[API] ❌ Error fetching customers:", {
-      message: err.message,
-      stack: err.stack,
-    });
     return NextResponse.json(
       { error: "Failed to fetch customers", details: err.message || String(err) },
       { status: 500 }

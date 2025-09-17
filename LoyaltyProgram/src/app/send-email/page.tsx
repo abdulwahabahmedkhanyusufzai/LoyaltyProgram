@@ -39,7 +39,56 @@ function LoyalCustomersList() {
     setShowLogin(false);
     console.log("✅ User logged in successfully");
   };
-  const [customers] = useState(CustomerEmailData);
+  const [customers,setCustomers] = useState([]);
+   const [totalCount, setTotalCount] = useState<number>(0); // 👈 new
+  const [page, setPage] = useState(1);
+   const [loading,setLoading] = useState(false);
+ 
+   
+ const PAGE_SIZE = 10;
+ const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+  const currentCustomers = customers.slice(
+     (page - 1) * PAGE_SIZE,
+     page * PAGE_SIZE
+   );
+   const endIndex = Math.min(page * PAGE_SIZE, totalCount);
+ 
+   
+    const fetchCustomers = async (after: string | null = null) => {
+     setLoading(true);
+     try {
+       const res = await fetch(
+         `/api/customers?first=30${after ? `&after=${after}` : ""}`
+       );
+       const data = await res.json();
+       console.log("Customer data",data.customers.map((customer) => customer.node));
+       const fetchedCustomers = data?.customers.map((e: any) => e) || [];
+       setCustomers(fetchedCustomers);
+     } catch (error) {
+       console.error("❌ Error fetching customers:", error);
+     }finally{
+       setLoading(false)
+     }
+   };
+ 
+   const fetchCustomerCount = async () => {
+     try {
+       const res = await fetch(`/api/customers?mode=count`);
+       const data = await res.json();
+       setTotalCount(data.count ?? 0);
+     } catch (error) {
+       console.error("❌ Error fetching customer count:", error);
+     }
+   };
+ 
+    useEffect(() => {
+       fetchCustomers();
+       fetchCustomerCount(); // 👈 also fetch count
+     }, []);
+ 
+      const handlePageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+     setPage(Number(e.target.value));
+   };
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -112,14 +161,14 @@ function LoyalCustomersList() {
                   </tr>
                 </thead>
                 <tbody>
-                  {customers.map((c, i) => (
+                  {currentCustomers.map((c, i) => (
                     <tr key={i} className="border-b border-gray-100 hover:bg-gray-50 transition">
-                      <td className="py-3 px-4">{c.name}</td>
+                      <td className="py-3 px-4">{c.lastName} {c.firstName}</td>
                       <td className="py-3 px-4 text-gray-600">{c.email}</td>
-                      <td className="py-3 px-4">{c.lastOrder}</td>
-                      <td className="py-3 px-4">{c.points}</td>
-                      <td className="py-3 px-4">{c.purchases}</td>
-                      <td className="py-3 px-4 text-[#2C2A25] font-medium">{c.title}</td>
+                      <td className="py-3 px-4">{c.numberOfOrders}</td>
+                      <td className="py-3 px-4">0</td>
+                      <td className="py-3 px-4">€ {c.amountSpent?.amount}</td>
+                      <td className="py-3 px-4 text-[#2C2A25] font-medium">Welcomed</td>
                       <td className="py-3 px-4 text-[#2C2A25] font-medium">
                         <img src="Emailbtn.png" alt="" className="w-[36px] h-[36px]" />
                       </td>
@@ -132,18 +181,13 @@ function LoyalCustomersList() {
             {/* Footer */}
             <div className="flex flex-col sm:flex-row justify-between items-center mt-4 text-sm text-gray-500 gap-2">
               <span>Total Customers: 620</span>
-              <div className="flex items-center space-x-2">
-                <select className="border border-gray-300 rounded-md px-2 py-1">
-                  <option>25</option>
-                  <option>50</option>
-                  <option>100</option>
-                </select>
-                <span>Showing 1 to 25 of 5 entities</span>
-              </div>
+               
             </div>
-          </>
+            
+          
+            </>
         )}
-
+        
         {/* Home Tab */}
         {selectedTab === "Home" && step === 1 && (
           <>
@@ -232,7 +276,55 @@ function LoyalCustomersList() {
           </div>
         )}
       </div>
-    </div>
+      
+                <div className="flex justify-between items-center mt-4 text-sm text-gray-500">
+          
+          <div className="flex items-center justify-between w-[300px]">
+         <select
+          value={page}
+          onChange={handlePageChange}
+          className="border border-[#DEDEDE] rounded-full px-2 py-1"
+        >
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <option key={p} value={p}>
+              {p}
+            </option>
+          ))}
+        </select>
+         Showing  {page} to {totalPages} of {endIndex} entries 
+         </div>
+
+           <div className="space-x-5">
+    {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
+    if (
+      p === 1 || // always show first page
+      p === totalPages || // always show last page
+      (p >= page - 1 && p <= page + 1) // show pages around current
+    ) {
+      return (
+        <button
+          key={p}
+          onClick={() => setPage(p)}
+          style={{ boxShadow: "2px 2px 2px 0px #00000040" }}
+          className={`px-3 py-1 rounded ${
+            page === p ? "bg-[#FEFCED] text-black" : "bg-[#FEFCED] text-gray-500"
+          }`}
+        >
+          {p}
+        </button>
+      );
+    } else if (
+      p === page - 2 || // add left ellipsis
+      p === page + 2 // add right ellipsis
+    ) {
+      return <span key={p}>...</span>;
+    } else {
+      return null; 
+    }
+  })}
+  </div>
+            </div>
+            </div>
   );
 }
 
