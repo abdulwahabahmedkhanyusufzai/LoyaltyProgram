@@ -1,7 +1,7 @@
+// app/api/upload-image/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-import { v4 as uuidv4 } from "uuid";
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();// adjust path to your prisma instance
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -13,26 +13,80 @@ export const POST = async (req: NextRequest) => {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }
 
+    // Fetch Shopify shop + token from DB (always shop with id = 2)
+    const shop = await prisma.shop.findUnique({
+      where: { id: 2 },
+    });
+
+    if (!shop || !shop.shop || !shop.accessToken) {
+      return NextResponse.json(
+        { error: "Shop not found or missing credentials" },
+        { status: 500 }
+      );
+    }
+
     const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    const base64 = Buffer.from(arrayBuffer).toString("base64");
+    const fileName = file.name;
 
-    // Create uploads folder if not exists
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
-    if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+    // Shopify GraphQL Files API mutation
+    const query = `
+      mutation fileCreate($files: [FileCreateInput!]!) {
+        fileCreate(files: $files) {
+          files {
+            id
+            alt
+            createdAt
+            fileStatus
+            preview {
+              image {
+                url
+              }
+            }
+          }
+          userErrors {
+            field
+            message
+          }
+        }
+      }
+    `;
 
-    // Generate unique file name
-    const fileExt = file.name.split(".").pop();
-    const fileName = `${uuidv4()}.${fileExt}`;
-    const filePath = path.join(uploadDir, fileName);
+    const variables = {
+      files: [
+        {
+          alt: fileName,
+          contentType: "IMAGE",
+          originalSource: `data:${file.type};base64,${base64}`,
+        },
+      ],
+    };
 
-    // Save file locally
-    fs.writeFileSync(filePath, buffer);
+    const res = await fetch(`https://${shop.shop}/admin/api/2024-07/graphql.json`, {
+      method: "POST",
+      headers: {
+        "X-Shopify-Access-Token": shop.accessToken,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query, variables }),
+    });
 
-    // Return public URL
-    const url = `/uploads/${fileName}`;
+    const data = await res.json();
+
+    if (data.errors || data.data?.fileCreate?.userErrors?.length) {
+      console.error("Shopify upload error:", data);
+      return NextResponse.json(
+        { error: "Shopify upload failed", details: data },
+        { status: 500 }
+      );
+    }
+
+    const uploadedFile = data.data.fileCreate.files[0];
+    const url = uploadedFile.preview.image.url;
+
     return NextResponse.json({ url });
   } catch (err: any) {
-    console.error(err);
+    console.error("Upload failed:", err);
     return NextResponse.json({ error: "Upload failed" }, { status: 500 });
   }
 };
