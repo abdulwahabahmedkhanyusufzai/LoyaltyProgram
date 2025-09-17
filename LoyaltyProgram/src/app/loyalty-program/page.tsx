@@ -1,28 +1,53 @@
 "use client";
-import React, { useRef, useState } from "react";
-import { tiers, rows as initialRows } from "../data/customData";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 
 const PremiumLoyaltyProgram = () => {
-  const router = useRouter();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
-  // ✅ Editing state
-  const [isEditing, setIsEditing] = useState(false);
-  const [rows, setRows] = useState(initialRows);
+  // Data state
+  const [tiers, setTiers] = useState<any[]>([]);
+  const [rows, setRows] = useState<any[]>([]);
 
+  // UI state
+  const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true); // fetching
+  const [saving, setSaving] = useState(false); // saving
+
+  // ✅ Fetch data
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+        const res = await fetch("/api/loyalty-program");
+        const data = await res.json();
+        if (data.success) {
+          setTiers(data.program.tiers);
+          setRows(data.program.rows);
+          toast.success("Loyalty Program loaded 🎉");
+        } else {
+          toast.error("Failed to load program");
+        }
+      } catch (err) {
+        console.error("🔥 Error fetching program:", err);
+        toast.error("Error fetching program");
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  // Table scrolling
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!scrollRef.current) return;
     setIsDragging(true);
     setStartX(e.pageX - scrollRef.current.offsetLeft);
     setScrollLeft(scrollRef.current.scrollLeft);
   };
-
   const handleMouseLeaveOrUp = () => setIsDragging(false);
-
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isDragging || !scrollRef.current) return;
     e.preventDefault();
@@ -31,12 +56,46 @@ const PremiumLoyaltyProgram = () => {
     scrollRef.current.scrollLeft = scrollLeft - walk;
   };
 
-  // ✅ Update table cell value
+  // ✅ Edit table cell
   const handleCellChange = (rowIdx: number, colIdx: number, value: string) => {
     const updatedRows = [...rows];
     updatedRows[rowIdx].values[colIdx] = value;
     setRows(updatedRows);
   };
+
+  // ✅ Save API call
+  const handleSave = async () => {
+    try {
+      setSaving(true);
+      const res = await fetch(`/api/loyalty-program/1`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tiers, rows }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Program updated successfully ✅");
+        setIsEditing(false);
+      } else {
+        toast.error("Update failed ❌");
+      }
+    } catch (err) {
+      console.error("🔥 Error saving program:", err);
+      toast.error("Error saving program");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // ✅ Circle loader for fetching
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="w-12 h-12 border-4 border-[#734A00] border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 sm:p-6 lg:p-7 space-y-8 bg-[#ffffff] min-h-screen">
@@ -50,21 +109,20 @@ const PremiumLoyaltyProgram = () => {
             </h2>
           </div>
           <div className="flex justify-center items-center gap-3 sm:gap-5">
-            <button
-              onClick={() => router.push("/loyal-customers/program")}
-              className="flex items-center justify-between px-3 sm:px-4 border rounded-[20px] sm:rounded-[25px] border-[#2C2A25] h-[36px] sm:h-[44px] text-[12px] sm:text-[14px] hover:bg-[#2C2A25] hover:text-white transition"
-            >
-              <span>Add New</span>
-              <span className="text-[14px] sm:text-[18px]">+</span>
-            </button>
-
-            {/* Edit / Save Toggle */}
             {isEditing ? (
               <button
-                onClick={() => setIsEditing(false)}
-                className="border rounded-[20px] sm:rounded-[25px] border-green-600 px-4 h-[36px] sm:h-[44px] text-[12px] sm:text-[14px] bg-green-600 text-white hover:bg-green-700 transition"
+                onClick={handleSave}
+                disabled={saving}
+                className={`border rounded-[20px] sm:rounded-[25px] px-4 h-[36px] sm:h-[44px] text-[12px] sm:text-[14px] flex items-center gap-2 transition ${
+                  saving
+                    ? "bg-gray-400 border-gray-400 text-white cursor-not-allowed"
+                    : "bg-[#734A00] border-[#734A00] text-white hover:bg-[#734A00]"
+                }`}
               >
-                Save
+                {saving && (
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                )}
+                {saving ? "Saving..." : "Save"}
               </button>
             ) : (
               <button
@@ -116,11 +174,10 @@ const PremiumLoyaltyProgram = () => {
                   <td className="px-3 py-2 font-medium text-[#2C2A25] whitespace-normal">
                     {row.label}
                   </td>
-
-                  {row.values.map((val, colIdx) => (
+                  {row.values.map((val: string, colIdx: number) => (
                     <td
                       key={colIdx}
-                      style={colIdx >= 0 ? { color: tiers[colIdx].color } : {}}
+                      style={{ color: tiers[colIdx]?.color }}
                       className="px-3 py-2 whitespace-normal"
                     >
                       {isEditing ? (

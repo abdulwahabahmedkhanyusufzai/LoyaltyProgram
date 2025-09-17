@@ -84,7 +84,7 @@ export const TopSellingProducts = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-10">
-        <div className="w-8 h-8 border-4 border-gray-300 border-t-green-500 rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-gray-300 border-t-[#734A00] rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -120,7 +120,7 @@ export const TopSellingProducts = () => {
                 alt={img.altText || p.title}
                 draggable={false}
                 onDragStart={(e) => e.preventDefault()}
-                className="w-full h-full rounded-[16.81px] object-cover"
+                className="w-full transition-transform duration-300 ease-in-out group-hover:scale-110 h-full rounded-[16.81px] object-cover"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gray-200 rounded-[16.81px] text-xs text-gray-500">
