@@ -44,7 +44,7 @@ const CustomerItem = ({ name, email }: { name: string; email: string }) => {
 
 const Loader = () => (
   <div className="flex justify-center items-center py-6">
-    <div className="w-8 h-8 border-4 border-gray-300 border-t-[#3B82F6] rounded-full animate-spin" />
+    <div className="w-8 h-8 border-4 border-gray-400 border-t-[#734A00] rounded-full animate-spin" />
   </div>
 );
 export const LoyalCustomer = () => {

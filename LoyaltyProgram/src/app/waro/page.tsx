@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 
 const Loader = () => (
   <div className="flex items-center justify-center">
-    <div className="w-8 h-8 border-4 border-gray-300 border-t-[#2C2A25] rounded-full animate-spin"></div>
+    <div className="w-8 h-8 border-4 border-gray-400 border-t-[#734A00] rounded-full animate-spin"></div>
   </div>
 );
 
