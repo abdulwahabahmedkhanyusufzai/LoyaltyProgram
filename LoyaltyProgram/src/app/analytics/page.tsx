@@ -61,8 +61,8 @@ const Analytics = () => {
               key={stat.label}
               className="bg-[#E8E6D9] rounded-2xl sm:rounded-[32px] 
                          p-3 sm:p-6 shadow-md sm:shadow-lg 
-                         w-[140px] xs:w-[160px] sm:w-[220px] lg:w-[180px] 2xl:w-[320px] 
-                         h-[120px] xs:h-[140px] sm:h-[200px] 2xl:h-[280px] 
+                         w-[140px] xs:w-[160px] sm:w-[220px] lg:w-[180px] 2xl:w-[280px] 
+                         h-[120px] xs:h-[140px] sm:h-[200px] 2xl:h-[220px] 
                          lg:h-[170px] flex flex-col flex-shrink-0"
             >
               {/* Heading + arrow */}

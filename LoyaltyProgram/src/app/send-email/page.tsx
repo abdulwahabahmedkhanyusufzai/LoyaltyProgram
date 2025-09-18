@@ -3,14 +3,19 @@ import { useEffect, useState } from "react";
 import Tabs from "../components/ButtonGroup";
 import { Search } from "lucide-react";
 import LoginList from "../components/login";
-import {CustomerEmailData} from "../data/customData";
-
 
 function LoyalCustomersList() {
   const [selectedOption, setSelectedOption] = useState("hosts");
   const [step, setStep] = useState(1);
   const [selectedTab, setSelectedTab] = useState("Home");
-  const radioOptions = ["hosts", "guests", "welcomed", "A particular person", "test", "all"];
+  const radioOptions = [
+    "hosts",
+    "guests",
+    "welcomed",
+    "A particular person",
+    "test",
+    "all",
+  ];
 
   const [form, setForm] = useState({
     recipient: "",
@@ -18,7 +23,7 @@ function LoyalCustomersList() {
     message: "",
   });
 
-   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => {
@@ -39,58 +44,61 @@ function LoyalCustomersList() {
     setShowLogin(false);
     console.log("✅ User logged in successfully");
   };
-  const [customers,setCustomers] = useState([]);
-   const [totalCount, setTotalCount] = useState<number>(0); // 👈 new
+  const [customers, setCustomers] = useState([]);
+  const [totalCount, setTotalCount] = useState<number>(0); // 👈 new
   const [page, setPage] = useState(1);
-   const [loading,setLoading] = useState(false);
- 
-   
- const PAGE_SIZE = 10;
- const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+  const [loading, setLoading] = useState(false);
+
+  const PAGE_SIZE = 10;
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
   const currentCustomers = customers.slice(
-     (page - 1) * PAGE_SIZE,
-     page * PAGE_SIZE
-   );
-   const endIndex = Math.min(page * PAGE_SIZE, totalCount);
- 
-   
-    const fetchCustomers = async (after: string | null = null) => {
-     setLoading(true);
-     try {
-       const res = await fetch(
-         `/api/customers?first=30${after ? `&after=${after}` : ""}`
-       );
-       const data = await res.json();
-       console.log("Customer data",data.customers.map((customer) => customer.node));
-       const fetchedCustomers = data?.customers.map((e: any) => e) || [];
-       setCustomers(fetchedCustomers);
-     } catch (error) {
-       console.error("❌ Error fetching customers:", error);
-     }finally{
-       setLoading(false)
-     }
-   };
- 
-   const fetchCustomerCount = async () => {
-     try {
-       const res = await fetch(`/api/customers?mode=count`);
-       const data = await res.json();
-       setTotalCount(data.count ?? 0);
-     } catch (error) {
-       console.error("❌ Error fetching customer count:", error);
-     }
-   };
- 
-    useEffect(() => {
-       fetchCustomers();
-       fetchCustomerCount(); // 👈 also fetch count
-     }, []);
- 
-      const handlePageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-     setPage(Number(e.target.value));
-   };
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    (page - 1) * PAGE_SIZE,
+    page * PAGE_SIZE
+  );
+  const endIndex = Math.min(page * PAGE_SIZE, totalCount);
+
+  const fetchCustomers = async (after: string | null = null) => {
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `/api/customers?first=30${after ? `&after=${after}` : ""}`
+      );
+      const data = await res.json();
+      console.log(
+        "Customer data",
+        data.customers.map((customer) => customer.node)
+      );
+      const fetchedCustomers = data?.customers.map((e: any) => e) || [];
+      setCustomers(fetchedCustomers);
+    } catch (error) {
+      console.error("❌ Error fetching customers:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCustomerCount = async () => {
+    try {
+      const res = await fetch(`/api/customers?mode=count`);
+      const data = await res.json();
+      setTotalCount(data.count ?? 0);
+    } catch (error) {
+      console.error("❌ Error fetching customer count:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCustomers();
+    fetchCustomerCount(); // 👈 also fetch count
+  }, []);
+
+  const handlePageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setPage(Number(e.target.value));
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -99,20 +107,25 @@ function LoyalCustomersList() {
   };
 
   return (
-  
     <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen">
-   {!isLoggedIn && showLogin && (
-  <LoginList
-    onClose={() => setShowLogin(false)}
-    onLogin={handleLoginSuccess}  
-  />
-)}
-     <div className="max-w-6xl mx-auto bg-[#fffef9] rounded-2xl shadow-sm border border-gray-200 p-6">
+      {!isLoggedIn && showLogin && (
+        <LoginList
+          onClose={() => setShowLogin(false)}
+          onLogin={handleLoginSuccess}
+        />
+      )}
+      <div className="max-w-6xl mx-auto bg-[#fffef9] rounded-2xl shadow-sm border border-gray-200 p-6">
         {/* Header */}
         <div className="flex items-start my-[10px] justify-between">
           <div className="flex items-center justify-start mb-0 gap-2">
-            <img src="PremiumLoyalty.png" alt="" className="h-[37px] w-[37px]" />
-            <h2 className="text-xl sm:text-2xl font-bold text-[#2C2A25]">Send an Email</h2>
+            <img
+              src="PremiumLoyalty.png"
+              alt=""
+              className="h-[37px] w-[37px]"
+            />
+            <h2 className="text-xl sm:text-2xl font-bold text-[#2C2A25]">
+              Send an Email
+            </h2>
           </div>
         </div>
 
@@ -162,15 +175,26 @@ function LoyalCustomersList() {
                 </thead>
                 <tbody>
                   {currentCustomers.map((c, i) => (
-                    <tr key={i} className="border-b border-gray-100 hover:bg-gray-50 transition">
-                      <td className="py-3 px-4">{c.lastName} {c.firstName}</td>
+                    <tr
+                      key={i}
+                      className="border-b border-gray-100 hover:bg-gray-50 transition"
+                    >
+                      <td className="py-3 px-4">
+                        {c.lastName} {c.firstName}
+                      </td>
                       <td className="py-3 px-4 text-gray-600">{c.email}</td>
                       <td className="py-3 px-4">{c.numberOfOrders}</td>
                       <td className="py-3 px-4">0</td>
                       <td className="py-3 px-4">€ {c.amountSpent?.amount}</td>
-                      <td className="py-3 px-4 text-[#2C2A25] font-medium">Welcomed</td>
                       <td className="py-3 px-4 text-[#2C2A25] font-medium">
-                        <img src="Emailbtn.png" alt="" className="w-[36px] h-[36px]" />
+                        Welcomed
+                      </td>
+                      <td className="py-3 px-4 text-[#2C2A25] font-medium">
+                        <img
+                          src="Emailbtn.png"
+                          alt=""
+                          className="w-[36px] h-[36px]"
+                        />
                       </td>
                     </tr>
                   ))}
@@ -181,13 +205,10 @@ function LoyalCustomersList() {
             {/* Footer */}
             <div className="flex flex-col sm:flex-row justify-between items-center mt-4 text-sm text-gray-500 gap-2">
               <span>Total Customers: 620</span>
-               
             </div>
-            
-          
-            </>
+          </>
         )}
-        
+
         {/* Home Tab */}
         {selectedTab === "Home" && step === 1 && (
           <>
@@ -196,12 +217,17 @@ function LoyalCustomersList() {
             </div>
 
             <div className="flex items-center justify-center my-6">
-              <h1 className="text-xl sm:text-2xl font-bold text-[#2C2A25]">Choose the recipient group</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-[#2C2A25]">
+                Choose the recipient group
+              </h1>
             </div>
 
             <div className="my-10 flex flex-wrap justify-center gap-6 mb-6">
               {radioOptions.map((option) => (
-                <label key={option} className="flex items-center space-x-2 cursor-pointer">
+                <label
+                  key={option}
+                  className="flex items-center space-x-2 cursor-pointer"
+                >
                   <input
                     type="radio"
                     name="recipient"
@@ -254,8 +280,16 @@ function LoyalCustomersList() {
 
               <div className="text-center p-6 bg-[#734A00] rounded-lg border border-gray-200">
                 <div className="flex justify-center items-center gap-3 mb-4">
-                  <img src="/waro2.png" alt="Logo Icon" className="h-[39px] w-[52px]" />
-                  <img src="/waro.png" alt="Logo Text" className="h-[19px] w-auto" />
+                  <img
+                    src="/waro2.png"
+                    alt="Logo Icon"
+                    className="h-[39px] w-[52px]"
+                  />
+                  <img
+                    src="/waro.png"
+                    alt="Logo Text"
+                    className="h-[19px] w-auto"
+                  />
                 </div>
 
                 <p className="text-lg font-semibold text-white">
@@ -276,55 +310,56 @@ function LoyalCustomersList() {
           </div>
         )}
       </div>
-      
-                <div className="flex justify-between items-center mt-4 text-sm text-gray-500">
-          
-          <div className="flex items-center justify-between w-[300px]">
-         <select
-          value={page}
-          onChange={handlePageChange}
-          className="border border-[#DEDEDE] rounded-full px-2 py-1"
-        >
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-            <option key={p} value={p}>
-              {p}
-            </option>
-          ))}
-        </select>
-         Showing  {page} to {totalPages} of {endIndex} entries 
-         </div>
 
-           <div className="space-x-5">
-    {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
-    if (
-      p === 1 || // always show first page
-      p === totalPages || // always show last page
-      (p >= page - 1 && p <= page + 1) // show pages around current
-    ) {
-      return (
-        <button
-          key={p}
-          onClick={() => setPage(p)}
-          style={{ boxShadow: "2px 2px 2px 0px #00000040" }}
-          className={`px-3 py-1 rounded ${
-            page === p ? "bg-[#FEFCED] text-black" : "bg-[#FEFCED] text-gray-500"
-          }`}
-        >
-          {p}
-        </button>
-      );
-    } else if (
-      p === page - 2 || // add left ellipsis
-      p === page + 2 // add right ellipsis
-    ) {
-      return <span key={p}>...</span>;
-    } else {
-      return null; 
-    }
-  })}
-  </div>
-            </div>
-            </div>
+      <div className="flex justify-between items-center mt-4 text-sm text-gray-500">
+        <div className="flex items-center justify-between w-[300px]">
+          <select
+            value={page}
+            onChange={handlePageChange}
+            className="border border-[#DEDEDE] rounded-full px-2 py-1"
+          >
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+              <option key={p} value={p}>
+                {p}
+              </option>
+            ))}
+          </select>
+          Showing {page} to {totalPages} of {endIndex} entries
+        </div>
+
+        <div className="space-x-5">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
+            if (
+              p === 1 || // always show first page
+              p === totalPages || // always show last page
+              (p >= page - 1 && p <= page + 1) // show pages around current
+            ) {
+              return (
+                <button
+                  key={p}
+                  onClick={() => setPage(p)}
+                  style={{ boxShadow: "2px 2px 2px 0px #00000040" }}
+                  className={`px-3 py-1 rounded ${
+                    page === p
+                      ? "bg-[#FEFCED] text-black"
+                      : "bg-[#FEFCED] text-gray-500"
+                  }`}
+                >
+                  {p}
+                </button>
+              );
+            } else if (
+              p === page - 2 || // add left ellipsis
+              p === page + 2 // add right ellipsis
+            ) {
+              return <span key={p}>...</span>;
+            } else {
+              return null;
+            }
+          })}
+        </div>
+      </div>
+    </div>
   );
 }
 
