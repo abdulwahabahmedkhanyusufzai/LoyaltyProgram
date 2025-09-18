@@ -1,11 +1,12 @@
 "use client";
 import toast from "react-hot-toast";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const LoginModal = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [loading, setLoading] = useState(false);
-
+  const router = useRouter();
   const handleLogout = async () => {
     try {
       setLoading(true);
@@ -32,11 +33,8 @@ const LoginModal = () => {
 
   const handleClose = () => {
     setIsVisible(false);
-    // Optional: completely remove modal after animation
-    setTimeout(() => {
-      const modal = document.getElementById("login-modal");
-      if (modal) modal.remove();
-    }, 300);
+   ;
+     router.push("/waro");
   };
 
   return (
