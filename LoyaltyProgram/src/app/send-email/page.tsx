@@ -106,6 +106,15 @@ function LoyalCustomersList() {
     alert(`Email sent to: ${form.recipient}`);
   };
 
+  if (loading) {
+    return (
+      <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen">
+        <div className="flex items-center justify-center">
+        <div className="w-16 h-16 border-4 border-[#734A00] border-t-transparent rounded-full animate-spin"></div>
+      </div>
+      </div>
+    );
+  }
   return (
     <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen">
       {!isLoggedIn && showLogin && (
@@ -310,7 +319,7 @@ function LoyalCustomersList() {
           </div>
         )}
       </div>
-
+        {selectedTab === "Customers" && step === 2 && (
       <div className="flex justify-between items-center mt-4 text-sm text-gray-500">
         <div className="flex items-center justify-between w-[300px]">
           <select
@@ -359,6 +368,7 @@ function LoyalCustomersList() {
           })}
         </div>
       </div>
+        )}
     </div>
   );
 }

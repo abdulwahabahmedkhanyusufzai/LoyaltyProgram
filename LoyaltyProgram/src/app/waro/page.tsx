@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { LoyaltyProgram } from "../components/loyaltyprogramcard";
 import { TopSellingProducts } from "../components/topSellingProduct";
 import { LoyalCustomer } from "../components/loyalcustomers";
@@ -8,26 +8,19 @@ import { LoyaltyTable } from "../components/TableLoyalty";
 import { ActivityCalendar } from "../components/LoyalCalendar";
 import { useRouter } from "next/navigation";
 
-const stats = [
-  { label: "Loyalty Program", content: <LoyaltyProgram />,redirect: "/loyal-customers/program" },
-  { label: "Top Selling Products", content: <TopSellingProducts /> },
-  {
-    label: "Total Registered Customers",
-    content: (
-      <div className="text-center flex items-center justify-center mt-6 text-[45px] sm:text-[36px] lg:text-[51px] 2xl:text-[71px] font-extrabold text-[#2C2A25]">
-        25K+
-      </div>
-    ),
-    redirect:"/send-email"
-  },
-  { label: "Loyal Customers", content: <LoyalCustomer /> ,redirect: "/loyal-customers" },
-];
+
+const Loader = () => (
+  <div className="flex items-center justify-center">
+    <div className="w-8 h-8 border-4 border-gray-300 border-t-[#2C2A25] rounded-full animate-spin"></div>
+  </div>
+);
 
 const WaroPage = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isDown, setIsDown] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
+   const [customerCount, setCustomerCount] = useState<number | null>(null); 
   const router = useRouter();
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!scrollRef.current) return;
@@ -46,6 +39,35 @@ const WaroPage = () => {
     const walk = (x - startX) * 1;
     scrollRef.current.scrollLeft = scrollLeft - walk;
   };
+
+   useEffect(() => {
+    const fetchCustomerCount = async () => {
+      try {
+        const res = await fetch(`/api/customers?mode=count`);
+        const data = await res.json();
+        setCustomerCount(data.count ?? 0);
+      } catch (err) {
+        console.error("❌ Error fetching customer count:", err);
+      }
+    };
+
+    fetchCustomerCount();
+  }, []);
+
+  const stats = [
+  { label: "Loyalty Program", content: <LoyaltyProgram />,redirect: "/loyal-customers/program" },
+  { label: "Top Selling Products", content: <TopSellingProducts /> },
+  {
+    label: "Total Registered Customers",
+    content: (
+      <div className="text-center flex items-center justify-center mt-6 text-[45px] sm:text-[36px] lg:text-[51px] 2xl:text-[71px] font-extrabold text-[#2C2A25]">
+        {customerCount !== null ? `${customerCount}+` : <Loader/>}
+      </div>
+    ),
+    redirect:"/send-email"
+  },
+  { label: "Loyal Customers", content: <LoyalCustomer /> ,redirect: "/loyal-customers" },
+];
 
   return (
     <div className="p-4 sm:p-6 lg:p-7 space-y-8 bg-[#ffffff] min-h-screen">
