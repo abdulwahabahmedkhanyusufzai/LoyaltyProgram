@@ -106,7 +106,7 @@ export const LoyaltyTable = () => {
 
             {/* Table Body */}
             <tbody className="text-[13px] sm:text-[15px] text-[#2C2A25]">
-              {customers.map((customer) => (
+              {customers.slice(0,10).map((customer) => (
                 <tr key={customer.id} className="border-b border-[#D2D1CA]">
                   <td className="flex items-center p-2 sm:p-3">
                     <div

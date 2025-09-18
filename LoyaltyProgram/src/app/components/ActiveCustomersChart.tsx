@@ -7,7 +7,7 @@ const COLORS = ["#7B5C00", "#C2A46B"]; // Adjust shades like in figma
 
 export const ActiveCustomersCard = () => {
   return (
-    <div className="bg-[#F5F3EA] rounded-2xl p-6 shadow-sm w-full max-w-sm flex flex-col items-center">
+    <div className="bg-[#F5F3EA] h-[280px] sm:h-[350px] lg:h-[450px] 2xl:h-[490px] rounded-2xl p-6 shadow-sm w-full flex flex-col items-center">
       {/* Header */}
       <div className="flex justify-between items-center w-full mb-4">
         <h2 className="text-base font-semibold text-[#2C2A25]">
@@ -20,7 +20,7 @@ export const ActiveCustomersCard = () => {
       </div>
 
       {/* Donut Chart */}
-      <div className="relative w-40 h-40">
+      <div className="relative w-60 h-60">
         <ResponsiveContainer>
           <PieChart>
             <Pie
