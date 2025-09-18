@@ -1,48 +1,36 @@
+import { jwtVerify } from "jose";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || "dev-secret"; // 👈 set in .env for production
+const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Allow public routes & assets
-  const PUBLIC_PATHS = ["/login", "/register", "/_next", "/api", "/favicon.ico"];
-  const isPublicPath = PUBLIC_PATHS.some((p) => pathname.startsWith(p));
-  const isStaticAsset = pathname.match(/\.(png|jpg|jpeg|gif|svg|webp|ico|css|js|txt|xml)$/);
-
-  if (isPublicPath || isStaticAsset) {
+  // Skip public stuff
+  if (
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/register") ||
+    pathname.startsWith("/api") ||
+    pathname.startsWith("/_next") ||
+    pathname.match(/\.(png|jpg|jpeg|gif|svg|webp|ico|css|js|txt|xml)$/)
+  ) {
     return NextResponse.next();
   }
 
-  // Get auth cookie
   const token = req.cookies.get("authToken")?.value;
-
-  // If no token → redirect to login
   if (!token) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
   try {
-    // Verify token
-    const decoded = jwt.verify(token, JWT_SECRET) as jwt.JwtPayload;
-
-    // Optionally: check expiry manually (jwt.verify does this by default)
-    if (!decoded || !decoded.exp || Date.now() >= decoded.exp * 1000) {
-      throw new Error("Token expired");
-    }
-
-    // All good → allow
+    await jwtVerify(token, secret); // ✅ Edge-compatible
     return NextResponse.next();
-  } catch (err) {
-    console.error("❌ Invalid token:", err);
-    // Redirect to login if invalid
+  } catch {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 }
 
-// Apply to all routes except excluded ones
 export const config = {
   matcher: ["/((?!_next|api|.*\\..*).*)"],
 };
