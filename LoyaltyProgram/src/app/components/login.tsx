@@ -56,7 +56,7 @@ const LoginModal = ({ onClose, onLogin }) => {
         {/* Title */}
         <div className="text-center">
           <div className="p-4 inline-block mb-4">
-            <img src="Login.png" className="w-12 h-12" alt="login icon" />
+            <img src="../../../public/Login.png" className="w-12 h-12" alt="login icon" />
           </div>
           <h2 className="text-2xl font-bold text-[#2C2A25] mb-2">Log In Required</h2>
           <p className="text-gray-600 mb-6">Please log in to continue.</p>
