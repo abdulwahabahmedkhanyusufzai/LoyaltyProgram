@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Tabs from "../components/ButtonGroup";
 import { Search } from "lucide-react";
 import LoginList from "../components/login";
+import { customerService } from "../utils/CustomerService";
 
 function LoyalCustomersList() {
   const [selectedOption, setSelectedOption] = useState("hosts");
@@ -57,39 +58,24 @@ function LoyalCustomersList() {
   );
   const endIndex = Math.min(page * PAGE_SIZE, totalCount);
 
-  const fetchCustomers = async (after: string | null = null) => {
-    setLoading(true);
-    try {
-      const res = await fetch(
-        `/api/customers?first=30${after ? `&after=${after}` : ""}`
-      );
-      const data = await res.json();
-      console.log(
-        "Customer data",
-        data.customers.map((customer) => customer.node)
-      );
-      const fetchedCustomers = data?.customers.map((e: any) => e) || [];
-      setCustomers(fetchedCustomers);
-    } catch (error) {
-      console.error("❌ Error fetching customers:", error);
-    } finally {
-      setLoading(false);
+useEffect(() => {
+    async function loadData() {
+      setLoading(true);
+      try {
+        // Use Promise.all to fetch customers and the total count concurrently
+        const [fetchedCustomers, count] = await Promise.all([
+          customerService.fetchCustomers(),
+          customerService.fetchCustomerCount()
+        ]);
+        setCustomers(fetchedCustomers);
+        setTotalCount(count);
+      } catch (error) {
+        console.error("❌ Error loading customer data:", error);
+      } finally {
+        setLoading(false);
+      }
     }
-  };
-
-  const fetchCustomerCount = async () => {
-    try {
-      const res = await fetch(`/api/customers?mode=count`);
-      const data = await res.json();
-      setTotalCount(data.count ?? 0);
-    } catch (error) {
-      console.error("❌ Error fetching customer count:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchCustomers();
-    fetchCustomerCount(); // 👈 also fetch count
+    loadData();
   }, []);
 
   const handlePageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -193,10 +179,10 @@ function LoyalCustomersList() {
                       </td>
                       <td className="py-3 px-4 text-gray-600">{c.email}</td>
                       <td className="py-3 px-4">{c.numberOfOrders}</td>
-                      <td className="py-3 px-4">0</td>
-                      <td className="py-3 px-4">€ {c.amountSpent?.amount}</td>
+                      <td className="py-3 px-4">{c.amountSpent}</td>
+                      <td className="py-3 px-4">€ {c.amountSpent}</td>
                       <td className="py-3 px-4 text-[#2C2A25] font-medium">
-                        Welcomed
+                       {c.loyaltyTitle}
                       </td>
                       <td className="py-3 px-4 text-[#2C2A25] font-medium">
                         <img

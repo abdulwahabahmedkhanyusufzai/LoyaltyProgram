@@ -112,3 +112,16 @@ model LoyaltyProgram {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+model Customer {
+  id               String   @id @default(uuid()) // Unique identifier for the customer.
+  firstName        String
+  lastName         String
+  email            String   @unique
+  numberOfOrders   Int      @default(0)
+  amountSpent      Decimal  @default(0) // Using Decimal for precise currency values.
+  loyaltyTitle     String   @default("Welcomed")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("loyal_customers") // This maps the model to a table named "loyal_customers"
+}
