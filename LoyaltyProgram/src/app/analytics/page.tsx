@@ -61,13 +61,13 @@ const Analytics = () => {
               key={stat.label}
               className="bg-[#E8E6D9] rounded-2xl sm:rounded-[32px] 
                          p-3 sm:p-6 shadow-md sm:shadow-lg 
-                         w-[140px] xs:w-[160px] sm:w-[220px] lg:w-[180px] 2xl:w-[280px] 
-                         h-[120px] xs:h-[140px] sm:h-[200px] 2xl:h-[220px] 
+                         w-[140px] xs:w-[160px] sm:w-[220px] lg:w-[180px] 2xl:w-[250px] 
+                         h-[120px] xs:h-[140px] sm:h-[200px] 2xl:h-[200px] 
                          lg:h-[170px] flex flex-col flex-shrink-0"
             >
               {/* Heading + arrow */}
               <div className="flex items-center justify-between">
-                <p className="text-[11px] xs:text-[12px] sm:text-[12px] 2xl:text-[18px] font-semibold text-black">
+                <p className="text-[11px] xs:text-[12px] sm:text-[12px] 2xl:text-[16px] font-semibold text-black">
                   {stat.label}
                 </p>
                 <div className="w-[20px] h-[20px] sm:w-[30px] sm:h-[30px] 2xl:w-[48px] 2xl:h-[48px] rounded-full border border-[#2C2A25] flex items-center justify-center">
@@ -77,7 +77,7 @@ const Analytics = () => {
 
               {/* Content */}
               <div className="flex-1 flex items-center justify-center">
-                <span className="mt-2 text-[20px] xs:text-[24px] sm:text-[36px] lg:text-[51px] 2xl:text-[71px] font-extrabold text-[#2C2A25]">
+                <span className="mt-2 text-[20px] xs:text-[24px] sm:text-[36px] lg:text-[51px] 2xl:text-[60px] font-extrabold text-[#2C2A25]">
                   {stat.value}
                 </span>
               </div>
