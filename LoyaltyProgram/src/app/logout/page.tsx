@@ -33,7 +33,6 @@ const LoginModal = () => {
 
   const handleClose = () => {
     setIsVisible(false);
-   ;
      router.push("/waro");
   };
 
