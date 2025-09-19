@@ -5,13 +5,13 @@ import nodemailer from "nodemailer";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { to, subject, text } = body;
+    const { to, subject, html } = body;
 
     // Debug incoming payload
     console.log("📩 Incoming email request:", body);
 
-    if (!to || !subject || !text) {
-      console.error("❌ Missing required fields:", { to, subject, text });
+    if (!to || !subject || !html) {
+      console.error("❌ Missing required fields:", { to, subject, html });
       return NextResponse.json(
         { success: false, error: "Missing required fields: to, subject, or text" },
         { status: 400 }
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
       from: `"Loyalty Program" <dev@sites.codetors.dev>`,
       to,
       subject,
-      text,
+      html,
     };
 
     console.log("📤 Sending email with options:", mailOptions);

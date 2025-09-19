@@ -8,18 +8,44 @@ const SendEmail = ({ customers }) => {
   const [form, setForm] = useState({
     recipient: "",
     subject: "",
-    message: "",
   });
   const [status, setStatus] = useState<null | { type: "success" | "error"; msg: string }>(null);
   const [loading, setLoading] = useState(false);
 
+  // 🔹 Reusable template generator
+  const generateTemplate = (points: number) => `
+    <div style="font-family: Arial, sans-serif; background:#fffef9; padding:16px; border-radius:16px; border:1px solid #ddd;">
+      <div style="background:#734A00; color:white; text-align:center; border-radius:9999px; padding:8px; margin-bottom:16px;">
+        Free shipping for over $50 and a full one-year return policy.
+      </div>
+      <div style="background:#734A00; color:white; text-align:center; padding:24px; border-radius:8px;">
+        <div style="margin:0 auto">
+        <div>  
+        <img src="https://loyalty-program-9jqr.vercel.app/waro2.png" alt="Logo Icon" style="height:39px;width:52px;" />
+          <img src="https://loyalty-program-9jqr.vercel.app/waro.png" alt="Logo Text" style="height:19px;" />
+        </div>
+          </div>
+        <p style="font-size:18px; font-weight:600; margin:0;">
+          THE WAROO <br/>
+          <span style="font-size:32px; font-weight:800; color:#F1DAB0CC; display:block; margin-top:8px;">
+            YOU HAVE WON ${points} POINTS
+          </span>
+        </p>
+      </div>
+    </div>`;
+
   const handleSend = async () => {
-    if (!form.recipient || !form.subject || !form.message) {
+    if (!form.recipient || !form.subject) {
       setStatus({ type: "error", msg: "Please fill in all fields." });
       return;
     }
 
-    
+    // 🔹 Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.recipient)) {
+      setStatus({ type: "error", msg: "Please enter a valid email address." });
+      return;
+    }
 
     try {
       setLoading(true);
@@ -28,18 +54,17 @@ const SendEmail = ({ customers }) => {
       const res = await fetch("/api/send-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-       body: JSON.stringify({
-  to: form.recipient,
-  subject: form.subject,
-  text: form.message,
-}),
-
+        body: JSON.stringify({
+          to: form.recipient,
+          subject: form.subject,
+          html: generateTemplate(25), // ✅ dynamic points
+        }),
       });
 
       if (!res.ok) throw new Error("Failed to send email");
 
       setStatus({ type: "success", msg: `✅ Email sent to ${form.recipient}` });
-      setForm({ recipient: "", subject: "", message: "" });
+      setForm({ recipient: "", subject: "" });
       setSearchQuery("");
     } catch (err: any) {
       setStatus({ type: "error", msg: err.message || "Something went wrong." });
@@ -73,14 +98,8 @@ const SendEmail = ({ customers }) => {
     setShowSuggestions(false);
   };
 
-  // 🔹 New dedicated subject handler
   const handleSubjectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({ ...prev, subject: e.target.value }));
-  };
-
-  // Generic handler for message
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   return (
@@ -93,6 +112,7 @@ const SendEmail = ({ customers }) => {
           type="text"
           value={searchQuery}
           onChange={handleRecipientSearch}
+          readOnly={!!form.recipient} // 🔹 lock field once selected
         />
         {showSuggestions && suggestions.length > 0 && (
           <ul className="absolute z-10 bg-white border border-gray-300 rounded-lg w-full mt-1 max-h-48 overflow-y-auto shadow-md">
@@ -110,7 +130,7 @@ const SendEmail = ({ customers }) => {
         )}
       </div>
 
-      {/* Subject with its own handler */}
+      {/* Subject */}
       <FloatingInput
         id="subject"
         type="text"
@@ -119,13 +139,10 @@ const SendEmail = ({ customers }) => {
         onChange={handleSubjectChange}
       />
 
-      {/* Message */}
-      <textarea
-        name="message"
-        placeholder="Message"
-        value={form.message}
-        onChange={handleChange}
-        className="w-full h-40 p-3 border border-gray-300 rounded-lg resize-none"
+      {/* Live preview of template */}
+      <div
+        className="border border-gray-300 rounded-2xl p-4 bg-[#fffef9]"
+        dangerouslySetInnerHTML={{ __html: generateTemplate(25) }}
       />
 
       {/* Status message */}
