@@ -19,6 +19,8 @@ const SendEmail = ({ customers }) => {
       return;
     }
 
+    
+
     try {
       setLoading(true);
       setStatus(null);
@@ -26,7 +28,12 @@ const SendEmail = ({ customers }) => {
       const res = await fetch("/api/send-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+       body: JSON.stringify({
+  to: form.recipient,
+  subject: form.subject,
+  text: form.message,
+}),
+
       });
 
       if (!res.ok) throw new Error("Failed to send email");
@@ -61,16 +68,17 @@ const SendEmail = ({ customers }) => {
   };
 
   const handleSelectRecipient = (customer: any) => {
-    // Only update recipient (the email we need)
     setForm({ ...form, recipient: customer.email });
-
-    // Optionally, display name+email in the input
     setSearchQuery(`${customer.firstName} ${customer.lastName} (${customer.email})`);
-
-    // Close dropdown immediately
     setShowSuggestions(false);
   };
 
+  // 🔹 New dedicated subject handler
+  const handleSubjectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm((prev) => ({ ...prev, subject: e.target.value }));
+  };
+
+  // Generic handler for message
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -102,13 +110,13 @@ const SendEmail = ({ customers }) => {
         )}
       </div>
 
-      {/* Subject */}
+      {/* Subject with its own handler */}
       <FloatingInput
         id="subject"
-        name="subject"
+        type="text"
         placeholder="Subject"
         value={form.subject}
-        onChange={handleChange}
+        onChange={handleSubjectChange}
       />
 
       {/* Message */}
