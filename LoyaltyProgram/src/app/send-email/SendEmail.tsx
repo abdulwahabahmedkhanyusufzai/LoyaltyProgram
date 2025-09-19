@@ -140,10 +140,24 @@ const SendEmail = ({ customers }) => {
       />
 
       {/* Live preview of template */}
-      <div
-        className="border border-gray-300 rounded-2xl p-4 bg-[#fffef9]"
-        dangerouslySetInnerHTML={{ __html: generateTemplate(25) }}
-      />
+     <div className="border border-gray-300 rounded-2xl p-4 bg-[#fffef9]">
+    <div className="bg-[#734A00] text-white text-center rounded-full py-2 text-sm mb-4">
+        Free shipping for over $50 and a full one-year return policy. 
+        </div>
+         <div className="text-center p-6 bg-[#734A00] rounded-lg border border-gray-200">
+             <div className="flex justify-center items-center gap-3 mb-4">
+                 <img alt="Logo Icon" className="h-[39px] w-[52px]" src="/waro2.png"/> 
+                 <img alt="Logo Text" className="h-[19px] w-auto" src="/waro.png"/> 
+                 </div> 
+                 <p className="text-lg font-semibold text-white">
+                    THE WAROO 
+                    <br/> 
+                 <span className="text-[#F1DAB0CC] text-[32px] sm:text-[53px] font-extrabold block mt-2">
+                    YOU HAVE WON 25 POINTS 
+                    </span> 
+                    </p> 
+                 </div> 
+                 </div>
 
       {/* Status message */}
       {status && (
