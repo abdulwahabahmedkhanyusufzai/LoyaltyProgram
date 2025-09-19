@@ -112,7 +112,6 @@ const SendEmail = ({ customers }) => {
           type="text"
           value={searchQuery}
           onChange={handleRecipientSearch}
-          readOnly={!!form.recipient} // 🔹 lock field once selected
         />
         {showSuggestions && suggestions.length > 0 && (
           <ul className="absolute z-10 bg-white border border-gray-300 rounded-lg w-full mt-1 max-h-48 overflow-y-auto shadow-md">
