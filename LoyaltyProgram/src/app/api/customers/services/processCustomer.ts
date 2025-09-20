@@ -11,7 +11,7 @@ export async function processCustomer(shop: string, token: string, customer: any
     numberOfOrders: ordersCount,
     amountSpent: totalAmountCents / 100, // store as number
     amountSpentFormatted: formatMoney(totalAmountCents / 100),
-    loyaltyTitle
+   
      // for frontend
   };
 }
