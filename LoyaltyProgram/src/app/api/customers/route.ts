@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { fetchProcessUpsertCustomers } from "./services/fetchProcessUpsertCustomers";
-
+import { fetchCustomersFromDB } from "./services/fetchCustomersfromDB";
 const prisma = new PrismaClient();
 
 export async function GET(req: Request) {
@@ -18,10 +18,10 @@ export async function GET(req: Request) {
     });
     if (!shop) return NextResponse.json({ error: "Shop not found" }, { status: 404 });
 
-    const customers = await fetchProcessUpsertCustomers(shop.shop, shop.accessToken);
+    const customers1 = await fetchProcessUpsertCustomers(shop.shop, shop.accessToken);
 
-    console.log(`[API] Processed ${customers.length} customers for shop ${shop.shop}`);
-
+    console.log(`[API] Processed ${customers1.length} customers for shop ${shop.shop}`);
+    const customers = await fetchCustomersFromDB();
     return NextResponse.json({
       customers,
       count: customers.length,

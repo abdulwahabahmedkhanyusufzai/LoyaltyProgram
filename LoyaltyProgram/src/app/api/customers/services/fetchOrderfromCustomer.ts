@@ -1,4 +1,6 @@
-async function fetchOrdersForCustomer(shop: string, token: string, customerId: string) {
+import { fetchFromShopify } from "./fetchFromShopify";
+
+export async function fetchOrdersForCustomer(shop: string, token: string, customerId: string) {
   let allOrders: any[] = [];
   let after: string | null = null;
 

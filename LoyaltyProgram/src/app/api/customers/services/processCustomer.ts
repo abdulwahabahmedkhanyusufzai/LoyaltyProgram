@@ -10,6 +10,8 @@ export async function processCustomer(shop: string, token: string, customer: any
     email,
     numberOfOrders: ordersCount,
     amountSpent: totalAmountCents / 100, // store as number
-    amountSpentFormatted: formatMoney(totalAmountCents / 100), // for frontend
+    amountSpentFormatted: formatMoney(totalAmountCents / 100),
+    loyaltyTitle
+     // for frontend
   };
 }

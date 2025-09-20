@@ -9,6 +9,7 @@ export async function upsertCustomers(customers: any[]) {
       update: {
         firstName: c.firstName,
         lastName: c.lastName,
+        loyaltyTitle: c.loyaltyTitle,
         numberOfOrders: c.numberOfOrders,
         amountSpent: c.amountSpent,
       },
@@ -16,6 +17,7 @@ export async function upsertCustomers(customers: any[]) {
         firstName: c.firstName,
         lastName: c.lastName,
         email: c.email,
+        loyaltyTitle: c.loyaltyTitle,
         numberOfOrders: c.numberOfOrders,
         amountSpent: c.amountSpent,
       },
