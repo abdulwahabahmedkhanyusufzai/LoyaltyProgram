@@ -119,8 +119,39 @@ const totalPages = Math.ceil(totalCount / PAGE_SIZE);
                   <td className="py-3 px-4">{c.amountSpent}</td>
                   <td className="py-3 px-4 text-[#2C2A25] font-medium">
                     <div className="flex items-center gap-2">
+                      <button className="cursor-pointer active:scale-90 transform transition duration-150 ease-in-out"
+                       onClick={() =>
+        setEditingTitle(editingTitle === c.id ? "" : c.id) // toggle editing
+      }>
                       <img src="Edit.png" alt="" className="cursor-pointer w-[25px] lg:w-[33px]" />
-                      {c.loyaltyTitle}
+                      </button>
+                     {editingTitle === c.id ? (
+      <input
+        type="text"
+        defaultValue={c.loyaltyTitle}
+        autoFocus
+        onBlur={(e) => {
+          // 👇 save logic here
+          const newTitle = e.target.value;
+          setCustomers((prev) =>
+            prev.map((cust) =>
+              cust.id === c.id ? { ...cust, loyaltyTitle: newTitle } : cust
+            )
+          );
+          setEditingTitle(""); // close editing
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            (e.target as HTMLInputElement).blur(); // trigger save
+          } else if (e.key === "Escape") {
+            setEditingTitle(""); // cancel edit
+          }
+        }}
+        className="border border-gray-300 rounded px-2 py-1 text-sm w-[120px]"
+      />
+    ) : (
+      c.loyaltyTitle
+    )}
                     </div>
                   </td>
                   <td className="py-3 px-4 text-[#2C2A25] font-medium">

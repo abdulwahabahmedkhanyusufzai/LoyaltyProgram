@@ -5,6 +5,7 @@ export const FloatingInput = ({
   value,
   onChange,
   required = true,
+  className = "", // ✅ accept className
 }: {
   id: string;
   type?: string;
@@ -12,6 +13,7 @@ export const FloatingInput = ({
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
+  className?: string; // ✅ allow extra class
 }) => (
   <div className="relative w-full">
     <input
@@ -21,9 +23,9 @@ export const FloatingInput = ({
       value={value}
       onChange={onChange}
       required={required}
-      className="peer w-full p-3 rounded-full border border-[#D2D1CA] 
-                 focus:outline-none focus:ring-2 focus:ring-[#734A00] 
-                 placeholder-transparent"
+      className={`peer w-full p-3 rounded-full border border-[#D2D1CA] 
+                  focus:outline-none focus:ring-2 focus:ring-[#734A00] 
+                  placeholder-transparent ${className}`} // ✅ merge className
     />
     <label
       htmlFor={id}

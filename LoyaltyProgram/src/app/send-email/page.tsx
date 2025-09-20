@@ -17,7 +17,7 @@ function LoyalCustomersList() {
   const { customers, totalCount, loading } = useCustomers();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
-
+  const [selectedEmail, setSelectedEmail] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -52,6 +52,11 @@ function LoyalCustomersList() {
       <Loader/>
     );
   }
+
+    const handleEmailClick = (email: string) => {
+  setSelectedEmail(email);
+  setSelectedTab("Send an Email");
+};
   return (
     <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen">
       {!isLoggedIn && showLogin && (
@@ -76,7 +81,7 @@ function LoyalCustomersList() {
 
         {/* Customers Tab */}
         {selectedTab === "Customers" && step === 2 && (
-          <CustomerSection searchQuery={searchQuery} setSearchQuery={setSearchQuery} currentCustomers={currentCustomers}/>
+          <CustomerSection searchQuery={searchQuery} setSearchQuery={setSearchQuery} currentCustomers={currentCustomers} onEmailClick = {handleEmailClick}/>
         )}
 
         {/* Home Tab */}
@@ -86,11 +91,11 @@ function LoyalCustomersList() {
 
         {/* Send an Email Tab */}
         {selectedTab === "Send an Email" && step === 2 && (
-          <SendEmail customers={customers}/>
+          <SendEmail customers={customers} prefillEmail={selectedEmail}/>
         )}
       </div>
       {selectedTab === "Customers" && step === 2 && (
-      <HandlePageChange page={page} setPage={setPage} PAGE_SIZE={PAGE_SIZE} totalCount={totalCount}/>
+      <HandlePageChange page={page} setPage={setPage} PAGE_SIZE={PAGE_SIZE} totalCount={totalCount} />
       )}
     </div>
   );

@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FloatingInput } from "../components/FloatingInput";
 
-const SendEmail = ({ customers }) => {
+const SendEmail = ({ customers,prefillEmail }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [form, setForm] = useState({
-    recipient: "",
+    recipient: prefillEmail,
     subject: "",
   });
   const [status, setStatus] = useState<null | { type: "success" | "error"; msg: string }>(null);
@@ -102,6 +102,12 @@ const SendEmail = ({ customers }) => {
     setForm((prev) => ({ ...prev, subject: e.target.value }));
   };
 
+    useEffect(() => {
+    if (prefillEmail) {
+      setForm((prev) => ({ ...prev, recipient: prefillEmail }));
+    } setSearchQuery(prefillEmail); 
+  }, [prefillEmail]);
+
   return (
     <div className="space-y-4">
       {/* Recipient search */}
@@ -140,7 +146,8 @@ const SendEmail = ({ customers }) => {
 
       {/* Live preview of template */}
      <div className="border border-gray-300 rounded-2xl p-4 bg-[#fffef9]">
-    <div className="bg-[#734A00] text-white text-center rounded-full py-2 text-sm mb-4">
+    <div className="w-full flex items-center justify-center flex-col">
+    <div className="bg-[#734A00] w-[50%] text-white text-center rounded-full py-2 text-sm mb-4 ">
         Free shipping for over $50 and a full one-year return policy. 
         </div>
          <div className="text-center p-6 bg-[#734A00] rounded-lg border border-gray-200">
@@ -157,7 +164,7 @@ const SendEmail = ({ customers }) => {
                     </p> 
                  </div> 
                  </div>
-
+                   </div>
       {/* Status message */}
       {status && (
         <div
