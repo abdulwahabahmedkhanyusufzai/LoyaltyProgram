@@ -18,7 +18,7 @@ export async function GET() {
 
     // find the tier with the highest count
     const mostActive = tiers.reduce((prev, curr) =>
-      curr._count.tier > prev._count.tier ? curr : prev
+      curr._count.loyaltyTitle > prev._count.loyaltyTitle ? curr : prev
     );
 
     return NextResponse.json({
