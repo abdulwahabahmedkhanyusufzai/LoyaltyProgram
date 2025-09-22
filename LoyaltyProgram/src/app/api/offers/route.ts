@@ -72,12 +72,11 @@ export async function GET() {
         pointsCost: true,
         startDate: true,
         endDate: true,
-        tierRequired: true,
         image: true,
         createdAt: true,
       },
     });
-
+    
     return NextResponse.json({ offers });
   } catch (error: any) {
     // Print full error object in server logs
