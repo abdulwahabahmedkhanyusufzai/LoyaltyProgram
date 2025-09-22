@@ -4,12 +4,15 @@ const MainContent = () => {
   const [offersCount, setOffersCount] = useState<number | null>(null);
   const [loadingOffers, setLoadingOffers] = useState(true);
 
+  const [mostActiveTier, setMostActiveTier] = useState<string>("–");
+  const [loadingTier, setLoadingTier] = useState(true);
+
   const baseStats = [
     { label: "Points Issued", value: "25K+" },
     { label: "Points Redeemed", value: "35K+" },
-    { label: "Active Campaigns", value: "" }, // will be filled dynamically
+    { label: "Active Campaigns", value: "" }, // dynamic
     { label: "Avg. Redemption Rate", value: "16.6+" },
-    { label: "Most Active Tier", value: "Silver" },
+    { label: "Most Active Tier", value: "" }, // dynamic
   ];
 
   useEffect(() => {
@@ -28,7 +31,22 @@ const MainContent = () => {
       }
     };
 
+    const fetchMostActiveTier = async () => {
+      try {
+        setLoadingTier(true);
+        const res = await fetch("/api/customers/most-active-tier");
+        const data = await res.json();
+        setMostActiveTier(data?.mostActiveTier || "–");
+      } catch (err) {
+        console.error("❌ Error fetching most active tier:", err);
+        setMostActiveTier("–");
+      } finally {
+        setLoadingTier(false);
+      }
+    };
+
     fetchOffers();
+    fetchMostActiveTier();
   }, []);
 
   return (
@@ -39,6 +57,12 @@ const MainContent = () => {
         if (stat.label === "Active Campaigns") {
           if (!loadingOffers) {
             displayValue = offersCount?.toString() || "0";
+          }
+        }
+
+        if (stat.label === "Most Active Tier") {
+          if (!loadingTier) {
+            displayValue = mostActiveTier;
           }
         }
 
@@ -68,10 +92,11 @@ const MainContent = () => {
 
             {/* Stat value */}
             <div className="flex-1 flex items-center justify-center">
-              {stat.label === "Active Campaigns" && loadingOffers ? (
+              {(stat.label === "Active Campaigns" && loadingOffers) ||
+              (stat.label === "Most Active Tier" && loadingTier) ? (
                 <div className="w-6 h-6 sm:w-8 sm:h-8 border-4 border-[#2C2A25] border-t-transparent rounded-full animate-spin"></div>
               ) : (
-                <span className="mt-2 text-[20px] xs:text-[24px] sm:text-[36px] lg:text-[48px] 2xl:text-[60px] font-extrabold text-[#2C2A25]">
+                <span className="mt-2 text-[20px] xs:text-[24px] sm:text-[36px] lg:text-[34px] 2xl:text-[38px] font-extrabold text-[#2C2A25]">
                   {displayValue}
                 </span>
               )}

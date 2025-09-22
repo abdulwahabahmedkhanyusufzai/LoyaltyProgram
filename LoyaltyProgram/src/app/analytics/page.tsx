@@ -4,8 +4,6 @@ import Heading from "./components/Heading";
 import MainPart from "./components/MainPart";
 
 const Analytics = () => {
-
-  
   return (
     <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen ">
       {/* Heading */}
