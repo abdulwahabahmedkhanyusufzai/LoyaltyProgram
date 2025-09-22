@@ -26,7 +26,7 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen,offerToEdit }) => {
         points: offerToEdit.pointsCost,
         startDate: offerToEdit.startDate,
         tillDate: offerToEdit.endDate,
-        eligibleTiers: offerToEdit.tiers,
+        eligibleTiers: "Gold",
         image:offerToEdit.image ?? null,
       }));
       setPreview(offerToEdit.image || null);
@@ -91,15 +91,6 @@ useEffect(() => {
     if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
   };
 }, []);
-
-const handleTierToggle = (tier: string) => {
-  const updatedTiers = offer.eligibleTiers.includes(tier)
-    ? offer.eligibleTiers.filter((t) => t !== tier)
-    : [...offer.eligibleTiers, tier];
-
-  handleChange("eligibleTiers", updatedTiers);
-};
-
 
   if (!isOpen) return null;
 
@@ -236,9 +227,7 @@ const handleTierToggle = (tier: string) => {
                 onClick={() => setShowDropdown(!showDropdown)}
                 className="cursor-pointer w-full border-[#D2D1CA] text-gray-500 border rounded-full px-4 py-2 text-left"
               >
-                {offer.eligibleTiers.length
-                  ? offer.eligibleTiers.join(", ")
-                  : "Select Eligible Tiers"}
+                {"Select Eligible Tiers"}
               </button>
               {showDropdown && (
                 <div className="absolute z-10 mt-1 w-full bg-white border rounded shadow">
@@ -250,7 +239,7 @@ const handleTierToggle = (tier: string) => {
                       <input
                         type="checkbox"
                         checked={offer.eligibleTiers.includes(tier)}
-                        onChange={() => handleTierToggle(tier)}
+                        
                         className="mr-2"
                       />
                       {tier}
