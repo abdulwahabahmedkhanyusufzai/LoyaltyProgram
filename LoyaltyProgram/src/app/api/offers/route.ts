@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     const pointsCost = formData.get("pointsCost") as string;
     const startDate = formData.get("startDate") as string;
     const endDate = formData.get("endDate") as string;
-    const tiers = formData.getAll("tiers") as string;
+    const tiers = formData.get("tiers") as string;
     const file = formData.get("image") as File | null;
 
     if (!name || !description || !startDate || !endDate) {
