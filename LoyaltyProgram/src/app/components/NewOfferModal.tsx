@@ -9,6 +9,7 @@ import { OfferService } from "../utils/OfferService";
 import toast from "react-hot-toast";
 
 const TIER_OPTIONS = ["Bronze", "Silver", "Gold"];
+const OFFER_TYPES = ["Discount", "Cashback", "Buy One Get One"];
 
 const NewOfferModal = ({ closeModal, isOpen, setIsOpen,offerToEdit }) => {
   const [offer, setOffer] = useState(new Offer());
@@ -17,17 +18,21 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen,offerToEdit }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(false); 
   const previewUrlRef = useRef<string | null>(null);
+  const [showOfferTypeDropdown, setShowOfferTypeDropdown] = useState(false);
 
   useEffect(() => {
     if (offerToEdit) {
+      const cleanTiers = offerToEdit.tierRequired?.replace(/"/g, "") || "";
+
       setOffer(new Offer({
         offerName: offerToEdit.name,
         description: offerToEdit.description,
         points: offerToEdit.pointsCost,
         startDate: offerToEdit.startDate,
         tillDate: offerToEdit.endDate,
-        eligibleTiers: "Gold",
+        eligibleTiers: cleanTiers,
         image:offerToEdit.image ?? null,
+        offerType: offerToEdit.offerType
       }));
       setPreview(offerToEdit.image || null);
     } else {
@@ -221,34 +226,72 @@ useEffect(() => {
             </div>
 
             {/* Multi-select Dropdown */}
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setShowDropdown(!showDropdown)}
-                className="cursor-pointer w-full border-[#D2D1CA] text-gray-500 border rounded-full px-4 py-2 text-left"
-              >
-                {"Select Eligible Tiers"}
-              </button>
+            <div className="flex gap-4">
+            <div className="flex-1">
+            <button
+  type="button"
+  onClick={() => setShowDropdown(!showDropdown)}
+  className="cursor-pointer w-full border-[#D2D1CA] text-gray-500 border rounded-full px-4 py-2 text-left"
+>
+  {offer.eligibleTiers
+    ? offer.eligibleTiers
+    : "Select Eligible Tiers"}
+</button>
+
               {showDropdown && (
                 <div className="absolute z-10 mt-1 w-full bg-white border rounded shadow">
                   {TIER_OPTIONS.map((tier) => (
-                    <label
-                      key={tier}
-                      className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={offer.eligibleTiers.includes(tier)}
-                        
-                        className="mr-2"
-                      />
-                      {tier}
-                    </label>
-                  ))}
+  <label
+    key={tier}
+    className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
+  >
+    <input
+      type="checkbox"
+      checked={offer.eligibleTiers.includes(tier)}
+     onClick={() => {
+            handleChange("eligibleTiers", tier); // set single value
+            setShowDropdown(false); // close dropdown
+          }}
+      className="mr-2"
+    />
+    {tier}
+  </label>
+))}
+
                 </div>
               )}
               <ErrorMsg field="eligibleTiers" />
             </div>
+
+            <div className="flex-1">
+  <button
+    type="button"
+    onClick={() => setShowOfferTypeDropdown(!showOfferTypeDropdown)}
+    className="cursor-pointer w-full border-[#D2D1CA] text-gray-500 border rounded-full px-4 py-2 text-left"
+  >
+    {offer.offerType || "Select Offer Type"}
+  </button>
+
+  {showOfferTypeDropdown && (
+    <div className="absolute z-10 mt-1 w-full bg-white border rounded shadow">
+      {OFFER_TYPES.map((type) => (
+        <div
+          key={type}
+          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+          onClick={() => {
+            handleChange("offerType", type);
+            setShowOfferTypeDropdown(false);
+          }}
+        >
+          {type}
+        </div>
+      ))}
+    </div>
+  )}
+  <ErrorMsg field="offerType" />
+</div>
+</div>
+
 
             <button
             disabled={loading}

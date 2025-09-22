@@ -5,6 +5,7 @@ export class Offer {
   startDate: string = "";
   tillDate: string = "";
   eligibleTiers: string;
+  offerType: string;
   image: File | string | null = null; // File (upload) OR string (URL)
 
   constructor(init?: Partial<Offer>) {

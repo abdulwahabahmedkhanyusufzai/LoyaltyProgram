@@ -68,15 +68,17 @@ export async function GET() {
       select: {
         id: true,
         name: true,
+        tierRequired:true,
         description: true,
         pointsCost: true,
         startDate: true,
         endDate: true,
         image: true,
         createdAt: true,
+        offerType: true,
       },
     });
-    
+
     return NextResponse.json({ offers });
   } catch (error: any) {
     // Print full error object in server logs
