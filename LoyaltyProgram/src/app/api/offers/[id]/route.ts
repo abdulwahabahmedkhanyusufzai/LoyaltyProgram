@@ -26,7 +26,7 @@ export async function PUT(
     const discount = formData.get("discount") as string;
     const startDate = formData.get("startDate") as string;
     const endDate = formData.get("endDate") as string;
-    const tiers = formData.getAll("tiers") as string[];
+    const tiers = formData.get("tiers") as string;
     const file = formData.get("image") as File | null;
 
     let imageUrl: string | undefined;
@@ -51,7 +51,7 @@ export async function PUT(
         ...(discount && { discount: Number(discount) }),
         ...(startDate && { startDate: new Date(startDate) }),
         ...(endDate && { endDate: new Date(endDate) }),
-        ...(tiers?.length && { tiers }),
+        ...(tiers && { tierRequired:tiers }),
         ...(imageUrl !== undefined && { image: imageUrl }),
       },
     });
