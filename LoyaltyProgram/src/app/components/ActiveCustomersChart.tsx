@@ -59,8 +59,8 @@ export const ActiveCustomersCard = () => {
             <PieChart>
               <Pie
                 data={data}
-                innerRadius={50}
-                outerRadius={70}
+                innerRadius={60}
+                outerRadius={80}
                 paddingAngle={2}
                 dataKey="value"
                 startAngle={90}

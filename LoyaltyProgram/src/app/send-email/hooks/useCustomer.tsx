@@ -14,7 +14,11 @@ export function useCustomers() {
           customerService.fetchCustomers(),
           customerService.fetchCustomerCount(),
         ]);
-        setCustomers(fetchedCustomers);
+        const sortedCustomers = [...fetchedCustomers].sort(
+        (a, b) => (b.amountSpent ?? 0) - (a.amountSpent ?? 0)
+      );
+
+         setCustomers(sortedCustomers);
         setTotalCount(count);
       } catch (error) {
         console.error("❌ Error loading customer data:", error);
