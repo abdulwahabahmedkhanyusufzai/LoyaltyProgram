@@ -9,7 +9,6 @@ export class OfferService {
     formDataToSend.append("endDate", offer.tillDate);
     if (offer.points !== undefined && offer.points !== null)
       formDataToSend.append("pointsCost", String(offer.points));
-    offer.eligibleTiers.forEach((tier) => formDataToSend.append("tiers", tier));
 
     // Only append image when the image is a File (new upload). If it's a string URL, skip it.
     if (offer.image instanceof File) {
