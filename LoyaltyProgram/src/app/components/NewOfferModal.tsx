@@ -235,7 +235,7 @@ useEffect(() => {
 >
   {offer.eligibleTiers
     ? offer.eligibleTiers
-    : "Select Eligible Tiers"}
+    : "Select Eligible Tier"}
 </button>
 
               {showDropdown && (
