@@ -4,7 +4,7 @@ export class Offer {
   points: string | number = ""; // string like "20%" OR number like 100
   startDate: string = "";
   tillDate: string = "";
-  eligibleTiers: string[] = [];
+  eligibleTiers: string;
   image: File | string | null = null; // File (upload) OR string (URL)
 
   constructor(init?: Partial<Offer>) {
