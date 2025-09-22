@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { OfferType, PrismaClient } from "@prisma/client";
 import { writeFile } from "fs/promises";
 import path from "path";
 
@@ -46,7 +46,7 @@ export async function POST(req: Request) {
       endDate: new Date(endDate),
       tierRequired: tierRequired,
       image: imageUrl,
-    offerType: "DISCOUNT", // or whatever your enum/string allows
+    offerType:"DISCOUNT" as OfferType, // or whatever your enum/string allows
     value: 100, 
     };
 
