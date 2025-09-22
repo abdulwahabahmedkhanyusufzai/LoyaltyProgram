@@ -43,7 +43,6 @@ export async function POST(req: Request) {
       name,
       description,
       pointsCost: pointsCost ? Number(pointsCost) : null,
-      discount: discount ? Number(discount) : null,
       startDate: new Date(startDate),
       endDate: new Date(endDate),
       tiers: Array.isArray(tiers) ? tiers : [tiers],
@@ -121,7 +120,6 @@ export async function PUT(req: Request) {
     if (file) {
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
-
       const uploadDir = path.join(process.cwd(), "public", "uploads");
       const filePath = path.join(uploadDir, file.name);
 
