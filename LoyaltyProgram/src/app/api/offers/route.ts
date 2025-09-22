@@ -60,7 +60,6 @@ export async function POST(req: Request) {
     );
   }
 }
-
 // 🔹 READ (GET)
 export async function GET() {
   try {
@@ -71,10 +70,9 @@ export async function GET() {
         name: true,
         description: true,
         pointsCost: true,
-        discount: true,
         startDate: true,
         endDate: true,
-        tiers: true,
+        tierRequired: true,
         image: true,
         createdAt: true,
       },
@@ -82,12 +80,22 @@ export async function GET() {
 
     return NextResponse.json({ offers });
   } catch (error: any) {
+    // Print full error object in server logs
+    console.error("🔥 Prisma GET error:", error);
+
     return NextResponse.json(
-      { error: "Internal server error", details: error.message },
+      {
+        error: "Internal server error",
+        message: error.message,
+        stack: error.stack, // shows exact line in prisma/client
+        code: error.code,   // Prisma error code (e.g., P2022, P2025)
+        meta: error.meta,   // Extra details like which field failed
+      },
       { status: 500 }
     );
   }
 }
+
 
 // 🔹 UPDATE (PUT)
 export async function PUT(req: Request) {
