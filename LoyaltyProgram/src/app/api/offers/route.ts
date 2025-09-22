@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     const pointsCost = formData.get("pointsCost") as string;
     const startDate = formData.get("startDate") as string;
     const endDate = formData.get("endDate") as string;
-    const tiers = formData.get("tiers") as string;
+    const tierRequired = formData.get("tiers") as string;
     const file = formData.get("image") as File | null;
 
     if (!name || !description || !startDate || !endDate) {
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
       pointsCost: pointsCost ? Number(pointsCost) : null,
       startDate: new Date(startDate),
       endDate: new Date(endDate),
-      tierRequired: tiers,
+      tierRequired: tierRequired,
       image: imageUrl,
     offerType: "DISCOUNT", // or whatever your enum/string allows
     value: 100, 
@@ -114,7 +114,7 @@ export async function PUT(req: Request) {
     const discount = formData.get("discount") as string;
     const startDate = formData.get("startDate") as string;
     const endDate = formData.get("endDate") as string;
-    const tiers = formData.getAll("tiers") as string[];
+    const tiers = formData.get("tiers") as string;
     const file = formData.get("image") as File | null;
 
     let imageUrl: string | undefined = undefined;
@@ -138,7 +138,7 @@ export async function PUT(req: Request) {
         ...(discount && { discount: Number(discount) }),
         ...(startDate && { startDate: new Date(startDate) }),
         ...(endDate && { endDate: new Date(endDate) }),
-        ...(tiers && tiers.length > 0 && { tiers }),
+        ...(tiers && { tierRequired:tiers }),
         ...(imageUrl !== undefined && { image: imageUrl }),
       },
     });
