@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     const endDate = formData.get("endDate") as string;
     const tierRequired = formData.get("tiers") as string;
     const file = formData.get("image") as File | null;
-
+    
     if (!name || !description || !startDate || !endDate) {
       return NextResponse.json(
         { error: "Missing required fields" },
