@@ -13,7 +13,6 @@ export async function POST(req: Request) {
     const name = formData.get("name") as string;
     const description = formData.get("description") as string;
     const pointsCost = formData.get("pointsCost") as string;
-    const discount = formData.get("discount") as string;
     const startDate = formData.get("startDate") as string;
     const endDate = formData.get("endDate") as string;
     const tiers = formData.getAll("tiers") as string[];
@@ -45,8 +44,10 @@ export async function POST(req: Request) {
       pointsCost: pointsCost ? Number(pointsCost) : null,
       startDate: new Date(startDate),
       endDate: new Date(endDate),
-      tiers: Array.isArray(tiers) ? tiers : [tiers],
+      tierRequired: tiers,
       image: imageUrl,
+    offerType: "DISCOUNT", // or whatever your enum/string allows
+    value: 100, 
     };
 
     const newOffer = await prisma.offer.create({ data: offerData });
