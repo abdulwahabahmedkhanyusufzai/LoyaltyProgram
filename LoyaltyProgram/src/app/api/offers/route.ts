@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { PrismaClient ,type Prisma } from "@prisma/client";
+import { PrismaClient ,type Prisma, type OfferType } from "@prisma/client";
 import { writeFile } from "fs/promises";
 import path from "path";
 
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
     { status: 400 }
   );
 }
-const offerType: Prisma.OfferType = offerTypo; 
+const offerType: OfferType = offerTypo as OfferType; 
 
     logStep("Parsed fields", { name, description, pointsCost, startDate, endDate, tierRequired, offerType });
 
