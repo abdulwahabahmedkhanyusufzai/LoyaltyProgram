@@ -11,14 +11,17 @@ function logStep(step: string, data?: unknown) {
 }
 
 // Utility error logger
-function logError(step: string, error: unknown) {
-  console.error(`[OffersAPI] ❌ Error at ${step}:`, {
-    message: error?.message,
-    stack: error?.stack,
-    code: error?.code,
-    meta: error?.meta,
-  });
+function logError(step: string, error) {
+   if (error instanceof Error) {
+    return NextResponse.json({
+      message: error.message,
+      stack: error.stack,
+    });
+  }
+
 }
+
+  
 
 // 🔹 CREATE (POST)
 export async function POST(req: Request) {
@@ -97,12 +100,16 @@ const offerType: OfferType = offerTypo as OfferType;
     return NextResponse.json({ success: true, offer: newOffer }, { status: 201 });
   } catch (error: unknown) {
     logError("POST", error);
-    return NextResponse.json(
-      { error: "Internal server error", details: error.message },
-      { status: 500 }
-    );
+  if (error instanceof Error) {
+    return NextResponse.json({
+      message: error.message,
+      stack: error.stack,
+    });
   }
 }
+
+  }
+
 
 // 🔹 READ (GET)
 export async function GET() {
@@ -130,18 +137,16 @@ export async function GET() {
     return NextResponse.json({ offers });
   } catch (error: unknown) {
     logError("GET", error);
-    return NextResponse.json(
-      {
-        error: "Internal server error",
-        message: error.message,
-        stack: error.stack,
-        code: error.code,
-        meta: error.meta,
-      },
-      { status: 500 }
-    );
+  if (error instanceof Error) {
+    return NextResponse.json({
+      message: error.message,
+      stack: error.stack,
+    });
   }
-}
+  return NextResponse.json({ error: "Unknown error" });
+}    
+  }
+
 
 // 🔹 UPDATE (PUT)
 export async function PUT(req: Request) {
@@ -203,7 +208,7 @@ export async function PUT(req: Request) {
     logStep("Offer updated successfully", updatedOffer);
 
     return NextResponse.json({ success: true, offer: updatedOffer });
-  } catch (error: any) {
+  } catch (error) {
     logError("PUT", error);
     return NextResponse.json(
       { error: "Internal server error", details: error.message },

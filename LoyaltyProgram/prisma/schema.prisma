@@ -68,7 +68,7 @@ model User {
   shop           Shop?           @relation(fields: [shopId], references: [id])
 
   // Relations for loyalty program
-  pointsLedger   PointsLedger[]
+
   walletCredits  WalletCredit[]
 
   OfferRedemption OfferRedemption[]
@@ -87,9 +87,8 @@ model Shop {
 
 model PointsLedger {
   id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-
+  customerId      String  
+  customer    Customer @relation(fields: [customerId], references: [id])
   change      Int      // +points earned, -points spent/expired
   balanceAfter Int     // balance snapshot after this transaction
   reason      String?  // e.g. "order.created", "manual admin add"
@@ -99,7 +98,7 @@ model PointsLedger {
   expiresAt   DateTime?
   metadata    Json?
 
-  @@index([userId])
+  @@index([customerId])
   @@index([expiresAt])
 }
 
@@ -157,6 +156,6 @@ model Customer {
   loyaltyTitle     String   @default("Welcomed")
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
-
+    pointsLedger   PointsLedger[]
   @@map("loyal_customers") // This maps the model to a table named "loyal_customers"
 }

@@ -1,0 +1,18 @@
+// src/scripts/cronApplyOffers.ts
+import { applyOffersToTestCustomers } from "../app/utils/applyOffertoCustomer.js";
+import cron from "node-cron";
+
+async function runOffers() {
+  try {
+    const appliedCount = await applyOffersToTestCustomers();
+    console.log(`✅ Offers applied to ${appliedCount} customers at ${new Date()}`);
+  } catch (err) {
+    console.error("❌ Error applying offers:", err);
+  }
+}
+
+// Run immediately
+runOffers();
+
+// Schedule future runs (every day at midnight)
+cron.schedule("0 0 * * *", runOffers);
