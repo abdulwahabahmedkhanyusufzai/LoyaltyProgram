@@ -35,7 +35,18 @@ export async function POST(req: Request) {
     const endDate = formData.get("endDate") as string;
     const tierRequired = formData.get("tierRequired") as string;
     const file = formData.get("image") as File | null;
-    const offerType = formData.get("offerType") as string;
+    const offerType = formData.get("offerType") as  "DISCOUNT" | "CASHBACK" | "BOGO" ;
+    
+    if (
+  offerType !== "DISCOUNT" &&
+  offerType !== "CASHBACK" &&
+  offerType !== "BOGO"
+) {
+  return NextResponse.json(
+    { error: "Invalid offerType" },
+    { status: 400 }
+  );
+}
 
     logStep("Parsed fields", { name, description, pointsCost, startDate, endDate, tierRequired, offerType });
 
