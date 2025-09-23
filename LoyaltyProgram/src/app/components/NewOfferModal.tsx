@@ -9,7 +9,11 @@ import { OfferService } from "../utils/OfferService";
 import toast from "react-hot-toast";
 
 const TIER_OPTIONS = ["Bronze", "Silver", "Gold"];
-const OFFER_TYPES = ["DISCOUNT", "CASHBACK", "BUY ONE GET ONE"];
+const OFFER_TYPES = [
+  { label: "Discount", value: "DISCOUNT" },
+  { label: "Cashback", value: "CASHBACK" },
+  { label: "Buy One Get One", value: "BOGO" },
+];
 
 const NewOfferModal = ({ closeModal, isOpen, setIsOpen, offerToEdit }) => {
   const [offer, setOffer] = useState(new Offer());
@@ -287,14 +291,14 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen, offerToEdit }) => {
                   <div className="absolute z-10 mt-1 w-full bg-white border rounded shadow">
                     {OFFER_TYPES.map((type) => (
                       <div
-                        key={type}
+                        key={type.label}
                         className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                         onClick={() => {
-                          handleChange("offerType", type.toUpperCase());
+                          handleChange("offerType", type.value);
                           setShowOfferTypeDropdown(false);
                         }}
                       >
-                        {type}
+                        {type.label}
                       </div>
                     ))}
                   </div>

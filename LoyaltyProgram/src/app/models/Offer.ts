@@ -5,7 +5,7 @@ export class Offer {
   startDate: string = "";
   tillDate: string = "";
   eligibleTiers: string = ""; // ✅ required
-  offerType: "DISCOUNT" | "CASHBACK" | "BOGO" = "DISCOUNT";
+  offerType: "DISCOUNT" | "CASHBACK" | "BOGO" = "DISCOUNT"; // ✅ Prisma enum
   image: File | string | null = null; // File (upload) OR string (URL)
 
   constructor(init?: Partial<Offer>) {
@@ -22,61 +22,46 @@ export class Offer {
     try {
       switch (field) {
         case "offerName":
-          return this.offerName.trim()
-            ? ""
-            : "Offer name is required.";
+          return this.offerName.trim() ? "" : "Offer name is required.";
 
         case "description":
-          return this.description.trim()
-            ? ""
-            : "Description is required.";
+          return this.description.trim() ? "" : "Description is required.";
 
         case "points": {
-          if (this.points === null || this.points === undefined) {
-            return "Points are required.";
-          }
+          if (this.points === null || this.points === undefined) return "Points are required.";
 
           if (typeof this.points === "number") {
-            return this.points >= 0
-              ? ""
-              : "Points must be a positive number.";
+            return this.points >= 0 ? "" : "Points must be a positive number.";
           }
 
           if (typeof this.points === "string") {
             const p = this.points.trim();
             if (!p) return "Points are required.";
-
-            const isNumber = /^\d+$/.test(p);              // "10", "100"
+            const isNumber = /^\d+$/.test(p); // "10", "100"
             const isPercent = /^([1-9]\d?|100)%$/.test(p); // "1%" .. "100%"
-            return isNumber || isPercent
-              ? ""
-              : "Enter number (100) or percentage (20%).";
+            return isNumber || isPercent ? "" : "Enter number (100) or percentage (20%).";
           }
 
           return "Invalid points value.";
         }
 
         case "startDate":
-          return this.startDate
-            ? ""
-            : "Start Date is required.";
+          return this.startDate ? "" : "Start Date is required.";
 
         case "tillDate":
-          return this.tillDate
-            ? ""
-            : "Till Date is required.";
+          return this.tillDate ? "" : "Till Date is required.";
 
         case "eligibleTiers":
-          return this.eligibleTiers.trim().length > 0
-            ? ""
-            : "Select at least one eligible tier.";
+          return this.eligibleTiers.trim().length > 0 ? "" : "Select at least one eligible tier.";
 
         case "image":
-          return (this.image !== null &&
-                  this.image !== undefined &&
-                  String(this.image).trim() !== "")
+          return this.image !== null && String(this.image).trim() !== "" ? "" : "Image is required.";
+
+        case "offerType":
+          // ✅ Validate enum
+          return ["DISCOUNT", "CASHBACK", "BOGO"].includes(this.offerType)
             ? ""
-            : "Image is required.";
+            : "Select a valid offer type.";
 
         default:
           return "";
@@ -100,6 +85,7 @@ export class Offer {
       "tillDate",
       "eligibleTiers",
       "image",
+      "offerType", // ✅ include offerType
     ];
 
     const errors: Record<string, string> = {};

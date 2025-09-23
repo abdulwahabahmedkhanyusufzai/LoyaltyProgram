@@ -23,7 +23,7 @@ export class OfferService {
     }
 
     if (offer.offerType != null) {
-      formDataToSend.append("offerType", offer.offerType.toUpperCase());
+      formDataToSend.append("offerType", offer.offerType);
     }
 
     // Handle image
