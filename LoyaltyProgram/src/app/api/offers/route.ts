@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient ,type Prisma } from "@prisma/client";
 import { writeFile } from "fs/promises";
 import path from "path";
 
@@ -35,18 +35,19 @@ export async function POST(req: Request) {
     const endDate = formData.get("endDate") as string;
     const tierRequired = formData.get("tierRequired") as string;
     const file = formData.get("image") as File | null;
-    const offerType = formData.get("offerType") as  "DISCOUNT" | "CASHBACK" | "BOGO" ;
+    const offerTypo = formData.get("offerType") as  "DISCOUNT" | "CASHBACK" | "BOGO" ;
     
     if (
-  offerType !== "DISCOUNT" &&
-  offerType !== "CASHBACK" &&
-  offerType !== "BOGO"
+  offerTypo !== "DISCOUNT" &&
+  offerTypo !== "CASHBACK" &&
+  offerTypo !== "BOGO"
 ) {
   return NextResponse.json(
     { error: "Invalid offerType" },
     { status: 400 }
   );
 }
+const offerType: Prisma.OfferType = offerTypo; 
 
     logStep("Parsed fields", { name, description, pointsCost, startDate, endDate, tierRequired, offerType });
 
