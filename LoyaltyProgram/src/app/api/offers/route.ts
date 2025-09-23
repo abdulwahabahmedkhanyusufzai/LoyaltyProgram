@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { PrismaClient ,type Prisma, type OfferType } from "@prisma/client";
+import { PrismaClient , type OfferType } from "@prisma/client";
 import { writeFile } from "fs/promises";
 import path from "path";
 
@@ -11,7 +11,7 @@ function logStep(step: string, data?: unknown) {
 }
 
 // Utility error logger
-function logError(step: string, error: any) {
+function logError(step: string, error: unknown) {
   console.error(`[OffersAPI] ❌ Error at ${step}:`, {
     message: error?.message,
     stack: error?.stack,
@@ -95,7 +95,7 @@ const offerType: OfferType = offerTypo as OfferType;
     logStep("Offer created successfully", newOffer);
 
     return NextResponse.json({ success: true, offer: newOffer }, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     logError("POST", error);
     return NextResponse.json(
       { error: "Internal server error", details: error.message },
@@ -128,7 +128,7 @@ export async function GET() {
     logStep("Fetched offers", { count: offers.length });
 
     return NextResponse.json({ offers });
-  } catch (error: any) {
+  } catch (error: unknown) {
     logError("GET", error);
     return NextResponse.json(
       {
@@ -182,7 +182,7 @@ export async function PUT(req: Request) {
       imageUrl = `/uploads/${file.name}`;
     }
 
-    const updateData: any = {
+    const updateData: unknown = {
       ...(name && { name }),
       ...(description && { description }),
       ...(pointsCost && { pointsCost: Number(pointsCost) }),
