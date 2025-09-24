@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 
 // Define a type for customer points
 export type CustomerPoints = {
@@ -7,6 +6,7 @@ export type CustomerPoints = {
   firstName?: string;
   lastName?: string;
   points: number;
+  loyaltyPoints: number;
 };
 
 // Define a type for the data returned by the customer API
