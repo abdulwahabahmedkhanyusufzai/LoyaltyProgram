@@ -1,0 +1,81 @@
+[
+  {
+    "id": 1,
+    "tiers": [
+      {
+        "color": "#734A00",
+        "label": "Welcomed: Less than 20 points"
+      },
+      {
+        "color": "#B47A11",
+        "label": "Guest: Between 20 and 30 points"
+      },
+      {
+        "color": "#402A00",
+        "label": "Host: Between 31 and 4500 points"
+      },
+      {
+        "color": "#384551",
+        "label": "Test: More than 4500 points"
+      }
+    ],
+    "rows": [
+      {
+        "label": "Cashback per point",
+        "values": [
+          "10 points = €10",
+          "10 points = €10",
+          "10 points = €13",
+          "-"
+        ]
+      },
+      {
+        "label": "Free Delivery",
+        "values": [
+          "From €400 spent over 2 years",
+          "From €400 spent over 2 years",
+          "From €400 spent over 2 years",
+          "-"
+        ]
+      },
+      {
+        "label": "Immediate Discount",
+        "values": [
+          "5% on the first order",
+          "10% cumulative",
+          "15% + priority access",
+          "-"
+        ]
+      },
+      {
+        "label": "Product Suggestions",
+        "values": [
+          "Offer suggestion if purchasing from category X",
+          "Offer suggestion if purchasing from one or more categories",
+          "Offer of your choice if purchasing from one or more categories",
+          "-"
+        ]
+      },
+      {
+        "label": "Loyalty Offer",
+        "values": [
+          "No",
+          "5% on the 3rd order",
+          "5% on the 3rd order",
+          "-"
+        ]
+      },
+      {
+        "label": "Birthday Offer",
+        "values": [
+          "15% on the order of your choice (valid 45 days)",
+          "15% on the order of your choice (valid 45 days)",
+          "15% on the order of your choice (valid 45 days)",
+          "-"
+        ]
+      }
+    ],
+    "createdAt": "2025-09-24T15:51:18.186Z",
+    "updatedAt": "2025-09-24T15:51:18.186Z"
+  }
+]

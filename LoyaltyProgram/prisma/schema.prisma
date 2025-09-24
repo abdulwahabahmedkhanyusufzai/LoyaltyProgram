@@ -159,3 +159,13 @@ model Customer {
     pointsLedger   PointsLedger[]
   @@map("loyal_customers") // This maps the model to a table named "loyal_customers"
 }
+
+model AdventCalendarEntry {
+  id        Int      @id @default(autoincrement())
+  month     String
+  day       Int
+  event     String
+  type      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

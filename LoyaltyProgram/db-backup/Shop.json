@@ -1,0 +1,18 @@
+[
+  {
+    "id": 2,
+    "shop": "mystoremain.myshopify.com",
+    "accessToken": "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",
+    "scope": "read_orders,read_customers,write_content,write_products,write_files,write_online_store_navigation,write_publications,write_product_listings",
+    "createdAt": "2025-09-23T15:00:35.747Z",
+    "updatedAt": "2025-09-23T15:03:41.606Z"
+  },
+  {
+    "id": 4,
+    "shop": "sale-books-subscription.myshopify.com",
+    "accessToken": "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",
+    "scope": "read_orders,read_customers,write_content,write_products,write_files,write_online_store_navigation,write_publications,write_product_listings",
+    "createdAt": "2025-09-23T15:05:34.787Z",
+    "updatedAt": "2025-09-23T15:05:34.787Z"
+  }
+]

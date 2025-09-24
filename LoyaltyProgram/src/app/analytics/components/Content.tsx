@@ -7,22 +7,25 @@ const MainContent = () => {
   const [mostActiveTier, setMostActiveTier] = useState<string>("–");
   const [loadingTier, setLoadingTier] = useState(true);
 
+  const [pointsIssued, setPointsIssued] = useState<number | null>(null);
+  const [loadingPoints, setLoadingPoints] = useState(true);
+
   const baseStats = [
-    { label: "Points Issued", value: "25K+" },
+    { label: "Points Issued", value: pointsIssued !== null ? pointsIssued : "–" },
     { label: "Points Redeemed", value: "35K+" },
-    { label: "Active Campaigns", value: "" }, // dynamic
+    { label: "Active Campaigns", value: offersCount ?? "–" },
     { label: "Avg. Redemption Rate", value: "16.6+" },
-    { label: "Most Active Tier", value: "" }, // dynamic
+    { label: "Most Active Tier", value: mostActiveTier },
   ];
 
   useEffect(() => {
+    // Fetch active campaigns
     const fetchOffers = async () => {
       try {
         setLoadingOffers(true);
         const res = await fetch("/api/offers");
         const data = await res.json();
-        const activeCount = data?.offers?.length || 0;
-        setOffersCount(activeCount);
+        setOffersCount(data?.offers?.length || 0);
       } catch (err) {
         console.error("❌ Error fetching offers:", err);
         setOffersCount(0);
@@ -31,6 +34,7 @@ const MainContent = () => {
       }
     };
 
+    // Fetch most active tier
     const fetchMostActiveTier = async () => {
       try {
         setLoadingTier(true);
@@ -45,8 +49,25 @@ const MainContent = () => {
       }
     };
 
+    // Fetch total points issued
+    const fetchPointsIssued = async () => {
+      try {
+        setLoadingPoints(true);
+        const res = await fetch("/api/customers/points");
+        const data: { id: string; loyaltyPoints: number }[] = await res.json();
+        const totalPoints = data.reduce((sum, p) => sum + (p.loyaltyPoints || 0), 0);
+        setPointsIssued(totalPoints);
+      } catch (err) {
+        console.error("❌ Error fetching points issued:", err);
+        setPointsIssued(0);
+      } finally {
+        setLoadingPoints(false);
+      }
+    };
+
     fetchOffers();
     fetchMostActiveTier();
+    fetchPointsIssued();
   }, []);
 
   return (
@@ -54,16 +75,16 @@ const MainContent = () => {
       {baseStats.map((stat) => {
         let displayValue = stat.value;
 
-        if (stat.label === "Active Campaigns") {
-          if (!loadingOffers) {
-            displayValue = offersCount?.toString() || "0";
-          }
+        if (stat.label === "Active Campaigns" && loadingOffers) {
+          displayValue = "–";
         }
 
-        if (stat.label === "Most Active Tier") {
-          if (!loadingTier) {
-            displayValue = mostActiveTier;
-          }
+        if (stat.label === "Most Active Tier" && loadingTier) {
+          displayValue = "–";
+        }
+
+        if (stat.label === "Points Issued" && loadingPoints) {
+          displayValue = "–";
         }
 
         return (
@@ -75,7 +96,6 @@ const MainContent = () => {
                        h-[120px] xs:h-[140px] sm:h-[200px] lg:h-[170px] 2xl:h-[200px] 
                        flex flex-col flex-shrink-0"
           >
-            {/* Header with label + arrow */}
             <div className="flex items-center justify-between">
               <p className="text-[11px] xs:text-[10px] sm:text-[12px] 2xl:text-[16px] font-semibold text-[#2C2A25]">
                 {stat.label}
@@ -90,10 +110,10 @@ const MainContent = () => {
               </div>
             </div>
 
-            {/* Stat value */}
             <div className="flex-1 flex items-center justify-center">
               {(stat.label === "Active Campaigns" && loadingOffers) ||
-              (stat.label === "Most Active Tier" && loadingTier) ? (
+              (stat.label === "Most Active Tier" && loadingTier) ||
+              (stat.label === "Points Issued" && loadingPoints) ? (
                 <div className="w-6 h-6 sm:w-8 sm:h-8 border-4 border-[#2C2A25] border-t-transparent rounded-full animate-spin"></div>
               ) : (
                 <span className="mt-2 text-[20px] xs:text-[24px] sm:text-[36px] lg:text-[34px] 2xl:text-[38px] font-extrabold text-[#2C2A25]">
