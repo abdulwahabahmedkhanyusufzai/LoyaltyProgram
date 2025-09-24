@@ -24,29 +24,40 @@ const totalPages = Math.ceil(totalCount / PAGE_SIZE);
   const endIndex = Math.min(page * PAGE_SIZE, totalCount);
 
   
- useEffect(() => {
-     async function loadData() {
-       setLoading(true);
-       try {
-         // Use Promise.all to fetch customers and the total count concurrently
-         const [fetchedCustomers, count] = await Promise.all([
-           customerService.fetchCustomers(),
-           customerService.fetchCustomerCount()
-         ]);
-         const sortedCustomers = [...fetchedCustomers].sort(
+useEffect(() => {
+  async function loadData() {
+    setLoading(true);
+    try {
+      const [fetchedCustomers, count, pointsData] = await Promise.all([
+        customerService.fetchCustomers(),
+        customerService.fetchCustomerCount(),
+        customerService.fetchCustomerPoints()
+      ]);
+
+      // Convert pointsData to a map: { id -> loyaltyPoints }
+      const pointsMap = new Map(pointsData.map(p => [p.id, p.loyaltyPoints]));
+
+      // Attach points to each customer
+      const customersWithPoints = fetchedCustomers.map(cust => ({
+        ...cust,
+        loyaltyPoints: pointsMap.get(cust.id) ?? 0
+      }));
+       console.log("Fetched customers with points:", customersWithPoints);
+      // Example: sort by spent or points
+      const sortedCustomers = [...customersWithPoints].sort(
         (a, b) => (b.amountSpent ?? 0) - (a.amountSpent ?? 0)
       );
 
-         setCustomers(sortedCustomers);
-         setTotalCount(count);
-       } catch (error) {
-         console.error("❌ Error loading customer data:", error);
-       } finally {
-         setLoading(false);
-       }
-     }
-     loadData();
-   }, []);
+      setCustomers(sortedCustomers);
+      setTotalCount(count);
+    } catch (error) {
+      console.error("❌ Error loading customer data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+  loadData();
+}, []);
   
 
  
