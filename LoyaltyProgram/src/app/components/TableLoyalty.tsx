@@ -4,20 +4,12 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const COLORS = [
-  "#EF4444", // red
-  "#F97316", // orange
-  "#EAB308", // yellow
-  "#22C55E", // green
-  "#3B82F6", // blue
-  "#8B5CF6", // purple
-  "#EC4899", // pink
-  "#14B8A6", // teal
+  "#EF4444", "#F97316", "#EAB308", "#22C55E",
+  "#3B82F6", "#8B5CF6", "#EC4899", "#14B8A6",
 ];
 
 function getRandomColor(seed: string) {
-  const index =
-    seed.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) %
-    COLORS.length;
+  const index = seed.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) % COLORS.length;
   return COLORS[index];
 }
 
@@ -29,22 +21,31 @@ export const LoyaltyTable = () => {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const res = await fetch(`/api/customers?first=10`); // ✅ Fetch top 10
-        const data = await res.json();
+        // Fetch customer data
+        const resCustomers = await fetch(`/api/customers?first=10`);
+        const customersData = await resCustomers.json();
 
-        if (data.customers) {
-          const formatted = data.customers.map((c: any, idx: number) => {
+        // Fetch points data
+        const resPoints = await fetch(`/api/customers/points`);
+        const pointsData: { id: string; loyaltyPoints: number }[] = await resPoints.json();
+
+        if (customersData.customers) {
+          const formatted = customersData.customers.map((c: any, idx: number) => {
             const name = `${c.firstName ?? ""} ${c.lastName ?? ""}`.trim() || "Unknown";
             const email = c.email ?? "N/A";
             const initial = (name[0] || email[0] || "?").toUpperCase();
             const bgColor = getRandomColor(email || name);
 
+            // Map real points from backend
+            const pointsInfo = pointsData.find((p) => p.id === c.id);
+            const totalPoints = pointsInfo?.loyaltyPoints ?? 0;
+
             return {
               id: idx,
               name,
               email,
-              points: Math.floor(Math.random() * 5000), // demo points
-              orders: Math.floor(Math.random() * 50), // demo orders
+              points: totalPoints,
+              orders: c.numberOfOrders ?? 0, // use real orders from customer data
               initial,
               bgColor,
             };
@@ -106,7 +107,7 @@ export const LoyaltyTable = () => {
 
             {/* Table Body */}
             <tbody className="text-[13px] sm:text-[15px] text-[#2C2A25]">
-              {customers.slice(0,10).map((customer) => (
+              {customers.slice(0, 10).map((customer) => (
                 <tr key={customer.id} className="border-b border-[#D2D1CA]">
                   <td className="flex items-center p-2 sm:p-3">
                     <div

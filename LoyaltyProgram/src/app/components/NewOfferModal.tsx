@@ -252,7 +252,7 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen, offerToEdit }) => {
                 </button>
 
                 {showDropdown && (
-                  <div className="absolute z-10 mt-1 w-full bg-white border rounded shadow">
+                  <div className="bottom-20 absolute z-10 mt-1 w-auto bg-white border rounded shadow">
                     {TIER_OPTIONS.map((tier) => (
                       <label
                         key={tier}
@@ -288,7 +288,7 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen, offerToEdit }) => {
                 </button>
 
                 {showOfferTypeDropdown && (
-                  <div className="absolute z-10 mt-1 w-full bg-white border rounded shadow">
+                  <div className="bottom-20 absolute z-10 mt-1 w-auto bg-white border rounded shadow">
                     {OFFER_TYPES.map((type) => (
                       <div
                         key={type.label}
