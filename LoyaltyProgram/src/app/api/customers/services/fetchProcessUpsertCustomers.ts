@@ -16,7 +16,7 @@ export async function fetchProcessUpsertCustomers(shopDomain: string, accessToke
     // Stop here & return formatted data
     return existingCustomers.map((c) => ({
       ...c,
-      amountSpent: formatMoney(c.amountSpent),
+      amountSpent: formatMoney(Number(c.amountSpent)),
     }));
   }
 
