@@ -2,126 +2,126 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+type LedgerEntry = {
+  customerId: string;
+  change: number;
+  balanceAfter: number;
+  reason: string;
+  sourceType: string;
+  sourceId: string;
+};
+
 export async function runOfferCronJob() {
   try {
     console.log("🟢 Cron Job started:", new Date());
 
-    // Step 1: Fetch all active offers
-    const offers = await prisma.offer.findMany({
-      where: { isActive: true },
-      orderBy: { createdAt: "asc" },
-    });
+    const offers = await prisma.offer.findMany({ where: { isActive: true } });
     console.log(`Fetched ${offers.length} active offers.`);
 
-    if (offers.length === 0) return console.log("No active offers, exiting.");
+    if (!offers.length) return;
 
-    // Step 2: Fetch all customers with their totalOrderAmount
     const customers = await prisma.customer.findMany({
-      select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        email: true,
-        loyaltyTitle: true,
-        numberOfOrders: true,
-        amountSpent: true,
-      },
+      select: { id: true, firstName: true, lastName: true, email: true, loyaltyTitle: true, amountSpent: true },
     });
     console.log(`Fetched ${customers.length} customers.`);
 
-    if (customers.length === 0) return console.log("No customers found, exiting.");
+    if (!customers.length) return;
 
-    const ledgerEntries: any[] = [];
+    const allLedgerEntries = await prisma.pointsLedger.findMany({
+      where: { customerId: { in: customers.map(c => c.id) }, sourceType: "offer" },
+    });
+
+    const ledgerMap = new Map<string, LedgerEntry[]>();
+    allLedgerEntries.forEach(e => {
+      if (!ledgerMap.has(e.customerId)) ledgerMap.set(e.customerId, []);
+      ledgerMap.get(e.customerId)?.push({
+        customerId: e.customerId,
+        change: e.change,
+        balanceAfter: e.balanceAfter,
+        reason: e.reason,
+        sourceType: e.sourceType,
+        sourceId: e.sourceId,
+      });
+    });
+
+    const ledgerEntries: LedgerEntry[] = [];
     const today = new Date();
 
-    // Step 3: Loop through offers and assign points
     for (const offer of offers) {
-      console.log(`\n🔹 Processing offer: "${offer.name}" (ID: ${offer.id})`);
+      console.log(`\n🔹 Processing offer: "${offer.name}"`);
 
-      const start = new Date(offer.startDate);
-      const end = new Date(offer.endDate);
-
-      const eligibleCustomers = customers.filter((customer) => {
-        if (!offer.isActive) {
-          console.log(`Offer "${offer.name}" is inactive, skipping.`);
-          return false;
-        }
-        if (today < start || today > end) {
-          console.log(`Offer "${offer.name}" not valid today (${today.toISOString()}).`);
-          return false;
-        }
+      const eligibleCustomers = customers.filter(c => {
+        if (!offer.isActive) return false;
+        if (offer.tierRequired && c.loyaltyTitle !== offer.tierRequired) return true;
+        const start = new Date(offer.startDate);
+        const end = new Date(offer.endDate);
+        if (today < start || today > end) return false;
         return true;
       });
 
       console.log(`Eligible customers for "${offer.name}": ${eligibleCustomers.length}`);
 
       for (const customer of eligibleCustomers) {
-        // Check if already applied
-        const alreadyApplied = await prisma.pointsLedger.findFirst({
-          where: {
-            customerId: customer.id,
-            sourceType: "offer",
-            sourceId: offer.id,
-          },
-        });
+        const alreadyApplied = ledgerMap
+          .get(customer.id)
+          ?.some(e => e.sourceId === offer.id);
 
-        if (alreadyApplied) {
-          console.log(`Offer already applied for customer ${customer.email}, skipping.`);
-          continue;
-        }
+        if (alreadyApplied) continue;
 
-        // Calculate points
         let pointsToAdd = 0;
 
         if (offer.offerType === "CASHBACK") {
-          const match = offer.description.match(/(\d+)\s*Euro\s*=\s*(\d+)\s*Point/i);
-          pointsToAdd = 1;
-          if (match) {
-            const euroPerPoint = parseFloat(match[1]);
-            const pointsPerUnit = parseFloat(match[2]);
-            pointsToAdd = Math.floor(Number(customer.amountSpent) / euroPerPoint) * pointsPerUnit;
+          if (Number(customer.amountSpent) <= 0) {
+            console.log(`❌ ${customer.email} has spent 0, skipping.`);
+            continue;
+          }
+
+const match = offer.description.match(/(\d+)\s*(?:Euro|EUR|€)\s*=\s*(\d+)\s*(?:Point|pt)/i);
+          if (!match) {
+            console.log(`❌ Offer "${offer.name}" description format invalid.`);
+            continue;
+          }
+
+          const euroPerPoint = parseFloat(match[1]);
+          const pointsPerUnit = parseFloat(match[2]);
+
+          pointsToAdd = Math.floor(Number(customer.amountSpent) / euroPerPoint) * pointsPerUnit;
+
+          if (pointsToAdd <= 0) {
+            console.log(`❌ ${customer.email} not eligible, spent ${customer.amountSpent} < ${euroPerPoint}`);
+            continue;
           }
         } else if (offer.offerType === "POINTS") {
           pointsToAdd = offer.pointsCost || 0;
         }
 
-        if (pointsToAdd > 0) {
-          const lastEntry = await prisma.pointsLedger.findFirst({
-            where: { customerId: customer.id },
-            orderBy: { id: "desc" },
-          });
-          const prevBalance = lastEntry?.balanceAfter || 0;
-          const newBalance = prevBalance + pointsToAdd;
+        const lastEntry = ledgerMap.get(customer.id)?.slice(-1)[0];
+        const prevBalance = lastEntry?.balanceAfter || 0;
+        const newBalance = prevBalance + pointsToAdd;
 
-          ledgerEntries.push({
-            customerId: customer.id,
-            change: pointsToAdd,
-            balanceAfter: newBalance,
-            reason: `Applied offer: ${offer.name}`,
-            sourceType: "offer",
-            sourceId: offer.id,
-          });
+        ledgerEntries.push({
+          customerId: customer.id,
+          change: pointsToAdd,
+          balanceAfter: newBalance,
+          reason: `Applied offer: ${offer.name}`,
+          sourceType: "offer",
+          sourceId: offer.id,
+        });
 
-          console.log(
-            `✅ Customer ${customer.firstName} ${customer.lastName} gets ${pointsToAdd} points (balance: ${newBalance})`
-          );
-        } else {
-          console.log(`No points to add for customer ${customer.email}.`);
-        }
+        console.log(`✅ ${customer.firstName} ${customer.lastName} gets ${pointsToAdd} points (balance: ${newBalance})`);
       }
     }
 
-    // Step 4: Insert all ledger entries
     if (ledgerEntries.length > 0) {
-      const result = await prisma.pointsLedger.createMany({ data: ledgerEntries });
+      await prisma.pointsLedger.createMany({ data: ledgerEntries });
       console.log(`Inserted ${ledgerEntries.length} ledger entries successfully.`);
     } else {
       console.log("No new ledger entries to insert.");
     }
 
     console.log("🟢 Cron Job finished.");
-  } catch (error) {
-    console.error("❌ Cron Job failed:", error);
+  } catch (err) {
+    console.error("❌ Cron Job failed:", err);
   } finally {
     await prisma.$disconnect();
   }
