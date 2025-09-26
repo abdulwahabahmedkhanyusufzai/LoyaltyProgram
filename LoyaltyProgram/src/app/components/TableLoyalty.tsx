@@ -63,7 +63,7 @@ export const LoyaltyTable = () => {
   }, []);
 
   return (
-    <div className="w-full lg:w-[604px] lg:h-[500px] 2xl:w-[949px] 2xl:h-[533px] border border-[#2C2A25] rounded-[24px] sm:rounded-[32px] p-3 sm:p-6 flex flex-col">
+    <div className="w-full lg:w-[724px] lg:h-[500px] 2xl:w-[949px] 2xl:h-[533px] border border-[#2C2A25] rounded-[24px] sm:rounded-[32px] p-3 sm:p-6 flex flex-col">
       {/* Header row */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <h1 className="text-[16px] sm:text-[18px] font-semibold">Customers Overview</h1>
@@ -97,9 +97,9 @@ export const LoyaltyTable = () => {
           <table className="w-full border-collapse min-w-[600px]">
             {/* Table Head */}
             <thead>
-              <tr className="border-b border-[#D2D1CA] text-left text-[#2C2A25] text-[12px] sm:text-[12px] font-medium">
+              <tr className="border-b border-[#D2D1CA] text-left text-[#2C2A25] text-[12px] sm:text-[14px] font-medium">
                 <th className="p-2 sm:p-3 rounded-tl-[12px] uppercase">Customer</th>
-                <th className="p-2 sm:p-2 uppercase">Total Points</th>
+                <th className="p-2 sm:p-3 uppercase">Total Points</th>
                 <th className="p-2 sm:p-3 uppercase">Amount of Orders</th>
                 <th className="p-2 sm:p-3 rounded-tr-[12px] uppercase">Action</th>
               </tr>
@@ -109,15 +109,15 @@ export const LoyaltyTable = () => {
             <tbody className="text-[13px] sm:text-[15px] text-[#2C2A25]">
               {customers.slice(0, 10).map((customer) => (
                 <tr key={customer.id} className="border-b border-[#D2D1CA]">
-                  <td className="flex items-center p-2 sm:p-1">
+                  <td className="flex items-center p-2 sm:p-3">
                     <div
-                      className="w-[28px] h-[28px] sm:w-[30px] sm:h-[30px] rounded-full flex items-center justify-center text-white font-bold mr-[12px] sm:mr-[20px]"
+                      className="w-[28px] h-[28px] sm:w-[32px] sm:h-[32px] rounded-full flex items-center justify-center text-white font-bold mr-[12px] sm:mr-[20px]"
                       style={{ backgroundColor: customer.bgColor }}
                     >
                       {customer.initial}
                     </div>
                     <div>
-                      <div className="text-[12px] sm:text-[14px] font-semibold">{customer.name}</div>
+                      <div className="font-semibold">{customer.name}</div>
                       <div className="text-xs text-gray-500">{customer.email}</div>
                     </div>
                   </td>
@@ -132,7 +132,7 @@ export const LoyaltyTable = () => {
                         <img src="eye.png" className="w-[16px] sm:w-[20px]" alt="view" />
                       </button>
                       <button className="hover:opacity-70">
-                        <img src="menu.png" className="w-[14px] sm:w-[20px]" alt="menu" />
+                        <img src="menu.png" className="w-[16px] sm:w-[20px]" alt="menu" />
                       </button>
                     </div>
                   </td>
