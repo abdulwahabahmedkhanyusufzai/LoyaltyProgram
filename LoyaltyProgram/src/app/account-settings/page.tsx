@@ -30,47 +30,46 @@ const RegisterAsaCustomer = () => {
     language: "English",
   });
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // button loading
+  const [pageLoading, setPageLoading] = useState(true); // whole page loader
 
-  // Prefill from localStorage if user exists
-useEffect(() => {
-  const fetchUserFromAPI = async () => {
-    try {
-      const res = await fetch("/api/user/me", { credentials: "include" });
-      if (!res.ok) {
-        console.warn("Failed to fetch user from API:", res.status);
-        return;
+  // Prefill from backend
+  useEffect(() => {
+    const fetchUserFromAPI = async () => {
+      try {
+        const res = await fetch("/api/user/me", { credentials: "include" });
+        if (!res.ok) {
+          console.warn("Failed to fetch user from API:", res.status);
+          return;
+        }
+
+        const user = await res.json();
+
+        console.log("Fetched user from API:", user);
+
+        setFormData((prev) => ({
+          ...prev,
+          profilePicPreview: user.profilePicUrl || "",
+          fullName: user.fullName || "",
+          email: user.email || "",
+          phone: user.phoneNumber || "",
+        }));
+
+        formManager.setFormValues({
+          fullName: user.fullname || "",
+          email: user.email || "",
+          phone: user.phoneNumber || "",
+          profilePicPreview: user.profilePicUrl || "",
+        });
+      } catch (err) {
+        console.error("Error fetching user:", err);
+      } finally {
+        setPageLoading(false); // hide loader when done
       }
+    };
 
-      const user = await res.json();
-
-      // Update formData to directly populate the inputs
-      setFormData((prev) => ({
-        ...prev,
-        profilePicPreview: user.profilePicUrl || "",
-        fullName: user.fullname || "",
-        email: user.email || "",
-        phone: user.phoneNumber || "",
-        // optional: you can prefill other fields if available
-      }));
-
-      // Optional: sync with your formManager so it knows initial values
-      formManager.setFormValues({
-        fullName: user.fullname || "",
-        email: user.email || "",
-        phone: user.phoneNumber || "",
-        profilePicPreview: user.profilePicUrl || "",
-      });
-    } catch (err) {
-      console.error("Error fetching user:", err);
-    }
-  };
-
-  fetchUserFromAPI();
-}, [formManager]);
-         // then overwrite with fresh API data
-
-
+    fetchUserFromAPI();
+  }, [formManager]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type, checked } = e.target as HTMLInputElement;
@@ -87,7 +86,6 @@ useEffect(() => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
       const file = e.target.files[0];
-
       formManager.handleImageUpload(file);
 
       setFormData((prev) => ({
@@ -131,6 +129,14 @@ useEffect(() => {
       setLoading(false);
     }
   };
+
+  if (pageLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-300 border-t-[#734A00]"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen">

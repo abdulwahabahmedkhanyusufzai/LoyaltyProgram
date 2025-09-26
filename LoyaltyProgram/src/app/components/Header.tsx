@@ -8,7 +8,8 @@ type HeaderProps = {
 
 export const Header = ({ onToggle }: HeaderProps) => {
   const [open, setOpen] = useState(false);
-  const [profilePic, setProfilePic] = useState("/profile.jpg");
+  const [profilePic, setProfilePic] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   const toggleSidebar = () => {
@@ -25,12 +26,18 @@ export const Header = ({ onToggle }: HeaderProps) => {
           const data = await res.json();
           if (data?.profilePicUrl) {
             setProfilePic(data.profilePicUrl);
+          } else {
+            setProfilePic("/profile.jpg"); // fallback
           }
         } else {
           console.warn("User not logged in");
+          setProfilePic("/profile.jpg");
         }
       } catch (err) {
         console.error("Failed to fetch profile:", err);
+        setProfilePic("/profile.jpg");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -68,11 +75,17 @@ export const Header = ({ onToggle }: HeaderProps) => {
           onClick={() => router.push("/account-settings")}
           className="cursor-pointer p-1 rounded-full hover:ring-2 hover:ring-gray-300"
         >
-          <img
-            src={profilePic}
-            className="h-[45px] w-[45px] sm:h-[50px] sm:w-[50px] lg:h-[55px] lg:w-[55px] object-cover rounded-full"
-            alt="profile"
-          />
+          {loading ? (
+            <div className="flex items-center justify-center bg-white rounded-full h-[45px] w-[45px] sm:h-[50px] sm:w-[50px] lg:h-[55px] lg:w-[55px]">
+              <div className="h-6 w-6 border-2 border-gray-300 border-t-[#734A00] rounded-full animate-spin"></div>
+            </div>
+          ) : (
+            <img
+              src={profilePic || "/profile.jpg"}
+              className="h-[45px] w-[45px] sm:h-[50px] sm:w-[50px] lg:h-[55px] lg:w-[55px] object-cover rounded-full bg-white"
+              alt="profile"
+            />
+          )}
         </button>
       </div>
     </div>

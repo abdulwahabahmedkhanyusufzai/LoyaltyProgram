@@ -13,6 +13,7 @@ export async function fetchCustomersFromDB() {
       numberOfOrders: true,
       amountSpent: true,
     },
+    orderBy: { numberOfOrders: "desc" },
   });
 
   // Format amountSpent for frontend
