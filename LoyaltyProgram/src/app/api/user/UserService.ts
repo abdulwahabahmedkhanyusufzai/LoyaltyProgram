@@ -96,37 +96,45 @@ export class UserService {
   }
 
   async login(username: string, password: string) {
-    const user = await prisma.user.findUnique({
-      where: { username },
-      select: {
-        id: true,
-        fullName: true,
-        email: true,
-        username: true,
-        phoneNumber: true,
-        profilePicUrl: true,
-        password: true,
-      },
-    });
+  const user = await prisma.user.findUnique({
+    where: { username },
+    select: {
+      id: true,
+      fullName: true,
+      email: true,
+      username: true,
+      phoneNumber: true,
+      profilePicUrl: true,
+      password: true,
+    },
+  });
 
-    if (!user) throw new Error("Invalid username or password");
+  if (!user) throw new Error("Invalid username or password");
 
-    const isValid = await argon2.verify(user.password, password);
-    if (!isValid) throw new Error("Invalid username or password");
+  const isValid = await argon2.verify(user.password, password);
+  if (!isValid) throw new Error("Invalid username or password");
 
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET || "supersecret");
+  const secret = new TextEncoder().encode(process.env.JWT_SECRET || "supersecret");
 
-    const token = await new SignJWT({ userId: user.id, username: user.username })
-      .setProtectedHeader({ alg: "HS256" })
-      .setIssuedAt()
-      .setExpirationTime("7d")
-      .sign(secret);
+  // 🔹 Put full user info inside JWT
+  const token = await new SignJWT({
+    userId: user.id,
+    username: user.username,
+    fullName: user.fullName,
+    email: user.email,
+    phoneNumber: user.phoneNumber,
+    profilePicUrl: user.profilePicUrl,
+  })
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("7d")
+    .sign(secret);
 
-    // Remove password before returning
-    const { password: _, ...safeUser } = user;
+  // Strip password
+  const { password: _, ...safeUser } = user;
 
-    return { user: safeUser, token };
-  }
+  return { user: safeUser, token };
+}
 
   // 🔹 Verify JWT tokens
   async verifyToken(token: string) {
