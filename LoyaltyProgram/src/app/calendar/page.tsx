@@ -24,30 +24,27 @@ const getFirstDayOfWeek = (monthStr: string, year: number) => {
   // Day 1 of the month
   return new Date(year, monthIndex, 1).getDay();
 };
+"use client";
+import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
+
+// Helper functions ...
+// (keep getDaysInMonth and getFirstDayOfWeek as-is)
 
 function AdventCalendar() {
   const currentYear = new Date().getFullYear(); 
 
   const [month, setMonth] = useState("Aug");
-  const [isEditable, setIsEditable] = useState(false); // New state for edit mode toggle
-
-  const [calendarData, setCalendarData] = useState<{
-    [key: number]: { event: string; type: string };
-  }>({
-  });
-
+  const [isEditable, setIsEditable] = useState(false);
+  const [calendarData, setCalendarData] = useState<{ [key: number]: { event: string; type: string } }>({});
   const [editingDay, setEditingDay] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true); // ← Add loading state
 
-  // --- Calculated Calendar State ---
   const daysInCurrentMonth = getDaysInMonth(month, currentYear);
-  const startDayOfWeek = getFirstDayOfWeek(month, currentYear); // 0 (Sun) to 6 (Sat)
+  const startDayOfWeek = getFirstDayOfWeek(month, currentYear);
   const days = Array.from({ length: daysInCurrentMonth }, (_, i) => i + 1);
-
-  // Array of days including null placeholders for alignment
   const calendarDays = Array.from({ length: startDayOfWeek }, () => null).concat(days);
-  // --- End Calculated Calendar State ---
-
 
   const handleChange = (day: number, field: "event" | "type", value: string) => {
     setCalendarData((prev) => ({
@@ -59,7 +56,6 @@ function AdventCalendar() {
   const handleSaveCalendar = async () => {
     try {
       setSaving(true);
-      // NOTE: Replace '/api/save-calendar' with your actual API endpoint
       const res = await fetch("/api/save-calendar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -76,39 +72,40 @@ function AdventCalendar() {
   };
 
   const fetchCalendarData = async (selectedMonth: string) => {
-    // NOTE: Replace '/api/get-calendar' with your actual API endpoint
-    const res = await fetch(`/api/get-calendar?month=${selectedMonth}`);
-    if (!res.ok) throw new Error("Failed to fetch calendar");
-    const data = await res.json();
-
-    // data.calendarData contains your day-keyed object
-    return data.calendarData || {};
-  };
-
-  useEffect(() => {
-    const loadCalendar = async () => {
-      try {
-        const data = await fetchCalendarData(month);
-        setCalendarData(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    loadCalendar();
-  }, [month]);
-
-  // Function to enter editing mode only if isEditable is true
-  const handleDayClick = (day: number) => {
-    if (isEditable) {
-      setEditingDay(day);
+    setLoading(true); // ← Start loading
+    try {
+      const res = await fetch(`/api/get-calendar?month=${selectedMonth}`);
+      if (!res.ok) throw new Error("Failed to fetch calendar");
+      const data = await res.json();
+      setCalendarData(data.calendarData || {});
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false); // ← Stop loading
     }
   };
 
+  useEffect(() => {
+    fetchCalendarData(month);
+  }, [month]);
 
+  const handleDayClick = (day: number) => {
+    if (isEditable) setEditingDay(day);
+  };
+
+  // --- Loading Overlay ---
+  if (loading) {
+    return (
+      <div className="fixed inset-0 bg-white z-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#734A00]"></div>
+      </div>
+    );
+  }
+
+  // --- Main Calendar ---
   return (
     <div className="p-4 sm:p-7 space-y-6 bg-[#fffef9] min-h-screen">
       <div className="max-w-5xl mx-auto bg-[#fffef9] rounded-2xl shadow-sm border border-gray-200 p-6">
-        
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div className="flex justify-start items-center gap-2">
@@ -117,30 +114,19 @@ function AdventCalendar() {
           </div>
           
           <div className="flex items-center gap-4">
-            {/* Edit Toggle Button */}
             <button
-              onClick={() => {
-                setIsEditable(!isEditable);
-                setEditingDay(null); // Exit any active day edit mode
-              }}
+              onClick={() => { setIsEditable(!isEditable); setEditingDay(null); }}
               className={`px-3 py-1 text-sm rounded-lg transition-colors font-medium ${
-                isEditable 
-                  ? "bg-red-500 text-white hover:bg-red-600" 
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                isEditable ? "bg-red-500 text-white hover:bg-red-600" : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }`}
             >
               {isEditable ? "Exit Edit Mode" : "Edit Calendar"}
             </button>
-
-            {/* Month Selector */}
             <select
               value={month}
-              onChange={(e) => {
-                  setMonth(e.target.value);
-                  setEditingDay(null);
-              }}
+              onChange={(e) => { setMonth(e.target.value); setEditingDay(null); }}
               className="border border-gray-300 rounded-lg px-3 py-1 text-gray-700 focus:ring-2 focus:ring-yellow-500"
-              disabled={isEditable} // Disable month change while actively editing
+              disabled={isEditable}
             >
               <option>Aug</option>
               <option>Sep</option>
@@ -150,42 +136,30 @@ function AdventCalendar() {
             </select>
           </div>
         </div>
-        
-        {/* Calendar Grid Header (Weekdays) */}
+
+        {/* Weekdays */}
         <div className="grid grid-cols-7 gap-2 text-sm font-semibold text-gray-500 mb-2">
-            {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(day => (
-                <div key={day} className="text-center">{day}</div>
-            ))}
+          {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(day => <div key={day} className="text-center">{day}</div>)}
         </div>
 
-        {/* Calendar Grid (Days) */}
+        {/* Calendar Grid */}
         <div className="grid grid-cols-7 gap-2">
           {calendarDays.map((day, idx) => {
-            if (day === null) {
-                return <div key={idx} className="h-[60px] lg:h-24"></div>;
-            }
+            if (day === null) return <div key={idx} className="h-[60px] lg:h-24"></div>;
 
             const info = calendarData[day];
             const isEditing = editingDay === day;
             const cursorStyle = isEditable ? "cursor-pointer" : "cursor-default";
 
-
             return (
               <div
                 key={day}
                 className={`relative border p-2 text-center text-sm h-[60px] lg:h-24 flex flex-col justify-between transition-colors ${cursorStyle} ${
-                  info 
-                    ? "bg-[#734A00] text-white border-[#734A00]" 
-                    : "bg-[#fdfdf9] text-[#8B8B8B] " + (isEditable ? "hover:bg-gray-50" : "")
+                  info ? "bg-[#734A00] text-white border-[#734A00]" : "bg-[#fdfdf9] text-[#8B8B8B]" + (isEditable ? "hover:bg-gray-50" : "")
                 }`}
-                onClick={() => handleDayClick(day)} // Use new conditional click handler
+                onClick={() => handleDayClick(day)}
               >
-                {/* Day label */}
-                <div className="text-xs font-medium self-end">
-                  <span className="font-bold">{day}</span>
-                </div>
-
-                {/* Event or Input */}
+                <div className="text-xs font-medium self-end"><span className="font-bold">{day}</span></div>
                 {isEditing ? (
                   <div className="flex flex-col gap-1 z-10 p-1 absolute inset-0 bg-white shadow-lg text-left">
                     <input
@@ -193,7 +167,7 @@ function AdventCalendar() {
                       value={info?.event || ""}
                       onChange={(e) => handleChange(day, "event", e.target.value)}
                       placeholder="Event name"
-                      className="text-black text-xs px-1 py-0.5 rounded border border-gray-300 w-full" 
+                      className="text-black text-xs px-1 py-0.5 rounded border border-gray-300 w-full"
                       onClick={(e) => e.stopPropagation()}
                     />
                     <select
@@ -207,10 +181,7 @@ function AdventCalendar() {
                       <option value="loyalty">Loyalty</option>
                     </select>
                     <button
-                      onClick={(e) => {
-                          e.stopPropagation();
-                          setEditingDay(null);
-                      }}
+                      onClick={(e) => { e.stopPropagation(); setEditingDay(null); }}
                       className="mt-1 text-[10px] bg-[#734A00] text-white rounded px-1 py-0.5 hover:bg-[#5a3600]"
                     >
                       Done
@@ -232,7 +203,7 @@ function AdventCalendar() {
         <div className="flex justify-end mt-6">
           <button
             onClick={handleSaveCalendar}
-            disabled={saving || !isEditable} // Disable save button unless in edit mode
+            disabled={saving || !isEditable}
             className="bg-[#734A00] text-white px-4 py-2 rounded-lg hover:bg-[#5a3600] disabled:opacity-50 transition"
           >
             {saving ? "Saving..." : "Save Calendar"}
