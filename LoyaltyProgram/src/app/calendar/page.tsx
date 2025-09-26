@@ -34,11 +34,6 @@ function AdventCalendar() {
   const [calendarData, setCalendarData] = useState<{
     [key: number]: { event: string; type: string };
   }>({
-    2: { event: "10% Off", type: "discount" },
-    6: { event: "20% Off", type: "discount" },
-    11: { event: "20% Off", type: "discount" },
-    18: { event: "10% Off", type: "discount" },
-    21: { event: "20% Off", type: "discount" },
   });
 
   const [editingDay, setEditingDay] = useState<number | null>(null);
