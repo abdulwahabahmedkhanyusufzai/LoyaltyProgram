@@ -25,8 +25,6 @@ const getFirstDayOfWeek = (monthStr: string, year: number) => {
   return new Date(year, monthIndex, 1).getDay();
 };
 
-
-
 function AdventCalendar() {
   const currentYear = new Date().getFullYear(); 
 
@@ -92,8 +90,10 @@ function AdventCalendar() {
   // --- Loading Overlay ---
   if (loading) {
     return (
-      <div className="fixed inset-0 bg-white z-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#734A00]"></div>
+   <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen">
+        <div className="flex items-center justify-center">
+        <div className="w-16 h-16 border-4 border-[#734A00] border-t-transparent rounded-full animate-spin"></div>
+      </div>
       </div>
     );
   }
