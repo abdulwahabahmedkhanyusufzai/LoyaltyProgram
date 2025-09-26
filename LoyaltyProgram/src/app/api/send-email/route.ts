@@ -1,78 +1,85 @@
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import axios from "axios";
+
+// --- Configuration Constants ---
+const KLAVIYO_API_KEY = process.env.KLAVIYO_API_KEY;
+const KLAVIYO_V3_EVENTS_ENDPOINT = "https://a.klaviyo.com/api/events/";
+const CUSTOM_METRIC_NAME = "Points Awarded";
+
+// --- Next.js API Route Handler ---
 
 export async function POST(req: Request) {
-  try {
-    const body = await req.json();
-    const { to, subject, points } = body;
+    try {
+        const body = await req.json();
+        const { to, points } = body;
 
-    console.log("📩 Incoming email request:", body);
+        console.log("📩 Incoming event request:", body);
 
-    if (!to || !subject || points === undefined) {
-      console.error("❌ Missing required fields:", { to, subject, points });
-      return NextResponse.json(
-        { success: false, error: "Missing required fields: to, subject, or points" },
-        { status: 400 }
-      );
+        if (!to || points === undefined) {
+            console.error("❌ Missing required fields:", { to, points });
+            return NextResponse.json(
+                { success: false, error: "Missing required fields: to or points" },
+                { status: 400 }
+            );
+        }
+
+        if (!KLAVIYO_API_KEY) {
+            throw new Error("KLAVIYO_API_KEY environment variable is not set.");
+        }
+
+        // --- Klaviyo V3 Event Payload Structure ---
+        const eventPayload = {
+            data: {
+                type: "event",
+                attributes: {
+                    profile: {
+                        data: {
+                            type: "profile",
+                            attributes: {
+                                email: to
+                            }
+                        }
+                    },
+                    metric: {
+                        data: {
+                            type: "metric",
+                            attributes: {
+                                name: CUSTOM_METRIC_NAME
+                            }
+                        }
+                    },
+                    properties: {
+                        points_awarded: points,
+                        source: "Next.js Single API Sender"
+                    },
+                    time: new Date().toISOString()
+                }
+            }
+        };
+
+        const response = await axios.post(
+            KLAVIYO_V3_EVENTS_ENDPOINT,
+            eventPayload,
+            {
+                headers: {
+                    "Authorization": `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+                    "Content-Type": "application/json",
+                    "Revision": "2024-07-15",
+                },
+            }
+        );
+
+        console.log("✅ Event sent successfully to Klaviyo:", response.data);
+
+        return NextResponse.json({ success: true, message: `Event '${CUSTOM_METRIC_NAME}' successfully sent to Klaviyo.` });
+    } catch (err: any) {
+        console.error("💥 Klaviyo event sending failed:", err.response?.data || err.message);
+        if (err.response?.data?.errors) {
+            console.error("Detailed Klaviyo Errors:", JSON.stringify(err.response.data.errors, null, 2));
+        }
+        return NextResponse.json(
+            { success: false, error: err.message || "Unexpected server error" },
+            { status: 500 }
+        );
     }
-
-    const html = `
-      <div style="font-family: Arial, sans-serif; background:#fffef9; padding:16px; border-radius:16px; border:1px solid #ddd;">
-        <div style="background:#734A00; color:white; text-align:center; border-radius:9999px; padding:8px; margin-bottom:16px;">
-          Free shipping for over $50 and a full one-year return policy.
-        </div>
-        <div style="background:#734A00; color:white; text-align:center; padding:24px; border-radius:8px;">
-          <div style="margin:0 auto">
-            <div>  
-              <img src="https://loyalty-program-9jqr.vercel.app/waro2.png" alt="Logo Icon" style="height:39px;width:52px;" />
-              <img src="https://loyalty-program-9jqr.vercel.app/waro.png" alt="Logo Text" style="height:19px;" />
-            </div>
-          </div>
-          <p style="font-size:18px; font-weight:600; margin:0;">
-            THE WAROO <br/>
-            <span style="font-size:32px; font-weight:800; color:#F1DAB0CC; display:block; margin-top:8px;">
-              YOU HAVE WON ${points} POINTS
-            </span>
-          </p>
-        </div>
-      </div>
-    `;
-
-    const smtpConfig = {
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT) || 587,
-      secure: Number(process.env.SMTP_PORT) === 465,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    };
-
-    if (!smtpConfig.host || !smtpConfig.auth.user || !smtpConfig.auth.pass) {
-      throw new Error("SMTP environment variables are not properly set.");
-    }
-
-    const transporter = nodemailer.createTransport(smtpConfig);
-
-    await transporter.verify();
-    console.log("✅ SMTP server is ready to take messages.");
-
-    const mailOptions = {
-      from: `"Loyalty Program" <dev@sites.codetors.dev>`,
-      to,
-      subject,
-      html,
-    };
-
-    const info = await transporter.sendMail(mailOptions);
-    console.log("✅ Email sent successfully:", info);
-
-    return NextResponse.json({ success: true, info });
-  } catch (err: any) {
-    console.error("💥 Email sending failed:", err);
-    return NextResponse.json(
-      { success: false, error: err.message || "Unexpected error occurred" },
-      { status: 500 }
-    );
-  }
 }

@@ -1,33 +1,24 @@
-import { NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
+import { NextResponse,NextRequest } from "next/server";
+import { jwtVerify } from "jose";
 import { UserService } from "../UserService";
 
 const userService = new UserService();
+const JWT_SECRET = process.env.JWT_SECRET!;
+const secret = new TextEncoder().encode(JWT_SECRET);
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
-    // --- MANUAL COOKIE PARSING ---
-    const cookieHeader = req.headers.get("cookie") || "";
-    const cookies = Object.fromEntries(
-      cookieHeader.split("; ").map((c) => {
-        const [key, ...val] = c.split("=");
-        return [key.trim(), val.join("=")];
-      })
-    );
-
-    const token = cookies["authToken"];
+    // ✅ Use built-in cookie API
+    const token = req.cookies.get("authToken")?.value;
     if (!token) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    const secret = process.env.JWT_SECRET;
-    if (!secret) {
-      return NextResponse.json({ error: "JWT secret not set" }, { status: 500 });
-    }
+    // ✅ Non-blocking async verify
+    const { payload } = await jwtVerify<{ userId: string }>(token, secret);
 
-    const decoded = jwt.verify(token, secret) as { userId: string };
-
-    const user = await userService.getUserById(decoded.userId);
+    // ✅ Fetch only required fields
+    const user = await userService.getUserById(payload.userId);
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
