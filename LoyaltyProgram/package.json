@@ -29,9 +29,11 @@
     "prisma": "^6.16.1",
     "react": "19.1.0",
     "react-datepicker": "^8.7.0",
+    "react-day-picker": "^9.11.0",
     "react-dom": "19.1.0",
     "react-hot-toast": "^2.6.0",
     "recharts": "^3.2.0",
+    "tailwind-merge": "^3.3.1",
     "uuid": "^13.0.0"
   },
   "devDependencies": {

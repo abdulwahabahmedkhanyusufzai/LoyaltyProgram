@@ -146,7 +146,7 @@ useEffect(() => {
                         </td>
                         <td className="py-3 px-4 text-gray-600">{c.email}</td>
                         <td className="py-3 px-4">{c.numberOfOrders}</td>
-                        <td className="py-3 px-4">€ {c.amountSpent}</td>
+                        <td className="py-3 px-4">€ {Number(c.amountSpent)}</td>
                         <td className="py-3 px-4 text-green-600 font-medium">
                           {c.loyaltyTitle}
                         </td>

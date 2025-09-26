@@ -113,13 +113,13 @@ useEffect(() => {
   <table className="min-w-[900px] w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-gray-200 text-gray-600 text-sm lg:text-base">
-                <th className="py-3 px-4">Last Name / First Name</th>
-                <th className="py-3 px-4">Email / Registration</th>
-                <th className="py-3 px-4">Last Order</th>
-                <th className="py-3 px-4">Purchases (€)</th>
-                <th className="py-3 px-4">Loyalty Points</th>
-                <th className="py-3 px-4">Loyalty Title</th>
-                <th className="py-3 px-4">Action</th>
+                <th className="2xl:text-[15px] md:text-[12px] py-3 px-4">Last Name / First Name</th>
+                <th className="md:text-[12px] 2xl:text-[15px] py-3 px-4">Email / Registration</th>
+                <th className="md:text-[12px] 2xl:text-[15px] py-3 px-4">Last Order</th>
+                <th className="md:text-[12px] 2xl:text-[15px] py-3 px-4">Purchases (€)</th>
+                <th className="md:text-[12px] 2xl:text-[15px] py-3 px-4">Loyalty Points</th>
+                <th className="md:text-[12px] 2xl:text-[15px] py-3 px-4">Loyalty Title</th>
+                <th className="md:text-[12px] 2xl:text-[15px] py-3 px-4">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -128,12 +128,12 @@ useEffect(() => {
                   key={i}
                   className="border-b border-gray-100 hover:bg-gray-50 transition text-sm lg:text-base"
                 >
-                  <td className="py-3 px-4">{c.lastName} {c.firstName}</td>
-                  <td className="py-3 px-4 text-gray-600">{c.email}</td>
-                  <td className="py-3 px-4">{c.numberOfOrders}</td>
-                  <td className="py-3 px-4"> € {(c.amountSpent ?? 0)}</td>
-                  <td className="py-3 px-4"> {(c.loyaltyPoints)}</td>
-                  <td className="py-3 px-4 text-[#2C2A25] font-medium">
+                  <td className="md:text-[12px] 2xl:text-[15px] py-3 px-4">{c.lastName} {c.firstName}</td>
+                  <td className="md:text-[12px] 2xl:text-[15px] py-3 px-4 text-gray-600">{c.email}</td>
+                  <td className="md:text-[12px] 2xl:text-[15px] py-3 px-4">{c.numberOfOrders}</td>
+                  <td className="md:text-[12px] 2xl:text-[15px] py-3 px-4"> € {(Number(c.amountSpent) ?? 0)}</td>
+                  <td className="md:text-[12px] 2xl:text-[15px] py-3 px-4"> {(c.loyaltyPoints)}</td>
+                  <td className="md:text-[12px] 2xl:text-[15px] py-3 px-4 text-[#2C2A25] font-medium">
                     <div className="flex items-center gap-2">
                       <button className="cursor-pointer active:scale-90 transform transition duration-150 ease-in-out"
                        onClick={() =>
