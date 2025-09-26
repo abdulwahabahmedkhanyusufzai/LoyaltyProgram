@@ -24,12 +24,8 @@ const getFirstDayOfWeek = (monthStr: string, year: number) => {
   // Day 1 of the month
   return new Date(year, monthIndex, 1).getDay();
 };
-"use client";
-import { useState, useEffect } from "react";
-import toast from "react-hot-toast";
 
-// Helper functions ...
-// (keep getDaysInMonth and getFirstDayOfWeek as-is)
+
 
 function AdventCalendar() {
   const currentYear = new Date().getFullYear(); 
