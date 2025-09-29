@@ -3,72 +3,24 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import MonthDropdown from "./MonthDropdown";
-
-const COLORS = [
-  "#EF4444", "#F97316", "#EAB308", "#22C55E",
-  "#3B82F6", "#8B5CF6", "#EC4899", "#14B8A6",
-];
-
-function getRandomColor(seed: string) {
-  const index =
-    seed.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) %
-    COLORS.length;
-  return COLORS[index];
-}
+import { useCustomers } from "../utils/fetchCustomer";
+import DeletedDialog from "./DeletedDialog";
+import CustomerProfileModal from "./CustomerProfileModal";
 
 export const LoyaltyTable = () => {
   const router = useRouter();
-  const [customers, setCustomers] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState<any | null>(null);
-
+  const [showProfile, setShowProfile] = useState(false);
+  const { customers, loading, fetchCustomers } = useCustomers();
   const monthNames = [
     "January","February","March","April","May","June",
     "July","August","September","October","November","December",
   ];
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const monthName = monthNames[selectedMonth];
-
-  // Reusable fetch function
-  const fetchCustomers = async () => {
-    try {
-      setLoading(true);
-      const resCustomers = await fetch(`/api/customers?first=10`);
-      const customersData = await resCustomers.json();
-
-      const resPoints = await fetch(`/api/customers/points`);
-      const pointsData: { id: string; loyaltyPoints: number }[] = await resPoints.json();
-
-      if (customersData.customers) {
-        const formatted = customersData.customers.map((c: any) => {
-          const name = `${c.firstName ?? ""} ${c.lastName ?? ""}`.trim() || "Unknown";
-          const email = c.email ?? "N/A";
-          const initial = (name[0] || email[0] || "?").toUpperCase();
-          const bgColor = getRandomColor(email || name);
-
-          const pointsInfo = pointsData.find((p) => p.id === c.id);
-          const totalPoints = pointsInfo?.loyaltyPoints ?? 0;
-
-          return {
-            id: c.id,
-            name,
-            email,
-            points: totalPoints,
-            orders: c.numberOfOrders ?? 0,
-            initial,
-            bgColor,
-          };
-        });
-        setCustomers(formatted);
-      }
-    } catch (err) {
-      console.error("❌ Error fetching customers:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchCustomers();
@@ -84,28 +36,15 @@ export const LoyaltyTable = () => {
     setShowDialog(true);
   };
 
-  const confirmDelete = async () => {
-    if (!selectedCustomer) return;
+ 
 
-    try {
-      setDeleting(true);
-      const res = await fetch(`/api/customers/${selectedCustomer.id}`, {
-        method: "DELETE",
-      });
-
-      if (!res.ok) throw new Error("Failed to delete customer");
-
-      // Refetch customers after delete
-      await fetchCustomers();
-    } catch (err) {
-      console.error("❌ Error deleting customer:", err);
-    } finally {
-      setDeleting(false);
-      setShowDialog(false);
-      setSelectedCustomer(null);
-    }
+    const handleViewClick = (customer: any) => {
+    setSelectedCustomer(customer);
+    setShowProfile(true);
   };
 
+  
+  console.log("Customers:", customers.map(c => ({ id: c.id, name: c.name, email: c.email, points: c.points, orders: c.orders, bgColor: c.bgColor })));
   return (
     <div className="w-full lg:w-[724px] lg:h-[500px] 2xl:w-[949px] 2xl:h-[533px] border border-[#2C2A25] rounded-[24px] sm:rounded-[32px] p-3 sm:p-4 flex flex-col relative">
       {/* Header */}
@@ -170,15 +109,46 @@ export const LoyaltyTable = () => {
                       <button onClick={() => handleDeleteClick(customer)} className="cursor-pointer hover:opacity-70">
                         <img src="dustbuin.png" className="w-[16px] sm:w-[20px]" alt="delete" />
                       </button>
-                      <button className="hover:opacity-70">
+                      <button onClick={() => handleViewClick(customer)} className="cursor-pointer hover:opacity-70">
                         <img src="eye.png" className="w-[16px] sm:w-[20px]" alt="view" />
                       </button>
-                      <button className="hover:opacity-70">
+                      <button className="hover:opacity-70 cursor-pointer" onClick={() => setOpenMenuId(openMenuId === customer.id ? null : customer.id)}>
                         <img src="menu.png" className="w-[16px] sm:w-[20px]" alt="menu" />
                       </button>
+                       {openMenuId === customer.id && (
+        <div className="absolute bottom-full right-0 mb-2 w-40 bg-white border rounded shadow-lg z-50">
+          <ul className="flex flex-col text-sm text-gray-800">
+            <li>
+              <button
+                className="w-full text-left px-3 py-2 hover:bg-gray-100"
+                onClick={() => { /* handle email */ }}
+              >
+                Email
+              </button>
+            </li>
+            <li>
+              <button
+                className="w-full text-left px-3 py-2 hover:bg-gray-100"
+                onClick={() => { /* show points info */ }}
+              >
+                About Points
+              </button>
+            </li>
+            <li>
+              <button
+                className="w-full text-left px-3 py-2 hover:bg-gray-100"
+                onClick={() => { /* handle edit customer */ }}
+              >
+                Edit Customer
+              </button>
+            </li>
+          </ul>
+        </div>
+      )}
                     </div>
                   </td>
                 </tr>
+                
               ))}
             </tbody>
           </table>
@@ -186,37 +156,21 @@ export const LoyaltyTable = () => {
       </div>
 
       {/* Confirmation Dialog */}
-      {showDialog && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
-          <div className="bg-background grid w-full max-w-sm gap-4 rounded-lg border p-6 shadow-lg">
-            <div className="flex flex-col gap-2 text-center sm:text-left">
-              <h2 className="text-lg font-semibold">
-                Are you sure you want to delete <span className="font-bold">{selectedCustomer?.name}</span>?
-              </h2>
-              <p className="text-muted-foreground text-sm">This action cannot be undone.</p>
-            </div>
-            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-              <button
-                onClick={() => setShowDialog(false)}
-                className="cursor-pointer hover:opacity-70 inline-flex items-center justify-center gap-2 rounded-md border bg-background px-4 py-2 h-9"
-              >
-                Cancel
-              </button>
-              <button
-                disabled={deleting}
-                onClick={confirmDelete}
-                className="cursor-pointer hover:opacity-70 inline-flex items-center justify-center gap-2 rounded-md bg-black text-white px-4 py-2 h-9"
-              >
-                {deleting ? (
-                  <div className="w-5 h-5 border-4 border-gray-300 border-t-[#3B82F6] rounded-full animate-spin" />
-                ) : (
-                  "Yes, Delete"
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
+      <DeletedDialog
+        selectedCustomer={selectedCustomer}
+        setSelectedCustomer={setSelectedCustomer}
+        showDialog={showDialog}
+        setShowDialog={setShowDialog}
+        deleting={deleting}
+        setDeleting={setDeleting}
+      />
+        {showProfile && (
+        <CustomerProfileModal
+          customer={selectedCustomer}
+          onClose={() => setShowProfile(false)}
+        />
       )}
+      
     </div>
   );
 };
