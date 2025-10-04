@@ -26,6 +26,8 @@ function LoyalCustomersList() {
     const params = new URLSearchParams(window.location.search);
     const emailParam = params.get("email");
     if (emailParam) setSelectedEmail(emailParam);
+    setSelectedTab("Send an Email");
+    setStep(2);
   }, []);
 
   useEffect(() => {
