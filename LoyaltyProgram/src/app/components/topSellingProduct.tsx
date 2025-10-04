@@ -5,8 +5,9 @@ import React, { useEffect, useRef, useState } from "react";
 type ProductNode = {
   id: string;
   title: string;
-  images: {
-    edges: { node: { id: string; url: string; altText?: string | null } }[];
+  featuredImage: {
+    url: string;
+    altText: string | null;
   };
 };
 
@@ -111,7 +112,7 @@ export const TopSellingProducts = () => {
       {loading
         ? Array.from({ length: 6 }).map((_, idx) => <SkeletonProduct key={idx} />)
         : products.map((p) => {
-            const img = p.images.edges[0]?.node;
+            const img = p.featuredImage;
             return (
               <div
                 key={p.id}
