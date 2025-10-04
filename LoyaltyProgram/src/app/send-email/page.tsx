@@ -72,7 +72,7 @@ function LoyalCustomersList() {
 
 
   return (
-    <Suspense fallback={<Loader />}>
+   
     <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen">
       {!isLoggedIn && showLogin && (
         <LoginList
@@ -80,6 +80,7 @@ function LoyalCustomersList() {
           onLogin={handleLoginSuccess}
         />
       )}
+      
       <div className="max-w-6xl mx-auto bg-[#fffef9] rounded-2xl shadow-sm border border-gray-200 p-6">
         
         <Header/>
@@ -105,15 +106,18 @@ function LoyalCustomersList() {
         )}
 
         {/* Send an Email Tab */}
+         <Suspense fallback={<Loader />}>
         {selectedTab === "Send an Email" && step === 2 && (
           <SendEmail customers={customers} prefillEmail={selectedEmail}/>
         )}
+        </Suspense>
       </div>
+       
       {selectedTab === "Customers" && step === 2 && (
       <HandlePageChange page={page} setPage={setPage} PAGE_SIZE={PAGE_SIZE} totalCount={totalCount} />
       )}
     </div>
-    </Suspense>
+   
   );
 }
 
