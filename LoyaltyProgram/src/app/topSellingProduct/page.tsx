@@ -21,7 +21,6 @@ const ProgramLoyal2 = () => {
   const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(true);
   const [offerToEdit, setOfferToEdit] = useState<Offer | null>(null);
-  const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
 
   const handleEdit = (offer: Offer) => {

@@ -111,7 +111,7 @@ export const TopSellingProducts = () => {
       {loading
         ? Array.from({ length: 6 }).map((_, idx) => <SkeletonProduct key={idx} />)
         : products.map((p) => {
-            const img = p.featuredImage;
+            const img = p.images.edges[0]?.node;
             return (
               <div
                 key={p.id}
