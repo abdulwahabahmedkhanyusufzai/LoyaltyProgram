@@ -1,9 +1,8 @@
 // services/UserService.ts
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../../lib/prisma";
 import argon2 from "argon2";
 import { SignJWT, jwtVerify } from "jose";
 
-const prisma = new PrismaClient();
 
 function debug(...args: any[]) {
   if (process.env.NODE_ENV !== "production") {

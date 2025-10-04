@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 import { LoginManager } from "../utils/LoginManager";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import {FloatingInput} from "../components/FloatingInput";
 
 const LoginModal = ({ onLogin }: { onLogin?: () => void }) => {
   const router = useRouter();
-    const [username, setUsername] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -30,12 +31,11 @@ const LoginModal = ({ onLogin }: { onLogin?: () => void }) => {
 
     try {
       setLoading(true);
-      const user = await loginManager.login(); // cookie auto set
+      const user = await loginManager.login();
       toast.success(`Welcome, ${user.fullname}!`);
-
-      if (onLogin) onLogin(); // optional callback
+      if (onLogin) onLogin();
       router.push("/waro");
-      closeModal(); // close modal after login
+      closeModal();
     } catch (err: any) {
       setError(err.message);
       toast.error(err.message);
@@ -44,7 +44,7 @@ const LoginModal = ({ onLogin }: { onLogin?: () => void }) => {
     }
   };
 
-  if (!isOpen) return null; // modal closed
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
@@ -52,8 +52,6 @@ const LoginModal = ({ onLogin }: { onLogin?: () => void }) => {
         className={`bg-[#fffef9] p-8 rounded-2xl shadow-2xl max-w-lg w-full relative transform transition-all duration-300 ease-out
           ${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
       >
-        {/* Close Button */}
-       
         {/* Title */}
         <div className="text-center">
           <div className="p-4 inline-block mb-4">
@@ -64,22 +62,25 @@ const LoginModal = ({ onLogin }: { onLogin?: () => void }) => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleLogin} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Enter Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="w-full px-5 py-3 border-2 border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#f1dab0] transition-all"
-          />
-          <input
-            type="password"
-            placeholder="Enter Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-5 py-3 border-2 border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#f1dab0] transition-all"
-          />
+        <form onSubmit={handleLogin} className="space-y-6">
+          <FloatingInput
+  id="username"
+  placeholder="Enter Username"
+  value={username}
+  onChange={(e) => setUsername(e.target.value)}
+/>
+
+<FloatingInput
+  id="password"
+  type="password"
+placeholder="Enter Password"
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+/>
+
+
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+
           <button
             type="submit"
             disabled={loading}

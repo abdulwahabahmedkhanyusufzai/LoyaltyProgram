@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../../lib/prisma";
 import { fetchProcessUpsertCustomers } from "./services/fetchProcessUpsertCustomers";
 import { fetchCustomersFromDB } from "./services/fetchCustomersfromDB";
 import { count } from "console";
 
-const prisma = new PrismaClient();
 
 export async function GET(req: Request) {
   try {

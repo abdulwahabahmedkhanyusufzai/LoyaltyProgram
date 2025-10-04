@@ -1,8 +1,7 @@
 //app/api/ shopify/callback/route.js
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../../../lib/prisma";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
 
 export const dynamic = 'force-dynamic';
 

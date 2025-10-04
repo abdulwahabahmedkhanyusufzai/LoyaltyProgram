@@ -26,7 +26,7 @@ const CustomerItem = ({ name, email }: { name: string; email: string }) => {
   const initial = (name?.trim()?.[0] || email?.[0] || "?").toUpperCase();
     const bgColor = getRandomColor(name || email);
   return(
-  <div className="flex items-center gap-3 xl:gap-4">
+  <div className="flex items-center gap-3 xl:gap-4 mb-1 mt-1">
      <div className="flex items-center justify-center rounded-full min-w-[50px] aspect-square bg-[#2C2A25] text-white text-lg font-bold"
      style={{backgroundColor:bgColor}}>
         {initial}
@@ -42,11 +42,19 @@ const CustomerItem = ({ name, email }: { name: string; email: string }) => {
 )
 };
 
-const Loader = () => (
-  <div className="flex justify-center items-center py-6">
-    <div className="w-8 h-8 border-4 border-gray-400 border-t-[#734A00] rounded-full animate-spin" />
+const SkeletonOffer = () => (
+  <div className="flex items-center gap-8 animate-pulse">
+    {/* Image Circle Placeholder */}
+    <div className="rounded-full min-w-[50px] aspect-square bg-gray-300" />
+
+    {/* Text Placeholder */}
+    <div className="flex flex-col gap-2 w-full">
+      <div className="h-3 w-24 bg-gray-300 rounded" />
+      <div className="h-2 w-35 bg-gray-200 rounded" />
+    </div>
   </div>
 );
+
 export const LoyalCustomer = () => {
   const [customers, setCustomers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -74,12 +82,22 @@ export const LoyalCustomer = () => {
 
     fetchCustomers();
   }, []);
-    if (loading) return <Loader />;
+  
+    
   return (
     <div className="flex flex-col divide-y w-full divide-[#D2D1CA]">
-      {customers.map((customer, index) => (
-        <CustomerItem key={index} {...customer} />
-      ))}
+      {loading ? (
+  <>
+    <SkeletonOffer />
+    <SkeletonOffer />
+    <SkeletonOffer />
+  </>
+) : (
+  customers.map((customer, index) => (
+    <CustomerItem key={index} {...customer} />
+  ))
+)}
+
     </div>
   );
 };

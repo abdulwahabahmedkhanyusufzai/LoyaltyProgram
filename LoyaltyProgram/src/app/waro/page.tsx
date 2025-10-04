@@ -9,11 +9,11 @@ import { ActivityCalendar } from "../components/LoyalCalendar";
 import { useRouter } from "next/navigation";
 
 
-const Loader = () => (
-  <div className="flex items-center justify-center">
-    <div className="w-8 h-8 border-4 border-gray-400 border-t-[#734A00] rounded-full animate-spin"></div>
-  </div>
+
+const SkeletonLoader = () => (
+  <div className="w-20 h-10 sm:w-24 sm:h-12 lg:w-28 lg:h-14 2xl:w-36 2xl:h-16 bg-gray-300 rounded-lg animate-pulse"></div>
 );
+
 
 const WaroPage = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -56,12 +56,12 @@ const WaroPage = () => {
 
   const stats = [
   { label: "Loyalty Program", content: <LoyaltyProgram />,redirect: "/loyal-customers/program" },
-  { label: "Top Selling Products", content: <TopSellingProducts /> },
+  { label: "Top Selling Products", content: <TopSellingProducts />, redirect:"/topSellingProduct"},
   {
     label: "Total Registered Customers",
     content: (
       <div className="text-center flex items-center justify-center mt-6 text-[45px] sm:text-[36px] lg:text-[51px] 2xl:text-[71px] font-extrabold text-[#2C2A25]">
-        {customerCount !== null ? `${customerCount}+` : <Loader/>}
+        {customerCount !== null ? `${customerCount}+` : <SkeletonLoader/>}
       </div>
     ),
     redirect:"/send-email"
@@ -112,7 +112,7 @@ const WaroPage = () => {
                   <img
                     src={
                       stat.label === "Top Selling Products"
-                        ? `Arrow1.png`
+                        ? `Arrow12.svg`
                         : `arrow.png`
                     }
                     alt="arrow"

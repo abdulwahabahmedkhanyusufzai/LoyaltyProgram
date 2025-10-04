@@ -1,10 +1,10 @@
 // app/api/offers/[id]/route.ts
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../../../lib/prisma";
 import { writeFile } from "fs/promises";
 import path from "path";
 
-const prisma = new PrismaClient();
+
 
 export async function PUT(
   req: Request,

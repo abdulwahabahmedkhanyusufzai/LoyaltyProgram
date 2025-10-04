@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client"; // adjust path to your prisma client
-
-const prisma = new PrismaClient();
+import { prisma } from "../../../../lib/prisma";
 
 export async function DELETE(req: Request,context: RouteContext<'/api/loyalty-program/[id]'>) {
   const  {id } = await context.params;

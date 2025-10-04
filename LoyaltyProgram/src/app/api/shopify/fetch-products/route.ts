@@ -1,30 +1,48 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../../../lib/prisma";
 
-const prisma = new PrismaClient();
+const API_VERSION = "2025-01";
 
-const API_VERSION = "2025-01"; // ✅ use a real version (not 2025-07)
-
-const QUERY = `
-  query GetProducts($first: Int!, $after: String) {
-    products(first: $first, after: $after) {
+// 🔹 Updated query: fetch full product info
+const ORDER_QUERY = `
+  query GetOrders($first: Int!, $after: String) {
+    orders(first: $first, after: $after, sortKey: CREATED_AT, reverse: true) {
       pageInfo { hasNextPage endCursor }
       edges {
-        cursor
         node {
           id
-          title
-          handle
-          vendor
-          productType
-          tags
           createdAt
-          updatedAt
-variants(first: 5) {
-  edges { node { id title sku price } }
-}
-          images(first: 3) {
-            edges { node { id url altText } }
+          lineItems(first: 50) {
+            edges {
+              node {
+                quantity
+                product {
+                  id
+                  title
+                  handle
+                  productType
+                  vendor
+                  tags
+                  status
+                  onlineStoreUrl
+                  featuredImage {
+                    url
+                    altText
+                  }
+                  variants(first: 5) {
+                    edges {
+                      node {
+                        id
+                        title
+                        sku
+                        price
+                        inventoryQuantity
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -32,21 +50,12 @@ variants(first: 5) {
   }
 `;
 
-async function fetchProductsFromShop(
-  shop: string,
-  token: string,
-  first: number,
-  after: string | null
-) {
-  const domain = shop.replace(/^https?:\/\//, "").replace(/\/$/, ""); // normalize
+// 🔹 Helper: fetch orders from Shopify
+async function fetchOrders(shop: string, token: string, first: number, after: string | null) {
+  const domain = shop.replace(/^https?:\/\//, "").replace(/\/$/, "");
   const url = `https://${domain}/admin/api/${API_VERSION}/graphql.json`;
 
-  console.log("[Shopify] Fetching products:", {
-    url,
-    first,
-    after,
-    tokenPreview: token?.slice(0, 6) + "...",
-  });
+  console.log("🌍 [fetchOrders] Sending request:", { url, first, after });
 
   const response = await fetch(url, {
     method: "POST",
@@ -54,67 +63,78 @@ async function fetchProductsFromShop(
       "Content-Type": "application/json",
       "X-Shopify-Access-Token": token,
     },
-    body: JSON.stringify({ query: QUERY, variables: { first, after } }),
+    body: JSON.stringify({ query: ORDER_QUERY, variables: { first, after } }),
   });
 
-  console.log("[Shopify] Response status:", response.status, response.statusText);
+  console.log("📡 [fetchOrders] Response status:", response.status, response.statusText);
 
   let json;
   try {
     json = await response.json();
   } catch (err) {
-    console.error("[Shopify] Failed to parse JSON:", err);
-    throw new Error("Invalid JSON response from Shopify");
+    console.error("❌ [fetchOrders] JSON parse error:", err);
+    throw new Error("Failed to parse Shopify JSON response");
   }
-
-  console.log("[Shopify] Raw response JSON:", JSON.stringify(json, null, 2));
 
   if (json.errors) {
-    console.error("[Shopify] GraphQL errors:", json.errors);
-    throw new Error(JSON.stringify(json.errors));
+    console.error("❌ [fetchOrders] GraphQL errors:", JSON.stringify(json.errors, null, 2));
+    throw new Error("Shopify GraphQL errors");
   }
 
-  return json.data?.products;
+  if (!json.data?.orders) {
+    console.error("⚠️ [fetchOrders] Missing 'orders' in response:", JSON.stringify(json, null, 2));
+    throw new Error("No orders found in Shopify response");
+  }
+
+  console.log("✅ [fetchOrders] Orders fetched:", json.data.orders.edges.length);
+  return json.data.orders;
 }
 
+// 🔹 API Route
 export async function GET(req: Request) {
+  console.log("🚀 [API] /api/top-products START");
+
   try {
     const { searchParams } = new URL(req.url);
     const shopId = Number(searchParams.get("shopId") ?? 2);
-    const first = Number(searchParams.get("first") ?? 10);
+    const first = Number(searchParams.get("first") ?? 20);
     const after = searchParams.get("after");
 
-    console.log("[API] Incoming request", { shopId, first, after });
-
-    // Fetch shop credentials from Prisma
+    // Get shop credentials
     const shop = await prisma.shop.findUnique({ where: { id: shopId } });
-
     if (!shop) {
-      console.warn("[API] Shop not found for ID:", shopId);
+      console.warn("⚠️ [API] Shop not found:", shopId);
       return NextResponse.json({ error: "Shop not found" }, { status: 404 });
     }
 
-    console.log("[API] Shop credentials:", {
-      id: shop.id,
-      domain: shop.shop,
-      tokenPreview: shop.accessToken?.slice(0, 6) + "...",
+    // Fetch orders
+    const orders = await fetchOrders(shop.shop, shop.accessToken, first, after);
+
+    // Aggregate product counts
+    const productCount: Record<string, { info: any; count: number }> = {};
+
+    orders.edges.forEach((order: any) => {
+      order.node.lineItems.edges.forEach((li: any) => {
+        const product = li.node.product;
+        if (!product) return;
+
+        if (!productCount[product.id]) {
+          productCount[product.id] = { info: product, count: 0 };
+        }
+        productCount[product.id].count += li.node.quantity;
+      });
     });
 
-    const products = await fetchProductsFromShop(
-      shop.shop,
-      shop.accessToken,
-      first,
-      after
-    );
+    // Build final list: merge full product info + count
+    const products = Object.entries(productCount)
+      .map(([id, { info, count }]) => ({ ...info, count }))
+      .sort((a, b) => b.count - a.count);
 
-    console.log("[API] Successfully fetched products count:", products?.edges?.length ?? 0);
+    console.log("🏆 [API] Products computed:", products.slice(0, 5));
 
-    return NextResponse.json(products, { status: 200 });
-  } catch (err) {
-    console.error("[API] Shopify API error (catch block):", err);
-    return NextResponse.json(
-      { error: "Failed to fetch products", details: err.message || String(err) },
-      { status: 500 }
-    );
+    return NextResponse.json({ products }, { status: 200 });
+  } catch (err: any) {
+    console.error("❌ [API] Failed to fetch products:", err.message || err);
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
