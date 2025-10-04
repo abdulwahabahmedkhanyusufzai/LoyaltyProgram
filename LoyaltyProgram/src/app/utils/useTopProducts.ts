@@ -1,3 +1,4 @@
+import { count } from 'console';
 // hooks/useTopProducts.ts
 "use client";
 
@@ -10,6 +11,8 @@ type ProductNode = {
     url: string;
     altText: string | null;
   };
+  purchaseDates?: string[]; 
+  count?: number;
 };
 
 export function useTopProducts(shopId: number, first: number) {
