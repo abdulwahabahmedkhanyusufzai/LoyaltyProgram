@@ -1,7 +1,6 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import Tabs from "../components/ButtonGroup";
 import LoginList from "../components/login";
 import { Loader } from "./Loader";
@@ -22,8 +21,8 @@ function LoyalCustomersList() {
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
 
-  const searchParams = useSearchParams();
-  const prefillEmail = searchParams.get("email") || "";
+   const params = new URLSearchParams(window.location.search);
+  const prefillEmail = params.get("email") || "";
 
   // Handle prefill email
   useEffect(() => {
@@ -66,7 +65,7 @@ function LoyalCustomersList() {
   if (loading) return <Loader />;
 
   return (
-    <Suspense fallback={<Loader />}>
+
       <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen">
         {!isLoggedIn && showLogin && (
           <LoginList onClose={() => setShowLogin(false)} onLogin={handleLoginSuccess} />
@@ -107,7 +106,6 @@ function LoyalCustomersList() {
           <HandlePageChange page={page} setPage={setPage} PAGE_SIZE={PAGE_SIZE} totalCount={totalCount} />
         )}
       </div>
-    </Suspense>
   );
 }
 
