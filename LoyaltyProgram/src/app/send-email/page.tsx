@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Tabs from "../components/ButtonGroup";
 import LoginList from "../components/login";
 import { Loader } from "./Loader";
@@ -72,6 +72,7 @@ function LoyalCustomersList() {
 
 
   return (
+    <Suspense fallback={<Loader />}>
     <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen">
       {!isLoggedIn && showLogin && (
         <LoginList
@@ -112,6 +113,7 @@ function LoyalCustomersList() {
       <HandlePageChange page={page} setPage={setPage} PAGE_SIZE={PAGE_SIZE} totalCount={totalCount} />
       )}
     </div>
+    </Suspense>
   );
 }
 
