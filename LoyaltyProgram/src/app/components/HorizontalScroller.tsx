@@ -1,53 +1,18 @@
+// components/TopSellingProductsHorizontal.tsx
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
+import { useTopProducts } from "../utils/useTopProducts";
+import { SkeletonProduct } from "./SkeltonOfferFetching";
 
-type ProductNode = {
-  id: string;
-  title: string;
-  featuredImage: {
-    url: string;
-    altText: string | null;
-  };
-};
+export const TopSellingProductsHorizontal = () => {
+  const { products, loading } = useTopProducts(2, 10);
+   const scrollerRef = useRef<HTMLDivElement | null>(null);
+   const isDown = useRef(false);
+   const startX = useRef(0);
+   const scrollLeft = useRef(0);
 
-// 🔹 Skeleton for dark card background
-const SkeletonProduct = () => (
-  <div className="
-    w-[60px] h-[90px] 
-    lg:w-[90px] lg:h-[110px] 
-    2xl:w-[122.7px] 2xl:h-[169.1px] 
-    rounded-[16.81px] flex-shrink-0 snap-start 
-    bg-gray-700/50 animate-pulse
-  " />
-);
-
-export const TopSellingProducts = () => {
-  const scrollerRef = useRef<HTMLDivElement | null>(null);
-  const isDown = useRef(false);
-  const startX = useRef(0);
-  const scrollLeft = useRef(0);
-
-  const [products, setProducts] = useState<ProductNode[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch("/api/shopify/fetch-products?shopId=2&first=10");
-        const data = await res.json();
-        console.log("Fetched products:", data.products);
-        setProducts(data.products);
-      } catch (err) {
-        console.error("Failed to fetch products:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProducts();
-  }, []);
-
-  const getClientX = (e: any) => {
+   const getClientX = (e: any) => {
     if (e.touches?.length) return e.touches[0].clientX;
     if (e.changedTouches?.length) return e.changedTouches[0].clientX;
     if (typeof e.clientX === "number") return e.clientX;
@@ -90,7 +55,7 @@ export const TopSellingProducts = () => {
       } catch {}
     }
   };
-
+  
   return (
     <div
       ref={scrollerRef}
@@ -106,11 +71,13 @@ export const TopSellingProducts = () => {
       onTouchStart={startDrag}
       onTouchMove={moveDrag}
       onTouchEnd={endDrag}
-      className="pt-[5px] flex overflow-x-auto no-scrollbar gap-[5px] scroll-smooth snap-x snap-mandatory cursor-grab"
+      className="pt-[5px] flex overflow-x-auto no-scrollbar gap-[5px] scroll-smooth snap-x snap-mandatory cursor-grab "
       style={{ WebkitOverflowScrolling: "touch", touchAction: "pan-x" }}
     >
       {loading
-        ? Array.from({ length: 6 }).map((_, idx) => <SkeletonProduct key={idx} />)
+        ? Array.from({ length: 6 }).map((_, idx) => (
+            <SkeletonProduct key={idx} variant="horizontal" />
+          ))
         : products.map((p) => {
             const img = p.featuredImage;
             return (
@@ -123,8 +90,7 @@ export const TopSellingProducts = () => {
                     src={img.url}
                     alt={img.altText || p.title}
                     draggable={false}
-                    onDragStart={(e) => e.preventDefault()}
-                    className="w-full h-full rounded-[16.81px] object-cover transition-transform duration-300 ease-in-out group-hover:scale-110"
+                    className="w-full h-full rounded-[16.81px] object-cover transition-transform duration-300 ease-in-out hover:scale-105"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gray-800 rounded-[16.81px] text-xs text-gray-400">

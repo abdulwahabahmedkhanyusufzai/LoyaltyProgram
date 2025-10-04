@@ -9,9 +9,12 @@ import HomeSection from "./HomeSection";
 import SendEmail from "./SendEmail";
 import HandlePageChange from "./HandlePageChange";
 import { useCustomers } from "./hooks/useCustomer";
+import { useSearchParams } from "next/navigation";
 
 function LoyalCustomersList() {
-  
+
+   const searchParams = useSearchParams();
+  const prefillEmail = searchParams.get("email") || "";
   const [step, setStep] = useState(1);
   const [selectedTab, setSelectedTab] = useState("Home");
   const { customers, totalCount, loading } = useCustomers();
@@ -19,6 +22,14 @@ function LoyalCustomersList() {
   const [showLogin, setShowLogin] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+  if (prefillEmail) {
+    setSelectedEmail(prefillEmail);
+    setSelectedTab("Send an Email");
+    setStep(2);
+  }
+}, [prefillEmail,loading]);
 
   useEffect(() => {
     const checkLogin = async () => {
@@ -53,10 +64,13 @@ function LoyalCustomersList() {
     );
   }
 
+
     const handleEmailClick = (email: string) => {
   setSelectedEmail(email);
   setSelectedTab("Send an Email");
 };
+
+
   return (
     <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen">
       {!isLoggedIn && showLogin && (

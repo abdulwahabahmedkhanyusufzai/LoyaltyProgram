@@ -3,7 +3,7 @@ import { prisma } from "../../../../lib/prisma";
 
 const API_VERSION = "2025-01";
 
-// 🔹 Updated query: fetch full product info
+// 🔹 Shopify GraphQL query: fetch orders with product + line items
 const ORDER_QUERY = `
   query GetOrders($first: Int!, $after: String) {
     orders(first: $first, after: $after, sortKey: CREATED_AT, reverse: true) {
@@ -110,24 +110,35 @@ export async function GET(req: Request) {
     // Fetch orders
     const orders = await fetchOrders(shop.shop, shop.accessToken, first, after);
 
-    // Aggregate product counts
-    const productCount: Record<string, { info: any; count: number }> = {};
+    // 🔹 Aggregate: product counts + purchase dates
+    const productCount: Record<string, { info: any; count: number; purchaseDates: string[] }> = {};
 
     orders.edges.forEach((order: any) => {
+      const orderDate = order.node.createdAt;
+
       order.node.lineItems.edges.forEach((li: any) => {
         const product = li.node.product;
         if (!product) return;
 
         if (!productCount[product.id]) {
-          productCount[product.id] = { info: product, count: 0 };
+          productCount[product.id] = { info: product, count: 0, purchaseDates: [] };
         }
+
+        // Count product sales
         productCount[product.id].count += li.node.quantity;
+
+        // Track purchase date
+        productCount[product.id].purchaseDates.push(orderDate);
       });
     });
 
-    // Build final list: merge full product info + count
+    // 🔹 Build final product list
     const products = Object.entries(productCount)
-      .map(([id, { info, count }]) => ({ ...info, count }))
+      .map(([id, { info, count, purchaseDates }]) => ({
+        ...info,
+        count,
+        purchaseDates, // array of timestamps like ["2025-09-29T11:25:00Z", ...]
+      }))
       .sort((a, b) => b.count - a.count);
 
     console.log("🏆 [API] Products computed:", products.slice(0, 5));

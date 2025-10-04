@@ -2,11 +2,11 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { LoyaltyProgram } from "../components/loyaltyprogramcard";
-import { TopSellingProducts } from "../components/topSellingProduct";
 import { LoyalCustomer } from "../components/loyalcustomers";
 import { LoyaltyTable } from "../components/TableLoyalty";
 import { ActivityCalendar } from "../components/LoyalCalendar";
 import { useRouter } from "next/navigation";
+import { TopSellingProductsHorizontal } from "../components/HorizontalScroller";
 
 
 
@@ -56,7 +56,7 @@ const WaroPage = () => {
 
   const stats = [
   { label: "Loyalty Program", content: <LoyaltyProgram />,redirect: "/loyal-customers/program" },
-  { label: "Top Selling Products", content: <TopSellingProducts />, redirect:"/topSellingProduct"},
+  { label: "Top Selling Products", content: <TopSellingProductsHorizontal/>, redirect:"/topSellingProduct"},
   {
     label: "Total Registered Customers",
     content: (
