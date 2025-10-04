@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Tabs from "../components/ButtonGroup";
 import LoginList from "../components/login";
 import { Loader } from "./Loader";
@@ -21,17 +21,12 @@ function LoyalCustomersList() {
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
 
-   const params = new URLSearchParams(window.location.search);
-  const prefillEmail = params.get("email") || "";
-
-  // Handle prefill email
-  useEffect(() => {
-    if (prefillEmail) {
-      setSelectedEmail(prefillEmail);
-      setSelectedTab("Send an Email");
-      setStep(2);
-    }
-  }, [prefillEmail]);
+    useEffect(() => {
+    // This runs only on the client, so window is defined
+    const params = new URLSearchParams(window.location.search);
+    const emailParam = params.get("email");
+    if (emailParam) setSelectedEmail(emailParam);
+  }, []);
 
   useEffect(() => {
     const checkLogin = async () => {
