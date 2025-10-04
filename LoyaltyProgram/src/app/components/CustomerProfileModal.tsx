@@ -10,6 +10,7 @@ interface CustomerProfileModalProps {
     points: number;
     orders: number;
     bgColor?: string; // optional profile image URL
+    initial?: string; // Remove this comment if you want to add initial to the type
   } | null;
   onClose: () => void;
 }
@@ -41,11 +42,15 @@ export const CustomerProfileModal: React.FC<CustomerProfileModalProps> = ({
         {/* Customer Info */}
         <div className="flex flex-col items-center gap-4">
         <div
-                      className="text-[28px] w-[28px] h-[28px] sm:w-[62px] sm:h-[62px] rounded-full flex items-center justify-center text-white font-bold mr-[12px] sm:mr-[20px]"
-                      style={{ backgroundColor: customer.bgColor }}
-                    >
-                      {customer.initial}
-                    </div>
+          className="text-[28px] w-[28px] h-[28px] sm:w-[62px] sm:h-[62px] rounded-full flex items-center justify-center text-white font-bold mr-[12px] sm:mr-[20px]"
+          style={{ backgroundColor: customer.bgColor }}
+        >
+          {customer.initial
+            ? customer.initial
+            : customer.name
+            ? customer.name.charAt(0).toUpperCase()
+            : ""}
+        </div>
           <h2 className="text-xl font-semibold">{customer.name}</h2>
           <p className="text-gray-500">{customer.email}</p>
 
