@@ -1,9 +1,10 @@
-import { fetchCustomers } from "../utils/fetchCustomer";
+import { useCustomers } from "../utils/fetchCustomer";
 
 const DeletedDialog = ({selectedCustomer,setDeleting,setShowDialog,setSelectedCustomer,showDialog,deleting}) =>{
-const confirmDelete = async () => {
-    if (!selectedCustomer) return;
+  const { fetchCustomers } = useCustomers();
 
+  const confirmDelete = async () => {
+    if (!selectedCustomer) return;
     try {
       setDeleting(true);
       const res = await fetch(`/api/customers/${selectedCustomer.id}`, {
