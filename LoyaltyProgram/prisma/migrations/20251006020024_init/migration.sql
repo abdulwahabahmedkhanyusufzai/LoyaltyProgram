@@ -1,6 +1,9 @@
 -- CreateEnum
 CREATE TYPE "public"."OfferType" AS ENUM ('PERCENTAGE', 'FIXED', 'POINTS', 'CASHBACK');
 
+-- CreateEnum
+CREATE TYPE "public"."OrderStatus" AS ENUM ('PENDING', 'COMPLETED', 'CANCELLED', 'REFUNDED');
+
 -- CreateTable
 CREATE TABLE "public"."Offer" (
     "id" TEXT NOT NULL,
@@ -72,6 +75,7 @@ CREATE TABLE "public"."PointsLedger" (
     "earnedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "expiresAt" TIMESTAMP(3),
     "metadata" JSONB,
+    "orderId" TEXT,
 
     CONSTRAINT "PointsLedger_pkey" PRIMARY KEY ("id")
 );
@@ -162,6 +166,38 @@ CREATE TABLE "public"."AdventCalendarEntry" (
     CONSTRAINT "AdventCalendarEntry_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "public"."Order" (
+    "id" TEXT NOT NULL,
+    "customerId" TEXT NOT NULL,
+    "shopId" INTEGER,
+    "orderNumber" TEXT NOT NULL,
+    "totalAmount" DECIMAL(65,30) NOT NULL DEFAULT 0,
+    "currency" TEXT NOT NULL DEFAULT 'EUR',
+    "status" "public"."OrderStatus" NOT NULL DEFAULT 'PENDING',
+    "pointsEarned" INTEGER NOT NULL DEFAULT 0,
+    "pointsRedeemed" INTEGER NOT NULL DEFAULT 0,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "metadata" JSONB,
+
+    CONSTRAINT "Order_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."OrderItem" (
+    "id" TEXT NOT NULL,
+    "orderId" TEXT NOT NULL,
+    "productId" TEXT,
+    "productName" TEXT NOT NULL,
+    "quantity" INTEGER NOT NULL DEFAULT 1,
+    "price" DECIMAL(65,30) NOT NULL DEFAULT 0,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "OrderItem_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE INDEX "OfferRedemption_offerId_idx" ON "public"."OfferRedemption"("offerId");
 
@@ -189,6 +225,15 @@ CREATE UNIQUE INDEX "PointRule_key_key" ON "public"."PointRule"("key");
 -- CreateIndex
 CREATE UNIQUE INDEX "loyal_customers_email_key" ON "public"."loyal_customers"("email");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Order_orderNumber_key" ON "public"."Order"("orderNumber");
+
+-- CreateIndex
+CREATE INDEX "Order_customerId_idx" ON "public"."Order"("customerId");
+
+-- CreateIndex
+CREATE INDEX "Order_shopId_idx" ON "public"."Order"("shopId");
+
 -- AddForeignKey
 ALTER TABLE "public"."OfferRedemption" ADD CONSTRAINT "OfferRedemption_offerId_fkey" FOREIGN KEY ("offerId") REFERENCES "public"."Offer"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -202,4 +247,16 @@ ALTER TABLE "public"."User" ADD CONSTRAINT "User_shopId_fkey" FOREIGN KEY ("shop
 ALTER TABLE "public"."PointsLedger" ADD CONSTRAINT "PointsLedger_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "public"."loyal_customers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "public"."PointsLedger" ADD CONSTRAINT "PointsLedger_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "public"."Order"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "public"."WalletCredit" ADD CONSTRAINT "WalletCredit_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."Order" ADD CONSTRAINT "Order_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "public"."loyal_customers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."Order" ADD CONSTRAINT "Order_shopId_fkey" FOREIGN KEY ("shopId") REFERENCES "public"."Shop"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."OrderItem" ADD CONSTRAINT "OrderItem_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "public"."Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

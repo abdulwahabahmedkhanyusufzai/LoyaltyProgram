@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 import Tabs from "../components/ButtonGroup";
 import ProgramLoyal2 from "./program/page";
 import { customerService } from "../utils/CustomerService";
+import LoyaltyDashboard from "./program/LoyaltyDashboard";
 
 function LoyalCustomersList() {
   const [customers, setCustomers] = useState<any[]>([]);
@@ -93,7 +94,7 @@ useEffect(() => {
             setSelectedTab(tab);
             if (tab === "Program") setStep(2);
             if (tab === "Home") setStep(1);
-            if (tab === "Client") setStep(2);
+            if (tab === "Clients") setStep(0);
           }}
           activeTab={selectedTab}
         />
@@ -165,6 +166,7 @@ useEffect(() => {
 
         {selectedTab === "Program" && step === 2 && <ProgramLoyal2 />}
       </div>
+       {selectedTab === "Home" && step === 1 && (
        <div className="flex justify-between mt-4">
          <div className="flex items-center justify-between w-[300px]">
          <select
@@ -208,8 +210,15 @@ useEffect(() => {
       return null; 
     }
   })}
+
+      
   </div>
+  
       </div>
+       )}
+      {selectedTab === "Clients" && step === 0 && (
+        <LoyaltyDashboard currentCustomers = {currentCustomers}/>
+      )}
     </div>
   );
 }

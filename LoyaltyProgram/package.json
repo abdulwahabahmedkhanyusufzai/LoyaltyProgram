@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "setup" :"npm install && npx prisma generate",
     "test": "jest --watchAll",
     "dev": "next dev",
     "build": "prisma generate && next build",

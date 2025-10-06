@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 model Offer {
-  id            String   @id @default(cuid())
+  id            String   @id @default(uuid())
   name          String
   description   String
   image         String?
@@ -83,6 +83,7 @@ model Shop {
   updatedAt   DateTime @updatedAt
 
   users       User[]
+  orders      Order[]  // opposite relation field for Order.shop
 }
 
 model PointsLedger {
@@ -97,6 +98,9 @@ model PointsLedger {
   earnedAt    DateTime @default(now())
   expiresAt   DateTime?
   metadata    Json?
+
+  orderId    String? 
+  order      Order?   @relation(fields: [orderId], references: [id])
 
   @@index([customerId])
   @@index([expiresAt])
@@ -156,7 +160,8 @@ model Customer {
   loyaltyTitle     String   @default("Welcomed")
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
-    pointsLedger   PointsLedger[]
+  pointsLedger     PointsLedger[]
+  orders           Order[] // opposite relation field for Order.customer
   @@map("loyal_customers") // This maps the model to a table named "loyal_customers"
 }
 
@@ -169,3 +174,51 @@ model AdventCalendarEntry {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Order {
+  id            String      @id @default(cuid())
+  customerId    String
+  customer      Customer    @relation(fields: [customerId], references: [id])
+  
+  shopId        Int?
+  shop          Shop?       @relation(fields: [shopId], references: [id])
+
+  orderNumber   String      @unique
+  totalAmount   Decimal     @default(0)
+  currency      String      @default("EUR")
+  status        OrderStatus @default(PENDING)
+  pointsEarned  Int         @default(0)
+  pointsRedeemed Int        @default(0)
+  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  metadata      Json?       // any extra info like shipping, payment
+
+  items         OrderItem[]
+  pointsLedger  PointsLedger[]  // link order to points ledger
+
+  @@index([customerId])
+  @@index([shopId])
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id])
+
+  productId   String?
+  productName String
+  quantity    Int      @default(1)
+  price       Decimal  @default(0)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+

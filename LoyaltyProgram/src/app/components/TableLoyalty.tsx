@@ -188,7 +188,7 @@ export const LoyaltyTable = () => {
         <li>
           <button
             onClick={() => {
-              router.push(`/customers/${customer.id}/points`);
+              router.push(`/loyal-customers`);
               setOpenMenuId(null);
             }}
             className="w-full text-left px-3 py-2 hover:bg-gray-100"

@@ -1,0 +1,4305 @@
+{
+  "customers": [
+    {
+      "id": "d70483e3-37e2-4c92-97ed-0c5cf4becac5",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam1205@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "a27358ea-8510-4a4e-8cd3-cfd9c8b2a93f",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "asdk2@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "136.71",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumt0000vv5cpiep66w6",
+          "customerId": "a27358ea-8510-4a4e-8cd3-cfd9c8b2a93f",
+          "change": 13,
+          "balanceAfter": 13,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "f19c4a82-e1ae-4be3-acd9-e85dd31f1f8c",
+      "firstName": "STD",
+      "lastName": "KOOL",
+      "email": "std@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "f4493e03-8540-439e-834c-fb127616a9ed",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "maks@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "273.42",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumv0001vv5c6u37wpuy",
+          "customerId": "f4493e03-8540-439e-834c-fb127616a9ed",
+          "change": 27,
+          "balanceAfter": 27,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "5b07179d-1c4c-4461-b2ed-93b9e551befa",
+      "firstName": "MKRD",
+      "lastName": "DAvil",
+      "email": "wsalam241@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "273.42",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumv0002vv5c7xns9nvr",
+          "customerId": "5b07179d-1c4c-4461-b2ed-93b9e551befa",
+          "change": 27,
+          "balanceAfter": 27,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "05c74374-0ade-4ade-92e1-87df30acb9b5",
+      "firstName": "KAYL",
+      "lastName": "KAYFLA",
+      "email": "mohmmaduzair19@gmail.com",
+      "numberOfOrders": 1,
+      "amountSpent": "273.42",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumv0003vv5cm88k0jwr",
+          "customerId": "05c74374-0ade-4ade-92e1-87df30acb9b5",
+          "change": 27,
+          "balanceAfter": 27,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "684b80e0-d9a7-4615-baf5-7a8c05518f97",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam12002@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "273.42",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumv0005vv5cyqryt5m4",
+          "customerId": "684b80e0-d9a7-4615-baf5-7a8c05518f97",
+          "change": 27,
+          "balanceAfter": 27,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "07716ab6-8132-4d14-98de-a2c1776299f3",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam214@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "273.42",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumv0006vv5c6novn4kv",
+          "customerId": "07716ab6-8132-4d14-98de-a2c1776299f3",
+          "change": 27,
+          "balanceAfter": 27,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "2b2dd110-8584-47ce-8101-310fadc7555f",
+      "firstName": "MLA",
+      "lastName": "MAL",
+      "email": "wsalam99990@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "410.13",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumv0007vv5cl8k6jdbk",
+          "customerId": "2b2dd110-8584-47ce-8101-310fadc7555f",
+          "change": 41,
+          "balanceAfter": 41,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "a922a54a-efb7-4692-b179-5dcbc3cd38a9",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam1234512351231@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "298.53",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumv0008vv5cy5zzxscw",
+          "customerId": "a922a54a-efb7-4692-b179-5dcbc3cd38a9",
+          "change": 29,
+          "balanceAfter": 29,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "49cc6415-1e99-402d-8a8b-887d8d094293",
+      "firstName": "FAST",
+      "lastName": "NPUSH",
+      "email": "natasha.hecker.22@gmail.com",
+      "numberOfOrders": 5,
+      "amountSpent": "165.44",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumv0009vv5cibuui6l9",
+          "customerId": "49cc6415-1e99-402d-8a8b-887d8d094293",
+          "change": 16,
+          "balanceAfter": 16,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "d90d0ffa-1c49-4f74-8330-05347f6384d5",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "kkr@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "645.5700000000001",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumv000bvv5ccz9nmdod",
+          "customerId": "d90d0ffa-1c49-4f74-8330-05347f6384d5",
+          "change": 64,
+          "balanceAfter": 64,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "9eda48e0-2369-4993-9da1-eb23efb8a1eb",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam1123@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "53.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumv000cvv5c1ar3jmd9",
+          "customerId": "9eda48e0-2369-4993-9da1-eb23efb8a1eb",
+          "change": 5,
+          "balanceAfter": 5,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "1fbf1ff0-8473-4e0c-85ab-265ff9d840eb",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam22136782@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "53.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumv000dvv5cebqk9uf6",
+          "customerId": "1fbf1ff0-8473-4e0c-85ab-265ff9d840eb",
+          "change": 5,
+          "balanceAfter": 5,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "d9ee791c-16e6-4815-8d47-7f83e41f9011",
+      "firstName": "MKRD",
+      "lastName": "!00",
+      "email": "wsalam49@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "50.47",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw000fvv5cwci8yyym",
+          "customerId": "d9ee791c-16e6-4815-8d47-7f83e41f9011",
+          "change": 5,
+          "balanceAfter": 5,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "76beee4c-1cca-4058-ad1a-59c4380a600b",
+      "firstName": "LLB",
+      "lastName": "ONCES",
+      "email": "newuser1223@qfnetwork.org",
+      "numberOfOrders": 3,
+      "amountSpent": "158.71",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw000gvv5cyt5gyks1",
+          "customerId": "76beee4c-1cca-4058-ad1a-59c4380a600b",
+          "change": 15,
+          "balanceAfter": 15,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "be2e3b16-91fc-477f-bc03-c5d622752017",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "rowan.fakhro@gmail.com",
+      "numberOfOrders": 1,
+      "amountSpent": "33.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw000hvv5cyu3y7t4v",
+          "customerId": "be2e3b16-91fc-477f-bc03-c5d622752017",
+          "change": 3,
+          "balanceAfter": 3,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "03c94c0a-4ff3-45e9-ab34-519f4c42deb9",
+      "firstName": "isuleiman",
+      "lastName": "isuleiman",
+      "email": "isuleiman94@gmail.com",
+      "numberOfOrders": 1,
+      "amountSpent": "53.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw000ivv5cxdneukmv",
+          "customerId": "03c94c0a-4ff3-45e9-ab34-519f4c42deb9",
+          "change": 5,
+          "balanceAfter": 5,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "4afd73c6-45fd-4958-b55e-6e8174b758f8",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "dana.hamza97@yahoo.com",
+      "numberOfOrders": 1,
+      "amountSpent": "53.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw000jvv5c0opl49ka",
+          "customerId": "4afd73c6-45fd-4958-b55e-6e8174b758f8",
+          "change": 5,
+          "balanceAfter": 5,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "5c65ee11-b73a-4204-b5dd-3605bb01c926",
+      "firstName": "MAL",
+      "lastName": "KIT",
+      "email": "osman212@gmail.com",
+      "numberOfOrders": 1,
+      "amountSpent": "53.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw000kvv5cu7ffqzp7",
+          "customerId": "5c65ee11-b73a-4204-b5dd-3605bb01c926",
+          "change": 5,
+          "balanceAfter": 5,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "f1393ae7-904d-4b52-b2c7-13028e2daf99",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "muhammaduzair799@gmail.com",
+      "numberOfOrders": 1,
+      "amountSpent": "143.57",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw000lvv5cznt9xsn9",
+          "customerId": "f1393ae7-904d-4b52-b2c7-13028e2daf99",
+          "change": 14,
+          "balanceAfter": 14,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "88114f3b-ae70-48e7-87cb-c179924dd0fe",
+      "firstName": "Russell",
+      "lastName": "Winfield",
+      "email": "russel.winfield@example.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "52996fa8-9aa9-483a-8135-60b4dab89542",
+      "firstName": "Ayumu",
+      "lastName": "Hirano",
+      "email": "ayumu.hirano@example.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "5f50940b-ed8b-412f-8e4c-d2255b781166",
+      "firstName": "Karine",
+      "lastName": "Ruby",
+      "email": "karine.ruby@example.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "32bb4cd8-b5e2-4938-8eb4-e7ec1c44377e",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam12@qfnetwork.org",
+      "numberOfOrders": 17,
+      "amountSpent": "999.11",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw000mvv5cjrznaqf0",
+          "customerId": "32bb4cd8-b5e2-4938-8eb4-e7ec1c44377e",
+          "change": 99,
+          "balanceAfter": 99,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "d3c01d67-e82e-4121-b942-397e0a1fbd42",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam@qfnetwork.org",
+      "numberOfOrders": 8,
+      "amountSpent": "505.2",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw000nvv5cpqf7i2cj",
+          "customerId": "d3c01d67-e82e-4121-b942-397e0a1fbd42",
+          "change": 50,
+          "balanceAfter": 50,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "8baccafe-3e8c-4f3a-a5fc-471faa007187",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsa2lam@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "a840f8c8-8b61-483e-bc8e-7ac6635d1f7f",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam112@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "7f320879-83a7-46d0-b163-be6a39e9d280",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam1200@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "72c410a4-ffe3-4195-bb9c-246ce4a4e1af",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam122@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "53.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw000ovv5cbwaku33w",
+          "customerId": "72c410a4-ffe3-4195-bb9c-246ce4a4e1af",
+          "change": 5,
+          "balanceAfter": 5,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "d7415cb9-8929-4268-9113-e1f5a4324200",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam112@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "37235f6e-26d5-4255-924a-fa53176d938c",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "mohmmaduzair799@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "0b58d41c-7359-447a-a8fd-faf1a13fea29",
+      "firstName": "Testing12",
+      "lastName": "Order321",
+      "email": "wsalam1@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "60.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw000pvv5cpurqi7wn",
+          "customerId": "0b58d41c-7359-447a-a8fd-faf1a13fea29",
+          "change": 6,
+          "balanceAfter": 6,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "11b9128b-a491-40a1-896f-6d94bcc006ce",
+      "firstName": "Uzair",
+      "lastName": "order",
+      "email": "uzair1100@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "15c8a2fe-8f6b-49dc-b444-a12ad6b09cde",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam11@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "4e66336b-0538-43ca-8ebe-0e505c4b5431",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "mohmmaduzair789@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "bf90202b-4a5a-4aed-8bb2-171cff0178b3",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "teating123@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "26db49c5-bdc5-40c5-b18e-c6c35b62a41c",
+      "firstName": "Ahmed",
+      "lastName": "memon",
+      "email": "ahmedmemon2383@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "d1dd3849-6fdc-456b-bfb6-50a3d90695a7",
+      "firstName": "MALR",
+      "lastName": "Drop",
+      "email": "wsalam12@qfnetwork.org",
+      "numberOfOrders": 2,
+      "amountSpent": "107.8",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw000qvv5cxwu6dy7q",
+          "customerId": "d1dd3849-6fdc-456b-bfb6-50a3d90695a7",
+          "change": 10,
+          "balanceAfter": 10,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "7ff649a1-fc40-4c73-947a-3392e7ceb39d",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam1231@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "9c92e4b3-b08b-4fe1-8588-d96460eaf7c2",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam41@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "1dd6b6df-16fd-44de-9241-986ac1645872",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam122@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "fdffd7c0-f69d-4f9b-a50d-9902eaeba454",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam23@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "ebfa1d92-3a16-46fa-82cb-08c482135ea2",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam331@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "c903c30b-88f4-4797-945a-9bf38ab2a54b",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "testing12@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "e7a94c4c-e57b-435d-bf5a-948832aada30",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "teating1233@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "032e0505-b0c9-4768-98fd-866bc33b524a",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "testing120@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "a95a0f5f-ba8d-4557-946c-88f31f33de7e",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "testing192@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "fe81a4d9-9858-4d96-87ab-95dd32b23aae",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "teating133@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "e8dce9dd-d131-4504-86ae-0fc92f157234",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "testing233@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "886ba9e2-1594-44e2-b881-cd579a76c07f",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam3313@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "7f6b9df3-0006-4f05-826f-7a8d7c0ec58d",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam1290@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "dd81e792-7552-4d9e-9641-29c1eeb36618",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam2213@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "d3002ced-ca2f-4edd-a26c-8f88272a00f5",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalamw@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "21679942-3ccc-406b-92ff-ae0d893ef17b",
+      "firstName": "Ahmed",
+      "lastName": "12",
+      "email": "ahmedmemon23832@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "1c129277-a71f-4bee-aba5-937b767cdce8",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalawq@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "316b8519-1a1a-412f-a851-586bdf62a1c9",
+      "firstName": "Ahmed",
+      "lastName": "12",
+      "email": "ahmedmemon238323@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "cdade569-9d29-4078-8752-6168237efb41",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsaltes@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "471ae92f-d089-4f13-9351-bfe05b66a89c",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "tester@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "afbbb46f-4d1c-4b2f-aa42-de745bec1cf3",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "tester1@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "2ef39f05-a358-466b-ad6b-33d9a251b284",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "tester2@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "a12cb03a-18eb-471a-a4b9-f7c5ef614289",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "tester3@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "79aba54e-c35c-410e-ae18-db9350addb93",
+      "firstName": "NEw Tester",
+      "lastName": "Order",
+      "email": "aslabag@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "8d37f8af-3835-4909-b9dc-8eed06436f03",
+      "firstName": "Testing 2",
+      "lastName": "Order 100",
+      "email": "tester4@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "754a8cbf-5de5-43af-8b37-3b994b10cd1b",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "tester5@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "1300fa27-a4a2-41ad-ac77-06987d07b968",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "testlocal12@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "ca7e2947-459f-49fc-aec7-87d3c7a82abb",
+      "firstName": "QF",
+      "lastName": "Net",
+      "email": "tester12@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "6d15c071-bc7b-4951-8434-e3dee45bcfcd",
+      "firstName": "QF Testing",
+      "lastName": "Order Subs",
+      "email": "tester9@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "4dee3934-36c8-4c1b-8c84-71c1a1d36564",
+      "firstName": "Test to Live App",
+      "lastName": "Order All Updates",
+      "email": "tester10@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "eefe2e2f-c73b-4927-9af2-3101cd1cfe7a",
+      "firstName": "Ahmed",
+      "lastName": "45",
+      "email": "ahmedmemon238345@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "f82fc16e-b19d-45ff-8399-7035f98ae602",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "testing100@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "d6c330d7-03bd-4b07-a054-dcd91cc32d5d",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam1892@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "ea85129a-c8a8-4a17-8618-626d6b986dfe",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam312@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "85ca7697-86e4-4be8-9a36-c3d805ab4336",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam1123@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "29.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw000rvv5ce54rais5",
+          "customerId": "85ca7697-86e4-4be8-9a36-c3d805ab4336",
+          "change": 2,
+          "balanceAfter": 2,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "c1917030-2e4c-4e70-9612-d1b2b2006145",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam1232@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "da3c4a87-6c45-4d60-b052-1cb772eba438",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam141@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "36c48b5f-5f3c-433b-bc9a-cec147b96628",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam532@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "14be60f8-f51b-4a09-ab3f-61d863d1a50b",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam1211@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "f1d70ecc-6aac-4ab2-85cf-31d291f20d2a",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam21@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "9f818cde-7b25-4106-afa8-7fa59e969cc6",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam42342@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "ffdf702b-f4af-4de0-86a6-41f22b14eb62",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam342@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "3d08bffd-5f67-47f7-acff-7c2c64d4a868",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam3322@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "8c4ec8b6-1213-41e7-95e1-e05826f8387e",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam15512@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "14ee6ca9-93d3-453c-8fc2-e86a3e727b8f",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam1244@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "35409ddb-220e-4cb3-920c-c3eda8822a74",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam13242@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "c9c68955-e682-46dc-9eff-23bc1e15f773",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam355@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "94e27745-a945-45e9-a6c0-c94956c5eae0",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam134@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "38c443a6-1e53-42c1-b4ac-900d674a1499",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam23445@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "ca33f7ae-de5b-4f50-8007-9b9c38f2462a",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam1234@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "53.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw000tvv5ckl6b7iyd",
+          "customerId": "ca33f7ae-de5b-4f50-8007-9b9c38f2462a",
+          "change": 5,
+          "balanceAfter": 5,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "57373c23-2009-4b91-89d2-26a8fc185457",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam234@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "b78c10fe-ec17-433b-9522-70b0cebc3aca",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam24234@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "bed66907-53c2-45b1-a6c8-9280746835d3",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam2400@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "0334d50e-4ea6-4f4e-a469-24ea62228e5c",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam20@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "dea070cf-b001-4f9d-9bb3-83328cb57e10",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam223@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "c8b11f7c-6705-49d8-9ae1-035e6f9bdbf0",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "anjiyaaa@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "948f765e-a91b-44b0-a588-3b8a0a4fa5c0",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalaa123@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "38fdfc55-f3ff-495c-a272-63e45ba031b8",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalaq1123@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "023b6b13-392d-40ce-bb28-97657aeb5908",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsala121123@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "85a946ae-3b6a-45a2-b485-1c0fab5ffc32",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalaq1223@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "1ee461bf-d6a9-46c4-9a66-9a95108096b6",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalaq1993@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "2547ea8b-2811-4051-88c2-5e94ccf8c906",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aesdf@qfnetwork.org",
+      "numberOfOrders": 2,
+      "amountSpent": "66.8",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw000uvv5cgerkwxt5",
+          "customerId": "2547ea8b-2811-4051-88c2-5e94ccf8c906",
+          "change": 6,
+          "balanceAfter": 6,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "66a83349-b861-4ab4-9993-474e14e6d19d",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aesdrt44@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "39ec4015-cf53-4b61-8bd4-490813eaf228",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "uzairtesting@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "b26a2d2a-bc52-4d02-886b-1d085b4eb738",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "uzairtestin12g@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "afaeff57-c080-4ee9-9503-f33da7957c11",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "uzairtestin2g@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "a59427ff-9e4f-4d47-98e6-6ea990c1e25f",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "uzairtestin20g@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "abd6d690-ca60-4603-b3ac-388b6ff4789a",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "uzairtestin10g@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "88caf78e-a875-4988-90ab-90513f766798",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "uzairtestin109g@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "a4dcfa7b-53a6-472a-8264-90e5a2bef6f7",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "uzairtestin100g@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "9b609936-3597-44e2-992e-2a79c3ee5e9f",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "uzairtestin110g@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "60f593bd-63e4-432c-baab-01561c155f0e",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "uzairtestin1810g@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "ab965861-af55-419b-a89b-96d06b2e4ec9",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "uzairtestin310g@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "b94765f0-55ac-4097-95a7-d09726c0eb24",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "uzairtestin0g@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "e6eb0c41-d8cc-4a7f-b533-e56cfcd96864",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam8897@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "fdda2938-aeae-4e52-bb1b-7d5fcba13be9",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam0122@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "b1fe6ba9-7d0e-4d54-8160-1c8782990615",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam124@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "5f2ca811-d967-4758-9a7e-6a5251b597fd",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "salam@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "8d7f12e1-1831-4af3-808b-171d28cebf7d",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "samkaren12@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "9693095b-c6bc-420c-9ce0-a4e885b546ce",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "awlam12@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "20740302-9a76-474f-8e3c-50417e83a59f",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "asla1209@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "ce5e1888-c559-4721-836a-d48594f0486c",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam1256@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "c0c61104-91f6-49db-8ba8-c3397ccc452a",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam156@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "3d862923-0438-4332-b7cc-458dac6c3ae9",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam17576802@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "446bfdc6-cf15-4c24-a1ee-fb5e540b3d67",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam0888@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "77c8b9ee-ad5b-4502-8e3d-c7230a6cdbca",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam1224@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "0cb67f30-f7f4-4b1e-8ed7-9467c8913b44",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam2135@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "9b385227-a352-4ca8-b800-192b1be84b12",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam235635@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "c77cef66-2438-4d39-b655-6a9ef2d9ae92",
+      "firstName": "tesdd",
+      "lastName": "dtess",
+      "email": "aslam1982@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "e4929394-687e-486c-8faa-5099e4211fde",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam1672@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "f1377556-857f-41f9-bcdb-48ebcebeaa49",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam153@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "7a6b9135-4614-4fc7-ac86-b58cccc93cfb",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam000@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "7a66ffa9-4b35-4880-abd7-ca96975f5e65",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam12123@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "9211a65e-f1bf-4d9e-afda-7a694da1a6c2",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam112452@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "9751e429-7c8d-44f0-a966-d0a32061a2d8",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "asladf12@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "e2a65087-0aa7-42cb-9ba6-72267be51af0",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam12009@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "3c7a0bce-8813-46e3-90bf-c8c7fa9f54e5",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "mohmmaduza799@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "400f354d-798d-44f9-bfa3-1b3c5ab02b3c",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "support@askaribank.com.pk",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "7719590a-db05-4302-b61b-a6563342acdc",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam124@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "bfd03da6-cb5d-4f92-b873-d18ee7963f27",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam1239@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "caf93992-72ca-4733-adcb-9018ed67a402",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam12134@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "15e7f1c3-fd9c-42d5-a074-b9d50b2f0463",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam12098@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "08740949-c3b4-489c-bd3d-93d739fd3ffc",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam1298@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "3659f123-06f7-49cb-a6d7-c674baf121ba",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam14@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "b03bc270-bf21-4826-9e48-ca415269b192",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam007@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "9e145828-2938-4c51-b1bd-575a678f5676",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslamwe2@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "b2a5e20d-6630-4403-8d16-015c50753dae",
+      "firstName": "Goku",
+      "lastName": "order",
+      "email": "goku@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "5e412e7b-c071-4bf1-b11e-3e94f76dcd8d",
+      "firstName": "Uzair",
+      "lastName": "Network",
+      "email": "qalam12@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "3fc32b6f-7c92-49ae-a2c4-185a7ea0a8b4",
+      "firstName": "ahmedmemon",
+      "lastName": "memon",
+      "email": "qalam1234@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "5c152f2a-2a1a-4945-bdf3-24dd1f81aade",
+      "firstName": "Ahmed",
+      "lastName": "ahmedmemon",
+      "email": "ahmedmemon6404@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "e91f3404-bb55-4795-8995-d747a8efad15",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam11562@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "0dac1ac5-9560-433f-90ea-11de7eca801f",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "mohmmaduzair7990@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "ef1a6c3a-6656-4aa1-96cf-314aa3faaa9e",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam312@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "cd33c679-a8a4-4d15-8cbd-e16959e6704d",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam1287@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "2b5f2460-e678-414d-af9c-7aa613355f77",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam1245@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "4c36e90d-0d60-406d-ac60-649fd01b2e43",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam1272@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "63d7a91b-3170-4b58-9381-e1fd2e55fef1",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam31@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "c9b460bb-1524-46d3-bc27-b5804990c659",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam25@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "39eab2c5-376a-4b2e-becd-6d67349dcf52",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam35@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "eb433cb7-df02-4f14-bbbf-068e6e396e8c",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam14562@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "21db516e-76c9-47e0-9511-f4c7d2e4acbd",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam1342@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "9c9d8829-503b-4059-99d6-382b1f3314a4",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam1542@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "0b502829-bb10-435c-bdb0-5f870ca792fd",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam1264@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "d9498af0-9d02-404a-a146-0fad67d044c8",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam1332@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "92e10b28-b82a-4a6a-922a-f99d041d08e9",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam1002@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "f39f62a9-03f0-4496-94ea-625333b4d787",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam5@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "41ffb391-258e-461a-9663-6a1d8df15e9b",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam162@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "7a641ce4-000d-4b24-a7ff-99f3f19d9aeb",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam13@qfnetwork.org",
+      "numberOfOrders": 2,
+      "amountSpent": "68.8",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw000vvv5c1xc6q13v",
+          "customerId": "7a641ce4-000d-4b24-a7ff-99f3f19d9aeb",
+          "change": 6,
+          "balanceAfter": 6,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "8e97aa56-7c4b-4b08-8486-7ad2348bb483",
+      "firstName": "KKAR",
+      "lastName": "KKKR",
+      "email": "mohmmaduzair9@gmail.com",
+      "numberOfOrders": 1,
+      "amountSpent": "273.42",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw000wvv5cmvktg2o0",
+          "customerId": "8e97aa56-7c4b-4b08-8486-7ad2348bb483",
+          "change": 27,
+          "balanceAfter": 27,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "add7232b-82ae-4fc7-bad8-90f48b9989d2",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam156@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "7baf18be-6f4f-47f7-810f-d4d726e03bbc",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam12779@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "9e3fc31f-6997-4f72-b07c-8f8894bc333a",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "mohmmaduzair700@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "0a88bb32-f6ae-41d8-9429-d4de76a1e572",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam78@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "07a540ee-605d-4a65-9a85-360b8cf64206",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam98@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "0308f823-fffa-43ca-a2fe-31cc9571c914",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam09@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "506f6949-79f5-49a4-a789-69d42172a703",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam29@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "65488771-d532-4351-957b-8d826a920ba9",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam144@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "c34dc666-4425-40d0-9b60-aae27f476567",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam1532@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "a9256137-d9d5-4494-8393-4fe5087945f5",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "newuser12@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "4f9397f2-fbf4-4559-915b-988983aeb120",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "maya286@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "35bfa244-4e29-4e5b-962b-f958fc160edd",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "samekaran@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "d4cfa6b0-01eb-4796-b01e-aed651ea4908",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "samekaran2@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "cc77c4e8-28cb-44a0-b510-71e3521e996f",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "maddieleerowe@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "c729d3a7-3161-4dc9-9805-f6f0ce871259",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam200@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "6beafc96-3584-4dd3-9888-12bd65306197",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam341@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "4c55239f-55c0-4357-8afa-3829f022fbe5",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "mohmmaduzair79@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "8d0931b6-9ade-4f7b-88f2-c978890ead85",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam243@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "95e4627c-b08f-4aae-ac33-85f9cc5a6d9d",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "rawanalkilanie@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "101f582d-d2b5-4357-9ed4-2a57734ec49a",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam62@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "a2aa13c4-a299-4d68-81ca-f7c8a6e1d796",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "mohmmaduzair899@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "90caa63e-365d-44b5-b9a5-85b481532b15",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam213@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "cadcdb93-f975-4b48-9dda-345b5294c2fa",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "mohmmaduzair0999@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "a6178a12-4ec0-439d-b522-4a7d3782853e",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam1122@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "14fa8792-869a-4209-9cf2-174824e69ad9",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam125@qfnetwork.org",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "32bad22d-0716-4639-b9a6-547740c7a9ad",
+      "firstName": "Testing",
+      "lastName": "Sechuild",
+      "email": "mohmmaduzair759@gmail.com",
+      "numberOfOrders": 0,
+      "amountSpent": "0",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": []
+    },
+    {
+      "id": "eec7e50b-f286-4c14-8e2b-c4a77e7fb6cc",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "omarghattas1991@gmail.com",
+      "numberOfOrders": 1,
+      "amountSpent": "33.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw000yvv5c20u4wqik",
+          "customerId": "eec7e50b-f286-4c14-8e2b-c4a77e7fb6cc",
+          "change": 3,
+          "balanceAfter": 3,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "41865ee3-63ce-4b88-b1f2-6a4b03cc392b",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalama1@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "53.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw000zvv5c7cmapslx",
+          "customerId": "41865ee3-63ce-4b88-b1f2-6a4b03cc392b",
+          "change": 5,
+          "balanceAfter": 5,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "fb2ba320-8c3e-4622-856c-bcbbcf6db31e",
+      "firstName": "Testing asd",
+      "lastName": "Order",
+      "email": "ayajjaber99@gmail.com",
+      "numberOfOrders": 5,
+      "amountSpent": "245.5",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw0010vv5cirxp5ny5",
+          "customerId": "fb2ba320-8c3e-4622-856c-bcbbcf6db31e",
+          "change": 24,
+          "balanceAfter": 24,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "d91e55b8-f675-4a4e-bc7f-0255ff3c5a64",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "zaryab@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "136.71",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw0011vv5cv8amlv4c",
+          "customerId": "d91e55b8-f675-4a4e-bc7f-0255ff3c5a64",
+          "change": 13,
+          "balanceAfter": 13,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "742c877c-56ac-4bec-979d-fd88aa668684",
+      "firstName": "MALO",
+      "lastName": "SECD",
+      "email": "wsalam24@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "53.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw0012vv5chukkqfxn",
+          "customerId": "742c877c-56ac-4bec-979d-fd88aa668684",
+          "change": 5,
+          "balanceAfter": 5,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "c5aee403-4c8f-4eba-9f0e-9fd1c6cada8a",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "oslam2@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "53.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw0013vv5c2sv1sdp1",
+          "customerId": "c5aee403-4c8f-4eba-9f0e-9fd1c6cada8a",
+          "change": 5,
+          "balanceAfter": 5,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "637be707-d7c4-4dd2-8fc6-48e20fc5acae",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "opilski@isotec.de",
+      "numberOfOrders": 1,
+      "amountSpent": "53.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw0014vv5cshvjvdgq",
+          "customerId": "637be707-d7c4-4dd2-8fc6-48e20fc5acae",
+          "change": 5,
+          "balanceAfter": 5,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "65787eae-42b8-44d6-b7c1-fe94552ef576",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "oster12@gmail.com",
+      "numberOfOrders": 1,
+      "amountSpent": "53.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw0015vv5c7uvi17rt",
+          "customerId": "65787eae-42b8-44d6-b7c1-fe94552ef576",
+          "change": 5,
+          "balanceAfter": 5,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "d159ef16-033c-4ed1-94d4-47129564e9d3",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "abbre12@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "136.71",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw0016vv5cs5zi2hjx",
+          "customerId": "d159ef16-033c-4ed1-94d4-47129564e9d3",
+          "change": 13,
+          "balanceAfter": 13,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "e8ccbf3c-7068-4b5c-8122-6fd588a5dfb1",
+      "firstName": "STATE",
+      "lastName": "Shopify DEVELOPER",
+      "email": "majemiteokoro@gmail.com",
+      "numberOfOrders": 1,
+      "amountSpent": "136.71",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw0017vv5c4dbus93b",
+          "customerId": "e8ccbf3c-7068-4b5c-8122-6fd588a5dfb1",
+          "change": 13,
+          "balanceAfter": 13,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "ac28c0c8-9d36-4d78-98e2-5e7ddf336b6d",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "blam12@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "53.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw0018vv5csskha819",
+          "customerId": "ac28c0c8-9d36-4d78-98e2-5e7ddf336b6d",
+          "change": 5,
+          "balanceAfter": 5,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "0b740a64-27e7-4769-9bc0-95f60c0269af",
+      "firstName": "QF",
+      "lastName": "Network",
+      "email": "mostaer@gmail.com",
+      "numberOfOrders": 1,
+      "amountSpent": "53.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw0019vv5cm2pslxwe",
+          "customerId": "0b740a64-27e7-4769-9bc0-95f60c0269af",
+          "change": 5,
+          "balanceAfter": 5,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "b9c23d91-f14e-403a-81c7-18150ec9a2ee",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam1152@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "53.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw001avv5cte25zz1f",
+          "customerId": "b9c23d91-f14e-403a-81c7-18150ec9a2ee",
+          "change": 5,
+          "balanceAfter": 5,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "2b8acad6-8b1f-4a69-bfa1-063d6cffd0ee",
+      "firstName": "asML",
+      "lastName": "MALE",
+      "email": "ninetail@gmail.com",
+      "numberOfOrders": 1,
+      "amountSpent": "33.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw001bvv5ccyv4vs93",
+          "customerId": "2b8acad6-8b1f-4a69-bfa1-063d6cffd0ee",
+          "change": 3,
+          "balanceAfter": 3,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "f221e945-2b56-4979-958e-c6a6774d605e",
+      "firstName": "Akaskie",
+      "lastName": "samya hada",
+      "email": "mal@gmail.com",
+      "numberOfOrders": 1,
+      "amountSpent": "63.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw001cvv5c05qtctbu",
+          "customerId": "f221e945-2b56-4979-958e-c6a6774d605e",
+          "change": 6,
+          "balanceAfter": 6,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "9ec9bea4-fc3e-4a4e-8a09-0e72836d10f4",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam135@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "60.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw001dvv5chnqa2907",
+          "customerId": "9ec9bea4-fc3e-4a4e-8a09-0e72836d10f4",
+          "change": 6,
+          "balanceAfter": 6,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "fb9a96b0-6073-46fa-8285-6ed1f20f64f0",
+      "firstName": "SKK",
+      "lastName": "SALMAN KAN",
+      "email": "bilder@gmail.com",
+      "numberOfOrders": 1,
+      "amountSpent": "33.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw001evv5cr9pfsdji",
+          "customerId": "fb9a96b0-6073-46fa-8285-6ed1f20f64f0",
+          "change": 3,
+          "balanceAfter": 3,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "23e24ed9-f4cf-4b10-9e5a-43f7d13fa5b9",
+      "firstName": "MAIL",
+      "lastName": "COM",
+      "email": "mail@mail.com",
+      "numberOfOrders": 1,
+      "amountSpent": "53.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw001fvv5cowmlxko0",
+          "customerId": "23e24ed9-f4cf-4b10-9e5a-43f7d13fa5b9",
+          "change": 5,
+          "balanceAfter": 5,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "04bb35df-487c-4dc4-8a64-858bb94cf4b7",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslama12@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "53.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw001gvv5c66ngcb2a",
+          "customerId": "04bb35df-487c-4dc4-8a64-858bb94cf4b7",
+          "change": 5,
+          "balanceAfter": 5,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "527b9f5e-2727-4a44-9a21-d692c9a6534f",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam212@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "53.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw001hvv5clq46ed2l",
+          "customerId": "527b9f5e-2727-4a44-9a21-d692c9a6534f",
+          "change": 5,
+          "balanceAfter": 5,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "bc8f7c0a-09f3-47f6-a4dc-aa39253e3544",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "wsalam1255@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "53.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw001ivv5cgzjp2zfy",
+          "customerId": "bc8f7c0a-09f3-47f6-a4dc-aa39253e3544",
+          "change": 5,
+          "balanceAfter": 5,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "a3abac3a-2c90-4a96-9153-c4a5c1f78620",
+      "firstName": "SUSKAY",
+      "lastName": "MADRA",
+      "email": "maksareinggan@gamil.com",
+      "numberOfOrders": 1,
+      "amountSpent": "53.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw001jvv5c4v5c6qgb",
+          "customerId": "a3abac3a-2c90-4a96-9153-c4a5c1f78620",
+          "change": 5,
+          "balanceAfter": 5,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "3cdf78ce-7e52-4561-a857-6288330b8463",
+      "firstName": "ALDK",
+      "lastName": "LSDJp",
+      "email": "sarahmoawad@icloud.com",
+      "numberOfOrders": 3,
+      "amountSpent": "161.7",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw001kvv5cybd4zxd7",
+          "customerId": "3cdf78ce-7e52-4561-a857-6288330b8463",
+          "change": 16,
+          "balanceAfter": 16,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "8a4b4ebd-e254-4908-bcef-1c95ef86cbc4",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam1221@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "53.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw001lvv5cz7zf3awm",
+          "customerId": "8a4b4ebd-e254-4908-bcef-1c95ef86cbc4",
+          "change": 5,
+          "balanceAfter": 5,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "51278c4d-28be-49e3-9c8f-5239f2bce57b",
+      "firstName": "LSDKF",
+      "lastName": "lSKDfal",
+      "email": "mohmmaduzai1r799@gmail.com",
+      "numberOfOrders": 1,
+      "amountSpent": "136.71",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw001mvv5cwbsi6gcf",
+          "customerId": "51278c4d-28be-49e3-9c8f-5239f2bce57b",
+          "change": 13,
+          "balanceAfter": 13,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "9fbe9b5c-2057-4d1b-8955-846ada6feb87",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "aslam1232@qfnetwork.org",
+      "numberOfOrders": 1,
+      "amountSpent": "53.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw001nvv5cqqd19qj3",
+          "customerId": "9fbe9b5c-2057-4d1b-8955-846ada6feb87",
+          "change": 5,
+          "balanceAfter": 5,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    },
+    {
+      "id": "2367d278-0f73-471e-b587-f786017769b8",
+      "firstName": "Testing",
+      "lastName": "Order",
+      "email": "mohmmaduzair7939@gmail.com",
+      "numberOfOrders": 1,
+      "amountSpent": "33.9",
+      "loyaltyTitle": "Welcomed",
+      "createdAt": "2025-09-25T12:05:37.737Z",
+      "updatedAt": "2025-09-25T12:49:07.520Z",
+      "pointsLedger": [
+        {
+          "id": "cmfzfsumw001ovv5cefip95q1",
+          "customerId": "2367d278-0f73-471e-b587-f786017769b8",
+          "change": 3,
+          "balanceAfter": 3,
+          "reason": "Applied offer: Cashback per point",
+          "sourceType": "offer",
+          "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+          "earnedAt": "2025-09-25T13:16:41.620Z",
+          "expiresAt": null,
+          "metadata": null
+        }
+      ]
+    }
+  ],
+  "pointsLedger": [
+    {
+      "id": "cmfzfsumt0000vv5cpiep66w6",
+      "customerId": "a27358ea-8510-4a4e-8cd3-cfd9c8b2a93f",
+      "change": 13,
+      "balanceAfter": 13,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumv0001vv5c6u37wpuy",
+      "customerId": "f4493e03-8540-439e-834c-fb127616a9ed",
+      "change": 27,
+      "balanceAfter": 27,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumv0002vv5c7xns9nvr",
+      "customerId": "5b07179d-1c4c-4461-b2ed-93b9e551befa",
+      "change": 27,
+      "balanceAfter": 27,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumv0003vv5cm88k0jwr",
+      "customerId": "05c74374-0ade-4ade-92e1-87df30acb9b5",
+      "change": 27,
+      "balanceAfter": 27,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumv0005vv5cyqryt5m4",
+      "customerId": "684b80e0-d9a7-4615-baf5-7a8c05518f97",
+      "change": 27,
+      "balanceAfter": 27,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumv0006vv5c6novn4kv",
+      "customerId": "07716ab6-8132-4d14-98de-a2c1776299f3",
+      "change": 27,
+      "balanceAfter": 27,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumv0007vv5cl8k6jdbk",
+      "customerId": "2b2dd110-8584-47ce-8101-310fadc7555f",
+      "change": 41,
+      "balanceAfter": 41,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumv0008vv5cy5zzxscw",
+      "customerId": "a922a54a-efb7-4692-b179-5dcbc3cd38a9",
+      "change": 29,
+      "balanceAfter": 29,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumv0009vv5cibuui6l9",
+      "customerId": "49cc6415-1e99-402d-8a8b-887d8d094293",
+      "change": 16,
+      "balanceAfter": 16,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumv000bvv5ccz9nmdod",
+      "customerId": "d90d0ffa-1c49-4f74-8330-05347f6384d5",
+      "change": 64,
+      "balanceAfter": 64,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumv000cvv5c1ar3jmd9",
+      "customerId": "9eda48e0-2369-4993-9da1-eb23efb8a1eb",
+      "change": 5,
+      "balanceAfter": 5,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumv000dvv5cebqk9uf6",
+      "customerId": "1fbf1ff0-8473-4e0c-85ab-265ff9d840eb",
+      "change": 5,
+      "balanceAfter": 5,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw000fvv5cwci8yyym",
+      "customerId": "d9ee791c-16e6-4815-8d47-7f83e41f9011",
+      "change": 5,
+      "balanceAfter": 5,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw000gvv5cyt5gyks1",
+      "customerId": "76beee4c-1cca-4058-ad1a-59c4380a600b",
+      "change": 15,
+      "balanceAfter": 15,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw000hvv5cyu3y7t4v",
+      "customerId": "be2e3b16-91fc-477f-bc03-c5d622752017",
+      "change": 3,
+      "balanceAfter": 3,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw000ivv5cxdneukmv",
+      "customerId": "03c94c0a-4ff3-45e9-ab34-519f4c42deb9",
+      "change": 5,
+      "balanceAfter": 5,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw000jvv5c0opl49ka",
+      "customerId": "4afd73c6-45fd-4958-b55e-6e8174b758f8",
+      "change": 5,
+      "balanceAfter": 5,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw000kvv5cu7ffqzp7",
+      "customerId": "5c65ee11-b73a-4204-b5dd-3605bb01c926",
+      "change": 5,
+      "balanceAfter": 5,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw000lvv5cznt9xsn9",
+      "customerId": "f1393ae7-904d-4b52-b2c7-13028e2daf99",
+      "change": 14,
+      "balanceAfter": 14,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw000mvv5cjrznaqf0",
+      "customerId": "32bb4cd8-b5e2-4938-8eb4-e7ec1c44377e",
+      "change": 99,
+      "balanceAfter": 99,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw000nvv5cpqf7i2cj",
+      "customerId": "d3c01d67-e82e-4121-b942-397e0a1fbd42",
+      "change": 50,
+      "balanceAfter": 50,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw000ovv5cbwaku33w",
+      "customerId": "72c410a4-ffe3-4195-bb9c-246ce4a4e1af",
+      "change": 5,
+      "balanceAfter": 5,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw000pvv5cpurqi7wn",
+      "customerId": "0b58d41c-7359-447a-a8fd-faf1a13fea29",
+      "change": 6,
+      "balanceAfter": 6,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw000qvv5cxwu6dy7q",
+      "customerId": "d1dd3849-6fdc-456b-bfb6-50a3d90695a7",
+      "change": 10,
+      "balanceAfter": 10,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw000rvv5ce54rais5",
+      "customerId": "85ca7697-86e4-4be8-9a36-c3d805ab4336",
+      "change": 2,
+      "balanceAfter": 2,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw000tvv5ckl6b7iyd",
+      "customerId": "ca33f7ae-de5b-4f50-8007-9b9c38f2462a",
+      "change": 5,
+      "balanceAfter": 5,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw000uvv5cgerkwxt5",
+      "customerId": "2547ea8b-2811-4051-88c2-5e94ccf8c906",
+      "change": 6,
+      "balanceAfter": 6,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw000vvv5c1xc6q13v",
+      "customerId": "7a641ce4-000d-4b24-a7ff-99f3f19d9aeb",
+      "change": 6,
+      "balanceAfter": 6,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw000wvv5cmvktg2o0",
+      "customerId": "8e97aa56-7c4b-4b08-8486-7ad2348bb483",
+      "change": 27,
+      "balanceAfter": 27,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw000yvv5c20u4wqik",
+      "customerId": "eec7e50b-f286-4c14-8e2b-c4a77e7fb6cc",
+      "change": 3,
+      "balanceAfter": 3,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw000zvv5c7cmapslx",
+      "customerId": "41865ee3-63ce-4b88-b1f2-6a4b03cc392b",
+      "change": 5,
+      "balanceAfter": 5,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw0010vv5cirxp5ny5",
+      "customerId": "fb2ba320-8c3e-4622-856c-bcbbcf6db31e",
+      "change": 24,
+      "balanceAfter": 24,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw0011vv5cv8amlv4c",
+      "customerId": "d91e55b8-f675-4a4e-bc7f-0255ff3c5a64",
+      "change": 13,
+      "balanceAfter": 13,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw0012vv5chukkqfxn",
+      "customerId": "742c877c-56ac-4bec-979d-fd88aa668684",
+      "change": 5,
+      "balanceAfter": 5,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw0013vv5c2sv1sdp1",
+      "customerId": "c5aee403-4c8f-4eba-9f0e-9fd1c6cada8a",
+      "change": 5,
+      "balanceAfter": 5,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw0014vv5cshvjvdgq",
+      "customerId": "637be707-d7c4-4dd2-8fc6-48e20fc5acae",
+      "change": 5,
+      "balanceAfter": 5,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw0015vv5c7uvi17rt",
+      "customerId": "65787eae-42b8-44d6-b7c1-fe94552ef576",
+      "change": 5,
+      "balanceAfter": 5,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw0016vv5cs5zi2hjx",
+      "customerId": "d159ef16-033c-4ed1-94d4-47129564e9d3",
+      "change": 13,
+      "balanceAfter": 13,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw0017vv5c4dbus93b",
+      "customerId": "e8ccbf3c-7068-4b5c-8122-6fd588a5dfb1",
+      "change": 13,
+      "balanceAfter": 13,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw0018vv5csskha819",
+      "customerId": "ac28c0c8-9d36-4d78-98e2-5e7ddf336b6d",
+      "change": 5,
+      "balanceAfter": 5,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw0019vv5cm2pslxwe",
+      "customerId": "0b740a64-27e7-4769-9bc0-95f60c0269af",
+      "change": 5,
+      "balanceAfter": 5,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw001avv5cte25zz1f",
+      "customerId": "b9c23d91-f14e-403a-81c7-18150ec9a2ee",
+      "change": 5,
+      "balanceAfter": 5,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw001bvv5ccyv4vs93",
+      "customerId": "2b8acad6-8b1f-4a69-bfa1-063d6cffd0ee",
+      "change": 3,
+      "balanceAfter": 3,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw001cvv5c05qtctbu",
+      "customerId": "f221e945-2b56-4979-958e-c6a6774d605e",
+      "change": 6,
+      "balanceAfter": 6,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw001dvv5chnqa2907",
+      "customerId": "9ec9bea4-fc3e-4a4e-8a09-0e72836d10f4",
+      "change": 6,
+      "balanceAfter": 6,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw001evv5cr9pfsdji",
+      "customerId": "fb9a96b0-6073-46fa-8285-6ed1f20f64f0",
+      "change": 3,
+      "balanceAfter": 3,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw001fvv5cowmlxko0",
+      "customerId": "23e24ed9-f4cf-4b10-9e5a-43f7d13fa5b9",
+      "change": 5,
+      "balanceAfter": 5,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw001gvv5c66ngcb2a",
+      "customerId": "04bb35df-487c-4dc4-8a64-858bb94cf4b7",
+      "change": 5,
+      "balanceAfter": 5,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw001hvv5clq46ed2l",
+      "customerId": "527b9f5e-2727-4a44-9a21-d692c9a6534f",
+      "change": 5,
+      "balanceAfter": 5,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw001ivv5cgzjp2zfy",
+      "customerId": "bc8f7c0a-09f3-47f6-a4dc-aa39253e3544",
+      "change": 5,
+      "balanceAfter": 5,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw001jvv5c4v5c6qgb",
+      "customerId": "a3abac3a-2c90-4a96-9153-c4a5c1f78620",
+      "change": 5,
+      "balanceAfter": 5,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw001kvv5cybd4zxd7",
+      "customerId": "3cdf78ce-7e52-4561-a857-6288330b8463",
+      "change": 16,
+      "balanceAfter": 16,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw001lvv5cz7zf3awm",
+      "customerId": "8a4b4ebd-e254-4908-bcef-1c95ef86cbc4",
+      "change": 5,
+      "balanceAfter": 5,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw001mvv5cwbsi6gcf",
+      "customerId": "51278c4d-28be-49e3-9c8f-5239f2bce57b",
+      "change": 13,
+      "balanceAfter": 13,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw001nvv5cqqd19qj3",
+      "customerId": "9fbe9b5c-2057-4d1b-8955-846ada6feb87",
+      "change": 5,
+      "balanceAfter": 5,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    },
+    {
+      "id": "cmfzfsumw001ovv5cefip95q1",
+      "customerId": "2367d278-0f73-471e-b587-f786017769b8",
+      "change": 3,
+      "balanceAfter": 3,
+      "reason": "Applied offer: Cashback per point",
+      "sourceType": "offer",
+      "sourceId": "cmfzdqhnr0002vv9w68bgbipn",
+      "earnedAt": "2025-09-25T13:16:41.620Z",
+      "expiresAt": null,
+      "metadata": null
+    }
+  ],
+  "walletCredits": [],
+  "users": [
+    {
+      "id": "cmfzcoiix0001vv9w3pmy8138",
+      "fullName": "Martin Luther",
+      "email": "minutesstore@gmail.com",
+      "phoneNumber": "030000000",
+      "password": "$2b$10$ccelCHTMkNoIjoDA2ZTmB.GH9HML9bX1tO/xMOP2FZVwkbRKt3dsu",
+      "username": "martinluther8089",
+      "profilePicUrl": "/uploads/d7893397-570c-49c7-b4f0-64c84cb68b81.jpg",
+      "createdAt": "2025-09-25T11:49:20.455Z",
+      "updatedAt": "2025-09-25T11:49:20.455Z",
+      "shopId": null
+    },
+    {
+      "id": "cmg0ojiub0000vvg4mafaowwa",
+      "fullName": "Martin Luther",
+      "email": "worldstore@gmail.com",
+      "phoneNumber": "030000000",
+      "password": "$argon2id$v=19$m=4096,t=2,p=1$r1n11FUxJJ+PkoQz/282OA$mFcrrsueTDGaUykTwJJHL/4CIQXBeNnlLD1uIbiIgWc",
+      "username": "martinluther8975",
+      "profilePicUrl": "/uploads/89916aa3-7aa7-4e7a-8db5-b3b91e7588a1.jpg",
+      "createdAt": "2025-09-26T10:09:09.153Z",
+      "updatedAt": "2025-09-26T10:09:09.153Z",
+      "shopId": null
+    }
+  ],
+  "shops": [
+    {
+      "id": 4,
+      "shop": "sale-books-subscription.myshopify.com",
+      "accessToken": "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",
+      "scope": "read_orders,read_customers,write_content,write_products,write_files,write_online_store_navigation,write_publications,write_product_listings",
+      "createdAt": "2025-09-25T17:04:37.000Z",
+      "updatedAt": "2025-09-25T17:04:37.000Z"
+    },
+    {
+      "id": 2,
+      "shop": "test-store-0056.myshopify.com",
+      "accessToken": "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",
+      "scope": "read_orders,read_customers,write_content,write_products,write_files,write_online_store_navigation,write_publications,write_product_listings",
+      "createdAt": "2025-10-04T17:35:55.000Z",
+      "updatedAt": "2025-10-04T17:37:53.000Z"
+    }
+  ],
+  "offers": [
+    {
+      "id": "cmfzdyxvm0007vv9wk3va1mtv",
+      "name": "Birthday Offer",
+      "description": "20% on Order",
+      "image": "/uploads/133989436321245377.jpg",
+      "offerType": "CASHBACK",
+      "value": 100,
+      "pointsCost": 20,
+      "tierRequired": "Silver",
+      "usageLimit": null,
+      "isActive": true,
+      "startDate": "2025-09-24T00:00:00.000Z",
+      "endDate": "2025-11-27T00:00:00.000Z",
+      "createdAt": "2025-09-25T12:25:26.451Z",
+      "updatedAt": "2025-09-25T12:25:26.451Z",
+      "redemptions": []
+    },
+    {
+      "id": "cmfze0vmp0008vv9wkoku80eb",
+      "name": "Loyalty Offer",
+      "description": "40% on 3rd Order",
+      "image": "/uploads/133982675463079342.jpg",
+      "offerType": "CASHBACK",
+      "value": 100,
+      "pointsCost": 40,
+      "tierRequired": "Gold",
+      "usageLimit": null,
+      "isActive": true,
+      "startDate": "2025-09-26T00:00:00.000Z",
+      "endDate": "2026-03-26T00:00:00.000Z",
+      "createdAt": "2025-09-25T12:26:56.852Z",
+      "updatedAt": "2025-09-25T12:26:56.852Z",
+      "redemptions": []
+    },
+    {
+      "id": "cmfzdqhnr0002vv9w68bgbipn",
+      "name": "Cashback per point",
+      "description": "10 Euro = 1 Point\r\n",
+      "image": "/uploads/134002692638886827.jpg",
+      "offerType": "CASHBACK",
+      "value": 100,
+      "pointsCost": 1,
+      "tierRequired": "Gold",
+      "usageLimit": null,
+      "isActive": true,
+      "startDate": "2025-09-08T00:00:00.000Z",
+      "endDate": "2026-01-22T00:00:00.000Z",
+      "createdAt": "2025-09-25T12:18:52.263Z",
+      "updatedAt": "2025-09-25T13:15:35.600Z",
+      "redemptions": []
+    }
+  ],
+  "loyaltyLevels": [],
+  "pointRules": [],
+  "campaigns": [],
+  "loyaltyPrograms": [
+    {
+      "id": 1,
+      "tiers": [
+        {
+          "color": "#734A00",
+          "label": "Welcomed: Less than 20 points"
+        },
+        {
+          "color": "#B47A11",
+          "label": "Guest: Between 20 and 30 points"
+        },
+        {
+          "color": "#402A00",
+          "label": "Host: Between 31 and 4500 points"
+        },
+        {
+          "color": "#384551",
+          "label": "Test: More than 4500 points"
+        }
+      ],
+      "rows": [
+        {
+          "label": "Cashback per point",
+          "values": [
+            "10 points = €10",
+            "10 points = €10",
+            "10 points = €13",
+            "-"
+          ]
+        },
+        {
+          "label": "Free Delivery",
+          "values": [
+            "From €400 spent over 2 years",
+            "From €400 spent over 2 years",
+            "From €400 spent over 2 years",
+            "-"
+          ]
+        },
+        {
+          "label": "Immediate Discount",
+          "values": [
+            "5% on the first order",
+            "10% cumulative",
+            "15% + priority access",
+            "-"
+          ]
+        },
+        {
+          "label": "Product Suggestions",
+          "values": [
+            "Offer suggestion if purchasing from category X",
+            "Offer suggestion if purchasing from one or more categories",
+            "Offer of your choice if purchasing from one or more categories",
+            "-"
+          ]
+        },
+        {
+          "label": "Loyalty Offer",
+          "values": [
+            "No",
+            "5% on the 3rd order",
+            "5% on the 3rd order",
+            "-"
+          ]
+        },
+        {
+          "label": "Birthday Offer",
+          "values": [
+            "15% on the order of your choice (valid 45 days)",
+            "15% on the order of your choice (valid 45 days)",
+            "15% on the order of your choice (valid 45 days)",
+            "-"
+          ]
+        }
+      ],
+      "createdAt": "2025-09-25T12:34:54.475Z",
+      "updatedAt": "2025-09-29T16:52:21.529Z"
+    }
+  ],
+  "adventEntries": [
+    {
+      "id": 11,
+      "month": "Sep",
+      "day": 5,
+      "event": "Christmas",
+      "type": "cashback",
+      "createdAt": "2025-09-26T16:32:47.238Z",
+      "updatedAt": "2025-09-26T16:32:47.238Z"
+    },
+    {
+      "id": 12,
+      "month": "Sep",
+      "day": 6,
+      "event": "Hallowen",
+      "type": "cashback",
+      "createdAt": "2025-09-26T16:32:47.238Z",
+      "updatedAt": "2025-09-26T16:32:47.238Z"
+    },
+    {
+      "id": 13,
+      "month": "Sep",
+      "day": 13,
+      "event": "Loyalty Points",
+      "type": "cashback",
+      "createdAt": "2025-09-26T16:32:47.238Z",
+      "updatedAt": "2025-09-26T16:32:47.238Z"
+    },
+    {
+      "id": 14,
+      "month": "Aug",
+      "day": 1,
+      "event": "Black Friday",
+      "type": "cashback",
+      "createdAt": "2025-09-27T09:52:46.055Z",
+      "updatedAt": "2025-09-27T09:52:46.055Z"
+    },
+    {
+      "id": 15,
+      "month": "Aug",
+      "day": 3,
+      "event": "Chritsmas",
+      "type": "cashback",
+      "createdAt": "2025-09-27T09:52:46.055Z",
+      "updatedAt": "2025-09-27T09:52:46.055Z"
+    },
+    {
+      "id": 16,
+      "month": "Aug",
+      "day": 4,
+      "event": "Easter",
+      "type": "cashback",
+      "createdAt": "2025-09-27T09:52:46.055Z",
+      "updatedAt": "2025-09-27T09:52:46.055Z"
+    },
+    {
+      "id": 17,
+      "month": "Aug",
+      "day": 29,
+      "event": "Hallowen",
+      "type": "cashback",
+      "createdAt": "2025-09-27T09:52:46.055Z",
+      "updatedAt": "2025-09-27T09:52:46.055Z"
+    }
+  ]
+}

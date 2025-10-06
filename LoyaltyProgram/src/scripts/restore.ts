@@ -1,55 +1,36 @@
 import { PrismaClient } from "@prisma/client";
 import fs from "fs";
-import path from "path";
 
 const prisma = new PrismaClient();
 
 async function main() {
   try {
-    const backupDir = path.join(process.cwd(), "db-backup");
-    if (!fs.existsSync(backupDir)) throw new Error("Backup folder not found!");
+    // Load backup file (make sure it exists)
+    const data = JSON.parse(fs.readFileSync("./db-backup.json", "utf-8"));
 
-    const tables: { name: string; model: any }[] = [
-      { name: "Offer", model: prisma.offer },
-      { name: "OfferRedemption", model: prisma.offerRedemption },
-      { name: "User", model: prisma.user },
-      { name: "Shop", model: prisma.shop },
-      { name: "Customer", model: prisma.customer },
-      { name: "PointsLedger", model: prisma.pointsLedger },
-      { name: "WalletCredit", model: prisma.walletCredit },
-      { name: "LoyaltyLevel", model: prisma.loyaltyLevel },
-      { name: "PointRule", model: prisma.pointRule },
-      { name: "Campaign", model: prisma.campaign },
-      { name: "LoyaltyProgram", model: prisma.loyaltyProgram },
-   
-    ];
-
-    for (const table of tables) {
-      const filePath = path.join(backupDir, `${table.name}.json`);
-      if (!fs.existsSync(filePath)) continue;
-
-      const data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-      if (!Array.isArray(data) || data.length === 0) continue;
-
-      console.log(`💾 Restoring table: ${table.name} (${data.length} records)`);
-
-      for (const record of data) {
-        try {
-          // Upsert using primary key (id) if exists
-          await table.model.upsert({
-            where: { id: record.id },
-            update: record,
-            create: record,
-          });
-        } catch (err) {
-          console.error(`⚠️ Failed to restore record in ${table.name}:`, err);
-        }
+    if (data.users && data.users.length) {
+      for (const user of data.users) {
+        // Insert user into DB
+        await prisma.user.create({
+          data: {
+            id: user.id,
+            fullName: user.fullName,
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+            password: user.password,
+            username: user.username,
+            profilePicUrl: user.profilePicUrl,
+            createdAt: new Date(user.createdAt),
+            updatedAt: new Date(user.updatedAt),
+            shopId: user.shopId || null,
+          },
+        });
       }
     }
 
-    console.log("🎉 Restore completed!");
+    console.log("Users restored successfully!");
   } catch (err) {
-    console.error("❌ Restore failed:", err);
+    console.error("Error restoring users:", err);
   } finally {
     await prisma.$disconnect();
   }
