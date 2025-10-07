@@ -8,8 +8,6 @@ import { formatMoney } from "./formatMoney";
 const CONCURRENCY = 5;
 
 export async function fetchProcessUpsertCustomers(shopDomain: string, accessToken: string) {
-  // 🔹 Step 1: Check if customers already exist in DB for this shop
-
   // 🔹 Step 2: Otherwise, fetch from Shopify
   const allCustomers = await fetchAllCustomers(shopDomain, accessToken);
 
@@ -21,6 +19,7 @@ export async function fetchProcessUpsertCustomers(shopDomain: string, accessToke
 
   // Upsert all processed customers
   await upsertCustomers(processedCustomers);
+
 
   // Format for frontend
   return processedCustomers.map((c) => ({

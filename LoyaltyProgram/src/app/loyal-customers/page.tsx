@@ -14,6 +14,15 @@ function LoyalCustomersList() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 const [page, setPage] = useState(1);
+const [customerIdFromUrl, setCustomerIdFromUrl] = useState<string | null>(null);
+
+useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("customerId");
+  setCustomerIdFromUrl(id);
+  setStep(0);
+  setSelectedTab("Clients");
+}, []);
 
 
 const PAGE_SIZE = 10;
@@ -50,6 +59,7 @@ useEffect(() => {
       );
 
       setCustomers(sortedCustomers);
+      console.log("Sorted Customers:", sortedCustomers);
       setTotalCount(count);
     } catch (error) {
       console.error("❌ Error loading customer data:", error);
@@ -216,9 +226,15 @@ useEffect(() => {
   
       </div>
        )}
-      {selectedTab === "Clients" && step === 0 && (
-        <LoyaltyDashboard currentCustomers = {currentCustomers}/>
-      )}
+{selectedTab === "Clients" && step === 0 && (
+  <LoyaltyDashboard
+    currentCustomers={
+      customerIdFromUrl
+        ? customers.filter(c => c.id === customerIdFromUrl)
+        : currentCustomers
+    }
+  />
+)}
     </div>
   );
 }

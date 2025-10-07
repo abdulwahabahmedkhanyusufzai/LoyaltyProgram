@@ -12,6 +12,7 @@ export async function fetchCustomersFromDB() {
       loyaltyTitle: true,   // <- always select this
       numberOfOrders: true,
       amountSpent: true,
+      shopifyId: true,  // <- select Shopify ID for order fetching
     },
     orderBy: { numberOfOrders: "desc" },
   });

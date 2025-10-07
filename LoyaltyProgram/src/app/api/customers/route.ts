@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
 import { fetchProcessUpsertCustomers } from "./services/fetchProcessUpsertCustomers";
 import { fetchCustomersFromDB } from "./services/fetchCustomersfromDB";
-import { count } from "console";
-
+import { fetchFromShopify } from "./services/fetchFromShopify";
+import { CUSTOMER_ORDERS_QUERY } from "./services/GraphQLforCustomer";
 
 export async function GET(req: Request) {
   try {
@@ -14,6 +14,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Invalid shopId" }, { status: 400 });
     }
 
+    // 🔹 Get shop credentials
     const shop = await prisma.shop.findUnique({
       where: { id: shopId },
       select: { shop: true, accessToken: true },
@@ -21,40 +22,118 @@ export async function GET(req: Request) {
     if (!shop) {
       return NextResponse.json({ error: "Shop not found" }, { status: 404 });
     }
+
+    // 🔹 Check for existing customers
     const existingCustomers = await prisma.customer.findMany({
-    select: {
-      id: true,
-      firstName: true,
-      lastName: true,
-      email: true,
-      loyaltyTitle: true,   // <- always select this
-      numberOfOrders: true,
-      amountSpent: true,
-    },
-        orderBy: { numberOfOrders: "desc" },
-  });
-  
-  if(existingCustomers.length > 0){
-    // Stop here & return formatted data
-    return NextResponse.json({
-      customers:existingCustomers,
-      count: existingCustomers.length,
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        loyaltyTitle: true,
+        numberOfOrders: true,
+        amountSpent: true,
+        shopifyId: true,
+      },
+      orderBy: { numberOfOrders: "desc" },
     });
-  }
-    // Process new customers (Shopify sync)
+
+    if (existingCustomers.length > 0) {
+      return NextResponse.json({
+        customers: existingCustomers,
+        count: existingCustomers.length,
+      });
+    }
+
+    // 🔹 Process customers (upsert into DB from Shopify)
     const processed = await fetchProcessUpsertCustomers(
       shop.shop,
       shop.accessToken
     );
-    
-      
     console.log(`[API] Processed ${processed.length} customers for shop ${shop.shop}`);
 
-    // Fetch customers from DB
+    // 🔹 Fetch them again from DB (after sync)
     const customers = await fetchCustomersFromDB();
 
+
+
+for (const customer of customers) {
+  let after: string | null = null;
+  const PAGE_SIZE = 100;
+
+  console.log(`[OrderSync] Starting sync for customer ${customer.id} (${customer.shopifyId})`);
+
+  do {
+    try {
+      const data = await fetchFromShopify(
+        shop.shop,
+        shop.accessToken,
+        CUSTOMER_ORDERS_QUERY,
+        { customerId: customer.shopifyId, first: PAGE_SIZE, after }
+      );
+
+      if (!data.customer) {
+        console.warn(`[OrderSync] No Shopify customer found for ${customer.shopifyId}`);
+        break;
+      }
+
+      const orders = data.customer.orders.edges ?? [];
+      if (orders.length === 0) {
+        console.log(`[OrderSync] No orders found for customer ${customer.id}`);
+        break;
+      }
+
+      for (const edge of orders) {
+        const order = edge.node;
+        const amount = parseFloat(order.totalPriceSet?.shopMoney?.amount ?? "0");
+        const currency = order.totalPriceSet?.shopMoney?.currencyCode ?? "USD";
+
+        await prisma.order.upsert({
+          where: { orderNumber: order.name },
+          update: {
+            totalAmount: amount,
+            currency,
+            createdAt: new Date(order.createdAt),
+          },
+          create: {
+            orderNumber: order.name,
+            totalAmount: amount,
+            currency,
+            createdAt: new Date(order.createdAt),
+            // ✅ connectOrCreate ensures customer exists
+            customer: {
+              connectOrCreate: {
+                where: { id: customer.id },
+                create: {
+                  id: customer.id,
+                  firstName: customer.firstName,
+                  lastName: customer.lastName,
+                  email: customer.email,
+                  shopifyId: customer.shopifyId,
+                },
+              },
+            },
+            shop: { connect: { id: shopId } },
+          },
+        });
+      }
+
+      after = data.customer.orders.pageInfo.hasNextPage
+        ? data.customer.orders.pageInfo.endCursor
+        : null;
+
+    } catch (err) {
+      console.error(`[OrderSync] Failed for customer ${customer.id}:`, err);
+      break;
+    }
+  } while (after);
+
+  console.log(`[OrderSync] Finished syncing orders for customer ${customer.id}`);
+}
+
+
     return NextResponse.json({
-      customers: customers,
+      customers,
       count: customers.length,
     });
   } catch (err: any) {

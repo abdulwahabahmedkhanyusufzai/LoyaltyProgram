@@ -153,6 +153,7 @@ model LoyaltyProgram {
 model Customer {
   id               String   @id @default(uuid()) // Unique identifier for the customer.
   firstName        String
+  shopifyId         String   @unique // Shopify customer ID for integration.
   lastName         String
   email            String   @unique
   numberOfOrders   Int      @default(0)

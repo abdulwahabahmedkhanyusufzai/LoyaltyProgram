@@ -12,6 +12,7 @@ export async function upsertCustomers(customers: any[]) {
         amountSpent: c.amountSpent,
       },
       create: {
+        shopifyId: c.id,
         firstName: c.firstName,
         lastName: c.lastName,
         email: c.email,

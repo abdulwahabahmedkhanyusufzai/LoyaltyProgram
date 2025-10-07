@@ -1,8 +1,13 @@
 import { fetchFromShopify } from "./fetchFromShopify";
 import { CUSTOMER_LIST_QUERY } from "./GraphQLforCustomer";
 
+type Customer = {
+  id: string;
+  // add other relevant fields as needed
+};
+
 export async function fetchAllCustomers(shop: string, token: string) {
-  let allCustomers: any[] = [];
+  const allCustomers: Customer[] = [];
   let after: string | null = null;
   const PAGE_SIZE = 250;
 

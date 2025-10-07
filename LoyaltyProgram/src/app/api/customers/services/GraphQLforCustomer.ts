@@ -18,14 +18,18 @@ query getCustomers($first: Int!, $after: String) {
 `;
 
 export const CUSTOMER_ORDERS_QUERY = `
-query getCustomerOrders($customerId: ID!, $first: Int!, $after: String) {
+query CustomerOrders($customerId: ID!, $first: Int!, $after: String) {
   customer(id: $customerId) {
     orders(first: $first, after: $after) {
       edges {
         node {
+          id
+          name
+          createdAt
           totalPriceSet {
             shopMoney {
               amount
+              currencyCode
             }
           }
         }

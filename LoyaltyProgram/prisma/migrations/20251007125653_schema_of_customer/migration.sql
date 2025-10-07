@@ -142,6 +142,7 @@ CREATE TABLE "public"."LoyaltyProgram" (
 CREATE TABLE "public"."loyal_customers" (
     "id" TEXT NOT NULL,
     "firstName" TEXT NOT NULL,
+    "shopifyId" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "numberOfOrders" INTEGER NOT NULL DEFAULT 0,
@@ -221,6 +222,9 @@ CREATE INDEX "PointsLedger_expiresAt_idx" ON "public"."PointsLedger"("expiresAt"
 
 -- CreateIndex
 CREATE UNIQUE INDEX "PointRule_key_key" ON "public"."PointRule"("key");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "loyal_customers_shopifyId_key" ON "public"."loyal_customers"("shopifyId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "loyal_customers_email_key" ON "public"."loyal_customers"("email");

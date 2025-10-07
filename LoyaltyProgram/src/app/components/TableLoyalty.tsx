@@ -25,7 +25,7 @@ export const LoyaltyTable = () => {
 
   useEffect(() => {
     fetchCustomers();
-  }, []);
+  }, [fetchCustomers]);
 
   const fetchCalendarData = async (month: string) => {
     console.log("Fetching for month:", month);
@@ -188,7 +188,7 @@ export const LoyaltyTable = () => {
         <li>
           <button
             onClick={() => {
-              router.push(`/loyal-customers`);
+              router.push(`/loyal-customers/?customerId=${encodeURIComponent(customer.id)}`);
               setOpenMenuId(null);
             }}
             className="w-full text-left px-3 py-2 hover:bg-gray-100"
@@ -199,7 +199,7 @@ export const LoyaltyTable = () => {
         <li>
           <button
             onClick={() => {
-              router.push(`/customers/${customer.id}/edit`);
+              router.push(`/register-as-customer/?customerId=${encodeURIComponent(customer.id)}`);
               setOpenMenuId(null);
             }}
             className="w-full text-left px-3 py-2 hover:bg-gray-100"
