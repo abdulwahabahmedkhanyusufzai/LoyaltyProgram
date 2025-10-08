@@ -20,8 +20,16 @@ useEffect(() => {
   const params = new URLSearchParams(window.location.search);
   const id = params.get("customerId");
   setCustomerIdFromUrl(id);
-  setStep(0);
-  setSelectedTab("Clients");
+  
+  if (id) {
+    // If there's a customerId → go to Clients tab
+    setStep(0);
+    setSelectedTab("Clients");
+  } else {
+    // Otherwise → default to Home tab
+    setStep(1);
+    setSelectedTab("Home");
+  }
 }, []);
 
 

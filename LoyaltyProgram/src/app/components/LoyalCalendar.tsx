@@ -35,9 +35,10 @@ const monthName = monthNames[month];
       if (!res.ok) throw new Error("Failed to fetch calendar data");
       const data = await res.json();
 
-      console.log("Fetched calendar:", data);
+      console.log("Fetched calendar:", data.calendarData);
 
       const dates = Object.keys(data.calendarData || {}).map(Number);
+      console.log("Dates",dates);
       setMarkedDates(dates);
     } catch (err) {
       console.error(err);

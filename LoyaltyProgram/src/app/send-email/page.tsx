@@ -25,9 +25,15 @@ function LoyalCustomersList() {
     // This runs only on the client, so window is defined
     const params = new URLSearchParams(window.location.search);
     const emailParam = params.get("email");
-    if (emailParam) setSelectedEmail(emailParam);
+
+    if (emailParam) {
+      setSelectedEmail(emailParam);
     setSelectedTab("Send an Email");
     setStep(2);
+    }else{
+      setSelectedTab("Customers");
+      setStep(1);
+    }
   }, []);
 
   useEffect(() => {

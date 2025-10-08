@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { customerService } from "../utils/CustomerService";
+import { FloatingInput } from "../components/FloatingInput";
 
 const RegisterAsaCustomer = () => {
   const router = useRouter();
@@ -30,9 +31,7 @@ const RegisterAsaCustomer = () => {
       try {
         const fetchedCustomers = await customerService.fetchCustomers();
         setCustomers(fetchedCustomers);
-        console.log("Fetched customers:", fetchedCustomers);
 
-        // 1️⃣ Auto-fill form if customerId exists
         if (id) {
           const customer = fetchedCustomers.find((c) => c.id === id);
           if (customer) {
@@ -46,7 +45,6 @@ const RegisterAsaCustomer = () => {
               points: customer.loyaltyPoints || "",
               expiry: "",
             });
-
           }
         }
       } catch (error) {
@@ -66,8 +64,6 @@ const RegisterAsaCustomer = () => {
 
   const handleRegister = () => {
     alert(`Customer Registered: ${form.fullName}, ${form.email}`);
-    // Redirect after registration
-
   };
 
   const handleCancel = () => {
@@ -107,38 +103,11 @@ const RegisterAsaCustomer = () => {
         {/* Customer Details */}
         <div className="space-y-4">
           <h3 className="text-lg font-bold text-[#2C2A25] mb-4">Customer Details</h3>
-          <input
-            type="text"
-            name="fullName"
-            placeholder="Full Name"
-            value={form.fullName}
-            onChange={handleChange}
-            className="text-[#734A00] placeholder-[#734A00] w-full border border-gray-300 rounded-full px-4 py-3 outline-none focus:ring-2 focus:ring-yellow-500"
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email Address"
-            value={form.email}
-            onChange={handleChange}
-            className="text-[#734A00] placeholder-[#734A00] w-full border border-gray-300 rounded-full px-4 py-3 outline-none focus:ring-2 focus:ring-yellow-500"
-          />
-          <input
-            type="tel"
-            name="phone"
-            placeholder="Phone Number"
-            value={form.phone}
-            onChange={handleChange}
-            className="text-[#734A00] placeholder-[#734A00] w-full border border-gray-300 rounded-full px-4 py-3 outline-none focus:ring-2 focus:ring-yellow-500"
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
-            className="text-[#734A00] placeholder-[#734A00] w-full border border-gray-300 rounded-full px-4 py-3 outline-none focus:ring-2 focus:ring-yellow-500"
-          />
+          <FloatingInput id="Full Name" type="text" placeholder="Full Name" value={form.fullName} onChange={handleChange} className=""/>
+          <FloatingInput id="Email Address" type="email" placeholder="Email" value={form.email} onChange={handleChange} className=""/>
+          <FloatingInput id="Phone Number" type="tel" placeholder="Phone" value={form.phone} onChange={handleChange} />
+          <FloatingInput id="Password" type="password" placeholder="Password" value={form.password} onChange={handleChange} />
+
           <label className="flex items-center gap-2 text-gray-700">
             <input
               type="checkbox"
@@ -154,29 +123,9 @@ const RegisterAsaCustomer = () => {
         {/* Loyalty Program */}
         <div className="mt-8 space-y-4">
           <h3 className="text-lg font-bold text-[#2C2A25] mb-4">Loyalty Program</h3>
-          <input
-            type="text"
-            name="tier"
-            placeholder="Tier"
-            value={form.tier}
-            onChange={handleChange}
-            className="text-[#734A00] placeholder-[#734A00] w-full border border-gray-300 rounded-full px-4 py-3 outline-none focus:ring-2 focus:ring-yellow-500"
-          />
-          <input
-            type="number"
-            name="points"
-            placeholder="Point Balance"
-            value={form.points}
-            onChange={handleChange}
-            className="text-[#734A00] placeholder-[#734A00] w-full border border-gray-300 rounded-full px-4 py-3 outline-none focus:ring-2 focus:ring-yellow-500"
-          />
-          <input
-            type="date"
-            name="expiry"
-            value={form.expiry}
-            onChange={handleChange}
-            className="text-[#734A00] placeholder-[#734A00] w-full border border-gray-300 rounded-full px-4 py-3 outline-none focus:ring-2 focus:ring-yellow-500"
-          />
+          <FloatingInput id="Tier" placeholder="Tier" value={form.tier} onChange={handleChange} />
+          <FloatingInput id="Point Balance" type="Number" placeholder="Point Balance" value={form.points} onChange={handleChange} />
+          <FloatingInput id="Expiry Date" type="Date" placeholder="Expiry Date" value={form.expiry} onChange={handleChange} />
         </div>
 
         {/* Buttons */}
