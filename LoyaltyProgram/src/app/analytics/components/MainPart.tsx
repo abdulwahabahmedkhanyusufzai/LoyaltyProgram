@@ -34,7 +34,7 @@ const MainPart = () => {
              onMouseUp={handleMouseUp}
              onMouseMove={handleMouseMove}
            >
-             <div className="flex gap-2 sm:gap-6 min-w-max">
+             <div className="flex gap-2 sm:gap-6 min-w-max justify-center">
               <MainContent/>
            
          </div>

@@ -58,7 +58,7 @@ const WaroPage = () => {
   { label: "Loyalty Program", content: <LoyaltyProgram />,redirect: "/loyal-customers/program" },
   { label: "Top Selling Products", content: <TopSellingProductsHorizontal/>, redirect:"/topSellingProduct"},
   {
-    label: "Total Registered Customers",
+    label: `Total Registered Customers`,
     content: (
       <div className="text-center flex items-center justify-center mt-6 text-[45px] sm:text-[36px] lg:text-[51px] 2xl:text-[71px] font-extrabold text-[#2C2A25]">
         {customerCount !== null ? `${customerCount}+` : <SkeletonLoader/>}
@@ -74,7 +74,7 @@ const WaroPage = () => {
       {/* Scrollable Stats */}
       <div
         ref={scrollRef}
-        className="overflow-x-auto no-scrollbar cursor-grab active:cursor-grabbing"
+        className="overflow-x-auto no-scrollbar p-2 md:cursor-pointer cursor-grab active:cursor-grabbing"
         onMouseDown={handleMouseDown}
         onMouseLeave={handleMouseLeave}
         onMouseUp={handleMouseUp}
@@ -99,23 +99,29 @@ const WaroPage = () => {
                       : "text-[#000000]"
                   } text-[12px] sm:text-[14px] 2xl:text-[18px] font-semibold`}
                 >
-                  {stat.label}
+                  {stat.label === "Total Registered Customers" ? 
+                   <p>Total Registered<br/> Customers</p>
+                  :(
+                  stat.label
+                  )}
                 </p>
+                  
                 <button
                 onClick={() => router.push(`${stat.redirect}`)}
                   className={`${
                     stat.label === "Top Selling Products"
                       ? "border-[#E8E6D9]"
                       : "border-[#2C2A25]"
-                  }  cursor-pointer w-[24px] h-[24px] sm:w-[30px] sm:h-[30px] 2xl:w-[48px] 2xl:h-[48px] rounded-full border flex items-center justify-center hover:bg-[#D9D9D9] transition`}
+                  }  cursor-pointer w-[24px] h-[24px] sm:w-[40px] sm:h-[40px] 2xl:w-[48px] 2xl:h-[48px] rounded-full border flex items-center justify-center hover:bg-[#D9D9D9] transition`}
                 >
                   <img
                     src={
                       stat.label === "Top Selling Products"
                         ? `Arrow12.svg`
-                        : `arrow.png`
+                        : `Arrow1.svg`
                     }
                     alt="arrow"
+                    className="w-[14px] sm:w-auto h-[14px] sm:h-auto"
                   />
                 </button>
               </div>

@@ -19,6 +19,7 @@ const getFirstDayOfWeek = (monthStr: string, year: number) => {
   const monthMap: { [key: string]: number } = {
     "Aug": 7, "Sep": 8, "Oct": 9, "Nov": 10, "Dec": 11
   };
+  // Converts 1 -> 1st, 2 -> 2nd, 3 -> 3rd, 4 -> 4th, etc.
   const monthIndex = monthMap[monthStr];
   
   // Day 1 of the month
@@ -46,6 +47,12 @@ function AdventCalendar() {
       [day]: { ...prev[day], [field]: value },
     }));
   };
+
+  const formatDayWithSuffix = (day: number): string => {
+  const suffixes = ["th", "st", "nd", "rd"];
+  const v = day % 100;
+  return day + (suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]);
+};
 
   const handleSaveCalendar = async () => {
     try {
@@ -135,13 +142,12 @@ function AdventCalendar() {
 
         {/* Weekdays */}
         <div className="grid grid-cols-7 gap-2 text-sm font-semibold text-gray-500 mb-2">
-          {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(day => <div key={day} className="text-center">{day}</div>)}
         </div>
 
         {/* Calendar Grid */}
-        <div className="grid grid-cols-7 gap-2">
+        <div className="grid grid-cols-6 ">
           {calendarDays.map((day, idx) => {
-            if (day === null) return <div key={idx} className="h-[60px] lg:h-24"></div>;
+            if (day === null) return 
 
             const info = calendarData[day];
             const isEditing = editingDay === day;
@@ -150,13 +156,30 @@ function AdventCalendar() {
             return (
               <div
                 key={day}
-                className={`relative border p-2 text-center text-sm h-[60px] lg:h-24 flex flex-col justify-between transition-colors ${cursorStyle} ${
+                className={`relative border-[0.8px] p-2 text-center text-sm border-[#E3E3E3] h-[60px] lg:h-24 flex flex-col justify-between transition-colors ${cursorStyle} ${
                   info ? "bg-[#734A00] text-white border-[#734A00]" : "bg-[#fdfdf9] text-[#8B8B8B]" + (isEditable ? "hover:bg-gray-50" : "")
                 }`}
                 onClick={() => handleDayClick(day)}
               >
-                <div className="text-xs font-medium self-end"><span className="font-bold">{day}</span></div>
-                {isEditing ? (
+                  <div className={`flex justify-between text-[13px] font-semibold ${info ? "text-white" : "text-black"}`}>
+    <div className="flex justify-start items-start">
+    {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][(startDayOfWeek + day - 1) % 7]}
+    </div>
+    {info && (
+                  <div className="flex items-end justify-end pointer-events-none">
+                    <p className="flex justify-end font-bold text-center text-[11px] px-2 py-1 leading-tight text-black bg-white rounded-full">{info.event}</p>
+                  </div>)}
+
+      
+  </div>
+
+          {!info && (
+                 <div className="flex items-center justify-center pointer-events-none">
+                    <p className="flex justify-center font-bold text-center text-[11px] px-2 py-1 leading-tight text-[#8B8B8B] rounded-full">Nothing to Do</p>
+                  </div>
+              )}
+        
+                {isEditing && (
                   <div className="flex flex-col gap-1 z-10 p-1 absolute inset-0 bg-white shadow-lg text-left">
                     <input
                       type="text"
@@ -183,13 +206,10 @@ function AdventCalendar() {
                       Done
                     </button>
                   </div>
-                ) : info ? (
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <p className="font-bold text-center text-sm p-1 leading-tight">{info.event}</p>
-                  </div>
-                ) : (
-                  <p className="text-xs text-gray-400">Add Event</p>
-                )}
+                )} 
+                <div className={`${info  ? "text-white":"text-black"} flex justify-end items-end`}>
+                 <span className=" font-bold">{formatDayWithSuffix(day)}</span>
+              </div>
               </div>
             );
           })}

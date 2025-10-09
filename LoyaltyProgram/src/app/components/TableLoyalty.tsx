@@ -43,7 +43,7 @@ export const LoyaltyTable = () => {
   };
 
   return (
-    <div className="w-full lg:w-[724px] lg:h-[500px] 2xl:w-[949px] 2xl:h-[533px] border border-[#2C2A25] rounded-[24px] sm:rounded-[32px] p-3 sm:p-4 flex flex-col relative">
+    <div className="w-full lg:w-[724px] lg:h-[500px] 2xl:w-[949px] 2xl:h-[533px] border border-[#a59f9f] rounded-[24px] sm:rounded-[32px] p-3 sm:p-4 flex flex-col relative">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <h1 className="text-[16px] sm:text-[18px] font-semibold">
@@ -52,7 +52,7 @@ export const LoyaltyTable = () => {
         <div className="flex flex-wrap gap-2 sm:gap-[5px]">
           <button
             onClick={() => router.push("/register-as-customer")}
-            className="cursor-pointer flex items-center justify-between px-3 sm:px-4 border rounded-[20px] sm:rounded-[25px] border-[#2C2A25] h-[40px] sm:h-[44px] text-[13px] sm:text-[14px] hover:bg-[#2C2A25] hover:text-white transition"
+            className="cursor-pointer flex items-center justify-between px-3 sm:px-4 border rounded-[20px] sm:rounded-[25px] border-[#a59f9f] h-[40px] sm:h-[44px] text-[13px] sm:text-[14px] hover:bg-[#2C2A25] hover:text-white transition"
           >
             <span>Add New</span>
             <span className="text-[16px] sm:text-[18px]">+</span>
@@ -70,10 +70,10 @@ export const LoyaltyTable = () => {
 />
           <button
             onClick={() => router.push("/add-remove-loyal")}
-            className="cursor-pointer hover:bg-[#D9D9D9] border-[#2C2A25] w-[40px] h-[40px] sm:w-[48px] sm:h-[48px] rounded-full border flex items-center justify-center"
+            className="cursor-pointer hover:bg-[#D9D9D9] border-[#a59f9f]  w-[40px] h-[40px] sm:w-[48px] sm:h-[48px] rounded-full border flex items-center justify-center"
           >
             <img
-              src="arrow.png"
+              src="Arrow1.svg"
               className="w-[16px] sm:w-auto h-[16px] sm:h-auto"
               alt="arrow"
             />

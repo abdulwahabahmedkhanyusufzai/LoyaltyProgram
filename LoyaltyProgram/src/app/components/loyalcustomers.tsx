@@ -27,7 +27,7 @@ const CustomerItem = ({ name, email }: { name: string; email: string }) => {
     const bgColor = getRandomColor(name || email);
   return(
   <div className="flex items-center gap-3 xl:gap-4 mb-1 mt-1">
-     <div className="flex items-center justify-center rounded-full min-w-[50px] aspect-square bg-[#2C2A25] text-white text-lg font-bold"
+     <div className="flex items-center justify-center rounded-full min-w-[40px] md:min-w-[45px] aspect-square bg-[#2C2A25] text-white text-lg font-bold"
      style={{backgroundColor:bgColor}}>
         {initial}
       </div>

@@ -32,7 +32,7 @@ export default function MonthDropdown({
       {/* Button */}
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="cursor-pointer flex items-center justify-between gap-2 border rounded-[20px] sm:rounded-[25px] border-[#2C2A25] px-4 h-[40px] sm:h-[44px] text-[13px] sm:text-[14px] hover:bg-[#2C2A25] hover:text-white transition min-w-[80px]"
+        className="cursor-pointer flex items-center justify-between gap-2 border rounded-[20px] sm:rounded-[25px] border-[#a59f9f]  px-4 h-[40px] sm:h-[44px] text-[13px] sm:text-[14px] hover:bg-[#2C2A25] hover:text-white transition min-w-[80px]"
       >
         <span>{currentMonth.slice(0, 3)}</span>
         {open ? (

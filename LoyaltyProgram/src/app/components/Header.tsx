@@ -70,7 +70,7 @@ export const Header = ({ onToggle }: HeaderProps) => {
   ];
 
   return (
-    <div className="ml-0 lg:ml-[290px] 2xl:ml-[342px] flex items-center justify-between px-4 py-3 bg-white shadow-sm relative">
+    <div className="ml-0 lg:ml-[290px] 2xl:ml-[342px] flex items-center justify-between px-4 py-3 bg-white  relative">
       {/* Left: Hamburger + title */}
       <div className="flex items-center gap-4">
         <button
@@ -80,10 +80,10 @@ export const Header = ({ onToggle }: HeaderProps) => {
           ☰
         </button>
         <div className="flex flex-col">
-          <h1 className="text-[28px] sm:text-[35px] lg:text-[45px] font-bold text-[#2C2A25]">
+          <h1 className="text-[28px] sm:text-[35px] lg:text-[30px] font-bold text-[#2C2A25]">
             WARO
           </h1>
-          <p className="text-[#2C2A25] mt-1 text-sm sm:text-base">
+          <p className="text-[#2C2A25] text-sm sm:text-base">
             Welcome to the Loyalty Program.
           </p>
         </div>
@@ -95,7 +95,7 @@ export const Header = ({ onToggle }: HeaderProps) => {
         <button
           ref={bellRef}
           onClick={toggleNotifications}
-          className="relative flex items-center justify-center p-2 rounded-full border border-gray-300 w-[45px] h-[45px] sm:w-[50px] sm:h-[50px] lg:w-[55px] lg:h-[55px] hover:bg-gray-100"
+          className="cursor-pointer relative flex items-center justify-center p-2 rounded-full border border-gray-300 w-[45px] h-[45px] sm:w-[50px] sm:h-[50px] lg:w-[55px] lg:h-[55px] hover:bg-gray-100"
         >
           <img src="/bell-icon.png" className="h-5 w-5 sm:h-6 sm:w-6" alt="bell" />
           <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>

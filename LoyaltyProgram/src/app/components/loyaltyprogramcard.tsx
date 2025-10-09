@@ -58,7 +58,7 @@ export const LoyaltyProgram = () => {
           offers.slice(0, 3).map((offer, idx) => (
             <div key={idx} className="flex items-center gap-8 mb-1 mt-1">
               <button
-                className="rounded-full min-w-[50px] aspect-square bg-center bg-cover bg-no-repeat"
+                className="rounded-full min-w-[40px] md:min-w-[45px] aspect-square bg-center bg-cover bg-no-repeat"
                 style={{ backgroundImage: `url(${offer.image})` }}
               />
               <div className="flex flex-col items-start justify-center">

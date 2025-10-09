@@ -53,7 +53,7 @@ export const CustomersUsageChart = () => {
                     rounded-full border border-[#2C2A25] flex items-center justify-center"
       >
         <img
-          src="arrow.png"
+          src="Arrow1.svg"
           alt="arrow"
           className="w-3 h-3 sm:w-4 sm:h-4 2xl:w-6 2xl:h-6"
         />
