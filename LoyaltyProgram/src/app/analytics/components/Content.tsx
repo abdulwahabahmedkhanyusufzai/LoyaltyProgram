@@ -1,111 +1,56 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-const MainContent = () => {
+const MainContent = ({pointsIssued,loadingPoints,pointsRedeemed,redemptionRate,loadingRedemption,setActiveChart,offersCount,loadingOffers,mostActiveTier,loadingTier}) => {
   const router = useRouter();
 
-  const [offersCount, setOffersCount] = useState<number | null>(null);
-  const [loadingOffers, setLoadingOffers] = useState(true);
 
-  const [mostActiveTier, setMostActiveTier] = useState<string>("–");
-  const [loadingTier, setLoadingTier] = useState(true);
-
-  const [pointsIssued, setPointsIssued] = useState<number | null>(null);
-  const [loadingPoints, setLoadingPoints] = useState(true);
-
-    const [pointsRedeemed, setPointsRedeemed] = useState<number | null>(null);
-
-  const [redemptionRate, setRedemptionRate] = useState<string>("–");
-  const [loadingRedemption, setLoadingRedemption] = useState(true);
-
+  
+  const toggleActiveChart = () => {
+     setActiveChart("pointsIssued");
+  }
+  const toggleActiveChart2 = () => {
+    setActiveChart("pointsRedeemed");
+  }
+  const toggleOfferChart = () => {
+    setActiveChart("ActiveOfferCampign");
+  }
+  const toggleAverageChart= () => {
+    setActiveChart("AverageRedeemptionRate");
+  }
+  const toggleMostActiveTier = () => {
+    setActiveChart("MostActiveTier");
+  }
   const baseStats = [
     {
       label: "Points Issued",
       value: pointsIssued !== null ? pointsIssued : "–",
-      redirect: "/analytics/pointIssued",
+      onClick: () => toggleActiveChart(),
     },
     {
       label: "Points Redeemed",
       value: pointsRedeemed !== null ? pointsRedeemed: "–",
+      onClick:() => toggleActiveChart2(),
     },
     {
       label: "Active Campaigns",
       value: offersCount ?? "–",
+      onClick:() => toggleOfferChart(),
     },
     {
       label: "Avg. Redemption Rate",
       value:  redemptionRate ,
+      onClick:() => toggleAverageChart(),
     },
     {
       label: "Most Active Tier",
       value: mostActiveTier,
+      onClick:() => toggleMostActiveTier(),
     },
   ];
 
-  useEffect(() => {
-    const fetchOffers = async () => {
-      try {
-        setLoadingOffers(true);
-        const res = await fetch("/api/offers");
-        const data = await res.json();
-        setOffersCount(data?.offers?.length || 0);
-      } catch (err) {
-        console.error("❌ Error fetching offers:", err);
-        setOffersCount(0);
-      } finally {
-        setLoadingOffers(false);
-      }
-    };
 
-    const fetchMostActiveTier = async () => {
-      try {
-        setLoadingTier(true);
-        const res = await fetch("/api/customers/most-active-tier");
-        const data = await res.json();
-        setMostActiveTier(data?.mostActiveTier || "–");
-      } catch (err) {
-        console.error("❌ Error fetching most active tier:", err);
-        setMostActiveTier("–");
-      } finally {
-        setLoadingTier(false);
-      }
-    };
-
-    const fetchPointsIssued = async () => {
-      try {
-        setLoadingPoints(true);
-        const res = await fetch("/api/customers/points");
-        const data: { id: string; loyaltyPoints: number }[] = await res.json();
-        const totalPoints = data.reduce(
-          (sum, p) => sum + (p.loyaltyPoints || 0),
-          0
-        );
-        setPointsIssued(totalPoints);
-        setPointsRedeemed(totalPoints);
-        if(totalPoints){
-        const rate = ((totalPoints / totalPoints) * 100).toFixed(1);
-          setRedemptionRate(`${rate}%`);
-          console.log("redemption",rate);
-        } else {
-          setRedemptionRate("0%");
-        }
-      } catch (err) {
-        console.error("❌ Error fetching points issued:", err);
-        setPointsIssued(0);
-        setPointsIssued(0);
-        setPointsRedeemed(0);
-        setRedemptionRate("–");
-      } finally {
-        setLoadingPoints(false);
-        setLoadingRedemption(false);
-      }
-    };
-
-    fetchOffers();
-    fetchMostActiveTier();
-    fetchPointsIssued();
-  }, []);
 
   return (
     <div className="flex gap-2 sm:gap-3 p-2 min-w-max">
@@ -141,7 +86,7 @@ const MainContent = () => {
               <div
                 className="cursor-pointer hover:bg-[#D9D9D9] w-[20px] h-[20px] sm:w-[30px] sm:h-[30px] 2xl:w-[40px] 2xl:h-[40px]
                             rounded-full border border-[#2C2A25] flex items-center justify-center"
-                onClick={() => stat.redirect && router.push(stat.redirect)}
+                onClick={stat.onClick}
               >
                 <img
                   src="Arrow1.svg"
