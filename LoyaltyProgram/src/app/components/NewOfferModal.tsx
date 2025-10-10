@@ -24,28 +24,31 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen, offerToEdit }) => {
   const previewUrlRef = useRef<string | null>(null);
   const [showOfferTypeDropdown, setShowOfferTypeDropdown] = useState(false);
 
-  useEffect(() => {
-    if (offerToEdit) {
-      const cleanTiers = offerToEdit.tierRequired?.replace(/"/g, "") || "";
+useEffect(() => {
+  if (offerToEdit) {
+    const cleanTiers = offerToEdit.tierRequired?.replace(/"/g, "") || "";
+    setOffer(
+      new Offer({
+        offerName: offerToEdit.name,
+        description: offerToEdit.description,
+        points: offerToEdit.pointsCost,
+        startDate: offerToEdit.startDate,
+        tillDate: offerToEdit.endDate,
+        eligibleTiers: cleanTiers,
+        image: offerToEdit.image ?? null,
+        offerType: offerToEdit.offerType,
+      })
+    );
+    setPreview(offerToEdit.image || null);
+  } else {
+    // ✅ Reset when creating a new offer
+    setOffer(new Offer());
+    setPreview(null);
+    setShowDropdown(false);
+    setShowOfferTypeDropdown(false);
+  }
+}, [offerToEdit, isOpen]);
 
-      setOffer(
-        new Offer({
-          offerName: offerToEdit.name,
-          description: offerToEdit.description,
-          points: offerToEdit.pointsCost,
-          startDate: offerToEdit.startDate,
-          tillDate: offerToEdit.endDate,
-          eligibleTiers: cleanTiers,
-          image: offerToEdit.image ?? null,
-          offerType: offerToEdit.offerType,
-        })
-      );
-      setPreview(offerToEdit.image || null);
-    } else {
-      setOffer(new Offer());
-      setPreview(null);
-    }
-  }, [offerToEdit]);
 
   const handleChange = (
     field: keyof Offer,

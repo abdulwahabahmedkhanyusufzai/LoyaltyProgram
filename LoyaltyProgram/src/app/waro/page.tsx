@@ -64,7 +64,7 @@ const WaroPage = () => {
         {customerCount !== null ? `${customerCount}+` : <SkeletonLoader/>}
       </div>
     ),
-    redirect:"/send-email"
+    redirect:"/send-email?customers=true"
   },
   { label: "Loyal Customers", content: <LoyalCustomer /> ,redirect: "/loyal-customers" },
 ];

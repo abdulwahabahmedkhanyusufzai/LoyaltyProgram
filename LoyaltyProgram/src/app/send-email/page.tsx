@@ -25,16 +25,20 @@ function LoyalCustomersList() {
     // This runs only on the client, so window is defined
     const params = new URLSearchParams(window.location.search);
     const emailParam = params.get("email");
+    const customerParam = params.get("customers");
 
     if (emailParam) {
       setSelectedEmail(emailParam);
     setSelectedTab("Send an Email");
     setStep(2);
-    }else{
+    }else if(customerParam){
       setSelectedTab("Customers");
       setStep(1);
+    }else{
+      setSelectedTab("Home");
+      setStep(0);
     }
-  }, []);
+  }, [typeof window !== "undefined" ? window.location.search : ""]);
 
   useEffect(() => {
     const checkLogin = async () => {
@@ -81,13 +85,13 @@ function LoyalCustomersList() {
             onChange={(tab) => {
               setSelectedTab(tab);
               if (tab === "Send an Email") setStep(2);
-              if (tab === "Home") setStep(1);
-              if (tab === "Customers") setStep(2);
+              if (tab === "Home") setStep(0);
+              if (tab === "Customers") setStep(1);
             }}
             activeTab={selectedTab}
           />
 
-          {selectedTab === "Customers" && step === 2 && (
+          {selectedTab === "Customers" && step === 1 && (
             <CustomerSection
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
@@ -96,7 +100,7 @@ function LoyalCustomersList() {
             />
           )}
 
-          {selectedTab === "Home" && step === 1 && (
+          {selectedTab === "Home" && step === 0 && (
             <HomeSection setStep={setStep} setSelectedTab={setSelectedTab} />
           )}
 
@@ -105,7 +109,7 @@ function LoyalCustomersList() {
           )}
         </div>
 
-        {selectedTab === "Customers" && step === 2 && (
+        {selectedTab === "Customers" && step === 1 && (
           <HandlePageChange page={page} setPage={setPage} PAGE_SIZE={PAGE_SIZE} totalCount={totalCount} />
         )}
       </div>

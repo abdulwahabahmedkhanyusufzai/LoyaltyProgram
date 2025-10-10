@@ -3,14 +3,46 @@
 import { useTopProducts } from "../utils/useTopProducts";
 import { SkeletonProduct } from "./SkeltonOfferFetching";
 import {
-  BarChart,
-  Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
+
+// 🧠 Helper: Fill missing days with 0-count to keep chart continuous
+const generateContinuousData = (purchaseDates: string[]) => {
+  if (!purchaseDates?.length) return [];
+
+  // Sort dates
+  const sortedDates = purchaseDates
+    .map((d) => new Date(d))
+    .sort((a, b) => a.getTime() - b.getTime());
+
+  const start = sortedDates[0];
+  const end = sortedDates[sortedDates.length - 1];
+  const dailyData: Record<string, number> = {};
+
+  // Initialize every day between start and end
+  for (
+    let d = new Date(start);
+    d <= end;
+    d.setDate(d.getDate() + 1)
+  ) {
+    const key = d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    dailyData[key] = 0;
+  }
+
+  // Add counts
+  purchaseDates.forEach((date) => {
+    const day = new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    dailyData[day] = (dailyData[day] || 0) + 1;
+  });
+
+  return Object.entries(dailyData).map(([day, count]) => ({ day, count }));
+};
 
 export const TopSellingProductsVertical = () => {
   const { products, loading } = useTopProducts(2, 10);
@@ -23,45 +55,32 @@ export const TopSellingProductsVertical = () => {
           ))
         : products.map((p) => {
             const img = p.featuredImage;
-
-            // 🔹 Group purchaseDates into daily counts
-            const dailyData: Record<string, number> = {};
-            (p.purchaseDates || []).forEach((date: string) => {
-              const day = new Date(date).toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-              });
-              dailyData[day] = (dailyData[day] || 0) + 1;
-            });
-
-            const chartData = Object.entries(dailyData).map(([day, count]) => ({
-              day,
-              count,
-            }));
+            const chartData = generateContinuousData(p.purchaseDates || []);
 
             return (
               <div
                 key={p.id}
-                className="flex flex-col items-center text-center rounded-xl p-4 shadow-md hover:shadow-lg transition bg-white"
+                className="flex flex-col items-center text-center rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)] transition-all duration-300 bg-white border border-gray-100"
               >
-                {/* Image + Title + Buyers */}
+                {/* Product Section */}
                 <div className="w-full flex flex-col items-center">
-                  <div className="w-[200px] h-[260px] rounded-[16.81px] overflow-hidden bg-gray-800">
+                  <div className="w-[220px] h-[260px] rounded-2xl overflow-hidden bg-gray-50 relative">
                     {img ? (
                       <img
                         src={img.url}
                         alt={img.altText || p.title}
                         draggable={false}
-                        className="w-full h-full object-cover transition-transform duration-300 ease-in-out hover:scale-105"
+                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">
                         No image
                       </div>
                     )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                   </div>
 
-                  <p className="mt-2 text-base font-semibold text-black">
+                  <p className="mt-3 text-lg font-semibold text-gray-900">
                     {p.title}
                   </p>
 
@@ -70,31 +89,59 @@ export const TopSellingProductsVertical = () => {
                   </p>
                 </div>
 
-                {/* Detailed Graph */}
-                {chartData.length > 0 && (
+                {/* Chart Section */}
+                {chartData.length > 0 ? (
                   <div className="w-full h-64 mt-6">
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={chartData}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                        <XAxis dataKey="day" />
-                        <YAxis allowDecimals={false} />
+                      <LineChart data={chartData}>
+                        <defs>
+                          <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#734A00" stopOpacity={0.4} />
+                            <stop offset="100%" stopColor="#734A00" stopOpacity={0.05} />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          stroke="#f2f2f2"
+                          vertical={false}
+                        />
+                        <XAxis
+                          dataKey="day"
+                          tick={{ fontSize: 12, fill: "#555" }}
+                          tickMargin={8}
+                          axisLine={false}
+                          tickLine={false}
+                        />
+                        <YAxis
+                          allowDecimals={false}
+                          tick={{ fontSize: 12, fill: "#555" }}
+                          tickMargin={8}
+                          axisLine={false}
+                          tickLine={false}
+                        />
                         <Tooltip
                           contentStyle={{
-                            backgroundColor: "white",
-                            border: "1px solid #ddd",
+                            backgroundColor: "#fff",
+                            border: "1px solid #eee",
                             borderRadius: "8px",
-                            fontSize: "12px",
+                            boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                            fontSize: "13px",
                           }}
-                          cursor={{ fill: "rgba(0,0,0,0.05)" }}
+                          cursor={{ stroke: "#ddd", strokeWidth: 1 }}
                         />
-                        <Bar
+                        <Line
+                          type="monotone"
                           dataKey="count"
-                          fill="#734A00"
-                          radius={[4, 4, 0, 0]}
+                          stroke="url(#lineGradient)"
+                          strokeWidth={3}
+                          dot={{ r: 3, fill: "#734A00" }}
+                          activeDot={{ r: 6, fill: "#734A00" }}
                         />
-                      </BarChart>
+                      </LineChart>
                     </ResponsiveContainer>
                   </div>
+                ) : (
+                  <p className="text-sm text-gray-400 mt-4">No analytics data available</p>
                 )}
               </div>
             );

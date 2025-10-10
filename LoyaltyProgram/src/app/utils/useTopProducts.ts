@@ -22,7 +22,7 @@ export function useTopProducts(shopId: number, first: number) {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch(`/api/shopify/fetch-products?shopId=${shopId}&first=${first}`);
+        const res = await fetch(`/api/shopify/fetch-products?first=${first}`);
         const data = await res.json();
         setProducts(data.products);
         console.log("Fetched products:", data.products);
