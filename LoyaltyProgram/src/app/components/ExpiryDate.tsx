@@ -24,7 +24,6 @@ export default function ExpiryDatePicker({ form, setForm }: ExpiryDatePickerProp
       </label>
 
       <DatePicker
-      className="!flex"
         selected={form.expiry ? new Date(form.expiry) : null}
         onChange={(date: Date | null) =>
           setForm((prev) => ({
@@ -33,7 +32,7 @@ export default function ExpiryDatePicker({ form, setForm }: ExpiryDatePickerProp
           }))
         }
         dateFormat="yyyy-MM-dd"
-        className="w-full border rounded-full px-4 py-3 mt-1 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+        className="!flex w-full border rounded-full px-4 py-3 mt-1 focus:outline-none focus:ring-2 focus:ring-yellow-500"
         placeholderText=""
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
