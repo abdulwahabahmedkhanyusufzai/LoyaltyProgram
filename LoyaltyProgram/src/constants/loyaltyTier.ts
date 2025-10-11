@@ -1,5 +1,5 @@
 export const LOYALTY_TIERS = [
-  { name: "No Tier", img: "default.png", min: 0, max: 199, multiplier: 0 },
+  { name: "No Tier", img: "", min: 0, max: 199, multiplier: 0 },
   { name: "Bronze", img: "bronze.png", min: 200, max: 499, multiplier: 1 },
   { name: "Silver", img: "silver.png", min: 500, max: 749, multiplier: 1.5 },
   { name: "Gold", img: "gold.png", min: 750, max: 999, multiplier: 2 },

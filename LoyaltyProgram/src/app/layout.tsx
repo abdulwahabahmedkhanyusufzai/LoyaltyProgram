@@ -4,6 +4,7 @@ import { Inter_Tight } from "next/font/google";
 import "./globals.css";
 import ClientLayout from "./components/ClientLayout";
 import { Toaster } from "react-hot-toast";
+import { UserProvider } from "@/lib/UserContext";
 
 const interTight = Inter_Tight({
   subsets: ["latin"],
@@ -24,9 +25,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${interTight.className} antialiased`}>
+       <UserProvider>
         <ClientLayout>
+          
           {children}
+       
           </ClientLayout>
+             </UserProvider>
            <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
       </body>
     </html>

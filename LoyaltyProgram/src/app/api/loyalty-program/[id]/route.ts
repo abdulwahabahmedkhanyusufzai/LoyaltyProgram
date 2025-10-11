@@ -4,19 +4,19 @@ import { prisma } from "../../../../lib/prisma";
 
 export async function PUT(
   req: NextRequest,
-   context: RouteContext<'/api/loyalty-program/[id]'>
+  context: RouteContext<'/api/loyalty-program/[id]'>
 ) {
   try {
-    const params = await context.params;
-    const { id } = params;
+    const { id } = context.params;
     const data = await req.json();
-    const { tiers, rows } = data;
+    const { tiers, rows, conversion } = data; // <-- include conversion
 
     const updatedProgram = await prisma.loyaltyProgram.update({
       where: { id: Number(id) },
       data: {
         ...(tiers && { tiers }),
         ...(rows && { rows }),
+        ...(conversion && { conversion }), // <-- save conversion
       },
     });
 

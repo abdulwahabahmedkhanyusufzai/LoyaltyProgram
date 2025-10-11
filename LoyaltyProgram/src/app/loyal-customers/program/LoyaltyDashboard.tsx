@@ -84,7 +84,7 @@ return (
         <label htmlFor="customer-select" className="text-sm font-medium mr-2">Select Customer:</label>
         <select
             id="customer-select"
-            className="border border-gray-300 rounded-lg px-3 py-1"
+            className="w-[300px] md:w-full border border-gray-300 rounded-lg px-3 py-1"
             value={selectedCustomer?.id || ""}
             onChange={(e) => {
                 const customer = currentCustomers.find((c) => c.id === e.target.value);
@@ -123,11 +123,14 @@ return (
                     )}
                     <div className="flex items-center gap-2 px-3 py-1 rounded-full border border-[#878787] bg-transparent shadow-sm">
                         <span className="text-xs font-semibold text-[#734A00]">LVL: {currentTier.name}</span>
-                        <img
+                        {currentTier.name === "No Tier"  ? 
+                        (
+                            <div></div>
+                        ):(<img
                             src={currentTier.img}
                             alt={`${currentTier.name} badge`}
                             className="w-5 h-5 rounded-full"
-                        />
+                        />)}
                     </div>
                 </div>
                 <h1 className="text-4xl font-bold">{points.toLocaleString()}</h1>

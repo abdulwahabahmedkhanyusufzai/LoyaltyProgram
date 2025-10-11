@@ -56,8 +56,7 @@ const SendEmail = ({ customers,prefillEmail }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           to: form.recipient,
-          subject: form.subject,
-          html: generateTemplate(25), // ✅ dynamic points
+          points: 25, // ✅ dynamic points
         }),
       });
 

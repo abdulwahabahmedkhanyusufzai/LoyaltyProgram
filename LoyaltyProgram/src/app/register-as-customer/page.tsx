@@ -3,14 +3,13 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { customerService } from "../utils/CustomerService";
 import { FloatingInput } from "../components/FloatingInput";
+import DatePicker from "react-datepicker";
+import ExpiryDatePicker from "../components/ExpiryDate";
+import toast from "react-hot-toast";
 
-// ✅ Centralized debug helper
+// ✅ Debug helper
 const debugLog = (label: string, data?: any) => {
-  console.log(
-    `%c[RegisterAsaCustomer] ${label}`,
-    "color: #734A00; font-weight: bold;",
-    data ?? ""
-  );
+  console.log(`%c[RegisterAsaCustomer] ${label}`, "color: #734A00; font-weight: bold;", data ?? "");
 };
 
 const RegisterAsaCustomer = () => {
@@ -31,7 +30,7 @@ const RegisterAsaCustomer = () => {
     expiry: "",
   });
 
-  // 🧭 Load existing customers and prefill form if `customerId` param exists
+  // 🧭 Prefill form if customerId exists
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("customerId");
@@ -40,29 +39,30 @@ const RegisterAsaCustomer = () => {
 
     async function loadCustomers() {
       setLoading(true);
-      debugLog("Fetching customers...");
       try {
         const fetchedCustomers = await customerService.fetchCustomers();
+        const fetchCustomersPoints = await customerService.fetchCustomerPoints();
+
         setCustomers(fetchedCustomers);
         debugLog("Fetched customers:", fetchedCustomers);
 
         if (id) {
           const customer = fetchedCustomers.find((c) => c.id === id);
-          debugLog("Matched customer by ID:", customer);
+          const points = fetchCustomersPoints.find((c) => c.id === id);
 
           if (customer) {
             const updatedForm = {
-              fullName: `${customer.firstName} ${customer.lastName}`,
-              email: customer.email,
+              fullName: `${customer.firstName || ""} ${customer.lastName || ""}`.trim(),
+              email: customer.email || "",
               phone: customer.phone || "",
               password: "",
               activationMail: false,
               tier: customer.loyaltyTitle || "",
-              points: customer.loyaltyPoints || "",
+              points: points?.loyaltyPoints ? String(points.loyaltyPoints) : "",
               expiry: "",
             };
             setForm(updatedForm);
-            debugLog("Form prefilled from customer:", updatedForm);
+            debugLog("Form prefilled with existing customer:", updatedForm);
           }
         }
       } catch (error) {
@@ -75,7 +75,7 @@ const RegisterAsaCustomer = () => {
     loadCustomers();
   }, [router]);
 
-  // 🧩 Track form input changes
+  // 🧩 Track form input
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, id, value, type, checked } = e.target as HTMLInputElement;
     const key = name || id;
@@ -84,47 +84,63 @@ const RegisterAsaCustomer = () => {
     debugLog(`Input changed → ${key}`, newValue);
   };
 
-  // 💾 Register and push to backend API
-  const handleRegister = async () => {
-    debugLog("Submitting registration form", form);
+  // 💾 Register or Update
+  const handleSave = async () => {
+    debugLog("Submitting form", form);
 
-    // ✅ Validate required fields
     if (!form.fullName || !form.email) {
-      alert("Full name and email are required!");
-      debugLog("Validation failed: Missing name or email");
+      toast.error("Full name and email are required!");
       return;
     }
 
     setSubmitting(true);
     try {
-      const response = await fetch("/api/customers/register", {
+      // 🧠 Check if the customer already exists
+      const existingCustomer = customers.find(
+        (c) =>
+          c.email?.toLowerCase() === form.email.toLowerCase() ||
+          (customerIdFromUrl && c.id === customerIdFromUrl)
+      );
+
+      const endpoint = existingCustomer
+        ? "/api/customers/update"
+        : "/api/customers/register";
+
+      debugLog(existingCustomer ? "🟡 Updating existing customer..." : "🟢 Registering new customer...");
+
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          id: existingCustomer?.id || customerIdFromUrl,
+        }),
       });
 
       const result = await response.json();
       debugLog("API Response:", result);
 
       if (!response.ok) {
-        alert(result.error || "Failed to register customer.");
+        toast.error(result.error || "Failed to save customer.");
         return;
       }
 
-      alert("✅ Customer registered successfully!");
-      debugLog("Customer created successfully:", result.customer);
-      router.refresh(); // optional
+      if (existingCustomer) {
+        toast.success("✅ Customer updated successfully!");
+      } else {
+        toast.success("✅ Customer registered successfully!");
+      }
+      router.refresh();
     } catch (err: any) {
-      console.error("❌ Error calling /api/register:", err);
-      alert("Something went wrong while registering. Check console for details.");
+      console.error("❌ Error saving customer:", err);
+      toast.error("Something went wrong while saving customer.");
     } finally {
       setSubmitting(false);
     }
   };
 
-  // 🧹 Reset the form
   const handleCancel = () => {
-    debugLog("Form reset triggered");
+    debugLog("Form reset");
     setForm({
       fullName: "",
       email: "",
@@ -137,9 +153,7 @@ const RegisterAsaCustomer = () => {
     });
   };
 
-  // 🌀 Loading screen
   if (loading) {
-    debugLog("Loading...");
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="w-16 h-16 border-4 border-[#734A00] border-t-transparent rounded-full animate-spin"></div>
@@ -155,7 +169,7 @@ const RegisterAsaCustomer = () => {
           <div className="flex items-center">
             <img src="PremiumLoyalty.png" alt="" className="h-[37px] w-[37px]" />
             <h2 className="text-xl sm:text-2xl font-bold text-[#2C2A25]">
-              Register as A Customer
+              {customerIdFromUrl ? "Update Customer" : "Register as a Customer"}
             </h2>
           </div>
         </div>
@@ -185,23 +199,27 @@ const RegisterAsaCustomer = () => {
           <h3 className="text-lg font-bold text-[#2C2A25] mb-4">Loyalty Program</h3>
           <FloatingInput id="tier" placeholder="Tier" value={form.tier} onChange={handleChange} />
           <FloatingInput id="points" type="number" placeholder="Point Balance" value={form.points} onChange={handleChange} />
-          <FloatingInput id="expiry" type="date" placeholder="Expiry Date" value={form.expiry} onChange={handleChange} />
-        </div>
+         <ExpiryDatePicker form={form} setForm={setForm}/>
+         </div>
 
         {/* Buttons */}
         <div className="mt-6 space-y-3">
           <button
-            onClick={handleRegister}
+            onClick={handleSave}
             disabled={submitting}
             className={`w-full py-3 rounded-full font-semibold text-white transition ${
               submitting ? "bg-gray-400" : "bg-[#734A00] hover:bg-[#5a3800]"
             }`}
           >
-            {submitting ? "Registering..." : "Save and Register"}
+            {submitting
+              ? "Saving..."
+              : customerIdFromUrl
+              ? "Update Customer"
+              : "Save and Register"}
           </button>
           <button
             onClick={handleCancel}
-            className="w-full bg-gray-300 text-gray-800 py-3 rounded-full font-semibold hover:bg-gray-400 transition"
+            className="w-full bg-gray-300 text-gray-800 py-3 rounded-full font-semibold hover:bg-gray-400 transition "
           >
             Cancel
           </button>

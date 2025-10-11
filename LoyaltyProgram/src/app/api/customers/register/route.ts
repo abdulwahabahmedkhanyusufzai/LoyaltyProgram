@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 /**
- * Shopify GraphQL fetch helper
+ * Helper: Shopify GraphQL API fetch
  */
 async function shopifyFetch(
   shopDomain: string,
@@ -36,24 +36,22 @@ export async function POST(req: Request) {
     const body = await req.json();
     console.log("🧾 Request body:", body);
 
-    const { fullName, email, tier, numberOfOrders, amountSpent } = body;
+    const { fullName, email, tier, numberOfOrders, amountSpent, activationMail } = body;
 
     if (!fullName || !email) {
-      console.error("⚠️ Missing required fields: fullName or email");
       return NextResponse.json(
         { error: "Full name and email are required." },
         { status: 400 }
       );
     }
 
-    // Split full name
+    // Split full name into first + last
     const [firstName, ...rest] = fullName.trim().split(" ");
     const lastName = rest.join(" ") || "";
 
-    // Check for duplicate
+    // Prevent duplicates
     const existing = await prisma.customer.findUnique({ where: { email } });
     if (existing) {
-      console.warn("⚠️ Customer with this email already exists:", email);
       return NextResponse.json(
         { error: "Customer already exists in database." },
         { status: 409 }
@@ -63,12 +61,11 @@ export async function POST(req: Request) {
     // Fetch shop credentials
     const shop = await prisma.shop.findFirst();
     if (!shop) {
-      console.error("❌ No shop found in database.");
       return NextResponse.json({ error: "Shop not found." }, { status: 400 });
     }
 
-    // --- Shopify GraphQL mutation (CustomerInput)
-    const mutation = `
+    // --- Shopify Mutation: Create customer ---
+    const createCustomerMutation = `
       mutation createCustomer($input: CustomerInput!) {
         customerCreate(input: $input) {
           customer {
@@ -95,38 +92,28 @@ export async function POST(req: Request) {
       },
     };
 
-    console.log("🚀 Sending mutation to Shopify...");
-    const response = await shopifyFetch(shop.shop, shop.accessToken, mutation, variables);
+    console.log("🚀 Creating customer in Shopify...");
+    const response = await shopifyFetch(shop.shop, shop.accessToken, createCustomerMutation, variables);
 
-    // Handle API-level errors
     if (response.errors) {
-      console.error("❌ Shopify top-level errors:", response.errors);
-      return NextResponse.json(
-        { error: "Shopify API error", details: response.errors },
-        { status: 400 }
-      );
+      console.error("❌ Shopify API errors:", response.errors);
+      return NextResponse.json({ error: "Shopify API error", details: response.errors }, { status: 400 });
     }
 
     const { customerCreate } = response.data || {};
     const userErrors = customerCreate?.userErrors || [];
-
     if (userErrors.length > 0) {
-      console.error("⚠️ Shopify user errors:", userErrors);
-      return NextResponse.json(
-        { error: "Shopify user errors", details: userErrors },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Shopify user errors", details: userErrors }, { status: 400 });
     }
 
     const shopifyCustomer = customerCreate.customer;
     if (!shopifyCustomer?.id) {
-      console.error("❌ Shopify customer ID missing in response");
       return NextResponse.json({ error: "Invalid Shopify response" }, { status: 400 });
     }
 
     console.log("✅ Shopify customer created:", shopifyCustomer);
 
-    // --- Save to local database
+    // --- Save in local database ---
     const newCustomer = await prisma.customer.create({
       data: {
         firstName,
@@ -140,6 +127,46 @@ export async function POST(req: Request) {
     });
 
     console.log("💾 Local customer saved:", newCustomer);
+
+    // --- Optional: Send activation email ---
+if (activationMail) {
+  console.log("📧 Sending account activation email...");
+
+  const activationMutation = `
+    mutation CustomerSendAccountInviteEmail($customerId: ID!) {
+      customerSendAccountInviteEmail(customerId: $customerId) {
+        customer {
+          id
+        }
+        userErrors {
+          field
+          message
+        }
+      }
+    }
+  `;
+
+  const activationVariables = {
+    customerId: shopifyCustomer.id,
+  };
+
+  const activationResponse = await shopifyFetch(
+    shop.shop,
+    shop.accessToken,
+    activationMutation,
+    activationVariables
+  );
+
+  const userErrors =
+    activationResponse.data?.customerSendAccountInviteEmail?.userErrors || [];
+
+  if (userErrors.length > 0) {
+    console.warn("⚠️ Activation email failed:", userErrors);
+  } else {
+    console.log("✅ Activation email sent successfully!");
+  }
+}
+
 
     return NextResponse.json({
       success: true,

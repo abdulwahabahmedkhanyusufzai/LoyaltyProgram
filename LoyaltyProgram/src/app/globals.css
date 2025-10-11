@@ -178,3 +178,13 @@ ease) var(--tw-animation-delay, 0s) var(--tw-animation-iteration-count, 1) var(-
 .bg-primary, .bg-primary\/5 {
     background-color: var(--primary);
 }
+.react-datepicker-wrapper{
+  display: flex !important;
+  color: #D2D1CA !important;
+}
+.react-datepicker__input-container {
+  position: static !important;
+}
+button{
+  cursor: pointer;
+}

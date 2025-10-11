@@ -11,13 +11,17 @@ const PremiumLoyaltyProgram = () => {
   // Data state
   const [tiers, setTiers] = useState<any[]>([]);
   const [rows, setRows] = useState<any[]>([]);
+  const [conversion, setConversion] = useState<{ euro: number; point: number }>({
+    euro: 10,
+    point: 1,
+  });
 
   // UI state
   const [isEditing, setIsEditing] = useState(false);
-  const [loading, setLoading] = useState(true); // fetching
-  const [saving, setSaving] = useState(false); // saving
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-  // ✅ Fetch data
+  // Fetch data
   useEffect(() => {
     (async () => {
       try {
@@ -27,6 +31,7 @@ const PremiumLoyaltyProgram = () => {
         if (data.success) {
           setTiers(data.program.tiers);
           setRows(data.program.rows);
+          setConversion(data.program.conversion ?? { euro: 10, point: 1 });
           toast.success("Loyalty Program loaded 🎉");
         } else {
           toast.error("Failed to load program");
@@ -56,23 +61,22 @@ const PremiumLoyaltyProgram = () => {
     scrollRef.current.scrollLeft = scrollLeft - walk;
   };
 
-  // ✅ Edit table cell
+  // Edit table cell
   const handleCellChange = (rowIdx: number, colIdx: number, value: string) => {
     const updatedRows = [...rows];
     updatedRows[rowIdx].values[colIdx] = value;
     setRows(updatedRows);
   };
 
-  // ✅ Save API call
+  // Save API call
   const handleSave = async () => {
     try {
       setSaving(true);
       const res = await fetch(`/api/loyalty-program/1`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tiers, rows }),
+        body: JSON.stringify({ tiers, rows, conversion }),
       });
-
       const data = await res.json();
       if (data.success) {
         toast.success("Program updated successfully ✅");
@@ -88,7 +92,6 @@ const PremiumLoyaltyProgram = () => {
     }
   };
 
-  // ✅ Circle loader for fetching
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -135,8 +138,33 @@ const PremiumLoyaltyProgram = () => {
           </div>
         </div>
 
+        {/* Conversion rate */}
         <p className="my-[15px] text-sm sm:text-base text-[#2C2A25]">
-          €10 = 1 point
+          {isEditing ? (
+            <>
+              <input
+                type="number"
+                value={conversion.euro}
+                onChange={(e) =>
+                  setConversion({ ...conversion, euro: parseFloat(e.target.value) })
+                }
+                className="w-16 px-2 py-1 border rounded mr-1"
+              />
+              €
+              <span className="mx-1">=</span>
+              <input
+                type="number"
+                value={conversion.point}
+                onChange={(e) =>
+                  setConversion({ ...conversion, point: parseFloat(e.target.value) })
+                }
+                className="w-16 px-2 py-1 border rounded"
+              />
+              points
+            </>
+          ) : (
+            `€${conversion.euro} = ${conversion.point} point`
+          )}
         </p>
 
         {/* Table */}

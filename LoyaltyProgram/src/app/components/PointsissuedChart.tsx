@@ -63,18 +63,7 @@ export const PointsIssuedChart = ({
       className="bg-[#E8E6D9] rounded-xl sm:rounded-[25px] p-3 sm:p-6 shadow-md sm:shadow-lg 
                   w-full h-[280px] sm:h-[350px] lg:h-[450px] 2xl:h-[490px] relative flex flex-col"
     >
-      {/* Arrow */}
-      <div
-        className="absolute top-3 right-3 sm:top-4 sm:right-4 
-                    w-[24px] h-[24px] sm:w-[30px] sm:h-[30px] 2xl:w-[48px] 2xl:h-[48px] 
-                    rounded-full border border-[#2C2A25] flex items-center justify-center cursor-pointer hover:bg-[#D9D9D9]"
-      >
-        <img
-          src="Arrow1.svg"
-          alt="arrow"
-          className="w-3 h-3 sm:w-4 sm:h-4 2xl:w-6 2xl:h-6"
-        />
-      </div>
+      
 
       {/* Chart */}
       <ResponsiveContainer width="100%" height="100%">

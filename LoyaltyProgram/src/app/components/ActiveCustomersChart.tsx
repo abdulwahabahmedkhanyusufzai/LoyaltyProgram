@@ -40,14 +40,7 @@ export const ActiveCustomersCard = () => {
         <h2 className="text-base font-semibold text-[#2C2A25]">
           Active Customers
         </h2>
-        <div className="w-[24px] h-[24px] sm:w-[30px] sm:h-[30px] 2xl:w-[48px] 2xl:h-[48px] 
-                        rounded-full border border-[#2C2A25] flex items-center justify-center">
-          <img
-            src="Arrow1.svg"
-            alt="arrow"
-            className="w-3 h-3 sm:w-4 sm:h-4 2xl:w-6 2xl:h-6"
-          />
-        </div>
+      
       </div>
 
       {/* Donut Chart / Loader */}

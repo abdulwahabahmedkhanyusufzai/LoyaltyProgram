@@ -61,6 +61,7 @@ function LoyalCustomersList() {
   const handleEmailClick = (email: string) => {
     setSelectedEmail(email);
     setSelectedTab("Send an Email");
+    setStep(2);
   };
 
   const PAGE_SIZE = 10;

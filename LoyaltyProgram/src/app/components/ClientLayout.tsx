@@ -9,7 +9,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   return (
     <>
-      <Header onToggle={setOpen} />
+      <Header onToggle={setOpen}  />
       <Sidebar open={open} setOpen={setOpen} />
       <main className="ml-[0px] lg:ml-[290px] 2xl:ml-[342px] transition-all">
         {children}

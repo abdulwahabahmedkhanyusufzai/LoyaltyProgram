@@ -21,7 +21,7 @@ export function useCustomers() {
       setLoading(true);
       const resCustomers = await fetch(`/api/customers?first=10`);
       const customersData = await resCustomers.json();
-
+      console.log("Customer response",customersData);
       const resPoints = await fetch(`/api/customers/points`);
       const pointsData: { id: string; loyaltyPoints: number }[] = await resPoints.json();
 
@@ -35,7 +35,8 @@ export function useCustomers() {
 
           const pointsInfo = pointsData.find((p) => p.id === c.id);
           const totalPoints = pointsInfo?.loyaltyPoints ?? 0;
-
+          const amountSpent = c.amountSpent;
+          const loyaltyTitle = c.loyaltyTitle; 
           return {
             id: c.id,
             name,
@@ -44,6 +45,8 @@ export function useCustomers() {
             orders: c.numberOfOrders ?? 0,
             initial,
             bgColor,
+            amountSpent,
+            loyaltyTitle
           };
         });
         setCustomers(formatted);

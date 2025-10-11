@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
 
-// default tiers + rows
+// ✅ Default data
+const defaultConversion = { euro: 10, point: 1 };
+
 const defaultTiers = [
   { label: "Welcomed: Less than 20 points", color: "#734A00" },
   { label: "Guest: Between 20 and 30 points", color: "#B47A11" },
   { label: "Host: Between 31 and 4500 points", color: "#402A00" },
   { label: "Test: More than 4500 points", color: "#384551" },
 ];
+
 const defaultRows = [
   {
     label: "Cashback per point",
@@ -62,7 +65,11 @@ export async function GET(req: NextRequest) {
 
     if (!program) {
       program = await prisma.loyaltyProgram.create({
-        data: { tiers: defaultTiers, rows: defaultRows },
+        data: {
+          tiers: defaultTiers,
+          rows: defaultRows,
+          conversion: defaultConversion,
+        },
       });
     }
 
@@ -76,11 +83,11 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// ✅ PUT: update program
+// ✅ PUT: update program (tiers, rows, conversion)
 export async function PUT(req: NextRequest) {
   try {
     const body = await req.json();
-    const { tiers, rows } = body;
+    const { tiers, rows, conversion } = body;
 
     const existing = await prisma.loyaltyProgram.findFirst();
     if (!existing) {
@@ -92,7 +99,11 @@ export async function PUT(req: NextRequest) {
 
     const updated = await prisma.loyaltyProgram.update({
       where: { id: existing.id },
-      data: { tiers, rows },
+      data: {
+        tiers: tiers || existing.tiers,
+        rows: rows || existing.rows,
+        conversion: conversion || existing.conversion,
+      },
     });
 
     return NextResponse.json({ success: true, program: updated });

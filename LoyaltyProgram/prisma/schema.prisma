@@ -6,72 +6,52 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 model Offer {
-  id            String   @id @default(uuid())
-  name          String
-  description   String
-  image         String?
-
-  // --- New fields ---
-  offerType     OfferType       // "PERCENTAGE", "FIXED", "POINTS", "CASHBACK"
-  value         Float           // meaning depends on offerType
-  pointsCost    Int?            // only if offerType = "POINTS"
-  tierRequired  String?         // match against LoyaltyLevel.name
-  usageLimit    Int?            // optional: max times an offer can be used per customer
-  isActive      Boolean @default(true)
-
-  // Dates
-  startDate     DateTime
-  endDate       DateTime
-
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  // Relations
-  redemptions   OfferRedemption[]
+  id           String            @id @default(uuid())
+  name         String
+  description  String
+  image        String?
+  offerType    OfferType
+  value        Float
+  pointsCost   Int?
+  tierRequired String?
+  usageLimit   Int?
+  isActive     Boolean           @default(true)
+  startDate    DateTime
+  endDate      DateTime
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  redemptions  OfferRedemption[]
 }
 
 model OfferRedemption {
-  id        String   @id @default(cuid())
-  offerId   String
-  offer     Offer    @relation(fields: [offerId], references: [id])
-
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-
+  id         String   @id @default(cuid())
+  offerId    String
+  userId     String
   redeemedAt DateTime @default(now())
-  metadata   Json?    // store cart/order ID, etc.
+  metadata   Json?
+  offer      Offer    @relation(fields: [offerId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
 
   @@index([offerId])
   @@index([userId])
 }
 
-enum OfferType {
-  PERCENTAGE
-  FIXED
-  POINTS
-  CASHBACK
-}
-
 model User {
-  id             String          @id @default(cuid())
-  fullName       String
-  email          String          @unique
-  phoneNumber    String
-  password       String
-  username       String          @unique
-  profilePicUrl  String?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-
-  shopId         Int?
-  shop           Shop?           @relation(fields: [shopId], references: [id])
-
-  // Relations for loyalty program
-
-  walletCredits  WalletCredit[]
-
+  id              String            @id @default(cuid())
+  fullName        String
+  email           String            @unique
+  phoneNumber     String
+  password        String
+  username        String            @unique
+  profilePicUrl   String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  shopId          Int?
   OfferRedemption OfferRedemption[]
+  shop            Shop?             @relation(fields: [shopId], references: [id])
+  walletCredits   WalletCredit[]
 }
 
 model Shop {
@@ -81,26 +61,24 @@ model Shop {
   scope       String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
+  orders      Order[]
   users       User[]
-  orders      Order[]  // opposite relation field for Order.shop
 }
 
 model PointsLedger {
-  id          String   @id @default(cuid())
-  customerId      String  
-  customer    Customer @relation(fields: [customerId], references: [id])
-  change      Int      // +points earned, -points spent/expired
-  balanceAfter Int     // balance snapshot after this transaction
-  reason      String?  // e.g. "order.created", "manual admin add"
-  sourceType  String?  // e.g. "order", "referral", "campaign"
-  sourceId    String?  // reference to order/referral id
-  earnedAt    DateTime @default(now())
-  expiresAt   DateTime?
-  metadata    Json?
-
-  orderId    String? 
-  order      Order?   @relation(fields: [orderId], references: [id])
+  id           String    @id @default(cuid())
+  customerId   String
+  change       Int
+  balanceAfter Int
+  reason       String?
+  sourceType   String?
+  sourceId     String?
+  earnedAt     DateTime  @default(now())
+  expiresAt    DateTime?
+  metadata     Json?
+  orderId      String?
+  customer     Customer  @relation(fields: [customerId], references: [id])
+  order        Order?    @relation(fields: [orderId], references: [id])
 
   @@index([customerId])
   @@index([expiresAt])
@@ -109,24 +87,23 @@ model PointsLedger {
 model WalletCredit {
   id        String   @id @default(cuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
-
   amount    Float
   currency  String   @default("EUR")
-  source    String?  // refund, manual, etc.
+  source    String?
   createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model LoyaltyLevel {
-  id              Int      @id @default(autoincrement())
-  name            String
-  pointsRequired  Int
-  benefits        Json?
+  id             Int    @id @default(autoincrement())
+  name           String
+  pointsRequired Int
+  benefits       Json?
 }
 
 model PointRule {
   id          Int      @id @default(autoincrement())
-  key         String   @unique // e.g. "order.created"
+  key         String   @unique
   description String?
   points      Int
   active      Boolean  @default(true)
@@ -137,33 +114,36 @@ model PointRule {
 model Campaign {
   id         Int      @id @default(autoincrement())
   name       String
-  multiplier Float    @default(1.0) // e.g. 2.0 = double points
+  multiplier Float    @default(1.0)
   startAt    DateTime
   endAt      DateTime
   createdAt  DateTime @default(now())
 }
 
 model LoyaltyProgram {
-  id        Int      @id @default(autoincrement())
-  tiers     Json
-  rows      Json
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  tiers      Json
+  rows       Json
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  conversion Json?    @default("{\"euro\": 10, \"point\": 1}")
 }
+
 model Customer {
-  id               String   @id @default(uuid()) // Unique identifier for the customer.
-  firstName        String
-  shopifyId         String   @unique // Shopify customer ID for integration.
-  lastName         String
-  email            String   @unique
-  numberOfOrders   Int      @default(0)
-  amountSpent      Decimal  @default(0) // Using Decimal for precise currency values.
-  loyaltyTitle     String   @default("Welcomed")
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  pointsLedger     PointsLedger[]
-  orders           Order[] // opposite relation field for Order.customer
-  @@map("loyal_customers") // This maps the model to a table named "loyal_customers"
+  id             String         @id @default(uuid())
+  firstName      String
+  shopifyId      String         @unique
+  lastName       String
+  email          String         @unique
+  numberOfOrders Int            @default(0)
+  amountSpent    Decimal        @default(0)
+  loyaltyTitle   String         @default("Welcomed")
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  orders         Order[]
+  pointsLedger   PointsLedger[]
+
+  @@map("loyal_customers")
 }
 
 model AdventCalendarEntry {
@@ -177,26 +157,22 @@ model AdventCalendarEntry {
 }
 
 model Order {
-  id            String      @id @default(cuid())
-  customerId    String
-  customer      Customer    @relation(fields: [customerId], references: [id])
-  
-  shopId        Int?
-  shop          Shop?       @relation(fields: [shopId], references: [id])
-
-  orderNumber   String      @unique
-  totalAmount   Decimal     @default(0)
-  currency      String      @default("EUR")
-  status        OrderStatus @default(PENDING)
-  pointsEarned  Int         @default(0)
-  pointsRedeemed Int        @default(0)
-  
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  metadata      Json?       // any extra info like shipping, payment
-
-  items         OrderItem[]
-  pointsLedger  PointsLedger[]  // link order to points ledger
+  id             String         @id @default(cuid())
+  customerId     String
+  shopId         Int?
+  orderNumber    String         @unique
+  totalAmount    Decimal        @default(0)
+  currency       String         @default("EUR")
+  status         OrderStatus    @default(PENDING)
+  pointsEarned   Int            @default(0)
+  pointsRedeemed Int            @default(0)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  metadata       Json?
+  customer       Customer       @relation(fields: [customerId], references: [id])
+  shop           Shop?          @relation(fields: [shopId], references: [id])
+  items          OrderItem[]
+  pointsLedger   PointsLedger[]
 
   @@index([customerId])
   @@index([shopId])
@@ -205,15 +181,20 @@ model Order {
 model OrderItem {
   id          String   @id @default(cuid())
   orderId     String
-  order       Order    @relation(fields: [orderId], references: [id])
-
   productId   String?
   productName String
   quantity    Int      @default(1)
   price       Decimal  @default(0)
-
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  order       Order    @relation(fields: [orderId], references: [id])
+}
+
+enum OfferType {
+  PERCENTAGE
+  FIXED
+  POINTS
+  CASHBACK
 }
 
 enum OrderStatus {
@@ -222,4 +203,3 @@ enum OrderStatus {
   CANCELLED
   REFUNDED
 }
-

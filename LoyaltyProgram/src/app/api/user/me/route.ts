@@ -9,6 +9,8 @@ const secret = new TextEncoder().encode(JWT_SECRET);
 // Only allow verbose debug in non-production
 const isDev = process.env.NODE_ENV !== "production";
 
+export const dynamic = 'force-dynamic';  // This makes Next.js render it dynamically
+
 function debugLog(...args: any[]) {
   if (isDev) console.debug("[/api/user/me DEBUG]", ...args);
 }

@@ -3,10 +3,13 @@ import { useEffect, useState } from "react";
 import { LoginManager } from "../utils/LoginManager";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import {FloatingInput} from "../components/FloatingInput";
+import { FloatingInput } from "../components/FloatingInput";
+import { useUser } from "../../lib/UserContext"; // ✅ add this
 
 const LoginModal = ({ onLogin }: { onLogin?: () => void }) => {
   const router = useRouter();
+  const { refreshUser } = useUser(); // ✅ get refreshUser from context
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -26,16 +29,22 @@ const LoginModal = ({ onLogin }: { onLogin?: () => void }) => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setLoading(true);
 
     loginManager.setCredentials(username, password);
 
     try {
-      setLoading(true);
       const user = await loginManager.login();
+
+      // ✅ Immediately refresh global user context
+      await refreshUser();
+
       toast.success(`Welcome, ${user.fullname}!`);
-      if (onLogin) onLogin();
-      router.push("/waro");
+      onLogin?.();
       closeModal();
+
+      // ✅ Redirect AFTER updating context
+      router.push("/waro");
     } catch (err: any) {
       setError(err.message);
       toast.error(err.message);
@@ -64,20 +73,19 @@ const LoginModal = ({ onLogin }: { onLogin?: () => void }) => {
         {/* Form */}
         <form onSubmit={handleLogin} className="space-y-6">
           <FloatingInput
-  id="username"
-  placeholder="Enter Username"
-  value={username}
-  onChange={(e) => setUsername(e.target.value)}
-/>
+            id="username"
+            placeholder="Enter Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
 
-<FloatingInput
-  id="password"
-  type="password"
-placeholder="Enter Password"
-  value={password}
-  onChange={(e) => setPassword(e.target.value)}
-/>
-
+          <FloatingInput
+            id="password"
+            type="password"
+            placeholder="Enter Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
