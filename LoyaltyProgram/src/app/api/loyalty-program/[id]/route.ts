@@ -7,7 +7,8 @@ export async function PUT(
   context: RouteContext<'/api/loyalty-program/[id]'>
 ) {
   try {
-    const { id } = context.params;
+    const params = await context.params;
+    const { id } = params;
     const data = await req.json();
     const { tiers, rows, conversion } = data; // <-- include conversion
 
