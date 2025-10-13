@@ -28,7 +28,7 @@ export async function PUT(
     const endDate = formData.get("endDate") as string;
     const tiers = formData.get("tiers") as string;
     const file = formData.get("image") as File | null;
-
+ 
     let imageUrl: string | undefined;
 
     if (file) {
@@ -56,6 +56,7 @@ export async function PUT(
       },
     });
 
+    console.log(updatedOffer);
     return NextResponse.json({ success: true, offer: updatedOffer });
   } catch (error: unknown) {
     console.error("❌ Error updating offer:", error);

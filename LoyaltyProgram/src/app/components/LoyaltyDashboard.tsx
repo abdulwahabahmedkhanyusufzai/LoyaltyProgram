@@ -1,7 +1,7 @@
 // src/components/LoyaltyDashboard.jsx
 import React, { useState, useMemo } from "react";
-import { LOYALTY_TIERS, getCustomerTier } from "../../../constants/loyaltyTier"; 
-import useCustomerTransactions from "../../utils/customerTransaction";
+import { LOYALTY_TIERS, getCustomerTier } from "../../constants/loyaltyTier"; 
+import useCustomerTransactions from "../utils/customerTransaction";
 
 // Helper for formatting currency
 const formatCurrency = (amount) =>

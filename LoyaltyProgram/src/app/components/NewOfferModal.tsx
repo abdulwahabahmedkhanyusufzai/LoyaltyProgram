@@ -7,6 +7,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Offer } from "../models/Offer";
 import { OfferService } from "../utils/OfferService";
 import toast from "react-hot-toast";
+import StartDatePicker from "./StartDate";
+import EndDatePicker from "./EndDate";
+import FloatingDropdown from "./FloatingDropdown";
+import FloatingOfferTypeDropdown from "./OfferTypeDropdown";
 
 const TIER_OPTIONS = ["Bronze", "Silver", "Gold"];
 const OFFER_TYPES = [
@@ -196,96 +200,32 @@ useEffect(() => {
         />
         <ErrorMsg field="points" />
 
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1">
-            <label className="block text-gray-700 text-sm mb-1">Start Date</label>
-            <DatePicker
-              selected={offer.startDate ? new Date(offer.startDate) : null}
-              onChange={(date: Date | null) =>
-                handleChange("startDate", date ? date.toISOString().split("T")[0] : "")
-              }
-              dateFormat="yyyy-MM-dd"
-              className="w-full border rounded-full px-4 py-2"
-              placeholderText="Select Start Date"
-            />
-            <ErrorMsg field="startDate" />
-          </div>
+        <div className="flex flex-col sm:flex-row gap-4 items-end">
+          <StartDatePicker
+          offer = {offer}
+          handleChange = {(field,value)=>setOffer((prev)=>({...prev,[field]:value}))}
+          />
 
-          <div className="flex-1">
-            <label className="block text-gray-700 text-sm mb-1">Till Date</label>
-            <DatePicker
-              selected={offer.tillDate ? new Date(offer.tillDate) : null}
-              onChange={(date: Date | null) =>
-                handleChange("tillDate", date ? date.toISOString().split("T")[0] : "")
-              }
-              dateFormat="yyyy-MM-dd"
-              className="w-full border rounded-full px-4 py-2"
-              placeholderText="Select Till Date"
-            />
-            <ErrorMsg field="tillDate" />
-          </div>
+           <EndDatePicker
+          offer = {offer}
+          handleChange = {(field,value)=>setOffer((prev)=>({...prev,[field]:value}))}
+          />
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1 relative">
-            <button
-              type="button"
-              onClick={() => setShowDropdown(!showDropdown)}
-              className="cursor-pointer w-full border-[#D2D1CA] text-gray-500 border rounded-full px-4 py-2 text-left"
-            >
-              {offer.eligibleTiers || "Select Eligible Tier"}
-            </button>
-            {showDropdown && (
-              <div className="absolute z-10 mt-1 w-full bg-white border rounded shadow">
-                {TIER_OPTIONS.map((tier) => (
-                  <label
-                    key={tier}
-                    className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                  >
-                    <input
-                      type="radio"
-                      name="eligibleTier"
-                      checked={offer.eligibleTiers === tier}
-                      onChange={() => {
-                        handleChange("eligibleTiers", tier);
-                        setShowDropdown(false);
-                      }}
-                      className="mr-2"
-                    />
-                    {tier}
-                  </label>
-                ))}
-              </div>
-            )}
-            <ErrorMsg field="eligibleTiers" />
-          </div>
+<FloatingDropdown
+  offer={offer}
+  handleChange={handleChange}
+  TIER_OPTIONS={["Silver", "Gold", "Platinum"]}
+  ErrorMsg={ErrorMsg}
+/>
 
-          <div className="flex-1 relative">
-            <button
-              type="button"
-              onClick={() => setShowOfferTypeDropdown(!showOfferTypeDropdown)}
-              className="cursor-pointer w-full border-[#D2D1CA] text-gray-500 border rounded-full px-4 py-2 text-left"
-            >
-              {offer.offerType || "Select Offer Type"}
-            </button>
-            {showOfferTypeDropdown && (
-              <div className="absolute z-10 mt-1 w-full bg-white border rounded shadow">
-                {OFFER_TYPES.map((type) => (
-                  <div
-                    key={type.label}
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                    onClick={() => {
-                      handleChange("offerType", type.value);
-                      setShowOfferTypeDropdown(false);
-                    }}
-                  >
-                    {type.label}
-                  </div>
-                ))}
-              </div>
-            )}
-            <ErrorMsg field="offerType" />
-          </div>
+<FloatingOfferTypeDropdown
+  offer={offer}
+  handleChange={handleChange}
+  OFFER_TYPES={OFFER_TYPES}
+  ErrorMsg={ErrorMsg}
+/>
         </div>
 
         <button

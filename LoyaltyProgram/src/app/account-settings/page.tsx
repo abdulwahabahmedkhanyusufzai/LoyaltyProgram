@@ -33,43 +33,36 @@ const RegisterAsaCustomer = () => {
   const [loading, setLoading] = useState(false); // button loading
   const [pageLoading, setPageLoading] = useState(true); // whole page loader
 
-  // Prefill from backend
-  useEffect(() => {
-    const fetchUserFromAPI = async () => {
-      try {
-        const res = await fetch("/api/user/me", { credentials: "include" });
-        if (!res.ok) {
-          console.warn("Failed to fetch user from API:", res.status);
-          return;
-        }
+useEffect(() => {
+  const fetchUserFromAPI = async () => {
+    try {
+      const res = await fetch("/api/user/me", { credentials: "include" });
+      if (!res.ok) throw new Error(`Failed to fetch user: ${res.status}`);
 
-        const user = await res.json();
+      const user = await res.json();
 
-        console.log("Fetched user from API:", user);
+      console.log("Fetched user:", user);
 
-        setFormData((prev) => ({
-          ...prev,
-          profilePicPreview: user.profilePicUrl || "",
-          fullName: user.fullName || "",
-          email: user.email || "",
-          phone: user.phoneNumber || "",
-        }));
+      const prefilled = {
+        profilePicPreview: user.profilePicUrl || "",
+        fullName: user.fullName || "",
+        email: user.email || "",
+        phone: user.phoneNumber || "",
+      };
 
-        formManager.setFormValues({
-          fullName: user.fullname || "",
-          email: user.email || "",
-          phone: user.phoneNumber || "",
-          profilePicPreview: user.profilePicUrl || "",
-        });
-      } catch (err) {
-        console.error("Error fetching user:", err);
-      } finally {
-        setPageLoading(false); // hide loader when done
-      }
-    };
+      // ✅ Update both states with the same data
+      setFormData((prev) => ({ ...prev, ...prefilled }));
+      formManager.setFormValues(prefilled);
+    } catch (err) {
+      console.error("Error fetching user:", err);
+    } finally {
+      setPageLoading(false);
+    }
+  };
 
-    fetchUserFromAPI();
-  }, [formManager]);
+  fetchUserFromAPI();
+}, [formManager]);
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type, checked } = e.target as HTMLInputElement;

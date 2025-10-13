@@ -4,7 +4,7 @@ import { Search } from "lucide-react";
 import Tabs from "../components/ButtonGroup";
 import ProgramLoyal2 from "./program/page";
 import { customerService } from "../utils/CustomerService";
-import LoyaltyDashboard from "./program/LoyaltyDashboard";
+import LoyaltyDashboard from "../components/LoyaltyDashboard";
 
 function LoyalCustomersList() {
   const [customers, setCustomers] = useState<any[]>([]);

@@ -1,27 +1,29 @@
 // components/FieldRenderer.tsx
-import { Input } from "./Input";
+import { FloatingInput } from "./FloatingInput";
 import { Toggle } from "./ToggleButton";
+
 
 export const FieldRenderer = ({ fields, toggles, select, form, handleChange }: any) => {
   if (fields) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-6"> {/* Added more space for floating labels */}
         {fields.map((field: any) => (
-          <Input
+          //  swapped <Input /> for <FloatingInput />
+          <FloatingInput
             key={field.name}
+            id={field.name} // FloatingInput needs an 'id' for the label's 'htmlFor'
             type={field.type}
-            name={field.name}
-            label={field.label}
+            placeholder={field.label} // Map the 'label' from your config to 'placeholder'
             value={form[field.name]}
             onChange={handleChange}
-            error={form.errors?.[field.name]}   // 👈 pass down errors
+            // We need to handle errors. See Step 2 below.
           />
         ))}
       </div>
     );
   }
 
-  if (toggles) {
+ if (toggles) {
     return (
       <div className="space-y-3">
         {toggles.map((item: any) => (
@@ -53,6 +55,5 @@ export const FieldRenderer = ({ fields, toggles, select, form, handleChange }: a
       </select>
     );
   }
-
   return null;
 };
