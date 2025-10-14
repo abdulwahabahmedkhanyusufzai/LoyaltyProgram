@@ -1,4 +1,3 @@
-//app/api/ shopify/callback/route.js
 import { prisma } from "../../../../lib/prisma";
 import { NextResponse } from "next/server";
 
@@ -81,14 +80,13 @@ export async function GET(req) {
 
     // Use Prisma with better error handling
     try {
-      await prisma.shop.upsert({
-        where: { shop },
-        update: {
-          accessToken: access_token,
-          scope,
-          updatedAt: new Date(),
-        },
-        create: {
+      // Delete all old shops before creating a new one
+      await prisma.shop.deleteMany({});
+      console.log("Successfully deleted all old shop records.");
+      
+      // Create the new shop record
+      await prisma.shop.create({
+        data: {
           shop,
           accessToken: access_token,
           scope,
@@ -97,7 +95,7 @@ export async function GET(req) {
         },
       });
 
-      console.log(`Successfully upserted shop data for ${shop}`);
+      console.log(`Successfully created shop data for ${shop}`);
     } catch (dbError) {
       console.error("Database error:", dbError);
       return NextResponse.json(
@@ -123,7 +121,7 @@ export async function GET(req) {
   } catch (error) {
     console.error("Unhandled error during Shopify callback:", error);
     return NextResponse.json(
-      { error: "Internal Server Error", message: error.message },
+      { error: "Internal Server Error", },
       { status: 500 }
     );
   } finally {
