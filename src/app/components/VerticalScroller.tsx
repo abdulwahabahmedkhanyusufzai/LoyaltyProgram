@@ -48,7 +48,7 @@ export const TopSellingProductsVertical = () => {
   const { products, loading } = useTopProducts(2, 10);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
       {loading
         ? Array.from({ length: 4 }).map((_, idx) => (
             <SkeletonProduct key={idx} variant="vertical" />
