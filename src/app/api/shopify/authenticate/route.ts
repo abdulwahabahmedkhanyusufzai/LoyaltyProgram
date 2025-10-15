@@ -19,7 +19,7 @@ export async function GET(req) {
 
     if (existingShop) {
       console.log("Shop already exists:",existingShop);
-      return NextResponse.redirect(process.env.APP_URL_RRDIRECT);
+      return NextResponse.redirect(process.env.NEXT_PUBLIC_API_URL);
     }
     // Define the requested scopes and redirect URI
     const scopes = `read_orders,read_customers,write_customers,write_content,read_content,read_products,write_products,write_files,read_files,write_online_store_navigation,read_online_store_navigation,write_publications,read_publications,write_product_listings,read_product_listings`;
