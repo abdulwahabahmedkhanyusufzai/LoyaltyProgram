@@ -26,18 +26,20 @@ const generateContinuousData = (purchaseDates: string[]) => {
   const dailyData: Record<string, number> = {};
 
   // Initialize every day between start and end
-  for (
-    let d = new Date(start);
-    d <= end;
-    d.setDate(d.getDate() + 1)
-  ) {
-    const key = d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+    const key = d.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
     dailyData[key] = 0;
   }
 
   // Add counts
   purchaseDates.forEach((date) => {
-    const day = new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    const day = new Date(date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
     dailyData[day] = (dailyData[day] || 0) + 1;
   });
 
@@ -95,9 +97,23 @@ export const TopSellingProductsVertical = () => {
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={chartData}>
                         <defs>
-                          <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#734A00" stopOpacity={0.4} />
-                            <stop offset="100%" stopColor="#734A00" stopOpacity={0.05} />
+                          <linearGradient
+                            id="lineGradient"
+                            x1="0"
+                            y1="0"
+                            x2="0"
+                            y2="1"
+                          >
+                            <stop
+                              offset="0%"
+                              stopColor="#734A00"
+                              stopOpacity={0.4}
+                            />
+                            <stop
+                              offset="100%"
+                              stopColor="#734A00"
+                              stopOpacity={0.05}
+                            />
                           </linearGradient>
                         </defs>
                         <CartesianGrid
@@ -141,7 +157,9 @@ export const TopSellingProductsVertical = () => {
                     </ResponsiveContainer>
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-400 mt-4">No analytics data available</p>
+                  <p className="text-sm text-gray-400 mt-4">
+                    No analytics data available
+                  </p>
                 )}
               </div>
             );
