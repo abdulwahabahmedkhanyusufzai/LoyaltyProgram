@@ -57,7 +57,7 @@ export async function POST(req: Request) {
         endDate: new Date(endDate),
         tierRequired,
         image: imageUrl,
-        offerType: offerTypo,
+        offerType: offerTypo as OfferType,
         value: 100,
       },
     });
