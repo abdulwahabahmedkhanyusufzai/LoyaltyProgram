@@ -1,36 +1,31 @@
 import { NextResponse } from "next/server";
-import { PrismaClient , type OfferType } from "@prisma/client";
+import { PrismaClient, type OfferType } from "@prisma/client";
 import { writeFile } from "fs/promises";
 import path from "path";
 
 const prisma = new PrismaClient();
 
-// Utility logger (extendable)
-function logStep(step: string, data?: unknown) {
-  console.log(`[OffersAPI] ${step}`, data ?? "");
+function jsonResponse(data: any, status = 200) {
+  const res = NextResponse.json(data, { status });
+  res.headers.set("Access-Control-Allow-Origin", "*");
+  res.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
+  res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  return res;
 }
 
-// Utility error logger
-function logError(step: string, error) {
-   if (error instanceof Error) {
-    return NextResponse.json({
-      message: error.message,
-      stack: error.stack,
-    });
-  }
-
+// Handle preflight CORS requests
+export async function OPTIONS() {
+  const res = new NextResponse(null, { status: 204 });
+  res.headers.set("Access-Control-Allow-Origin", "*");
+  res.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
+  res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  return res;
 }
-
-  
 
 // 🔹 CREATE (POST)
 export async function POST(req: Request) {
-  logStep("POST handler started");
-
   try {
     const formData = await req.formData();
-    logStep("Received formData keys", Array.from(formData.keys()));
-
     const name = formData.get("name") as string;
     const description = formData.get("description") as string;
     const pointsCost = formData.get("pointsCost") as string;
@@ -38,83 +33,43 @@ export async function POST(req: Request) {
     const endDate = formData.get("endDate") as string;
     const tierRequired = formData.get("tierRequired") as string;
     const file = formData.get("image") as File | null;
-    const offerTypo = formData.get("offerType") as  "DISCOUNT" | "CASHBACK" | "BOGO" ;
-    
-    if (
-  offerTypo !== "DISCOUNT" &&
-  offerTypo !== "CASHBACK" &&
-  offerTypo !== "BOGO"
-) {
-  return NextResponse.json(
-    { error: "Invalid offerType" },
-    { status: 400 }
-  );
-}
-const offerType: OfferType = offerTypo as OfferType; 
+    const offerTypo = formData.get("offerType") as "DISCOUNT" | "CASHBACK" | "BOGO";
 
-    logStep("Parsed fields", { name, description, pointsCost, startDate, endDate, tierRequired, offerType });
-
-    // Validate required fields
-    if (!name || !description || !startDate || !endDate || !tierRequired || !offerType) {
-      logError("POST validation", "Missing required fields");
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
-    }
+    if (!["DISCOUNT", "CASHBACK", "BOGO"].includes(offerTypo))
+      return jsonResponse({ error: "Invalid offerType" }, 400);
 
     let imageUrl: string | null = null;
-
     if (file) {
-      logStep("Handling file upload", { fileName: file.name, fileType: file.type, fileSize: file.size });
-
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
-
       const uploadDir = path.join(process.cwd(), "public", "uploads");
       const filePath = path.join(uploadDir, file.name);
-
       await writeFile(filePath, buffer);
-      logStep("File saved", { filePath });
-
       imageUrl = `/uploads/${file.name}`;
     }
 
-    const offerData = {
-      name,
-      description,
-      pointsCost: pointsCost ? Number(pointsCost) : null,
-      startDate: new Date(startDate),
-      endDate: new Date(endDate),
-      tierRequired,
-      image: imageUrl,
-      offerType,
-      value: 100,
-    };
-
-    logStep("Creating offer with data", offerData);
-
-    const newOffer = await prisma.offer.create({ data: offerData });
-    logStep("Offer created successfully", newOffer);
-
-    return NextResponse.json({ success: true, offer: newOffer }, { status: 201 });
-  } catch (error: unknown) {
-    logError("POST", error);
-  if (error instanceof Error) {
-    return NextResponse.json({
-      message: error.message,
-      stack: error.stack,
+    const newOffer = await prisma.offer.create({
+      data: {
+        name,
+        description,
+        pointsCost: pointsCost ? Number(pointsCost) : null,
+        startDate: new Date(startDate),
+        endDate: new Date(endDate),
+        tierRequired,
+        image: imageUrl,
+        offerType: offerTypo,
+        value: 100,
+      },
     });
+
+    return jsonResponse({ success: true, offer: newOffer }, 201);
+  } catch (error: any) {
+    return jsonResponse({ error: error.message || "Internal error" }, 500);
   }
 }
 
-  }
-
-
 // 🔹 READ (GET)
 export async function GET() {
-  logStep("GET handler started");
-
   try {
     const offers = await prisma.offer.findMany({
       orderBy: { createdAt: "desc" },
@@ -131,88 +86,39 @@ export async function GET() {
         offerType: true,
       },
     });
-
-    logStep("Fetched offers", { count: offers.length });
-
-    return NextResponse.json({ offers });
-  } catch (error: unknown) {
-    logError("GET", error);
-  if (error instanceof Error) {
-    return NextResponse.json({
-      message: error.message,
-      stack: error.stack,
-    });
+    return jsonResponse({ offers });
+  } catch (error: any) {
+    return jsonResponse({ error: error.message || "Internal error" }, 500);
   }
-  return NextResponse.json({ error: "Unknown error" });
-}    
-  }
-
+}
 
 // 🔹 UPDATE (PUT)
 export async function PUT(req: Request) {
-  logStep("PUT handler started");
-
   try {
     const formData = await req.formData();
-    logStep("Received formData keys", Array.from(formData.keys()));
-
     const id = formData.get("id") as string;
-    if (!id) {
-      logError("PUT validation", "Offer ID is required");
-      return NextResponse.json({ error: "Offer ID is required" }, { status: 400 });
+    if (!id) return jsonResponse({ error: "Offer ID is required" }, 400);
+
+    const updateData: Record<string, any> = {};
+    for (const [key, value] of formData.entries()) {
+      if (value) updateData[key] = value;
     }
 
-    const name = formData.get("name") as string;
-    const description = formData.get("description") as string;
-    const pointsCost = formData.get("pointsCost") as string;
-    const discount = formData.get("discount") as string;
-    const startDate = formData.get("startDate") as string;
-    const endDate = formData.get("endDate") as string;
-    const tiers = formData.get("tiers") as string;
-    const file = formData.get("image") as File | null;
-
-    let imageUrl: string | undefined = undefined;
-
-    if (file) {
-      logStep("Handling file upload", { fileName: file.name });
-
-      const bytes = await file.arrayBuffer();
+    if (updateData.image && updateData.image instanceof File) {
+      const bytes = await updateData.image.arrayBuffer();
       const buffer = Buffer.from(bytes);
-      const uploadDir = path.join(process.cwd(), "public", "uploads");
-      const filePath = path.join(uploadDir, file.name);
-
+      const filePath = path.join(process.cwd(), "public", "uploads", updateData.image.name);
       await writeFile(filePath, buffer);
-      logStep("File saved", { filePath });
-
-      imageUrl = `/uploads/${file.name}`;
+      updateData.image = `/uploads/${updateData.image.name}`;
     }
-
-    const updateData: unknown = {
-      ...(name && { name }),
-      ...(description && { description }),
-      ...(pointsCost && { pointsCost: Number(pointsCost) }),
-      ...(discount && { discount: Number(discount) }),
-      ...(startDate && { startDate: new Date(startDate) }),
-      ...(endDate && { endDate: new Date(endDate) }),
-      ...(tiers && { tierRequired: tiers }),
-      ...(imageUrl !== undefined && { image: imageUrl }),
-    };
-
-    logStep("Updating offer", { id, updateData });
 
     const updatedOffer = await prisma.offer.update({
       where: { id },
       data: updateData,
     });
 
-    logStep("Offer updated successfully", updatedOffer);
-
-    return NextResponse.json({ success: true, offer: updatedOffer });
-  } catch (error) {
-    logError("PUT", error);
-    return NextResponse.json(
-      { error: "Internal server error", details: error.message },
-      { status: 500 }
-    );
+    return jsonResponse({ success: true, offer: updatedOffer });
+  } catch (error: any) {
+    return jsonResponse({ error: error.message || "Internal error" }, 500);
   }
 }

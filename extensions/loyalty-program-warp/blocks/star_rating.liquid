@@ -1,0 +1,215 @@
+{% schema %}
+{
+  "name": "Star Rating",
+  "target": "section",
+  "settings": [
+    { "type": "product", "id": "product", "label": "product", "autofill": true },
+    { "type": "color", "id": "colour", "label": "Star Colour", "default": "#ff0000" }
+  ]
+}
+{% endschema %}
+
+      <div class="corner_style">
+      <div class="corner-books">
+      <div class="corner-text">
+      <p>Silver</p>
+      <p>Gold</p>
+      </div>
+      <div class="corner-block">
+      <div class="progress progress--large" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60" style="--value:60%;">
+      <div class="progress__track">
+        <div class="progress__fill" aria-hidden="true"></div>
+      </div>
+      <div class="progress__meta"></div>
+    </div>
+    </div>
+    <p class="progress_about">Earn 250 more points to reach Gold</p>
+    </div>  
+     <div class="banner_point_info">
+    <p class="banner_point">(55)</p>
+    <p>Points Balance</p>  
+    </div>
+    
+    <div class="banner_point_info">
+    <p class="banner_point">(15 Aug)</p>
+    <p>20 Point Expiry</p>  
+    </div>
+    
+    </div>
+    <div class="banner__box content-container content-container--full-width-mobile color-{{ section.settings.color_scheme }} gradient">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'heading' -%}
+            <h2
+              class="banner__heading inline-richtext {{ block.settings.heading_size }}"
+              {{ block.shopify_attributes }}
+            >
+              Welcome to Our Loyalty Programme
+            </h2>
+            <p
+              class="banner__subheading inline-richtext "
+              {{ block.shopify_attributes }}
+            >
+              A promise of a new journey where softness unfolds into infinity
+            </p>
+          {%- when 'text' -%}
+            <div class="banner__text rte {{ block.settings.text_style }}" {{ block.shopify_attributes }}>
+              <p>{{ block.settings.text }}</p>
+            </div>
+          {%- when 'buttons' -%}
+
+            {% case block.settings.button_rounded_corners %}
+              {% when 'low' %}
+                {% assign rounded_class = 'pp-rounded-2xl' %}
+              {% when 'medium' %}
+                {% assign rounded_class = 'pp-rounded-3xl' %}
+              {% when 'high' %}
+                {% assign rounded_class = 'pp-rounded-full' %}
+            {% endcase %}
+
+            <div
+              class="banner__buttons{% if block.settings.button_label_1 != blank and block.settings.button_label_2 != blank %} banner__buttons--multiple{% endif %}"
+              {{ block.shopify_attributes }}
+            >
+              {%- if block.settings.button_label_1 != blank -%}
+                <a
+                  {% if block.settings.button_link_1 == blank %}
+                    role="link" aria-disabled="true"
+                  {% else %}
+                    href="{{ block.settings.button_link_1 }}"
+                  {% endif %}
+                  class="button remove-content {{ rounded_class }}"
+                  style="padding-top: {{ block.settings.button_padding_vertical }}px; padding-bottom: {{ block.settings.button_padding_vertical }}px; color: {{ block.settings.button_text_color }}; background-color: {{ block.settings.button_background_color }};"
+                >
+                  {{- block.settings.button_label_1 | escape -}}
+                </a>
+              {%- endif -%}
+              {%- if block.settings.button_label_2 != blank -%}
+                <a
+                  {% if block.settings.button_link_2 == blank %}
+                    role="link" aria-disabled="true"
+                  {% else %}
+                    href="{{ block.settings.button_link_2 }}"
+                  {% endif %}
+                  class="button remove-content {{ rounded_class }}"
+                  style="padding-top: {{ block.settings.button_padding_vertical }}px; padding-bottom: {{ block.settings.button_padding_vertical }}px; color: {{ block.settings.button_text_color }}; background-color: {{ block.settings.button_background_color }};"
+                >
+                  {{- block.settings.button_label_2 | escape -}}
+                </a>
+              {%- endif -%}
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+const upperBanner = document.querySelector(".banner_corner");
+  const bannerCorner = document.querySelector(".corner_style");
+  const loyaltyprogram = document.querySelectorAll("#shopify-section-template--24845457883464__loyalty_program");
+  const mainsection = document.querySelectorAll(".content-for-layout");
+  console.log(loyaltyprogram);
+  console.log(mainsection);
+    if (upperBanner && bannerCorner) {
+    // Move banner_corner inside upperBanner
+    upperBanner.prepend(bannerCorner);
+    console.log("✅ banner_corner moved inside upperBanner");
+  } else {
+    console.warn("⚠️ upperBanner or banner_corner not found.");
+  }
+});
+ (function () {
+    // run when DOM ready (works even if script is placed before markup)
+    function initProductScrolls() {
+      const containers = document.querySelectorAll('.product-scroll');
+      if (!containers || containers.length === 0) return;
+
+      containers.forEach((container) => {
+        // avoid attaching twice
+        if (container.__dragInit) return;
+        container.__dragInit = true;
+
+        // visual cursor
+        container.classList.add('product-scroll-init');
+
+        let isDragging = false;
+        let startX = 0;
+        let startScroll = 0;
+
+        // Pointer events unify mouse/touch/pen
+        container.addEventListener('pointerdown', (e) => {
+          // only left mouse or touch/pen
+          if (e.button && e.button !== 0) return;
+          isDragging = true;
+          container.classList.add('is-dragging');
+          startX = e.clientX;
+          startScroll = container.scrollLeft;
+          // capture pointer so move/up still get fired outside container
+          container.setPointerCapture(e.pointerId);
+          // prevent selecting text while dragging
+          document.documentElement.style.userSelect = 'none';
+        });
+
+        container.addEventListener('pointermove', (e) => {
+          if (!isDragging) return;
+          // compute delta
+          const dx = e.clientX - startX;
+          // adjust multiplier to taste
+          container.scrollLeft = startScroll - dx * 1.2;
+        });
+
+        const stopDrag = (e) => {
+          if (!isDragging) return;
+          isDragging = false;
+          container.classList.remove('is-dragging');
+          try {
+            container.releasePointerCapture && container.releasePointerCapture(e && e.pointerId);
+          } catch (err) {}
+          document.documentElement.style.userSelect = '';
+        };
+
+        container.addEventListener('pointerup', stopDrag);
+        container.addEventListener('pointercancel', stopDrag);
+        container.addEventListener('pointerleave', stopDrag);
+
+        // Better wheel handling: convert mostly-vertical wheel to horizontal,
+        // but respect native horizontal wheels. Prevent default only when we translate.
+        container.addEventListener(
+          'wheel',
+          (e) => {
+            // if user explicitly scrolls horizontally, let it happen (deltaX exists)
+            if (Math.abs(e.deltaX) > 0.5) return;
+            // If vertical wheel, translate to horizontal
+            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+              container.scrollLeft += e.deltaY;
+              e.preventDefault();
+            }
+          },
+          { passive: false }
+        );
+
+        // optional: support keyboard arrows when focused
+        container.setAttribute('tabindex', '0');
+        container.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowRight') container.scrollLeft += 160;
+          if (e.key === 'ArrowLeft') container.scrollLeft -= 160;
+        });
+
+        // ensure images don't prevent pointer events (if you previously used pointer-events:none)
+        // but if you need links to be clickable, keep pointer events on children.
+        const imgs = container.querySelectorAll('img');
+        imgs.forEach((img) => {
+          img.style.touchAction = 'none'; // improves drag responsiveness on some devices
+        });
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initProductScrolls);
+    } else {
+      initProductScrolls();
+    }
+
+    // If your theme injects sections dynamically, you can re-init later:
+    window.initProductScrolls = initProductScrolls;
+  })();
+</script>

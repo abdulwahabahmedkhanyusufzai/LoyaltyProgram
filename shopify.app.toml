@@ -2,7 +2,7 @@
 
 client_id = "ef8354de631868820fdc27257600052f"
 name = "Loyalty Program waro"
-application_url = "https://loyalty-program-9jqr.vercel.app/api/shopify/authenticate"
+application_url = "https://loyaltyprogramwaro-production.up.railway.app/api/shopify/authenticate"
 embedded = false
 handle = "loyalty-program-waro"
 
@@ -17,6 +17,6 @@ use_legacy_install_flow = false
 
 [auth]
 redirect_urls = [
-  "https://loyalty-program-9jqr.vercel.app/api/shopify/authenticate",
-  "https://loyalty-program-9jqr.vercel.app/api/shopify/callback"
+  "https://loyaltyprogramwaro-production.up.railway.app/api/shopify/authenticate",
+  "https://loyaltyprogramwaro-production.up.railway.app/api/shopify/callback"
 ]

@@ -1,6 +1,7 @@
 // File: /app/api/authenticate/route.js
 import { NextResponse } from "next/server";
 import { PrismaClient } from '@prisma/client';
+
 // Explicitly mark the route as dynamic
 export const dynamic = 'force-dynamic';  // This makes Next.js render it dynamically
 const prisma = new PrismaClient();
