@@ -1,0 +1,140 @@
+<div class="loyalty-redemption">
+  <h3>Loyalty Redemption</h3>
+
+  <p class="available-points">
+    You have <strong>{{ customer.metafields.loyalty.points | default: 1250 }}</strong> points available.
+  </p>
+
+  <div class="redeem-box">
+    <input
+      type="number"
+      id="redeem-points"
+      placeholder="Redeem points"
+      min="0"
+      max="{{ customer.metafields.loyalty.points | default: 1250 }}"
+    />
+    <button id="apply-points">Apply</button>
+  </div>
+
+  <div class="redeemed-points">
+    Redeemed Points: <span id="redeemed-count">0</span> =
+    <strong><span id="discount-value">€0</span> discount</strong>
+  </div>
+
+  <div class="after-discount">
+    After Discount Total: <strong><span id="discounted-total">€{{ cart.total_price | divided_by: 100 }}</span></strong>
+  </div>
+
+  <a href="/checkout" class="checkout-btn">Go to Checkout →</a>
+</div>
+
+<style>
+  .loyalty-redemption {
+    background: #fff8ef;
+    border: 1px solid #e2d4b7;
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 420px;
+    font-family: Arial, sans-serif;
+    color: #4a3b27;
+  }
+
+  .loyalty-redemption h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #3a2a14;
+  }
+
+  .available-points {
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .redeem-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .redeem-box input {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid #d6c6a5;
+    border-radius: 6px;
+    background: #fff;
+  }
+
+  .redeem-box button {
+    background-color: #8b5e2b;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .redeemed-points,
+  .after-discount {
+    margin-top: 8px;
+    font-size: 14px;
+  }
+
+  .after-discount strong {
+    color: #000;
+    font-weight: bold;
+  }
+
+  .checkout-btn {
+    display: block;
+    margin-top: 16px;
+    background: #8b5e2b;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const input = document.getElementById("redeem-points");
+    const applyBtn = document.getElementById("apply-points");
+    const redeemedCount = document.getElementById("redeemed-count");
+    const discountValue = document.getElementById("discount-value");
+    const discountedTotal = document.getElementById("discounted-total");
+
+    const baseTotal = {{ cart.total_price | divided_by: 100 }};
+    const pointsPerEuro = {{ section.settings.points_per_euro | default: 25 }}; // e.g. 25 points = €1
+
+    applyBtn.addEventListener("click", () => {
+      const points = parseInt(input.value || 0);
+      if (points < 0) return;
+
+      const discount = (points / pointsPerEuro).toFixed(2);
+      const newTotal = Math.max(baseTotal - discount, 0).toFixed(2);
+
+      redeemedCount.textContent = points;
+      discountValue.textContent = `€${discount}`;
+      discountedTotal.textContent = `€${newTotal}`;
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Loyalty Redemption",
+  "target":"section",
+  "settings": [
+    {
+      "type": "number",
+      "id": "points_per_euro",
+      "label": "Points required for €1 discount",
+      "default": 25,
+    }
+  ],
+}
+{% endschema %}
+

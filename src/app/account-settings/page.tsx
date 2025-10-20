@@ -10,15 +10,13 @@ import { FormManager } from "../utils/FormManger";
 
 const RegisterAsaCustomer = () => {
   const [formManager] = useState(new FormManager());
-
+ console.log(formSections.security.fields);
   const [formData, setFormData] = useState({
     profilePicPreview: "",
     fullName: "",
     email: "",
     phone: "",
     currentPassword: "",
-    password: "",
-    confirmNewPassword: "",
     tier: "",
     points: "",
     expiry: "",
