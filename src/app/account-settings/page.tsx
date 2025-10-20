@@ -94,8 +94,6 @@ useEffect(() => {
       email: "",
       phone: "",
       currentPassword: "",
-      password: "",
-      confirmNewPassword: "",
       tier: "",
       points: "",
       expiry: "",
