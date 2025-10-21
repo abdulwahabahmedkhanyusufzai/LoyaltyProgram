@@ -4,7 +4,6 @@ import { Toggle } from "./ToggleButton";
 
 
 export const FieldRenderer = ({ fields, toggles, select, form, handleChange }: any) => {
-  console.log(fields);
   if (fields) {
     return (
       <div className="space-y-6"> {/* Added more space for floating labels */}
@@ -15,7 +14,7 @@ export const FieldRenderer = ({ fields, toggles, select, form, handleChange }: a
             id={field.name} // FloatingInput needs an 'id' for the label's 'htmlFor'
             type={field.type}
             placeholder={field.label} // Map the 'label' from your config to 'placeholder'
-            value={form[field.name]}
+            value={form[field.name] || ""}
             onChange={handleChange}
             // We need to handle errors. See Step 2 below.
           />

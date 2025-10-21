@@ -21,7 +21,7 @@ export const FloatingInput = ({
       type={type}
       placeholder={placeholder}
       value={value}
-      onChange={onChange}
+      onChange={(e) => onChange(e)}
       required={required}
       className={`peer w-full p-3 rounded-full border border-[#D2D1CA] 
                   focus:outline-none focus:ring-2 focus:ring-[#734A00] 
