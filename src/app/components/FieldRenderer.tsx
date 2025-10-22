@@ -53,26 +53,27 @@ export const FieldRenderer = ({
       setLoading(false);
     }
   };
+const handleChange = (
+  e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+) => {
+  const target = e.target;
+  const { name, value, type } = target;
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value, type, checked } = e.target;
-    console.log("name",e.target);
-    const fieldValue = type === "checkbox" ? checked : value;
+  // ✅ Type guard: only HTMLInputElement has 'checked'
+  const fieldValue =
+    type === "checkbox" && "checked" in target ? target.checked : value;
 
-    // ✅ Call only if formManager.handleChange exists
-    formManager?.handleChange?.(e);
+  // ✅ Call only if formManager.handleChange exists
+  formManager?.handleChange?.(e);
 
-    // ✅ Always update local form state
-    setFormData((prev: any) => ({
-      ...prev,
-      [name]: fieldValue,
-    }));
-  };
+  // ✅ Always update local form state
+  setFormData((prev: any) => ({
+    ...prev,
+    [name]: fieldValue,
+  }));
+};
 
-  console.log("Rendering:", {form });
-
+console.log("form",form);
   return (
          <form
             onSubmit={(e) => {

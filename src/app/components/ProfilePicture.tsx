@@ -5,6 +5,8 @@ export const ProfilePicUploader = ({
   formManager
 }: {
   profilePic: string;
+   setFormData:any;
+   formManager:any;
 }) => {
 
  const onUpload = (e: React.ChangeEvent<HTMLInputElement>) => {

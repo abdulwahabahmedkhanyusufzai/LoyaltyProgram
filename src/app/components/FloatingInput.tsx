@@ -8,6 +8,7 @@ interface FloatingInputProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
   className?: string;
+  name?: string;
 }
 
 export const FloatingInput = ({
