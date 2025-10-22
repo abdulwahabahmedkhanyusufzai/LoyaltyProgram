@@ -5,7 +5,7 @@ export const LoadingButton = ({
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & { loading: boolean }) => (
   <button
     disabled={loading}
-    className={`mt-6 w-full flex items-center justify-center gap-2 bg-[#734A00] text-white py-3 rounded-full font-semibold transition ${
+    className={`mb-6 mt-6 w-full flex items-center justify-center gap-2 bg-[#734A00] text-white py-3 rounded-full font-semibold transition ${
       loading ? "opacity-70 cursor-not-allowed" : "hover:bg-[#5a3800]"
     }`}
     {...props}

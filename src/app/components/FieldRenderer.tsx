@@ -1,30 +1,176 @@
 // components/FieldRenderer.tsx
 import { FloatingInput } from "./FloatingInput";
 import { Toggle } from "./ToggleButton";
+import { formSections } from "../data/customData";
+import { Section } from "./SectionWrapper";
+import { ProfilePicUploader } from "./ProfilePicture";
+import { LoadingButton } from "./LoadingButton";
+import toast from "react-hot-toast";
+import { FormManager } from "../utils/FormManger";
 
+export const FieldRenderer = ({
+  form,
+  setFormData,
+  formManager,
+  loading,
+  setLoading
+}: any) => {
+  const select = formSections.preferences.select;
+  const personal = formSections.personal.fields;
+  const fields = formSections.security.fields;
+  const toggles = formSections.notifications.toggles;
 
-export const FieldRenderer = ({ fields, toggles, select, form, handleChange }: any) => {
-  if (fields) {
-    return (
-      <div className="space-y-6"> {/* Added more space for floating labels */}
-        {fields.map((field: any) => (
-          //  swapped <Input /> for <FloatingInput />
-          <FloatingInput
-            key={field.label}
-            id={field.name} // FloatingInput needs an 'id' for the label's 'htmlFor'
-            type={field.type}
-            placeholder={field.label} // Map the 'label' from your config to 'placeholder'
-            value={form[field.name] || ""}
-            onChange={handleChange}
-            // We need to handle errors. See Step 2 below.
-          />
-        ))}
+  
+   const handleCancel = () => {
+    formManager.resetForm();
+    setFormData({
+      profilePicPreview: "",
+      fullName: "",
+      email: "",
+      phone: "",
+      currentPassword: "",
+      tier: "",
+      points: "",
+      expiry: "",
+      notifications: {
+        systemAlerts: false,
+        notifications: false,
+        weeklyReports: false,
+      },
+      language: "English",
+    });
+  };
+
+    const handleRegister = async () => {
+    try {
+      setLoading(true);
+      await formManager.submitForm();
+      toast.success("✅ User saved successfully!");
+      handleCancel();
+    } catch (err: any) {
+      toast.error(`❌ ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value, type, checked } = e.target;
+    console.log("name",e.target);
+    const fieldValue = type === "checkbox" ? checked : value;
+
+    // ✅ Call only if formManager.handleChange exists
+    formManager?.handleChange?.(e);
+
+    // ✅ Always update local form state
+    setFormData((prev: any) => ({
+      ...prev,
+      [name]: fieldValue,
+    }));
+  };
+
+  console.log("Rendering:", {form });
+
+  return (
+         <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleRegister();
+            }}
+          >
+    <>
+      {/* ✅ Personal Info Section */}
+      {personal && (
+        <Personal
+          form={form}
+          handleChange={handleChange}
+          setFormData={setFormData}
+          formManager={formManager}
+        />
+      )}
+
+      {/* ✅ Security Fields */}
+      {fields && (
+            <Section title={formSections.security.title}>
+        <div className="space-y-6">
+          {fields.map((field: any) => (
+            <FloatingInput
+              key={field.label}
+              id={field.name}
+              type={field.type}
+              placeholder={field.label}
+              value={form[field.name] || ""}
+              onChange={handleChange}
+              name={field.name}
+
+            />
+          ))}
+        
+        </div>
+        </Section>
+      )}
+         <LoadingButton loading={loading} type="submit">
+              Save Password
+            </LoadingButton>
+
+      {/* ✅ Notification Toggles */}
+      {toggles && <Toggled form={form} handleChange={handleChange} />}
+
+      {/* ✅ Preferences Select */}
+      {select && <Select form={form} handleChange={handleChange} />}
+
+      {/* ✅ Action Buttons */}
+      <div className="mt-6 space-y-3">
+        <button
+          onClick={handleRegister}
+          className="w-full bg-[#734A00] text-white py-3 rounded-full font-semibold hover:bg-[#5a3800] transition"
+        >
+          Save Changes
+        </button>
+        <button
+          onClick={handleCancel}
+          className="w-full bg-gray-300 text-gray-800 py-3 rounded-full font-semibold hover:bg-gray-400 transition"
+        >
+          Cancel
+        </button>
       </div>
-    );
-  }
+    </>
+    </form>
+  );
+};
 
- if (toggles) {
-    return (
+export const Select = ({ form, handleChange }: any) => {
+  const select = formSections.preferences.select;
+
+  return (
+    <Section title={formSections.preferences.title}>
+      <select
+        name={select.name}
+        value={select.name || ""}
+        onChange={handleChange}
+        className={`w-full border rounded-full px-4 py-3 text-sm sm:text-base ${
+          form.errors?.[select.name]
+            ? "border-red-500 bg-red-50"
+            : "border-gray-300"
+        }`}
+      >
+        {select.options.map((opt: string) => (
+          <option key={opt} value={opt}>
+            {opt}
+          </option>
+        ))}
+      </select>
+    </Section>
+  );
+};
+
+export const Toggled = ({ form, handleChange }: any) => {
+  const toggles = formSections.notifications.toggles;
+  return (
+     <div className="space-y-3">
+    <Section title={formSections.notifications.title}>
       <div className="space-y-3">
         {toggles.map((item: any) => (
           <Toggle
@@ -36,24 +182,40 @@ export const FieldRenderer = ({ fields, toggles, select, form, handleChange }: a
           />
         ))}
       </div>
-    );
-  }
+    </Section>
+    </div>
+  );
+};
 
-  if (select) {
-    return (
-      <select
-        name={select.name}
-        value={form[select.name]}
-        onChange={handleChange}
-        className={`w-full border rounded-full px-4 py-3 text-sm sm:text-base ${
-          form.errors?.[select.name] ? "border-red-500 bg-red-50" : "border-gray-300"
-        }`}
-      >
-        {select.options.map((opt: string) => (
-          <option key={opt}>{opt}</option>
-        ))}
-      </select>
-    );
-  }
-  return null;
+export const Personal = ({ form, handleChange, setFormData,formManager }: any) => {
+  const personal = formSections.personal.fields;
+  console.log("personal name",personal.map((item: any) => (item.name)));
+
+  return (
+    <Section title={formSections.personal.title}>
+      <div className="flex flex-col sm:flex-row gap-6 items-start">
+      
+
+         <div className="w-full space-y-4">
+          {personal.map((item: any) => (
+            <FloatingInput
+              key={item.name}
+              id={item.name}
+              type={item.type}
+              placeholder={item.label}
+              value={form[item.name] || ""}
+              onChange={handleChange}
+              name={item.name}
+            />
+          ))}
+          </div>
+            <ProfilePicUploader
+          profilePic={form.profilePicPreview}
+          setFormData={setFormData}
+          formManager={formManager}
+        />
+        </div>
+      
+    </Section>
+  );
 };

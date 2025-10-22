@@ -1,10 +1,24 @@
+
 export const ProfilePicUploader = ({
   profilePic,
-  onUpload,
+  setFormData,
+  formManager
 }: {
   profilePic: string;
-  onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) => (
+}) => {
+
+ const onUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.[0]) {
+      const file = e.target.files[0];
+      formManager.handleImageUpload(file);
+
+      setFormData((prev) => ({
+        ...prev,
+        profilePicPreview: URL.createObjectURL(file),
+      }));
+    }
+  };
+  return (
   <div className="flex flex-col items-center">
     <div className="h-[120px] w-[120px] sm:h-[150px] sm:w-[150px] rounded-full overflow-hidden border-2 border-gray-300">
       {profilePic ? (
@@ -20,4 +34,5 @@ export const ProfilePicUploader = ({
       <input type="file" accept="image/*" className="hidden" onChange={onUpload} />
     </label>
   </div>
-);
+)
+};
