@@ -5,20 +5,20 @@ export async function upsertCustomers(customers: any[]) {
     prisma.customer.upsert({
       where: { email: c.email },
       update: {
-        firstName: c.firstName,
-        lastName: c.lastName,
-        loyaltyTitle: c.loyaltyTitle,
-        numberOfOrders: c.numberOfOrders,
-        amountSpent: c.amountSpent,
+        firstName: c.firstName ?? "" ,
+        lastName: c.lastName ?? "",
+        loyaltyTitle: c.loyaltyTitle ?? "",
+        numberOfOrders: c.numberOfOrders ?? 0,
+        amountSpent: c.amountSpent ?? 0,
       },
       create: {
-        shopifyId: c.id,
-        firstName: c.firstName,
-        lastName: c.lastName,
-        email: c.email,
-        loyaltyTitle: c.loyaltyTitle,
-        numberOfOrders: c.numberOfOrders,
-        amountSpent: c.amountSpent,
+        shopifyId: c.id ?? "",
+        firstName: c.firstName ?? "",
+        lastName: c.lastName ?? "",
+        email: c.email ?? "",
+        loyaltyTitle: c.loyaltyTitle ?? "",
+        numberOfOrders: c.numberOfOrders ?? "",
+        amountSpent: c.amountSpent ?? "",
       },
     })
   );
