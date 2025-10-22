@@ -253,5 +253,3 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen, offerToEdit }) => {
 };
 
 export default NewOfferModal;
-
-        
