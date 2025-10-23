@@ -1,5 +1,5 @@
 // src/scripts/cronApplyOffers.ts
-import { runOfferCronJob } from "../app/utils/applyOffertoCustomer.js";
+import { runOfferCronJob } from "../app/utils/applyOffertoCustomer";
 import cron from "node-cron";
 
 async function runOffers() {
