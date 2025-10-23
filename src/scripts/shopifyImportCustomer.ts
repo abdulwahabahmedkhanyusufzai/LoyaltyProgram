@@ -5,25 +5,25 @@ import axios from "axios";
 
 const prisma = new PrismaClient();
 
-// ✅ Create a Shopify order linked to a specific customer
 async function createShopifyOrder(shop, accessToken, orderData, shopifyCustomerId) {
   const shopifyUrl = `https://${shop}/admin/api/2025-01/orders.json`;
 
   const payload = {
     order: {
+      customer: {
+        id: shopifyCustomerId, // Attach to real Shopify customer
+      },
+      email: orderData.Email,
+      financial_status: "paid",
+      currency: orderData.Currency || "EUR",
       line_items: [
         {
-          title: orderData.product_name,
-          quantity: parseInt(orderData.quantity || 1),
-          price: orderData.price,
+          title: orderData["Lineitem name"],
+          quantity: parseInt(orderData["Lineitem quantity"] || 1),
+          price: parseFloat(orderData["Lineitem price"] || 0),
         },
       ],
-      customer: {
-        id: shopifyCustomerId, // <-- Attach to the real Shopify customer
-      },
-      email: orderData.email,
-      financial_status: "paid",
-      currency: orderData.currency || "EUR",
+      total_price: parseFloat(orderData.Total || 0),
       send_receipt: false,
       send_fulfillment_receipt: false,
     },
@@ -39,10 +39,9 @@ async function createShopifyOrder(shop, accessToken, orderData, shopifyCustomerI
   return res.data.order;
 }
 
-// ✅ Parse the CSV
 async function processCSV(filePath: string): Promise<Record<string, string>[]> {
   const orders: Record<string, string>[] = [];
-  return new Promise((resolve, reject) => {
+  return new Promise<Record<string, string>[]>((resolve, reject) => {
     fs.createReadStream(filePath)
       .pipe(csv())
       .on("data", (data: Record<string, string>) => orders.push(data))
@@ -56,37 +55,41 @@ async function main() {
 
   for (const order of orders) {
     try {
+      const email = order.Email?.trim();
+      if (!email) {
+        console.warn("⚠️ Skipping row — missing Email:", order);
+        continue;
+      }
+
       // 1️⃣ Find local customer by email
       const customer = await prisma.customer.findUnique({
-        where: { email: order.email },
+        where: { email },
       });
 
       if (!customer) {
-        console.warn(`⚠️ Customer not found in DB: ${order.email}`);
+        console.warn(`⚠️ Customer not found in DB: ${email}`);
         continue;
       }
 
-      // 2️⃣ Get their associated shop
+      // 2️⃣ Get the related shop (to use its access token)
       const shop = await prisma.shop.findFirst();
 
       if (!shop) {
-        console.warn(`⚠️ Shop not found for ${order.email}`);
+        console.warn(`⚠️ Shop not found for customer ${email}`);
         continue;
       }
 
-      // 3️⃣ Create the order in Shopify
+      // 3️⃣ Create the order on Shopify (real customer)
       const shopifyOrder = await createShopifyOrder(
         shop.shop,
         shop.accessToken,
         order,
-        customer.shopifyId // <-- this is the real Shopify customer ID
+        customer.shopifyId
       );
 
-      console.log(
-        `✅ Created Shopify order ${shopifyOrder.id} for ${customer.email}`
-      );
+      console.log(`✅ Shopify order ${shopifyOrder.id} created for ${email}`);
 
-      // 4️⃣ Save it to your local DB
+      // 4️⃣ Store locally
       await prisma.order.create({
         data: {
           customerId: customer.id,
@@ -101,15 +104,15 @@ async function main() {
         },
       });
     } catch (err) {
-      console.error(`❌ Error processing ${order.email}:`, err.message);
+      console.error(`❌ Error processing order for ${order.Email}:`, err.message);
     }
   }
 
-  console.log("🎯 All CSV orders have been processed and synced!");
+  console.log("🎯 All orders processed and synced with Shopify!");
   await prisma.$disconnect();
 }
 
 main().catch((e) => {
-  console.error("❌ Fatal:", e);
+  console.error("❌ Fatal error:", e);
   prisma.$disconnect();
 });
