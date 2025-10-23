@@ -40,12 +40,12 @@ async function createShopifyOrder(shop, accessToken, orderData, shopifyCustomerI
 }
 
 // ✅ Parse the CSV
-async function processCSV(filePath) {
-  const orders = [];
+async function processCSV(filePath: string): Promise<Record<string, string>[]> {
+  const orders: Record<string, string>[] = [];
   return new Promise((resolve, reject) => {
     fs.createReadStream(filePath)
       .pipe(csv())
-      .on("data", (data) => orders.push(data))
+      .on("data", (data: Record<string, string>) => orders.push(data))
       .on("end", () => resolve(orders))
       .on("error", reject);
   });
@@ -67,9 +67,7 @@ async function main() {
       }
 
       // 2️⃣ Get their associated shop
-      const shop = await prisma.shop.findFirst({
-        where: { id: customer.shopId },
-      });
+      const shop = await prisma.shop.findFirst();
 
       if (!shop) {
         console.warn(`⚠️ Shop not found for ${order.email}`);
