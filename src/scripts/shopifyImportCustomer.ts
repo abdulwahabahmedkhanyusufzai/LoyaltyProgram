@@ -5,25 +5,71 @@ import axios from "axios";
 
 const prisma = new PrismaClient();
 
-async function createShopifyOrder(shop, accessToken, orderData, shopifyCustomerId) {
+/**
+ * Create (or get) a Shopify customer by name & email
+ */
+async function getOrCreateShopifyCustomer(shop, accessToken, orderData) {
+  const email = orderData.Email?.trim()?.toLowerCase();
+  const firstName = (orderData.FirstName || orderData.Name || "").split(" ")[0] || "Customer";
+  const lastName =
+    (orderData.LastName || orderData.Name?.split(" ").slice(1).join(" ")) || "";
+
+  // 🔹 Try to find customer in Shopify (by email)
+  if (email) {
+    try {
+      const searchUrl = `https://${shop}/admin/api/2025-01/customers/search.json?query=email:${email}`;
+      const searchRes = await axios.get(searchUrl, {
+        headers: { "X-Shopify-Access-Token": accessToken },
+      });
+
+      if (searchRes.data.customers?.length > 0) {
+        return searchRes.data.customers[0];
+      }
+    } catch {
+      // ignore and create new
+    }
+  }
+
+  // 🔹 Create customer in Shopify
+  const createUrl = `https://${shop}/admin/api/2025-01/customers.json`;
+  const payload = {
+    customer: {
+      first_name: firstName,
+      last_name: lastName,
+      email: email || `${firstName}.${Date.now()}@example.com`, // fallback email
+    },
+  };
+
+  const res = await axios.post(createUrl, payload, {
+    headers: {
+      "X-Shopify-Access-Token": accessToken,
+      "Content-Type": "application/json",
+    },
+  });
+
+  return res.data.customer;
+}
+
+/**
+ * Create order in Shopify
+ */
+async function createShopifyOrder(shop, accessToken, orderData, customerId) {
   const shopifyUrl = `https://${shop}/admin/api/2025-01/orders.json`;
 
   const payload = {
     order: {
-      customer: {
-        id: shopifyCustomerId,
-      },
+      customer: { id: customerId },
       email: orderData.Email,
       financial_status: "paid",
       currency: orderData.Currency || "USD",
       line_items: [
         {
-          title: orderData["Lineitem name"],
-          quantity: parseInt(orderData["Lineitem quantity"] || 1),
-          price: parseFloat(orderData["Lineitem price"] || 0),
+          title: orderData["Lineitem name"] || "Untitled Product",
+          quantity: parseInt(orderData["Lineitem quantity"] || "1", 10),
+          price: parseFloat(orderData["Lineitem price"] || "0"),
         },
       ],
-      total_price: parseFloat(orderData.Total || 0),
+      total_price: parseFloat(orderData.Total || "0"),
       send_receipt: false,
       send_fulfillment_receipt: false,
     },
@@ -39,8 +85,11 @@ async function createShopifyOrder(shop, accessToken, orderData, shopifyCustomerI
   return res.data.order;
 }
 
-async function processCSV(filePath: string): Promise<any[]> {
-  const orders: any[] = [];
+/**
+ * Parse CSV into array of order objects
+ */
+async function processCSV(filePath:string): Promise<any[]> {
+  const orders = [];
   return new Promise((resolve, reject) => {
     fs.createReadStream(filePath)
       .pipe(csv())
@@ -50,8 +99,22 @@ async function processCSV(filePath: string): Promise<any[]> {
   });
 }
 
-async function main() {
-  // 1️⃣ Get your shop (since only one)
+/**
+ * Normalize names: lowercase, trim, remove accents and extra spaces
+ */
+function normalize(str = "") {
+  return str
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
+ * Main
+ */
+async function main(){
   const shop = await prisma.shop.findFirst();
   if (!shop) {
     console.error("❌ No shop found in database.");
@@ -59,59 +122,33 @@ async function main() {
   }
 
   console.log(`✅ Using shop: ${shop.shop}`);
-
-  // 2️⃣ Read CSV
   const orders = await processCSV("./orders_export.csv");
 
   for (const order of orders) {
     try {
-      const fullName = order.Name?.trim();
-      if (!fullName) {
-        console.warn("⚠️ Skipping row — missing Name:", order);
+      const name = order.Name || "";
+      const email = order.Email || "";
+      if (!name && !email) {
+        console.warn("⚠️ Skipping row — missing Name and Email:", order);
         continue;
       }
 
-      // 3️⃣ Split into first and last names
-      const [firstName, ...rest] = fullName.split(" ");
-      const lastName = rest.join(" ").trim();
+      // 🧍 Match or create customer in Shopify directly
+      const customer = await getOrCreateShopifyCustomer(shop.shop, shop.accessToken, order);
+      console.log(`👤 Customer ready: ${customer.first_name} ${customer.last_name} (ID: ${customer.id})`);
 
-      // 4️⃣ Match customer by firstName + lastName
-      const customer = await prisma.customer.findFirst({
-        where: {
-          AND: [
-            {
-              firstName: { equals: firstName, mode: "insensitive" },
-            },
-            {
-              lastName: { equals: lastName, mode: "insensitive" },
-            },
-          ],
-        },
-      });
+      // 🛒 Create order for that customer
+      const shopifyOrder = await createShopifyOrder(shop.shop, shop.accessToken, order, customer.id);
+      console.log(`✅ Shopify order ${shopifyOrder.id} created for ${customer.first_name} ${customer.last_name}`);
 
-      if (!customer) {
-        console.warn(`⚠️ No matching customer found in DB for: ${firstName} ${lastName}`);
-        continue;
-      }
-
-      // 5️⃣ Create Shopify order for this customer
-      const shopifyOrder = await createShopifyOrder(
-        shop.shop,
-        shop.accessToken,
-        order,
-        customer.shopifyId
-      );
-
-      console.log(`✅ Shopify order ${shopifyOrder.id} created for ${firstName} ${lastName}`);
-
-      // 6️⃣ Save order locally in DB
+      // 💾 Save order locally
       await prisma.order.create({
         data: {
-          customerId: customer.id,
+          customerId: customer.id.toString(),
           shopId: shop.id,
-          orderNumber: shopifyOrder.order_number.toString(),
-          totalAmount: shopifyOrder.total_price,
-          currency: shopifyOrder.currency,
+          orderNumber: shopifyOrder.order_number?.toString() || "",
+          totalAmount: parseFloat(shopifyOrder.total_price || "0"),
+          currency: shopifyOrder.currency || "USD",
           status: "COMPLETED",
           metadata: shopifyOrder,
           createdAt: new Date(shopifyOrder.created_at),
@@ -119,7 +156,7 @@ async function main() {
         },
       });
     } catch (err) {
-      console.error(`❌ Error processing ${order.Name}:`, err.message);
+      console.error(`❌ Error processing order for ${order.Name || order.Email}:`, err.message);
     }
   }
 
