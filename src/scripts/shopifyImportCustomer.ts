@@ -11,11 +11,11 @@ async function createShopifyOrder(shop, accessToken, orderData, shopifyCustomerI
   const payload = {
     order: {
       customer: {
-        id: shopifyCustomerId, // Attach to real Shopify customer
+        id: shopifyCustomerId,
       },
       email: orderData.Email,
       financial_status: "paid",
-      currency: orderData.Currency || "EUR",
+      currency: orderData.Currency || "USD",
       line_items: [
         {
           title: orderData["Lineitem name"],
@@ -39,47 +39,62 @@ async function createShopifyOrder(shop, accessToken, orderData, shopifyCustomerI
   return res.data.order;
 }
 
-async function processCSV(filePath: string): Promise<Record<string, string>[]> {
-  const orders: Record<string, string>[] = [];
-  return new Promise<Record<string, string>[]>((resolve, reject) => {
+async function processCSV(filePath: string): Promise<any[]> {
+  const orders: any[] = [];
+  return new Promise((resolve, reject) => {
     fs.createReadStream(filePath)
       .pipe(csv())
-      .on("data", (data: Record<string, string>) => orders.push(data))
+      .on("data", (data) => orders.push(data))
       .on("end", () => resolve(orders))
       .on("error", reject);
   });
 }
 
 async function main() {
+  // 1️⃣ Get your shop (since only one)
+  const shop = await prisma.shop.findFirst();
+  if (!shop) {
+    console.error("❌ No shop found in database.");
+    return;
+  }
+
+  console.log(`✅ Using shop: ${shop.shop}`);
+
+  // 2️⃣ Read CSV
   const orders = await processCSV("./orders_export.csv");
 
   for (const order of orders) {
     try {
-      const email = order.Email?.trim();
-      if (!email) {
-        console.warn("⚠️ Skipping row — missing Email:", order);
+      const fullName = order.Name?.trim();
+      if (!fullName) {
+        console.warn("⚠️ Skipping row — missing Name:", order);
         continue;
       }
 
-      // 1️⃣ Find local customer by email
-      const customer = await prisma.customer.findUnique({
-        where: { email },
+      // 3️⃣ Split into first and last names
+      const [firstName, ...rest] = fullName.split(" ");
+      const lastName = rest.join(" ").trim();
+
+      // 4️⃣ Match customer by firstName + lastName
+      const customer = await prisma.customer.findFirst({
+        where: {
+          AND: [
+            {
+              firstName: { equals: firstName, mode: "insensitive" },
+            },
+            {
+              lastName: { equals: lastName, mode: "insensitive" },
+            },
+          ],
+        },
       });
 
       if (!customer) {
-        console.warn(`⚠️ Customer not found in DB: ${email}`);
+        console.warn(`⚠️ No matching customer found in DB for: ${firstName} ${lastName}`);
         continue;
       }
 
-      // 2️⃣ Get the related shop (to use its access token)
-      const shop = await prisma.shop.findFirst();
-
-      if (!shop) {
-        console.warn(`⚠️ Shop not found for customer ${email}`);
-        continue;
-      }
-
-      // 3️⃣ Create the order on Shopify (real customer)
+      // 5️⃣ Create Shopify order for this customer
       const shopifyOrder = await createShopifyOrder(
         shop.shop,
         shop.accessToken,
@@ -87,9 +102,9 @@ async function main() {
         customer.shopifyId
       );
 
-      console.log(`✅ Shopify order ${shopifyOrder.id} created for ${email}`);
+      console.log(`✅ Shopify order ${shopifyOrder.id} created for ${firstName} ${lastName}`);
 
-      // 4️⃣ Store locally
+      // 6️⃣ Save order locally in DB
       await prisma.order.create({
         data: {
           customerId: customer.id,
@@ -104,11 +119,11 @@ async function main() {
         },
       });
     } catch (err) {
-      console.error(`❌ Error processing order for ${order.Email}:`, err.message);
+      console.error(`❌ Error processing ${order.Name}:`, err.message);
     }
   }
 
-  console.log("🎯 All orders processed and synced with Shopify!");
+  console.log("🎯 All orders processed successfully!");
   await prisma.$disconnect();
 }
 
