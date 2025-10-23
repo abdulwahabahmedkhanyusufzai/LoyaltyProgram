@@ -22,6 +22,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cookie": "^1.0.2",
+    "csv-parser": "^3.2.0",
     "date-fns": "^4.1.0",
     "effect": "^3.18.4",
     "jose": "^6.1.0",
