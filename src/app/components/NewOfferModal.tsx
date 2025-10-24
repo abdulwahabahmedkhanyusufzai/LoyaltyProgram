@@ -14,7 +14,7 @@ import FloatingOfferTypeDropdown from "./OfferTypeDropdown";
 const TIER_OPTIONS = ["Bronze", "Silver", "Gold"];
 const OFFER_TYPES = [
   { label: "Fixed Amount Discount", value: "FIXED_AMOUNT_DISCOUNT" },
-  {Llabel:"Percentage Discount",value:"PERCENTAGE_DISCOUNT"},
+  {label:"Percentage Discount",value:"PERCENTAGE_DISCOUNT"},
   {label:"Free Shipping",value:"FREE_SHIPPING"},
   {label:"Free Gift",value:"FREE_GIFT"},
   {label:"Early Access to Private Sales",value:"EARLY_ACCESS"},
