@@ -188,3 +188,17 @@ ease) var(--tw-animation-delay, 0s) var(--tw-animation-iteration-count, 1) var(-
 button{
   cursor: pointer;
 }
+::-webkit-scrollbar {
+    width: 10px; /* change this to whatever width you want */
+}
+::-webkit-scrollbar-track {
+    background: #f0f0f0; /* track color */
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb {
+    background: #888; /* scrollbar handle color */
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #555; /* color on hover */
+}

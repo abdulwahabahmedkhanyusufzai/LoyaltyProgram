@@ -18,8 +18,6 @@ const OFFER_TYPES = [
   {label:"Free Shipping",value:"FREE_SHIPPING"},
   {label:"Free Gift",value:"FREE_GIFT"},
   {label:"Early Access to Private Sales",value:"EARLY_ACCESS"},
-  { label: "Cashback", value: "CASHBACK" },
-  { label: "Buy One Get One", value: "BOGO" },
 ];
 
 const NewOfferModal = ({ closeModal, isOpen, setIsOpen, offerToEdit }) => {
