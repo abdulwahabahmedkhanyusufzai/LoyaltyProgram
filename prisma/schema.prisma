@@ -191,10 +191,11 @@ model OrderItem {
 }
 
 enum OfferType {
-  PERCENTAGE
-  FIXED
-  POINTS
-  CASHBACK
+  FIXED_AMOUNT_DISCOUNT
+  PERCENTAGE_DISCOUNT
+  FREE_SHIPPING
+  FREE_GIFT
+  EARLY_ACCESS
 }
 
 enum OrderStatus {
