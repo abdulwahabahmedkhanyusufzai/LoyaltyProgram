@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Offer, OFFER_TYPES } from "../../../models/Offer";
+import { Offer } from "../../../models/Offer";
 import { OfferService } from "../../../utils/OfferService";
 import toast from "react-hot-toast";
 import OfferImageUploader from "./ui/OfferImageUploader";
