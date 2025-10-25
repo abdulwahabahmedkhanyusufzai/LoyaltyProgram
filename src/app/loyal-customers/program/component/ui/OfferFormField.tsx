@@ -9,7 +9,7 @@ import { Offer, OFFER_TYPES, TIER_OPTIONS } from "../../../../models/Offer";
 
 interface Props {
   offer: Offer;
-  handleChange: (field: keyof Offer, value: any) => void;
+  handleChange: (field: string, value: any) => void;
   errors: Record<string, string>;
   loading: boolean;
 }
