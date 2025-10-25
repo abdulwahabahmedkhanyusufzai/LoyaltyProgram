@@ -11,12 +11,14 @@ interface Props {
   offer: Offer;
   handleChange: (field: keyof Offer, value: any) => void;
   errors: Record<string, string>;
-  getPointsPlaceholder: () => string;
+  loading: boolean;
 }
 
-const OfferFormFields = ({ offer, handleChange, errors, getPointsPlaceholder,loading }: Props) => {
+const OfferFormFields = ({ offer, handleChange, errors,loading }: Props) => {
   const ErrorMsg = ({ field }: { field: string }) =>
     errors[field] ? <p className="text-red-500 text-sm">{errors[field]}</p> : null;
+  
+  const getPointsPlaceholder = () => OFFER_TYPES.find((t) => t.value === offer.offerType)?.QuantifyValue || "Fixed Amount Discount";
 
   return (
     <div className="md:col-span-2 flex flex-col gap-4">

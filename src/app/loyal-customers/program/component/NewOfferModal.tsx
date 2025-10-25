@@ -12,7 +12,6 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen, offerToEdit }) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   
-  const getPointsPlaceholder = () => OFFER_TYPES.find((t) => t.value === offer.offerType)?.QuantifyValue || "Fixed Amount Discount";
 
   useEffect(() => {
     if (offerToEdit) {
@@ -78,7 +77,7 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen, offerToEdit }) => {
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <OfferImageUploader preview={preview} handleImageChange={handleImageChange} error={errors.image} />
-          <OfferFormFields offer={offer} handleChange={handleChange} errors={errors} getPointsPlaceholder={() => getPointsPlaceholder(offer.offerType)} loading={loading} />
+          <OfferFormFields offer={offer} handleChange={handleChange} errors={errors}  loading={loading} />
           <div>
         
           </div>
