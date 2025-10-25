@@ -4,7 +4,7 @@ import { useRef, useEffect } from "react";
 interface Props {
   preview: string | null;
   handleImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  error?: string;
+  errors?: string;
 }
 
 const OfferImageUploader = ({ preview, handleImageChange, errors }: Props) => {
