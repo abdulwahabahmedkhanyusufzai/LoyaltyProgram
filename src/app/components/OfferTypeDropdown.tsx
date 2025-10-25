@@ -43,19 +43,19 @@ export default function FloatingOfferTypeDropdown({
           // Close dropdown and reset focus if user clicks outside
           setTimeout(() => setIsFocused(false), 100);
         }}
-        className={`w-full text-left border rounded-full px-4 py-[0.75rem] focus:outline-none transition-all duration-150
+        className={`text-sm w-full text-left border rounded-full px-4 py-[0.75rem] focus:outline-none transition-all duration-150
           ${hasValue ? "text-black" : "text-gray-500"} 
           ${isFocused ? "border-yellow-500 ring-1 ring-yellow-300" : "border-[#D2D1CA]"}
           min-h-[48px]`}
       >
         {hasValue
-          ? OFFER_TYPES.find((t) => t.value === offer.offerType)?.label
+          ? OFFER_TYPES.find((t) => t.value === offer.offerType)?.label.slice(0,13)
           : "Select Offer Type"}
       </button>
 
       {/* Dropdown Menu */}
       {showOfferTypeDropdown && (
-        <div className="absolute z-10 bottom-5 w-full bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden">
+        <div className="text-sm absolute z-10 bottom-5 w-full bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden">
           {OFFER_TYPES.map((type) => (
             <div
               key={type.value}

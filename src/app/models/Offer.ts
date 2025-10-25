@@ -1,11 +1,13 @@
 export class Offer {
+  id: string | number = "";
   offerName: string = "";
+  name: string = "";
   description: string = "";
   points: string | number = ""; // string like "20%" OR number like 100
   startDate: string = "";
   tillDate: string = "";
   eligibleTiers: string = ""; // ✅ required
-  offerType: "DISCOUNT" | "CASHBACK" | "BOGO" = "DISCOUNT"; // ✅ Prisma enum
+  offerType: "FIXED_AMOUNT_DISCOUNT" | "PERCENTAGE_DISCOUNT" | "FREE_SHIPPING" | "FREE_GIFT" | "EARLY_ACCESS" = "FIXED_AMOUNT_DISCOUNT"; // ✅ Prisma enum
   image: File | string | null = null; // File (upload) OR string (URL)
 
   constructor(init?: Partial<Offer>) {
@@ -13,6 +15,7 @@ export class Offer {
       Object.assign(this, init);
     }
   }
+
 
   /**
    * Validate a single field.
@@ -112,3 +115,14 @@ export class Offer {
     }
   }
 }
+
+export const OFFER_TYPES = [
+  { label: "Fixed Amount Discount", value: "FIXED_AMOUNT_DISCOUNT",QuantifyValue:"Fixed Amount Discount" },
+  {label:"Percentage Discount",value:"PERCENTAGE_DISCOUNT", QuantifyValue:"% Discount"},
+  {label:"Free Shipping",value:"FREE_SHIPPING", QuantifyValue:"Choose Free Shipping Products"},
+  {label:"Free Gift",value:"FREE_GIFT", QuantifyValue:"Choose Free Gift"},
+  {label:"Early Access to Private Sales",value:"EARLY_ACCESS", QuantifyValue:"Choose Products"},
+];
+
+export const TIER_OPTIONS = ["Bronze","Silver", "Gold","Platinum"];
+

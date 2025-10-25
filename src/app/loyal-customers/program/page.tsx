@@ -1,19 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
-import NewOfferModal from "@/app/components/NewOfferModal";
-
+import NewOfferModal from "@/app/loyal-customers/program/component/NewOfferModal";
+import { Offer } from "@/app/models/Offer";
 const Spinner = () => (
   <div className="flex justify-center items-center p-6">
     <div className="w-8 h-8 border-4 border-gray-300 border-t-[#734A00] rounded-full animate-spin"></div>
   </div>
 );
 
-type Offer = {
-  id: string | number;
-  name: string;
-  description: string;
-  image?: string;
-};
+
 
 const ProgramLoyal2 = () => {
   const [isOpen, setIsOpen] = useState(false);

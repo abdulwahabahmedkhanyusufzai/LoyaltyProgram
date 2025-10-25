@@ -189,11 +189,12 @@ button{
   cursor: pointer;
 }
 ::-webkit-scrollbar {
-    width: 10px; /* change this to whatever width you want */
+    width: 8px; /* change this to whatever width you want */
 }
 ::-webkit-scrollbar-track {
     background: #f0f0f0; /* track color */
     border-radius: 3px;
+    width:6px;
 }
 ::-webkit-scrollbar-thumb {
     background: #888; /* scrollbar handle color */
