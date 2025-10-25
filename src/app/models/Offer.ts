@@ -1,84 +1,31 @@
+import { OFFER_TYPES } from "../constants/offerTypes";
+import { validateOfferField } from "../utils/validateofFields";
+
 export class Offer {
   id: string | number = "";
-  offerName: string = "";
-  name: string = "";
-  description: string = "";
-  points: string | number = ""; // string like "20%" OR number like 100
-  startDate: string = "";
-  tillDate: string = "";
-  eligibleTiers: string = ""; // ✅ required
-  offerType: "FIXED_AMOUNT_DISCOUNT" | "PERCENTAGE_DISCOUNT" | "FREE_SHIPPING" | "FREE_GIFT" | "EARLY_ACCESS" = "FIXED_AMOUNT_DISCOUNT"; // ✅ Prisma enum
-  image: File | string | null = null; // File (upload) OR string (URL)
+  offerName = "";
+  name = "";
+  description = "";
+  points: string | number = "";
+  startDate = "";
+  tillDate = "";
+  eligibleTiers = "";
+  offerType:
+    | "FIXED_AMOUNT_DISCOUNT"
+    | "PERCENTAGE_DISCOUNT"
+    | "FREE_SHIPPING"
+    | "FREE_GIFT"
+    | "EARLY_ACCESS" = "FIXED_AMOUNT_DISCOUNT";
+  image: File | string | null = null;
 
   constructor(init?: Partial<Offer>) {
-    if (init) {
-      Object.assign(this, init);
-    }
+    Object.assign(this, init);
   }
 
-
-  /**
-   * Validate a single field.
-   * Returns an error message (string) or "" if valid.
-   */
   validateField(field: keyof Offer): string {
-    try {
-      switch (field) {
-        case "offerName":
-          return this.offerName.trim() ? "" : "Offer name is required.";
-
-        case "description":
-          return this.description.trim() ? "" : "Description is required.";
-
-        case "points": {
-          if (this.points === null || this.points === undefined) return "Points are required.";
-
-          if (typeof this.points === "number") {
-            return this.points >= 0 ? "" : "Points must be a positive number.";
-          }
-
-          if (typeof this.points === "string") {
-            const p = this.points.trim();
-            if (!p) return "Points are required.";
-            const isNumber = /^\d+$/.test(p); // "10", "100"
-            const isPercent = /^([1-9]\d?|100)%$/.test(p); // "1%" .. "100%"
-            return isNumber || isPercent ? "" : "Enter number (100) or percentage (20%).";
-          }
-
-          return "Invalid points value.";
-        }
-
-        case "startDate":
-          return this.startDate ? "" : "Start Date is required.";
-
-        case "tillDate":
-          return this.tillDate ? "" : "Till Date is required.";
-
-        case "eligibleTiers":
-          return this.eligibleTiers.trim().length > 0 ? "" : "Select at least one eligible tier.";
-
-        case "image":
-          return this.image !== null && String(this.image).trim() !== "" ? "" : "Image is required.";
-
-        case "offerType":
-          // ✅ Validate enum
-          return ["DISCOUNT", "CASHBACK", "BOGO"].includes(this.offerType)
-            ? ""
-            : "Select a valid offer type.";
-
-        default:
-          return "";
-      }
-    } catch (err) {
-      console.error(`❌ Error validating field [${field}]:`, err);
-      return `Validation failed for ${field}`;
-    }
+    return validateOfferField(this, field);
   }
 
-  /**
-   * Validate all fields together.
-   * Returns an object { fieldName: errorMessage }
-   */
   validateAll(): Record<string, string> {
     const fields: (keyof Offer)[] = [
       "offerName",
@@ -88,41 +35,21 @@ export class Offer {
       "tillDate",
       "eligibleTiers",
       "image",
-      "offerType", // ✅ include offerType
+      "offerType",
     ];
 
     const errors: Record<string, string> = {};
-
-    fields.forEach((f) => {
+    for (const f of fields) {
       const err = this.validateField(f);
-      if (err) {
-        errors[f] = err;
-        console.warn(`⚠️ Validation failed: ${f} → ${err}`);
-      }
-    });
-
+      if (err) errors[f] = err;
+    }
     return errors;
   }
 
-  /**
-   * Throws an Error if validation fails (useful for debugging).
-   */
   assertValid(): void {
     const errors = this.validateAll();
     if (Object.keys(errors).length > 0) {
-      console.error("🚨 Offer validation failed with errors:", errors);
       throw new Error(JSON.stringify(errors));
     }
   }
 }
-
-export const OFFER_TYPES = [
-  { label: "Fixed Amount Discount", value: "FIXED_AMOUNT_DISCOUNT",QuantifyValue:"Fixed Amount Discount" },
-  {label:"Percentage Discount",value:"PERCENTAGE_DISCOUNT", QuantifyValue:"% Discount"},
-  {label:"Free Shipping",value:"FREE_SHIPPING", QuantifyValue:"Choose Free Shipping Products"},
-  {label:"Free Gift",value:"FREE_GIFT", QuantifyValue:"Choose Free Gift"},
-  {label:"Early Access to Private Sales",value:"EARLY_ACCESS", QuantifyValue:"Choose Products"},
-];
-
-export const TIER_OPTIONS = ["Bronze","Silver", "Gold","Platinum"];
-

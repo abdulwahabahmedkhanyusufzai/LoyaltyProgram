@@ -5,8 +5,8 @@ import StartDatePicker from "../../../../components/StartDate";
 import EndDatePicker from "../../../../components/EndDate";
 import FloatingDropdown from "../../../../components/FloatingDropdown";
 import FloatingOfferTypeDropdown from "../../../../components/OfferTypeDropdown";
-import { Offer, OFFER_TYPES, TIER_OPTIONS } from "../../../../models/Offer";
-
+import { Offer  } from "../../../../models/Offer";
+import { OFFER_TYPES,TIER_OPTIONS } from "../../../../constants/offerTypes";
 interface Props {
   offer: Offer;
   handleChange: (field: string, value: any) => void;
@@ -18,7 +18,7 @@ const OfferFormFields = ({ offer, handleChange, errors,loading }: Props) => {
   const ErrorMsg = ({ field }: { field: string }) =>
     errors[field] ? <p className="text-red-500 text-sm">{errors[field]}</p> : null;
   
-  const getPointsPlaceholder = () => OFFER_TYPES.find((t) => t.value === offer.offerType)?.QuantifyValue || "Fixed Amount Discount";
+  const getPointsPlaceholder = () => OFFER_TYPES.find((t) => t.offerType === offer.offerType)?.QuantifyValue || "Fixed Amount Discount";
 
   return (
     <div className="md:col-span-2 flex flex-col gap-4">

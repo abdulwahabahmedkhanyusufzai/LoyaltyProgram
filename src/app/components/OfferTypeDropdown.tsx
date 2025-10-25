@@ -3,7 +3,7 @@ import { useState } from "react";
 interface FloatingOfferTypeDropdownProps {
   offer: { offerType: string };
   handleChange: (field: string, value: string) => void;
-  OFFER_TYPES: { label: string; value: string }[];
+  OFFER_TYPES: { label: string; offerType: string }[];
   ErrorMsg: React.ComponentType<{ field: string }>;
 }
 
@@ -49,7 +49,7 @@ export default function FloatingOfferTypeDropdown({
           min-h-[48px]`}
       >
         {hasValue
-          ? OFFER_TYPES.find((t) => t.value === offer.offerType)?.label.slice(0,13)
+          ? OFFER_TYPES.find((t) => t.offerType === offer.offerType)?.label.slice(0,13)
           : "Select Offer Type"}
       </button>
 
@@ -58,12 +58,12 @@ export default function FloatingOfferTypeDropdown({
         <div className="text-sm absolute z-10 bottom-5 w-full bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden">
           {OFFER_TYPES.map((type) => (
             <div
-              key={type.value}
+              key={type.offerType}
               className={`px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-700 ${
-                offer.offerType === type.value ? "bg-yellow-50 font-medium" : ""
+                offer.offerType === type.offerType ? "bg-yellow-50 font-medium" : ""
               }`}
               onClick={() => {
-                handleChange("offerType", type.value);
+                handleChange("offerType", type.offerType);
                 setShowOfferTypeDropdown(false);
                 setIsFocused(false);
               }}
