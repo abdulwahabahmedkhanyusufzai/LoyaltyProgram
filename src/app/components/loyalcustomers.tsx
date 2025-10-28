@@ -36,8 +36,9 @@ const CustomerItem = ({ name, email }: { name: string; email: string }) => {
         {name}
       </h1>
 <p className="text-[10px] lg:text-[11px] 2xl:text-[13px] text-[#757575]">
-  {email.split('@')[0].slice(0, 11)}
+  {`${email.split('@')[0].slice(0, 11)}@${email.split('@')[1]}`}
 </p>
+
     </div>
   </div>
 
