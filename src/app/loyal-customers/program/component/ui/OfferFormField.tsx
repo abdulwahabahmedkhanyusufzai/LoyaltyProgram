@@ -13,6 +13,7 @@ interface Props {
   handleChange: (field: string, value: any) => void;
   errors: Record<string, string>;
   loading: boolean;
+  handleSubmit: any;
 }
 
 const OfferFormFields = ({ offer, handleChange, errors, loading ,handleSubmit}: Props) => {
