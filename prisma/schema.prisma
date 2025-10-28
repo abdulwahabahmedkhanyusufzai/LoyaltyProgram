@@ -15,7 +15,6 @@ model Offer {
   offerType    OfferType
   value        Float
   pointsCost   Int?
-  tierRequired String?
   usageLimit   Int?
   isActive     Boolean           @default(true)
   startDate    DateTime

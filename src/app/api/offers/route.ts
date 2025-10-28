@@ -31,7 +31,6 @@ export async function POST(req: Request) {
     const pointsCost = formData.get("pointsCost") as string;
     const startDate = formData.get("startDate") as string;
     const endDate = formData.get("endDate") as string;
-    const tierRequired = formData.get("tierRequired") as string;
     const file = formData.get("image") as File | null;
     const offerTypo = formData.get("offerType") as "DISCOUNT" | "CASHBACK" | "BOGO";
 
@@ -55,7 +54,6 @@ export async function POST(req: Request) {
         pointsCost: pointsCost ? Number(pointsCost) : null,
         startDate: new Date(startDate),
         endDate: new Date(endDate),
-        tierRequired,
         image: imageUrl,
         offerType: offerTypo as OfferType,
         value: 100,
@@ -76,7 +74,6 @@ export async function GET() {
       select: {
         id: true,
         name: true,
-        tierRequired: true,
         description: true,
         pointsCost: true,
         startDate: true,

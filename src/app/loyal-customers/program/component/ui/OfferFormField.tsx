@@ -15,7 +15,7 @@ interface Props {
   loading: boolean;
 }
 
-const OfferFormFields = ({ offer, handleChange, errors, loading }: Props) => {
+const OfferFormFields = ({ offer, handleChange, errors, loading ,handleSubmit}: Props) => {
   const ErrorMsg = ({ field }: { field: string }) =>
     errors[field] ? (
       <p className="text-red-500 text-sm">{errors[field]}</p>
@@ -72,6 +72,7 @@ const OfferFormFields = ({ offer, handleChange, errors, loading }: Props) => {
       <button
         disabled={loading}
         type="submit"
+        onClick={() => handleSubmit()}
         className={`cursor-pointer w-full py-3 rounded-full mt-2 text-lg  ${
           loading
             ? "bg-gray-400 text-white cursor-not-allowed"

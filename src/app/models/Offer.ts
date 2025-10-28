@@ -9,7 +9,6 @@ export class Offer {
   points: string | number = "";
   startDate = "";
   tillDate = "";
-  eligibleTiers = "";
   offerType:
     | "FIXED_AMOUNT_DISCOUNT"
     | "PERCENTAGE_DISCOUNT"
@@ -33,7 +32,6 @@ export class Offer {
       "points",
       "startDate",
       "tillDate",
-      "eligibleTiers",
       "image",
       "offerType",
     ];

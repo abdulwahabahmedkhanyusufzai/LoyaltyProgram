@@ -77,7 +77,7 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen, offerToEdit }) => {
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <OfferImageUploader preview={preview} handleImageChange={handleImageChange} errors={errors.image} />
-          <OfferFormFields offer={offer} handleChange={handleChange} errors={errors}  loading={loading} />
+          <OfferFormFields offer={offer} handleChange={handleChange} errors={errors}  loading={loading} handleSubmit={handleSubmit}/>
           <div>
         
           </div>

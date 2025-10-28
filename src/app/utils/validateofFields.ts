@@ -40,11 +40,6 @@ export function validateOfferField(offer: Offer, field: keyof Offer): string {
       case "tillDate":
         return offer.tillDate ? "" : "Till Date is required.";
 
-      case "eligibleTiers":
-        return offer.eligibleTiers.trim()
-          ? ""
-          : "Select at least one eligible tier.";
-
       case "image":
         return offer.image ? "" : "Image is required.";
 

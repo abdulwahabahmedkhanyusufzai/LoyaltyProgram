@@ -49,7 +49,7 @@ export default function FloatingOfferTypeDropdown({
           min-h-[48px]`}
       >
         {hasValue
-          ? OFFER_TYPES.find((t) => t.offerType === offer.offerType)?.label.slice(0,13)
+          ? OFFER_TYPES.find((t) => t.offerType === offer.offerType)?.label
           : "Select Offer Type"}
       </button>
 
