@@ -18,10 +18,6 @@ export class OfferService {
       formDataToSend.append("pointsCost", String(offer.points));
     }
 
-    if (offer.eligibleTiers != null) {
-      formDataToSend.append("tierRequired", offer.eligibleTiers);
-    }
-
     if (offer.offerType != null) {
       formDataToSend.append("offerType", offer.offerType);
     }
