@@ -1,12 +1,13 @@
 "use client";
-import {FloatingInput} from "../../../../components/FloatingInput";
-import {FloatingTextarea} from "../../../../components/FloatingTextArea";
+import { FloatingInput } from "../../../../components/FloatingInput";
+import { FloatingTextarea } from "../../../../components/FloatingTextArea";
 import StartDatePicker from "../../../../components/StartDate";
 import EndDatePicker from "../../../../components/EndDate";
-import FloatingDropdown from "../../../../components/FloatingDropdown";
 import FloatingOfferTypeDropdown from "../../../../components/OfferTypeDropdown";
-import { Offer  } from "../../../../models/Offer";
-import { OFFER_TYPES,TIER_OPTIONS } from "../../../../constants/offerTypes";
+import { Offer } from "../../../../models/Offer";
+import { OFFER_TYPES } from "../../../../constants/offerTypes";
+import OfferTable from "./OfferTable";
+
 interface Props {
   offer: Offer;
   handleChange: (field: string, value: any) => void;
@@ -14,11 +15,18 @@ interface Props {
   loading: boolean;
 }
 
-const OfferFormFields = ({ offer, handleChange, errors,loading }: Props) => {
+const OfferFormFields = ({ offer, handleChange, errors, loading }: Props) => {
   const ErrorMsg = ({ field }: { field: string }) =>
-    errors[field] ? <p className="text-red-500 text-sm">{errors[field]}</p> : null;
-  
-  const getPointsPlaceholder = () => OFFER_TYPES.find((t) => t.offerType === offer.offerType)?.QuantifyValue || "Fixed Amount Discount";
+    errors[field] ? (
+      <p className="text-red-500 text-sm">{errors[field]}</p>
+    ) : null;
+
+  const offerTypeFlags = {
+    isFixed: offer.offerType === "FIXED_AMOUNT_DISCOUNT",
+    isPercentage: offer.offerType === "PERCENTAGE_DISCOUNT",
+    isFreeShipping: offer.offerType === "FREE_SHIPPING",
+    isFreeGift: offer.offerType === "FREE_GIFT",
+  };
 
   return (
     <div className="md:col-span-2 flex flex-col gap-4">
@@ -38,13 +46,8 @@ const OfferFormFields = ({ offer, handleChange, errors,loading }: Props) => {
       />
       <ErrorMsg field="description" />
 
-      <FloatingInput
-        id="points"
-        placeholder={getPointsPlaceholder()}
-        value={offer.points !== undefined && offer.points !== null ? String(offer.points) : ""}
-        onChange={(e) => handleChange("points", e.target.value)}
-      />
-      <ErrorMsg field="points" />
+      {/* ✅ If FIXED_AMOUNT_DISCOUNT, show static prices instead of input */}
+      <OfferTable {...offerTypeFlags} offer={offer} />
 
       <div className="flex flex-col sm:flex-row gap-4 items-end">
         <StartDatePicker
@@ -58,12 +61,6 @@ const OfferFormFields = ({ offer, handleChange, errors,loading }: Props) => {
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4">
-        <FloatingDropdown
-          offer={offer}
-          handleChange={handleChange}
-          TIER_OPTIONS={TIER_OPTIONS}
-          ErrorMsg={ErrorMsg}
-        />
         <FloatingOfferTypeDropdown
           offer={offer}
           handleChange={handleChange}
@@ -71,15 +68,18 @@ const OfferFormFields = ({ offer, handleChange, errors,loading }: Props) => {
           ErrorMsg={ErrorMsg}
         />
       </div>
-        <button
-            disabled={loading}
-            type="submit"
-            className={`cursor-pointer w-full py-3 rounded-full mt-2 text-lg  ${
-              loading ? "bg-gray-400 text-white cursor-not-allowed" : "bg-[#734A00] text-white hover:bg-[#5a3900]"
-            }`}
-          >
-            {loading ? "Saving..." : "Save Offer"}
-          </button>
+
+      <button
+        disabled={loading}
+        type="submit"
+        className={`cursor-pointer w-full py-3 rounded-full mt-2 text-lg  ${
+          loading
+            ? "bg-gray-400 text-white cursor-not-allowed"
+            : "bg-[#734A00] text-white hover:bg-[#5a3900]"
+        }`}
+      >
+        {loading ? "Saving..." : "Save Offer"}
+      </button>
     </div>
   );
 };
