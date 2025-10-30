@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { PrismaClient, type OfferType } from "@prisma/client";
-import { writeFile } from "fs/promises";
+import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 
 const prisma = new PrismaClient();
@@ -24,30 +24,63 @@ export async function OPTIONS() {
 
 // 🔹 CREATE (POST)
 export async function POST(req: Request) {
+  console.log("🟡 [POST] Offer creation initiated");
+
   try {
     const formData = await req.formData();
+    console.log("📦 [DEBUG] Raw FormData keys:", Array.from(formData.keys()));
+
     const name = formData.get("name") as string;
     const description = formData.get("description") as string;
     const pointsCost = formData.get("pointsCost") as string;
     const startDate = formData.get("startDate") as string;
     const endDate = formData.get("endDate") as string;
     const file = formData.get("image") as File | null;
-    const offerTypo = formData.get("offerType") as "DISCOUNT" | "CASHBACK" | "BOGO";
+    const offerTypo = formData.get("offerType") as OfferType;
 
-    if (!["DISCOUNT", "CASHBACK", "BOGO"].includes(offerTypo))
+    if (!["DISCOUNT", "CASHBACK", "BOGO"].includes(offerTypo)) {
+      console.error("❌ Invalid offerType received:", offerTypo);
       return jsonResponse({ error: "Invalid offerType" }, 400);
-    
+    }
+
+    console.log("🔍 [DEBUG] Validated offerType:", offerTypo);
+
     const shop = await prisma.shop.findFirst();
-    console.log("shop",shop);
+    if (!shop) {
+      console.error("❌ [ERROR] No shop found in database");
+      return jsonResponse({ error: "No shop found. Please add one first." }, 404);
+    }
+
+    console.log("🏪 [DEBUG] Found shop:", shop);
+
     let imageUrl: string | null = null;
+
     if (file) {
+      console.log("🖼️ [DEBUG] Image upload initiated:", file.name);
+
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
       const uploadDir = path.join(process.cwd(), "public", "uploads");
+
+      // Ensure upload directory exists
+      await mkdir(uploadDir, { recursive: true });
+
       const filePath = path.join(uploadDir, file.name);
       await writeFile(filePath, buffer);
       imageUrl = `/uploads/${file.name}`;
+
+      console.log("✅ [DEBUG] Image uploaded successfully:", imageUrl);
     }
+
+    console.log("🧱 [DEBUG] Creating new offer with data:", {
+      name,
+      description,
+      pointsCost,
+      startDate,
+      endDate,
+      imageUrl,
+      offerType: offerTypo,
+    });
 
     const newOffer = await prisma.offer.create({
       data: {
@@ -57,19 +90,27 @@ export async function POST(req: Request) {
         startDate: new Date(startDate),
         endDate: new Date(endDate),
         image: imageUrl,
-        offerType: offerTypo as OfferType,
+        offerType: offerTypo,
         value: 100,
+        shopId: shop.id, // ✅ Link to existing shop
       },
     });
 
+    console.log("✅ [SUCCESS] Offer created successfully:", newOffer);
     return jsonResponse({ success: true, offer: newOffer }, 201);
   } catch (error: any) {
-    return jsonResponse({ error: error.message || "Internal error" }, 500);
+    console.error("🔥 [ERROR] POST handler crashed:", error);
+    return jsonResponse({ error: error.message || "Internal server error" }, 500);
+  } finally {
+    await prisma.$disconnect();
+    console.log("🧹 [DEBUG] Prisma connection closed (POST)");
   }
 }
 
 // 🔹 READ (GET)
 export async function GET() {
+  console.log("🟢 [GET] Fetching offers...");
+
   try {
     const offers = await prisma.offer.findMany({
       orderBy: { createdAt: "desc" },
@@ -85,39 +126,63 @@ export async function GET() {
         offerType: true,
       },
     });
+
+    console.log(`✅ [SUCCESS] Retrieved ${offers.length} offers`);
     return jsonResponse({ offers });
   } catch (error: any) {
-    return jsonResponse({ error: error.message || "Internal error" }, 500);
+    console.error("🔥 [ERROR] GET handler crashed:", error);
+    return jsonResponse({ error: error.message || "Internal server error" }, 500);
+  } finally {
+    await prisma.$disconnect();
+    console.log("🧹 [DEBUG] Prisma connection closed (GET)");
   }
 }
 
 // 🔹 UPDATE (PUT)
 export async function PUT(req: Request) {
+  console.log("🟠 [PUT] Offer update initiated");
+
   try {
     const formData = await req.formData();
+    console.log("📦 [DEBUG] Raw FormData keys:", Array.from(formData.keys()));
+
     const id = formData.get("id") as string;
-    if (!id) return jsonResponse({ error: "Offer ID is required" }, 400);
+    if (!id) {
+      console.error("❌ [ERROR] No Offer ID provided");
+      return jsonResponse({ error: "Offer ID is required" }, 400);
+    }
 
     const updateData: Record<string, any> = {};
+
     for (const [key, value] of formData.entries()) {
       if (value) updateData[key] = value;
     }
 
     if (updateData.image && updateData.image instanceof File) {
+      console.log("🖼️ [DEBUG] Updating image for offer:", id);
       const bytes = await updateData.image.arrayBuffer();
       const buffer = Buffer.from(bytes);
-      const filePath = path.join(process.cwd(), "public", "uploads", updateData.image.name);
+      const uploadDir = path.join(process.cwd(), "public", "uploads");
+      await mkdir(uploadDir, { recursive: true });
+      const filePath = path.join(uploadDir, updateData.image.name);
       await writeFile(filePath, buffer);
       updateData.image = `/uploads/${updateData.image.name}`;
     }
+
+    console.log("🧱 [DEBUG] Updating offer with data:", updateData);
 
     const updatedOffer = await prisma.offer.update({
       where: { id },
       data: updateData,
     });
 
+    console.log("✅ [SUCCESS] Offer updated successfully:", updatedOffer);
     return jsonResponse({ success: true, offer: updatedOffer });
   } catch (error: any) {
-    return jsonResponse({ error: error.message || "Internal error" }, 500);
+    console.error("🔥 [ERROR] PUT handler crashed:", error);
+    return jsonResponse({ error: error.message || "Internal server error" }, 500);
+  } finally {
+    await prisma.$disconnect();
+    console.log("🧹 [DEBUG] Prisma connection closed (PUT)");
   }
 }
