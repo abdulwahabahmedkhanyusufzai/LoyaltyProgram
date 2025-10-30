@@ -126,6 +126,8 @@ export async function GET() {
       },
     });
 
+     const shop = await prisma.shop.findFirst();
+     console.log("🏪 [DEBUG] Found shop:", shop.shop);
     console.log(`✅ [SUCCESS] Retrieved ${offers.length} offers`);
     return jsonResponse({ offers });
   } catch (error: any) {
