@@ -36,7 +36,9 @@ export async function POST(req: Request) {
 
     if (!["DISCOUNT", "CASHBACK", "BOGO"].includes(offerTypo))
       return jsonResponse({ error: "Invalid offerType" }, 400);
-
+    
+    const shop = await prisma.shop.findFirst();
+    console.log("shop",shop);
     let imageUrl: string | null = null;
     if (file) {
       const bytes = await file.arrayBuffer();
