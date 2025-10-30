@@ -51,7 +51,7 @@ export async function POST(req: Request) {
       return jsonResponse({ error: "No shop found. Please add one first." }, 404);
     }
 
-    console.log("🏪 [DEBUG] Found shop:", shop);
+    console.log("🏪 [DEBUG] Found shop:", shop.shop);
 
     let imageUrl: string | null = null;
 
