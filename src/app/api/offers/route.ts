@@ -91,8 +91,7 @@ export async function POST(req: Request) {
         endDate: new Date(endDate),
         image: imageUrl,
         offerType: offerTypo,
-        value: 100,
-        shopId: shop.id, // ✅ Link to existing shop
+        value: 100
       },
     });
 
