@@ -14,9 +14,7 @@ export class OfferService {
     formDataToSend.append("endDate", String(offer.tillDate ?? ""));
 
     // Optional fields
-    if (offer.points != null) {
-      formDataToSend.append("pointsCost", String(offer.points));
-    }
+   
 
     if (offer.offerType != null) {
       formDataToSend.append("offerType", offer.offerType);
