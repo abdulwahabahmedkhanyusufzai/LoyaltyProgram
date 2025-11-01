@@ -73,7 +73,7 @@ const OfferFormFields = ({ offer, handleChange, errors, loading ,handleSubmit}: 
       <button
         disabled={loading}
         type="submit"
-        onClick={() => handleSubmit()}
+        onClick={(e) => handleSubmit(e)}
         className={`cursor-pointer w-full py-3 rounded-full mt-2 text-lg  ${
           loading
             ? "bg-gray-400 text-white cursor-not-allowed"
