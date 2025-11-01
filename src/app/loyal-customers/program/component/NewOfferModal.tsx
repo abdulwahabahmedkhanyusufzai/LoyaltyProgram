@@ -43,23 +43,52 @@ useEffect(() => {
     setPreview(obj);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const validationErrors = offer.validateAll();
-    setErrors(validationErrors);
-    if (Object.keys(validationErrors).length > 0) return;
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  console.log("🟡 handleSubmit triggered");
 
-    setLoading(true);
-    try {
-      await OfferService.saveOffer(offer, !!offerToEdit?.id, offerToEdit?.id);
-      toast.success(offerToEdit ? "✅ Offer updated!" : "✅ Offer created!");
-      setIsOpen(false);
-    } catch (err: any) {
-      toast.error("❌ Error: " + (err.message || String(err)));
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Log current offer state
+  console.log("➡️ Current offer state:", offer);
+  console.log("➡️ offerToEdit:", offerToEdit);
+
+  // Step 1: Validate input
+  const validationErrors = offer.validateAll?.() || {};
+  console.log("✅ Validation result:", validationErrors);
+
+  setErrors(validationErrors);
+  if (Object.keys(validationErrors).length > 0) {
+    console.warn("⚠️ Validation failed. Aborting submit.");
+    return;
+  }
+
+  // Step 2: Start loading
+  setLoading(true);
+  console.log("⏳ Saving offer...");
+
+  try {
+    // Step 3: Save offer
+    const isEditing = !!offerToEdit?.id;
+    console.log(`📝 Action: ${isEditing ? "Update existing offer" : "Create new offer"}`);
+    console.log("🧩 OfferService.saveOffer params:", { offer, isEditing, id: offerToEdit?.id });
+
+    const response = await OfferService.saveOffer(offer, isEditing, offerToEdit?.id);
+
+    // Step 4: Log the service response
+    console.log("✅ OfferService response:", response);
+
+    toast.success(isEditing ? "✅ Offer updated!" : "✅ Offer created!");
+    setIsOpen(false);
+  } catch (err: any) {
+    // Step 5: Detailed error logging
+    console.error("❌ Error during offer save:", err);
+    toast.error("❌ Error: " + (err?.message || String(err)));
+  } finally {
+    // Step 6: Always cleanup
+    setLoading(false);
+    console.log("🏁 handleSubmit finished. Loading reset to false.");
+  }
+};
+
 
   if (!isOpen) return null;
 

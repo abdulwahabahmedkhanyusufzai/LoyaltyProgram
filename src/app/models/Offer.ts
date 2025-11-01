@@ -6,7 +6,6 @@ export class Offer {
   offerName = "";
   name = "";
   description = "";
-  points: string | number = "";
   startDate = "";
   tillDate = "";
   offerType:
@@ -29,7 +28,6 @@ export class Offer {
     const fields: (keyof Offer)[] = [
       "offerName",
       "description",
-      "points",
       "startDate",
       "tillDate",
       "image",
