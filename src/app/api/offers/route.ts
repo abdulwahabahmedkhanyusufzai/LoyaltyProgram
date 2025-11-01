@@ -96,7 +96,6 @@ export async function POST(req: Request) {
       data: {
         name,
         description,
-        pointsCost: pointsCost ? Number(pointsCost) : null,
         startDate: new Date(startDate),
         endDate: new Date(endDate),
         image: imageUrl,
