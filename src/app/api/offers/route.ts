@@ -55,21 +55,31 @@ export async function POST(req: Request) {
 
     let imageUrl: string | null = null;
 
-    if (file) {
-      console.log("🖼️ [DEBUG] Image upload initiated:", file.name);
+     if (file) {
+      console.log("🖼️ Uploading image to Shopify CDN...");
 
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-      const uploadDir = path.join(process.cwd(), "public", "uploads");
+      const uploadForm = new FormData();
+      uploadForm.append("file", file);
+      uploadForm.append("shop", shop.shop); // e.g., "testingashir.myshopify.com"
+      uploadForm.append("accessToken", shop.accessToken); // stored in DB
 
-      // Ensure upload directory exists
-      await mkdir(uploadDir, { recursive: true });
+      const uploadRes = await fetch(`${req.headers.get("origin")}/api/upload-image`, {
+        method: "POST",
+        body: uploadForm,
+      });
 
-      const filePath = path.join(uploadDir, file.name);
-      await writeFile(filePath, buffer);
-      imageUrl = `/uploads/${file.name}`;
+      const uploadData = await uploadRes.json();
 
-      console.log("✅ [DEBUG] Image uploaded successfully:", imageUrl);
+      if (!uploadRes.ok || !uploadData.cdnUrl) {
+        console.error("❌ Shopify upload failed:", uploadData);
+        return jsonResponse(
+          { error: "Failed to upload image to Shopify CDN", details: uploadData },
+          500
+        );
+      }
+
+      imageUrl = uploadData.cdnUrl;
+      console.log("✅ Uploaded to Shopify CDN:", imageUrl);
     }
 
     console.log("🧱 [DEBUG] Creating new offer with data:", {
