@@ -36,6 +36,7 @@ const ProgramLoyal2 = () => {
         const res = await fetch("/api/offers");
         if (!res.ok) throw new Error("Failed to fetch offers");
         const data = await res.json();
+        console.log(data,"offer array")
         setOffers(data.offers || []);
       } catch (err) {
         console.error("❌ Error fetching offers:", err);

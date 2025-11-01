@@ -127,7 +127,6 @@ export async function GET() {
         id: true,
         name: true,
         description: true,
-        pointsCost: true,
         startDate: true,
         endDate: true,
         image: true,
