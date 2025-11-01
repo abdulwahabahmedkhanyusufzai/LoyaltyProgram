@@ -12,7 +12,7 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen, offerToEdit }) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   
-
+console.log("offer to Edit",offerToEdit);
   useEffect(() => {
     if (offerToEdit) {
       setOffer(new Offer({ ...offerToEdit }));
