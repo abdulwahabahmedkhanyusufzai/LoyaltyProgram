@@ -13,15 +13,21 @@ const NewOfferModal = ({ closeModal, isOpen, setIsOpen, offerToEdit }) => {
   const [loading, setLoading] = useState(false);
   
 console.log("offer to Edit",offerToEdit);
-  useEffect(() => {
-    if (offerToEdit) {
-      setOffer(new Offer({ ...offerToEdit }));
-      setPreview(offerToEdit.image || null);
-    } else {
-      setOffer(new Offer());
-      setPreview(null);
-    }
-  }, [offerToEdit, isOpen]);
+useEffect(() => {
+  if (offerToEdit) {
+    const mappedOffer = {
+      ...offerToEdit,
+      offerName: offerToEdit.name || "",
+      tillDate: offerToEdit.endDate || "",
+    };
+    setOffer(new Offer(mappedOffer));
+    setPreview(offerToEdit.image || null);
+  } else {
+    setOffer(new Offer());
+    setPreview(null);
+  }
+}, [offerToEdit, isOpen]);
+
 
   const handleChange = (field: keyof Offer, value: any) => {
     const updated = new Offer({ ...offer, [field]: value });
