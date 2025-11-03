@@ -138,7 +138,7 @@ const PAGE_SIZE = 10;
             <tbody>
               {currentCustomers.map((c, i) => (
                 <tr key={i} className="border-b border-gray-100 hover:bg-gray-50 transition text-sm lg:text-base">
-                  <td className="md:text-[12px] 2xl:text-[15px] py-3 px-4">{c.name}</td>
+                  <td className="md:text-[12px] 2xl:text-[15px] py-3 px-4">{c.lastName} {c.firstName}</td>
                   <td className="md:text-[12px] 2xl:text-[15px] py-3 px-4 text-gray-600">{c.email}</td>
                   <td className="md:text-[12px] 2xl:text-[15px] py-3 px-4">{c.orders}</td>
                   <td className="md:text-[12px] 2xl:text-[15px] py-3 px-4">€ {Number(c.amountSpent).toFixed()}</td>
