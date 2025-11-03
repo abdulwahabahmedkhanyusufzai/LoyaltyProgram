@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server";
 import { UserService } from "../UserService";
 import { UserValidator } from "../UserValidator";
-import { jsonResponse } from "../../offers/route";
 
+export function jsonResponse(data: any, status = 200) {
+  const res = NextResponse.json(data, { status });
+  res.headers.set("Access-Control-Allow-Origin", "*");
+  res.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
+  res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  return res;
+}
 
 const userService = new UserService();
 
