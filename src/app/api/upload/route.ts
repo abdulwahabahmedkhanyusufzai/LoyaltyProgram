@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
+import { writeFile, mkdir, unlink } from "fs/promises";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 
@@ -27,6 +27,8 @@ const log = (...args: any[]) => {
 export const POST = async (req: NextRequest) => {
   log("🟡 [START] File upload endpoint hit");
 
+  let filePath = ""; // keep track to delete later
+
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File;
@@ -44,68 +46,50 @@ export const POST = async (req: NextRequest) => {
     log("📦 Received upload:", { fileName: file.name, fileSize: file.size, shop });
 
     // Step 1: Save file locally
-    const uploadDir = path.join(process.cwd(),"uploads");
+    const uploadDir = path.join(process.cwd(), "uploads");
     await mkdir(uploadDir, { recursive: true });
 
     const uniqueFileName = `${uuidv4()}-${file.name}`;
-    const filePath = path.join(uploadDir, uniqueFileName);
+    filePath = path.join(uploadDir, uniqueFileName);
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
     await writeFile(filePath, buffer);
     log("💾 File written to disk:", filePath);
 
-    // Step 2: Create a public URL (served by Next.js from /public)
+    // Step 2: Public URL
     const publicUrl = `${process.env.NEXT_PUBLIC_API_URL}uploads/${uniqueFileName}`;
     log("🌍 Public image URL for Shopify:", publicUrl);
 
     // Step 3: Upload to Shopify
-    let uploadRes: Response;
-    try {
-      uploadRes = await fetch(`https://${shop}/admin/api/${API_VERSION}/graphql.json`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Shopify-Access-Token": accessToken,
+    const uploadRes = await fetch(`https://${shop}/admin/api/${API_VERSION}/graphql.json`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Shopify-Access-Token": accessToken,
+      },
+      body: JSON.stringify({
+        query: uploadMutation,
+        variables: {
+          files: [
+            {
+              originalSource: publicUrl,
+              contentType: "IMAGE",
+              alt: file.name,
+            },
+          ],
         },
-        body: JSON.stringify({
-          query: uploadMutation,
-          variables: {
-            files: [
-              {
-                originalSource: publicUrl,
-                contentType: "IMAGE",
-                alt: file.name,
-              },
-            ],
-          },
-        }),
-      });
-    } catch (fetchErr: any) {
-      log("🔥 Shopify upload request failed:", fetchErr);
-      throw new Error("Network error during Shopify upload");
-    }
+      }),
+    });
 
-    let shopifyResponse;
-    try {
-      const rawText = await uploadRes.text();
-      log("🧾 Shopify raw response:", rawText.slice(0, 400)); // limit length
-      shopifyResponse = JSON.parse(rawText);
-    } catch (jsonErr) {
-      log("🚨 JSON parse error from Shopify response");
-      throw new Error("Invalid JSON from Shopify API");
-    }
-
+    const shopifyResponse = await uploadRes.json();
     const fileCreate = shopifyResponse.data?.fileCreate;
     const uploadData = fileCreate?.files?.[0];
     const errors = fileCreate?.userErrors || [];
 
     if (!uploadData || errors.length > 0) {
       log("⚠️ Shopify returned errors:", errors);
-      return NextResponse.json(
-        { error: "Shopify upload failed", details: errors },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: "Shopify upload failed", details: errors }, { status: 500 });
     }
 
     const fileId = uploadData.id;
@@ -129,43 +113,45 @@ export const POST = async (req: NextRequest) => {
         }
       `;
 
-      try {
-        const pollRes = await fetch(
-          `https://${shop}/admin/api/${API_VERSION}/graphql.json`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-Shopify-Access-Token": accessToken,
-            },
-            body: JSON.stringify({ query }),
-          }
-        );
+      const pollRes = await fetch(`https://${shop}/admin/api/${API_VERSION}/graphql.json`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Shopify-Access-Token": accessToken,
+        },
+        body: JSON.stringify({ query }),
+      });
 
-        const pollText = await pollRes.text();
-        log("📡 Poll response:", pollText.slice(0, 400));
+      const pollData = await pollRes.json();
+      const node = pollData.data?.node;
+      status = node?.fileStatus;
 
-        const pollData = JSON.parse(pollText);
-        const node = pollData.data?.node;
-        status = node?.fileStatus;
+      if (status === "READY") {
+        cdnUrl = node?.image?.url;
+        log("✅ File ready on Shopify CDN:", cdnUrl);
 
-        if (status === "READY") {
-          cdnUrl = node?.image?.url;
-          log("✅ File ready on Shopify CDN:", cdnUrl);
+        // Step 5: Delete local file after successful upload
+        try {
+          await unlink(filePath);
+          log("🗑️ Local upload file deleted:", filePath);
+        } catch (unlinkErr) {
+          log("⚠️ Failed to delete local file:", unlinkErr);
         }
-      } catch (pollErr: any) {
-        log("⚠️ Polling error:", pollErr);
       }
     }
-
-    log("🎉 Upload successful:", { fileId, cdnUrl });
 
     return NextResponse.json({ cdnUrl, fileId });
   } catch (err: any) {
     log("🔥 Fatal error:", err.message);
-    return NextResponse.json(
-      { error: "Upload failed", message: err.message },
-      { status: 500 }
-    );
+
+    // Ensure local file cleanup on failure
+    if (filePath) {
+      try {
+        await unlink(filePath);
+        log("🗑️ Local file deleted after failure:", filePath);
+      } catch (_) {}
+    }
+
+    return NextResponse.json({ error: "Upload failed", message: err.message }, { status: 500 });
   }
 };
