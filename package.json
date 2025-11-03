@@ -8,7 +8,7 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
     "setup": "prisma generate && prisma migrate deploy",
     "run:offer": "npx ts-node-esm src/scripts/cronAppOffer.ts"
   },

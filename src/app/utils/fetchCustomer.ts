@@ -12,21 +12,49 @@ function getRandomColor(seed: string) {
   return COLORS[index];
 }
 
+interface CustomerApiResponse {
+  id: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  numberOfOrders?: number;
+  amountSpent?: number;
+  loyaltyTitle?: string;
+}
+
+interface PointsResponse {
+  id: string;
+  loyaltyPoints: number;
+}
+
+export interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  points: number;
+  orders: number;
+  initial: string;
+  bgColor: string;
+  amountSpent?: number;
+  loyaltyTitle?: string;
+}
+
 export function useCustomers() {
-  const [customers, setCustomers] = useState<any[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchCustomers = useCallback(async () => {
     try {
       setLoading(true);
+
       const resCustomers = await fetch(`/api/customers?first=10`);
-      const customersData = await resCustomers.json();
-      console.log("Customer response",customersData);
+      const customersData: { customers: CustomerApiResponse[] } = await resCustomers.json();
+
       const resPoints = await fetch(`/api/customers/points`);
-      const pointsData: { id: string; loyaltyPoints: number }[] = await resPoints.json();
+      const pointsData: PointsResponse[] = await resPoints.json();
 
       if (customersData.customers) {
-        const formatted = customersData.customers.map((c: any) => {
+        const formatted: Customer[] = customersData.customers.map((c) => {
           const name = `${c.firstName ?? ""} ${c.lastName ?? ""}`.trim() || "Unknown";
           const email = c.email ?? "N/A";
 
@@ -35,8 +63,7 @@ export function useCustomers() {
 
           const pointsInfo = pointsData.find((p) => p.id === c.id);
           const totalPoints = pointsInfo?.loyaltyPoints ?? 0;
-          const amountSpent = c.amountSpent;
-          const loyaltyTitle = c.loyaltyTitle; 
+
           return {
             id: c.id,
             name,
@@ -45,10 +72,11 @@ export function useCustomers() {
             orders: c.numberOfOrders ?? 0,
             initial,
             bgColor,
-            amountSpent,
-            loyaltyTitle
+            amountSpent: c.amountSpent,
+            loyaltyTitle: c.loyaltyTitle,
           };
         });
+
         setCustomers(formatted);
       }
     } catch (err) {
