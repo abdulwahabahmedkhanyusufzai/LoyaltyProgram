@@ -46,7 +46,7 @@ export const POST = async (req: NextRequest) => {
     await writeFile(filePath, buffer);
 
     // Step 2: Create a public URL (served by Next.js from /public)
-    const publicUrl = `${req.nextUrl.origin}/uploads/${uniqueFileName}`;
+    const publicUrl = `${process.env.NEXT_PUBLIC_API_URL}/uploads/${uniqueFileName}`;
     console.log("Public image URL for Shopify:", publicUrl);
 
     // Step 3: Upload to Shopify
