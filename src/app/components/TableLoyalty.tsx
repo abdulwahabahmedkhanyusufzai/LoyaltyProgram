@@ -141,7 +141,7 @@ export const LoyaltyTable = () => {
                       {customer.initial}
                     </div>
                     <div>
-                      <div className="font-semibold">{customer.name}</div>
+                      <div className="font-semibold">{customer.firstName} {customer.lastName}</div>
                       <div className="text-xs text-gray-500">{customer.email}</div>
                     </div>
                   </td>
