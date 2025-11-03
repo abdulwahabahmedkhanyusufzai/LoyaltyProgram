@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { UserService } from "../UserService";
 import { UserValidator } from "../UserValidator";
 
-export function jsonResponse(data: any, status = 200) {
+function jsonResponse(data: any, status = 200) {
   const res = NextResponse.json(data, { status });
   res.headers.set("Access-Control-Allow-Origin", "*");
   res.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");

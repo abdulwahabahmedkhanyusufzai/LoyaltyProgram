@@ -5,7 +5,7 @@ import path from "path";
 
 const prisma = new PrismaClient();
 
-export function jsonResponse(data: any, status = 200) {
+function jsonResponse(data: any, status = 200) {
   const res = NextResponse.json(data, { status });
   res.headers.set("Access-Control-Allow-Origin", "*");
   res.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
