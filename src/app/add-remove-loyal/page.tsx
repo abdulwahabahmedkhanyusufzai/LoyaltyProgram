@@ -21,7 +21,7 @@ function LoyalCustomersList() {
    const [showProfile, setShowProfile] = useState(false);
    
   const [editingTitle, setEditingTitle] = useState("");
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer[] | null>(null);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
 const PAGE_SIZE = 10;
 
     const handleDeleteClick = (customer: any) => {
@@ -236,9 +236,13 @@ const PAGE_SIZE = 10;
         deleting={deleting}
         setDeleting={setDeleting}
       />
-    {showProfile && (
+    {showProfile && selectedCustomer && (
             <CustomerProfileModal
-              customer={selectedCustomer}
+              customer={{
+                ...selectedCustomer,
+                name:
+                  `${selectedCustomer.lastName ?? ""} ${selectedCustomer.firstName ?? ""}`.trim(),
+              }}
               onClose={() => setShowProfile(false)}
             />
           )}
