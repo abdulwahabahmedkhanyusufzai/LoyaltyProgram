@@ -28,7 +28,7 @@ useEffect(() => {
   }
 }, [offerToEdit, isOpen]);
 
-
+  console.log(offerToEdit);
   const handleChange = (field: keyof Offer, value: any) => {
     const updated = new Offer({ ...offer, [field]: value });
     setOffer(updated);
