@@ -29,7 +29,8 @@ interface PointsResponse {
 
 export interface Customer {
   id: string;
-  name: string;
+  firstName:string;
+  lastName:string;
   email: string;
   points: number;
   orders: number;
@@ -55,18 +56,20 @@ export function useCustomers() {
 
       if (customersData.customers) {
         const formatted: Customer[] = customersData.customers.map((c) => {
-          const name = `${c.firstName ?? ""} ${c.lastName ?? ""}`.trim() || "Unknown";
+          const firstName = `${c.firstName ?? ""}`;
+          const lastName =  `${c.lastName ?? ""}`.trim() || "Unknown";
           const email = c.email ?? "N/A";
 
           const initial = (name[0] || email[0] || "?").toUpperCase();
-          const bgColor = getRandomColor(email || name);
+          const bgColor = getRandomColor(email || firstName);
 
           const pointsInfo = pointsData.find((p) => p.id === c.id);
           const totalPoints = pointsInfo?.loyaltyPoints ?? 0;
 
           return {
             id: c.id,
-            name,
+            firstName,
+            lastName,
             email,
             points: totalPoints,
             orders: c.numberOfOrders ?? 0,
