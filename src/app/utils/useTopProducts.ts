@@ -1,5 +1,3 @@
-import { count } from 'console';
-// hooks/useTopProducts.ts
 "use client";
 
 import { useEffect, useState } from "react";
