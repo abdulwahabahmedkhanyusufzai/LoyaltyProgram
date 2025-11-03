@@ -25,11 +25,11 @@ export async function PUT(
 
     const name = formData.get("name") as string;
     const description = formData.get("description") as string;
-    const discount = formData.get("discount") as string;
     const startDate = formData.get("startDate") as string;
     const endDate = formData.get("endDate") as string;
     const file = formData.get("image") as File | null;
-    
+    const offerType = formData.get("offerType") as string | null;
+
      const shop = await prisma.shop.findFirst();
     if (!shop) {
       console.error("❌ [ERROR] No shop found in database");
@@ -75,10 +75,10 @@ export async function PUT(
       data: {
         ...(name && { name }),
         ...(description && { description }),
-        ...(discount && { discount: Number(discount) }),
         ...(startDate && { startDate: new Date(startDate) }),
         ...(endDate && { endDate: new Date(endDate) }),
         ...(imageUrl !== undefined && { image: imageUrl }),
+        ...(offerType && offerType)
       },
     });
 
