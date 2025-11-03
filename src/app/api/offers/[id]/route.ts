@@ -1,9 +1,14 @@
 // app/api/offers/[id]/route.ts
 import { NextResponse } from "next/server";
 import { prisma } from "../../../../lib/prisma";
-import { writeFile } from "fs/promises";
-import path from "path";
 
+function jsonResponse(data: any, status = 200) {
+  const res = NextResponse.json(data, { status });
+  res.headers.set("Access-Control-Allow-Origin", "*");
+  res.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
+  res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  return res;
+}
 
 
 export async function PUT(
@@ -22,36 +27,59 @@ export async function PUT(
 
     const name = formData.get("name") as string;
     const description = formData.get("description") as string;
-    const pointsCost = formData.get("pointsCost") as string;
     const discount = formData.get("discount") as string;
     const startDate = formData.get("startDate") as string;
     const endDate = formData.get("endDate") as string;
-    const tiers = formData.get("tiers") as string;
     const file = formData.get("image") as File | null;
- 
+    
+     const shop = await prisma.shop.findFirst();
+    if (!shop) {
+      console.error("❌ [ERROR] No shop found in database");
+      return jsonResponse({ error: "No shop found. Please add one first." }, 404);
+    }
+
+    console.log("🏪 [DEBUG] Found shop:", shop.shop);
+    
     let imageUrl: string | undefined;
 
-    if (file) {
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+        if (file) {
+      console.log("🖼️ Uploading image to Shopify CDN...");
+      
+      const uploadForm = new FormData();
+      uploadForm.append("file", file);
+      uploadForm.append("shop", shop.shop); // e.g., "testingashir.myshopify.com"
+      uploadForm.append("accessToken", shop.accessToken); // stored in DB
 
-      const uploadDir = path.join(process.cwd(), "public", "uploads");
-      const filePath = path.join(uploadDir, file.name);
+      const uploadRes = await fetch(`${req.headers.get("origin")}/api/upload`, {
+        method: "POST",
+        body: uploadForm,
+      });
 
-      await writeFile(filePath, buffer);
-      imageUrl = `/uploads/${file.name}`;
-    }
+      const uploadData = await uploadRes.json();
+
+      if (!uploadRes.ok || !uploadData.cdnUrl) {
+        console.error("❌ Shopify upload failed:", uploadData);
+        return jsonResponse(
+          { error: "Failed to upload image to Shopify CDN", details: uploadData },
+          500
+        );
+      }
+
+      imageUrl = uploadData.cdnUrl;
+      console.log("✅ Uploaded to Shopify CDN:", imageUrl);
+        }
+
+    
+   
 
     const updatedOffer = await prisma.offer.update({
       where: { id },
       data: {
         ...(name && { name }),
         ...(description && { description }),
-        ...(pointsCost && { pointsCost: Number(pointsCost) }),
         ...(discount && { discount: Number(discount) }),
         ...(startDate && { startDate: new Date(startDate) }),
         ...(endDate && { endDate: new Date(endDate) }),
-        ...(tiers && { tierRequired:tiers }),
         ...(imageUrl !== undefined && { image: imageUrl }),
       },
     });
