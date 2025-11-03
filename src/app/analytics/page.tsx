@@ -1,116 +1,129 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import { useEffect, useState, useCallback } from "react";
 import BottomPart from "./components/BottomPart";
 import Heading from "./components/Heading";
 import MainPart from "./components/MainPart";
 
-const Analytics = () => {
-  const [offersCount, setOffersCount] = useState<number | null>(null);
-  const [loadingOffers, setLoadingOffers] = useState(true);
+// Define types for API responses
+interface PointsResponse {
+  id: string;
+  loyaltyPoints: number;
+}
 
-  const [pointsIssued, setPointsIssued] = useState<number | null>(null);
-  const [loadingPoints, setLoadingPoints] = useState(true);
+interface OffersResponse {
+  offers: any[];
+}
 
-  const [pointsRedeemed, setPointsRedeemed] = useState<number | null>(null);
+// Custom hook for fetching analytics data
+function useAnalyticsData() {
+  const [data, setData] = useState({
+    offersCount: 0,
+    pointsIssued: 0,
+    pointsRedeemed: 0,
+    redemptionRate: "–",
+    mostActiveTier: "–",
+  });
 
-  const [redemptionRate, setRedemptionRate] = useState<string>("–");
-  const [loadingRedemption, setLoadingRedemption] = useState(true);
+  const [loading, setLoading] = useState({
+    offers: true,
+    points: true,
+    redemption: true,
+    tier: true,
+  });
 
-  const [activeChart, setActiveChart] = useState<
-    "pointsIssued" | "customersUsage" | "pointsRedeemed" | "ActiveOfferCampign" | "AverageRedeemptionRate" | "MostActiveTier">("customersUsage");
+  const fetchAnalytics = useCallback(async () => {
+    try {
+      setLoading({ offers: true, points: true, redemption: true, tier: true });
 
-      const [mostActiveTier, setMostActiveTier] = useState<string>("–");
-  const [loadingTier, setLoadingTier] = useState(true);
+      // Fetch all data in parallel
+      const [offersRes, pointsRes, tierRes] = await Promise.all([
+        fetch("/api/offers"),
+        fetch("/api/customers/points"),
+        fetch("/api/customers/most-active-tier"),
+      ]);
+
+      const offersData: OffersResponse = await offersRes.json();
+      const pointsData: PointsResponse[] = await pointsRes.json();
+      const tierData = await tierRes.json();
+
+      // Compute points and redemption rate
+      const totalPoints = pointsData.reduce(
+        (sum, p) => sum + (p.loyaltyPoints || 0),
+        0
+      );
+
+      setData({
+        offersCount: offersData?.offers?.length || 0,
+        pointsIssued: totalPoints,
+        pointsRedeemed: totalPoints,
+        redemptionRate: totalPoints ? "100%" : "0%",
+        mostActiveTier: tierData?.mostActiveTier || "–",
+      });
+    } catch (err) {
+      console.error("❌ Error fetching analytics data:", err);
+      setData({
+        offersCount: 0,
+        pointsIssued: 0,
+        pointsRedeemed: 0,
+        redemptionRate: "–",
+        mostActiveTier: "–",
+      });
+    } finally {
+      setLoading({
+        offers: false,
+        points: false,
+        redemption: false,
+        tier: false,
+      });
+    }
+  }, []);
 
   useEffect(() => {
-     const fetchMostActiveTier = async () => {
-      try {
-        setLoadingTier(true);
-        const res = await fetch("/api/customers/most-active-tier");
-        const data = await res.json();
-        setMostActiveTier(data?.mostActiveTier || "–");
-      } catch (err) {
-        console.error("❌ Error fetching most active tier:", err);
-        setMostActiveTier("–");
-      } finally {
-        setLoadingTier(false);
-      }
-    };
-    const fetchPointsIssued = async () => {
-      try {
-        setLoadingPoints(true);
-        const res = await fetch("/api/customers/points");
-        const data: { id: string; loyaltyPoints: number }[] = await res.json();
-        const totalPoints = data.reduce(
-          (sum, p) => sum + (p.loyaltyPoints || 0),
-          0
-        );
-        setPointsIssued(totalPoints);
-        setPointsRedeemed(totalPoints);
-        if (totalPoints) {
-          const rate = ((totalPoints / totalPoints) * 100).toFixed(1);
-          setRedemptionRate(`${rate}%`);
-          console.log("redemption", rate);
-        } else {
-          setRedemptionRate("0%");
-        }
-      } catch (err) {
-        console.error("❌ Error fetching points issued:", err);
-        setPointsIssued(0);
-        setPointsIssued(0);
-        setPointsRedeemed(0);
-        setRedemptionRate("–");
-      } finally {
-        setLoadingPoints(false);
-        setLoadingRedemption(false);
-      }
-    };
-   const fetchOffers = async () => {
-      try {
-        setLoadingOffers(true);
-        const res = await fetch("/api/offers");
-        const data = await res.json();
-        setOffersCount(data?.offers?.length || 0);
-      } catch (err) {
-        console.error("❌ Error fetching offers:", err);
-        setOffersCount(0);
-      } finally {
-        setLoadingOffers(false);
-      }
-    };
-    fetchOffers()
-    fetchPointsIssued();
-    fetchMostActiveTier();
-  }, []);
-  return (
-    <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen ">
-      {/* Heading */}
-      <Heading />
+    fetchAnalytics();
+  }, [fetchAnalytics]);
 
+  return { data, loading, fetchAnalytics };
+}
+
+const Analytics = () => {
+  const { data, loading } = useAnalyticsData();
+  const [activeChart, setActiveChart] = useState<
+    | "pointsIssued"
+    | "customersUsage"
+    | "pointsRedeemed"
+    | "ActiveOfferCampign"
+    | "AverageRedeemptionRate"
+    | "MostActiveTier"
+  >("customersUsage");
+
+  return (
+    <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen">
+      {/* Heading */} <Heading />
       {/* Scrollable stats */}
       <MainPart
         setActiveChart={setActiveChart}
-        pointsIssued={pointsIssued}
-        loadingPoints={loadingPoints}
-        pointsRedeemed={pointsRedeemed}
-        redemptionRate={redemptionRate}
-        loadingRedemption={loadingRedemption}
-        offersCount ={offersCount}
-        loadingOffers = {loadingOffers}
-        mostActiveTier = {mostActiveTier}
-        loadingTier = {loadingTier}
+        pointsIssued={data.pointsIssued}
+        loadingPoints={loading.points}
+        pointsRedeemed={data.pointsRedeemed}
+        redemptionRate={data.redemptionRate}
+        loadingRedemption={loading.redemption}
+        offersCount={data.offersCount}
+        loadingOffers={loading.offers}
+        mostActiveTier={data.mostActiveTier}
+        loadingTier={loading.tier}
       />
       <BottomPart
         activeChart={activeChart}
-        pointsIssued={pointsIssued}
-        loadingPoints={loadingPoints}
-        pointsRedeemed={pointsRedeemed}
-        redemptionRate={redemptionRate}
-        loadingRedemption={loadingRedemption}
-        offerCount = {offersCount}
-        loadingOffers = {loadingOffers}
-           mostActiveTier = {mostActiveTier}
-        loadingTier = {loadingTier}
+        pointsIssued={data.pointsIssued}
+        loadingPoints={loading.points}
+        pointsRedeemed={data.pointsRedeemed}
+        redemptionRate={data.redemptionRate}
+        loadingRedemption={loading.redemption}
+        offerCount={data.offersCount}
+        loadingOffers={loading.offers}
+        mostActiveTier={data.mostActiveTier}
+        loadingTier={loading.tier}
       />
     </div>
   );
