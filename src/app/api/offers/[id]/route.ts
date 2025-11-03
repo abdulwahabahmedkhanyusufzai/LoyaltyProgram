@@ -1,15 +1,7 @@
 // app/api/offers/[id]/route.ts
 import { NextResponse } from "next/server";
 import { prisma } from "../../../../lib/prisma";
-
-export function jsonResponse(data: any, status = 200) {
-  const res = NextResponse.json(data, { status });
-  res.headers.set("Access-Control-Allow-Origin", "*");
-  res.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
-  res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  return res;
-}
-
+import { jsonResponse } from "../route";
 
 export async function PUT(
   req: Request,

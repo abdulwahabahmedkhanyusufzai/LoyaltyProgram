@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { UserService } from "../UserService";
 import { UserValidator } from "../UserValidator";
-import { jsonResponse } from "../../offers/[id]/route";
+import { jsonResponse } from "../../offers/route";
 
 
 const userService = new UserService();
