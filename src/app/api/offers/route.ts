@@ -66,7 +66,7 @@ export async function POST(req: Request) {
       uploadForm.append("shop", shop.shop); // e.g., "testingashir.myshopify.com"
       uploadForm.append("accessToken", shop.accessToken); // stored in DB
 
-      const uploadRes = await fetch(`${req.headers.get("origin")}/api/upload-image`, {
+      const uploadRes = await fetch(`${req.headers.get("origin")}/api/upload`, {
         method: "POST",
         body: uploadForm,
       });
