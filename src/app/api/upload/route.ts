@@ -44,7 +44,7 @@ export const POST = async (req: NextRequest) => {
     log("📦 Received upload:", { fileName: file.name, fileSize: file.size, shop });
 
     // Step 1: Save file locally
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
+    const uploadDir = path.join(process.cwd(),"uploads");
     await mkdir(uploadDir, { recursive: true });
 
     const uniqueFileName = `${uuidv4()}-${file.name}`;
