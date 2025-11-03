@@ -78,7 +78,7 @@ export async function PUT(
         ...(startDate && { startDate: new Date(startDate) }),
         ...(endDate && { endDate: new Date(endDate) }),
         ...(imageUrl !== undefined && { image: imageUrl }),
-        ...(offerType && offerType)
+        ...(offerType && {offerType:{set:offerType as any}})
       },
     });
 
