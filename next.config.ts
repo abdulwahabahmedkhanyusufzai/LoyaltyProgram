@@ -1,17 +1,13 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-   experimental: {
+const nextConfig = {
+  experimental: {
     serverActions: {
       bodySizeLimit: '2mb',
     },
   },
-  // Other config options here
+  // Disables ESLint during production builds
   eslint: {
-    // Disables ESLint during production builds
     ignoreDuringBuilds: true,
   },
-  
 };
 
 export default nextConfig;
