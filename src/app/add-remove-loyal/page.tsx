@@ -148,7 +148,7 @@ function LoyalCustomersList() {
                   key={c.id}
                   className="border-b border-gray-100 hover:bg-gray-50 transition text-sm lg:text-base"
                 >
-                  <td className="py-3 px-4">{c.name}</td>
+                  <td className="py-3 px-4">{`${c.lastName ?? ''}, ${c.firstName ?? ''}`}</td>
                   <td className="py-3 px-4 text-gray-600">{c.email}</td>
                   <td className="py-3 px-4">{c.orders}</td>
                   <td className="py-3 px-4">
@@ -284,7 +284,10 @@ function LoyalCustomersList() {
       />
       {showProfile && selectedCustomer && (
         <CustomerProfileModal
-          customer={selectedCustomer}
+          customer={{
+            ...selectedCustomer,
+            name: `${selectedCustomer.firstName} ${selectedCustomer.lastName}`.trim()
+          }}
           onClose={() => setShowProfile(false)}
         />
       )}
