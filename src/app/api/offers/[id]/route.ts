@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "../../../../lib/prisma";
 
-function jsonResponse(data: any, status = 200) {
+export function jsonResponse(data: any, status = 200) {
   const res = NextResponse.json(data, { status });
   res.headers.set("Access-Control-Allow-Origin", "*");
   res.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
@@ -39,7 +39,7 @@ export async function PUT(
     }
 
     console.log("🏪 [DEBUG] Found shop:", shop.shop);
-    
+
     let imageUrl: string | undefined;
 
         if (file) {

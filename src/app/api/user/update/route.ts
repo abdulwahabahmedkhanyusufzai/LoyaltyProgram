@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { UserService } from "../UserService";
 import { UserValidator } from "../UserValidator";
-import fs from "fs";
-import path from "path";
-import { v4 as uuidv4 } from "uuid";
+import { jsonResponse } from "../../offers/[id]/route";
+
 
 const userService = new UserService();
+
 
 export async function POST(req: Request) {
   try {
@@ -15,19 +15,43 @@ export async function POST(req: Request) {
     // Extract file if uploaded
     const file = formData.get("profilePic") as File | null;
     let profilePicUrl: string | undefined;
-
-    if (file) {
-      const buffer = Buffer.from(await file.arrayBuffer());
-      const uploadDir = path.join(process.cwd(), "public", "uploads");
-      if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
-
-      const ext = file.name.split(".").pop();
-      const filename = `${uuidv4()}.${ext}`;
-      const filepath = path.join(uploadDir, filename);
-
-      fs.writeFileSync(filepath, buffer);
-      profilePicUrl = `/uploads/${filename}`;
+   const shop = await prisma.shop.findFirst();
+    if (!shop) {
+      console.error("❌ [ERROR] No shop found in database");
+      return jsonResponse({ error: "No shop found. Please add one first." }, 404);
     }
+
+    console.log("🏪 [DEBUG] Found shop:", shop.shop);
+    
+
+        if (file) {
+      console.log("🖼️ Uploading image to Shopify CDN...");
+      
+      const uploadForm = new FormData();
+      uploadForm.append("file", file);
+      uploadForm.append("shop", shop.shop); // e.g., "testingashir.myshopify.com"
+      uploadForm.append("accessToken", shop.accessToken); // stored in DB
+
+      const uploadRes = await fetch(`${req.headers.get("origin")}/api/upload`, {
+        method: "POST",
+        body: uploadForm,
+      });
+
+      const uploadData = await uploadRes.json();
+
+      if (!uploadRes.ok || !uploadData.cdnUrl) {
+        console.error("❌ Shopify upload failed:", uploadData);
+        return jsonResponse(
+          { error: "Failed to upload image to Shopify CDN", details: uploadData },
+          500
+        );
+      }
+
+      profilePicUrl = uploadData.cdnUrl;
+      console.log("✅ Uploaded to Shopify CDN:", profilePicUrl);
+        }
+
+    
 
     // Extract other fields
     const body: Record<string, string> = {};
