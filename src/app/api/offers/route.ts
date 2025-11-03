@@ -88,7 +88,6 @@ export async function POST(req: Request) {
     console.log("🧱 [DEBUG] Creating new offer with data:", {
       name,
       description,
-      pointsCost,
       startDate,
       endDate,
       imageUrl,
