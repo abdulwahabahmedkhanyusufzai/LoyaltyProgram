@@ -32,13 +32,16 @@ export async function POST(req: Request) {
 
     const name = formData.get("name") as string;
     const description = formData.get("description") as string;
-    const pointsCost = formData.get("pointsCost") as string;
     const startDate = formData.get("startDate") as string;
     const endDate = formData.get("endDate") as string;
     const file = formData.get("image") as File | null;
     const offerTypo = formData.get("offerType") as OfferType;
 
-    if (!["DISCOUNT", "CASHBACK", "BOGO"].includes(offerTypo)) {
+    if (!["FIXED_AMOUNT_DISCOUNT",
+          "PERCENTAGE_DISCOUNT",
+          "FREE_SHIPPING",
+          "FREE_GIFT",
+          "EARLY_ACCESS"].includes(offerTypo)) {
       console.error("❌ Invalid offerType received:", offerTypo);
       return jsonResponse({ error: "Invalid offerType" }, 400);
     }
