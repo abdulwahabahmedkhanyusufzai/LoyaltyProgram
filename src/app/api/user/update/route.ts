@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { UserService } from "../UserService";
 import { UserValidator } from "../UserValidator";
+import { prisma } from "../../../../lib/prisma";
 
 function jsonResponse(data: any, status = 200) {
   const res = NextResponse.json(data, { status });
