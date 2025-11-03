@@ -4,12 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "setup": "npm install && npx prisma generate",
     "test": "jest --watchAll",
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
+    "setup": "prisma generate && prisma migrate deploy",
     "run:offer": "npx ts-node-esm src/scripts/cronAppOffer.ts"
   },
   "dependencies": {
