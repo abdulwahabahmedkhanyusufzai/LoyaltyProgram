@@ -222,7 +222,7 @@ const formSections = {
     title: "Preferences",
     select: {
       name: "language",
-      options: ["English", "Spanish", "French", "German", "Arabic"],
+      options: ["English", "French"],
     },
   },
 };
