@@ -88,6 +88,7 @@ function useAnalyticsData() {
 
 const Analytics = () => {
   const { data, loading } = useAnalyticsData();
+  console.log(data);
   const [activeChart, setActiveChart] = useState<
     | "pointsIssued"
     | "customersUsage"
@@ -99,7 +100,8 @@ const Analytics = () => {
 
   return (
     <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen">
-      {/* Heading */} <Heading />
+      {/* Heading */} 
+      <Heading />
       {/* Scrollable stats */}
       <MainPart
         setActiveChart={setActiveChart}
