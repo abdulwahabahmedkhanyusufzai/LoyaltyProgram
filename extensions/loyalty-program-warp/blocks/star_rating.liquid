@@ -225,16 +225,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  try{
-    const response = await fetch("https://waro.d.codetors.dev/api/customers/points");
-      if (!response.ok) throw new Error("Failed to fetch");
-      console.log("customers",response);
-      const data = await response.json();
-      console.log("Data",data);  
-  }catch(err){
-         console.error("Error fetching customers:", err);
+ try {
+  // Inject the logged-in customer's email from Liquid
+  const customerEmail = "{{ customer.email | escape }}";
+  const encodedEmail = encodeURIComponent(customerEmail);
+  if (encodedEmail) {
+    const response = await fetch(`https://waro.d.codetors.dev/api/customers/email/${encodedEmail}`);
+    if (!response.ok) throw new Error("Failed to fetch customer data");
 
+    const data = await response.json();
+    console.log("✅ Customer data:",data)
+    const loyaltyPoints = data.loyaltyPoints;
+    console.log("loyalty Points",loyaltyPoints);
+
+    // Example: update the points in the banner dynamically
+    const pointsElement = document.querySelector(".banner_point");
+    if (pointsElement && loyaltyPoints !== null) {
+      console.log("Here is loyalty")
+      pointsElement.textContent = `(${loyaltyPoints})`;
+    }
+  } else {
+    console.warn("⚠️ No logged-in customer found");
   }
+} catch (err) {
+  console.error("❌ Error fetching customer:", err);
+}
+
   // --- MOVE BANNER CORNER ---
   const upperBanner = document.querySelector(".content-for-layout ");
   const bannerCorner = document.querySelector(".corner_style");

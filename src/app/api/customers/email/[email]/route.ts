@@ -35,6 +35,7 @@ export async function GET(
         firstName: true,
         lastName: true,
         email: true,
+        loyaltyTitle:true,
         pointsLedger: {
           orderBy: { earnedAt: "desc" },
           take: 1,
@@ -53,6 +54,7 @@ export async function GET(
       name: `${customer.firstName ?? ""} ${customer.lastName ?? ""}`.trim(),
       email: customer.email,
       loyaltyPoints: customer.pointsLedger[0]?.balanceAfter ?? 0,
+      loyaltyTitle:customer.loyaltyTitle
     };
 
     const res = NextResponse.json(result, { status: 200 });
