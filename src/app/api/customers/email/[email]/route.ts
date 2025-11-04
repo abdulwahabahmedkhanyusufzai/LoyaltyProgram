@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "../../../../../lib/prisma";
 
-// Simple CORS helper
+// ✅ Simple CORS helper
 function cors(res: NextResponse) {
   res.headers.set("Access-Control-Allow-Origin", "*");
   res.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
@@ -9,18 +9,18 @@ function cors(res: NextResponse) {
   return res;
 }
 
-// Handle preflight CORS requests
+// ✅ Handle preflight CORS requests
 export async function OPTIONS() {
   const res = new NextResponse(null, { status: 204 });
   return cors(res);
 }
 
-// GET /api/customers/email/[email]
+// ✅ GET /api/customers/email/[email]
 export async function GET(
   req: Request,
-  { params }: { params: { email: string } }
+  context: { params: Promise<{ email: string }> }
 ) {
-  const { email } = params;
+  const { email } = await context.params; // 👈 Await params here
 
   if (!email) {
     const res = NextResponse.json({ message: "Email is required" }, { status: 400 });
@@ -28,7 +28,6 @@ export async function GET(
   }
 
   try {
-    // Fetch customer by email
     const customer = await prisma.customer.findUnique({
       where: { email },
       select: {
