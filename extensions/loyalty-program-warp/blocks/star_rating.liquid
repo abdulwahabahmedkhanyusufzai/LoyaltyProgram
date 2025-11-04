@@ -229,8 +229,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const response = await fetch("https://waro.d.codetors.dev/api/customers/points");
       if (!response.ok) throw new Error("Failed to fetch");
       console.log("customers",response);
-      const data = await response;
-      console.log("Data",customer);  
+      const data = await response.json();
+      console.log("Data",data);  
   }catch(err){
          console.error("Error fetching customers:", err);
 
