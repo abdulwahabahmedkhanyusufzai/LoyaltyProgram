@@ -1,0 +1,60 @@
+
+@media (max-width: 480px) {
+    .corner_style {
+      top: 128px;
+      width: 216px;
+      height: 54px;
+      padding-right: 6px;
+    }
+    :root {
+      --height: 5px;
+    }
+    .corner-books {
+      margin-left: 10px;
+    }
+    .progress {
+      width: 55px;
+    }
+    .progress_about {
+      font-size: 5px;
+    }
+    .banner_point {
+      font-size: 8px;
+    }
+    .banner_point_info p {
+      font-size: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .corner_text {
+      font-size: 8px;
+    }
+    .loyalty-item {
+      max-width: 293px;
+    }
+    .offer-text {
+      margin-left: 12px;
+    }
+    .loyalty-item strong {
+      font-size: 10px;
+    }
+    .offer-btn {
+      font-size: 9px;
+      width: 62px;
+    }
+    .loyal-1 {
+      padding-left: 24px;
+      padding-right: 24px;
+      padding-top: 24px;
+      padding-bottom: 24px;
+    }
+    .offer-card img {
+      width: 50px !important;
+      height: 50px !important;
+    }
+    .loyalty-item p {
+      font-size: 10px;
+    }
+  }
