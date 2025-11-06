@@ -20,18 +20,22 @@ export const runLoyaltyCronJob = async () => {
       const lastEntry = customer.pointsLedger[0];
       const currentBalance = lastEntry?.balanceAfter || 0;
 
-      // Determine tier + multiplier
+      // ---- Determine tier + multiplier ----
       let tier = "Welcomed";
       let multiplier = 1;
 
       if (amountSpent >= 200 && amountSpent < 500) {
         tier = "Bronze";
+        multiplier = 1;
       } else if (amountSpent >= 500 && amountSpent < 750) {
         tier = "Silver";
         multiplier = 1.5;
-      } else if (amountSpent >= 750) {
+      } else if (amountSpent >= 750 && amountSpent < 1000) {
         tier = "Gold";
         multiplier = 2;
+      } else if (amountSpent >= 1000) {
+        tier = "Platinum";
+        multiplier = 2.5;
       }
 
       const totalPoints = Math.floor(amountSpent * multiplier);
@@ -41,11 +45,13 @@ export const runLoyaltyCronJob = async () => {
         customer.loyaltyTitle !== tier || totalPoints !== currentBalance;
 
       if (!shouldUpdate) {
-        console.log(`ℹ️ Skipped ${customer.firstName} (${tier}) — already up-to-date`);
+        console.log(
+          `ℹ️ Skipped ${customer.firstName} (${tier}) — already up-to-date`
+        );
         continue;
       }
 
-      // Update customer + ledger
+      // ---- Update customer + ledger ----
       await prisma.$transaction([
         prisma.customer.update({
           where: { id: customer.id },
@@ -62,20 +68,33 @@ export const runLoyaltyCronJob = async () => {
         }),
       ]);
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/send-email`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-         body: JSON.stringify({
-        to: customer.email,
-        points:totalPoints,
-         })
-        })
+      // ---- Send email notification ----
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/send-email`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              to: customer.email,
+              points: totalPoints,
+              tier,
+              name: customer.firstName,
+            }),
+          }
+        );
 
-      const data = await response.json();
+        if (!response.ok) {
+          throw new Error(`Email API failed with status ${response.status}`);
+        }
 
-      console.log(`✅ Send Email to ${customer.firstName} → ${tier} (${totalPoints} pts) ${data}`);
+        const data = await response.json();
+        console.log(
+          `📧 Email sent to ${customer.email} (${tier}, ${totalPoints} pts): ${JSON.stringify(data)}`
+        );
+      } catch (mailErr) {
+        console.error(`❌ Failed to send email to ${customer.email}:`, mailErr);
+      }
 
       console.log(`✅ Updated ${customer.firstName} → ${tier} (${totalPoints} pts)`);
     }
