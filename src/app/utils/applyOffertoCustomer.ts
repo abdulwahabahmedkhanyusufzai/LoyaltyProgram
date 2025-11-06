@@ -68,7 +68,11 @@ export async function runOfferCronJob() {
   // }
   console.log("🚀 Running offer cron job...");
 
-  const customers = await prisma.customer.findMany();
+  const customers = await prisma.customer.findMany({
+    where:{
+      numberOfOrders:{gt:0},
+    },
+});
 
   // Log them clearly
   console.log(`🧾 Found ${customers.length} customers:`);
