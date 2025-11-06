@@ -1,7 +1,58 @@
 
 <div id="shopify-section-template--24845457883464__loyalty_program" class="shopify-section">
 <script>
- 
+document.addEventListener("DOMContentLoaded", () => {
+  const slider = document.querySelector(".product-scroll");
+  let isDown = false;
+  let startX;
+  let scrollLeft;
+  let isDragging = false;
+
+  if (!slider) return;
+
+  slider.addEventListener("mousedown", e => {
+    isDown = true;
+    isDragging = false;
+    startX = e.pageX - slider.offsetLeft;
+    scrollLeft = slider.scrollLeft;
+    slider.classList.add("is-dragging");
+  });
+
+  slider.addEventListener("mouseleave", () => {
+    isDown = false;
+    slider.classList.remove("is-dragging");
+  });
+
+  slider.addEventListener("mouseup", e => {
+    slider.classList.remove("is-dragging");
+    // if it was dragging, prevent click
+    if (isDragging) {
+      e.preventDefault();
+    }
+    isDown = false;
+  });
+
+  slider.addEventListener("mousemove", e => {
+    if (!isDown) return;
+    e.preventDefault();
+    isDragging = true;
+    const x = e.pageX - slider.offsetLeft;
+    const walk = (x - startX) * 2; // adjust for speed
+    slider.scrollLeft = scrollLeft - walk;
+  });
+
+  // Mobile touch support
+  let touchStartX = 0;
+  slider.addEventListener("touchstart", e => {
+    touchStartX = e.touches[0].pageX;
+    scrollLeft = slider.scrollLeft;
+  });
+  slider.addEventListener("touchmove", e => {
+    const x = e.touches[0].pageX;
+    const walk = (x - touchStartX) * 2;
+    slider.scrollLeft = scrollLeft - walk;
+  });
+});
 </script>
 
 <section class="loyalty-programme">
@@ -78,14 +129,14 @@
       <hr class="seprator">
 
         <div class="offer-card">
-          <img
-            src="https://cdn.shopify.com/s/files/1/0921/8428/1416/files/4b1b4b2108e330c4f06ae0a104437fd825d38622.jpg?v=1760627187"
-            alt=""
-            style="
-              width: 60px;
-              height: 60px; border-radius: 50%; object-fit: cover;
-            "
-          >
+        <a href="{{ product.url }}"> <!-- Wrap image in link -->
+        <img
+          src="{{ product.featured_image | image_url: width: 400 }}"
+          alt="{{ product.title }}"
+          loading="lazy"
+        >
+      </a>
+
             <div class="offer-text">
           <strong>Loyalty Offer</strong>
           <p>5% off on 3rd Order</p>
@@ -119,11 +170,13 @@
         <div class="product-scroll">
           {% for product in collections.all.products limit: 10 %}
             <div class="product-card">
+                <a href="{{ product.url }}">
               <img
                 src="{{ product.featured_image | image_url: width: 400 }}"
                 alt="{{ product.title }}"
                 loading="lazy"
               >
+              </a>
             </div>
           {% endfor %}
         </div>
@@ -329,7 +382,7 @@
     object-fit: cover;
     border-radius: 16.81px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      pointer-events: none;
+      pointer-events: auto;
   }
 
   .product-card p {

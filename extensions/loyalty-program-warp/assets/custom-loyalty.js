@@ -152,7 +152,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   } else {
     console.warn("⚠️ upperBanner or banner_corner not found.");
   }
-
   // --- INITIALIZE PRODUCT SCROLLS ---
   initProductScrolls();
 });
