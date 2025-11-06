@@ -1,10 +1,10 @@
 // src/app/api/apply-offers/route.ts
 import { NextResponse } from "next/server";
-import { runOfferCronJob } from "../../utils/applyOffertoCustomer";
+import { runLoyaltyCronJob } from "../../utils/applyOffertoCustomer";
 
 export async function POST() {
   try {
-    const appliedCount = await runOfferCronJob();
+    const appliedCount = await runLoyaltyCronJob();
     return NextResponse.json({ success: true, applied: appliedCount });
   } catch (err) {
     console.error("🔥 Error applying offers:", err);
