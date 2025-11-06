@@ -1,83 +1,83 @@
 import { PrismaClient } from "@prisma/client";
-
 const prisma = new PrismaClient();
 
-export async function runOfferCronJob() {
-  console.log("🚀 Running offer cron job...");
+export const runLoyaltyCronJob = async () => {
+  try {
+    const customers = await prisma.customer.findMany({
+      where: { numberOfOrders: { gt: 0 } },
+      include: { pointsLedger: true },
+    });
 
+    console.log(`🧾 Found ${customers.length} customers`);
 
-  // Fetch all customers with their orders
-  // const customers = await prisma.customer.findMany({
-  //   include: {
-  //     orders: {
-  //       select: {
-  //         id: true,
-  //         totalAmount: true,
-  //         currency: true,
-  //         pointsEarned: true,
-  //       },
-  //     },
-  //     pointsLedger: {
-  //       select: { balanceAfter: true },
-  //       orderBy: { earnedAt: "desc" },
-  //       take: 1,
-  //     },
-  //   },
-  // });
+    for (const customer of customers) {
+      const amountSpent = Number(customer.amountSpent || 0);
+      let newLoyaltyTitle = customer.loyaltyTitle;
+      let multiplier = 1;
 
-  // let updatedCount = 0;
+      // ---- Determine loyalty tier ----
+      if (amountSpent < 200) {
+        newLoyaltyTitle = "Welcomed";
+        multiplier = 1;
+      } else if (amountSpent >= 200 && amountSpent < 500) {
+        newLoyaltyTitle = "Bronze";
+        multiplier = 1;
+      } else if (amountSpent >= 500 && amountSpent < 750) {
+        newLoyaltyTitle = "Silver";
+        multiplier = 1.5;
+      } else {
+        newLoyaltyTitle = "Gold";
+        multiplier = 2;
+      }
 
-  // for (const customer of customers) {
-  //   if (!customer.orders || customer.orders.length === 0) continue;
+      // ---- Calculate total points ----
+      const totalPoints = Math.floor(amountSpent * multiplier);
 
-  //   // Total spent in EUR
-  //   const totalSpent = customer.orders.reduce((sum, order) => sum + Number(order.totalAmount), 0);
+      // ---- Get last known balance from ledger ----
+      const lastLedgerEntry = customer.pointsLedger.sort(
+        (a, b) => new Date(b.earnedAt).getTime() - new Date(a.earnedAt).getTime()
+      )[0];
+      const currentBalance = lastLedgerEntry?.balanceAfter || 0;
 
-  //   // 1 point per €10 spent
-  //   const totalPoints = Math.floor(totalSpent / 10);
+      // ---- Only update if something changed ----
+      if (
+        customer.loyaltyTitle !== newLoyaltyTitle ||
+        currentBalance !== totalPoints
+      ) {
+        // Update customer record
+        await prisma.customer.update({
+          where: { id: customer.id },
+          data: {
+            loyaltyTitle: newLoyaltyTitle,
+            updatedAt: new Date(),
+          },
+        });
 
-  //   // Get current balance (last ledger entry if any)
-  //   const lastBalance = customer.pointsLedger[0]?.balanceAfter || 0;
+        // Add a new ledger entry
+        await prisma.pointsLedger.create({
+          data: {
+            customerId: customer.id,
+            change: totalPoints - currentBalance,
+            balanceAfter: totalPoints,
+            reason: "Automatic Loyalty Update",
+            sourceType: "CRON_JOB",
+          },
+        });
 
-  //   // Calculate how many new points to add
-  //   const newPointsToAdd = totalPoints - lastBalance;
+        console.log(
+          `✅ ${customer.firstName} → ${newLoyaltyTitle} (${totalPoints} pts)`
+        );
+      } else {
+        console.log(
+          `ℹ️ No change for ${customer.firstName} (${customer.loyaltyTitle})`
+        );
+      }
+    }
 
-  //   if (newPointsToAdd <= 0) continue; // nothing new to add
-
-  //   // Create new ledger entry
-  //   await prisma.pointsLedger.create({
-  //     data: {
-  //       customerId: customer.id,
-  //       change: newPointsToAdd,
-  //       balanceAfter: lastBalance + newPointsToAdd,
-  //       reason: "auto.daily_spending_points",
-  //       sourceType: "order",
-  //     },
-  //   });
-
-  //   // Update customer's total amountSpent & loyaltyTitle if needed
-  //   await prisma.customer.update({
-  //     where: { id: customer.id },
-  //     data: {
-  //       amountSpent: totalSpent,
-  //       updatedAt: new Date(),
-  //     },
-  //   });
-
-  //   updatedCount++;
-  // }
-  console.log("🚀 Running offer cron job...");
-
-  const customers = await prisma.customer.findMany({
-    where:{
-      numberOfOrders:{gt:0},
-    },
-});
-
-  // Log them clearly
-  console.log(`🧾 Found ${customers.length} customers:`);
-  console.log(JSON.stringify(customers, null, 2)); // pretty print
-
-  console.log("🏁 Offer job complete.");
-  return customers.length;
-}
+    console.log("🎯 Loyalty cron completed successfully.");
+  } catch (error) {
+    console.error("❌ Error in loyalty cron:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+};
