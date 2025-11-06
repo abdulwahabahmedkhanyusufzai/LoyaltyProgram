@@ -62,6 +62,21 @@ export const runLoyaltyCronJob = async () => {
         }),
       ]);
 
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/send-email`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+         body: JSON.stringify({
+        to: customer.email,
+        points:totalPoints,
+         })
+        })
+
+      const data = await response.json();
+
+      console.log(`✅ Send Email to ${customer.firstName} → ${tier} (${totalPoints} pts) ${data}`);
+
       console.log(`✅ Updated ${customer.firstName} → ${tier} (${totalPoints} pts)`);
     }
 
