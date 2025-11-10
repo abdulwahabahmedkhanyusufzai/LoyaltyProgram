@@ -195,9 +195,4 @@ export async function createTierDiscounts() {
 }
 
 // To run directly (manual trigger)
-if (require.main === module) {
-  createTierDiscounts()
-    .then(() => console.log("🏁 Script finished"))
-    .catch((err) => console.error("❌ Uncaught error:", err))
-    .finally(async () => await prisma.$disconnect());
-}
+
