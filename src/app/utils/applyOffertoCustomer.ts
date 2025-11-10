@@ -1,103 +1,155 @@
-// pages/api/update-customer-tags.ts
-import type { NextApiRequest, NextApiResponse } from "next";
-import * as shopify from "@shopify/shopify-api";
 import { PrismaClient } from "@prisma/client";
-
 const prisma = new PrismaClient();
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
-  const { customerEmail, tier } = req.body;
-
-  if (!customerEmail || !tier) {
-    return res.status(400).json({ error: "Missing customerEmail or tier" });
-  }
-
+export const runLoyaltyCronJob = async () => {
   try {
-    // 1️⃣ Fetch the shop and token from DB
+    // 1️⃣ Get shop credentials
     const shopRecord = await prisma.shop.findFirst();
-    if (!shopRecord) throw new Error("No shop found in database");
+    if (!shopRecord) throw new Error("No shop found in DB");
 
     const { shop, accessToken } = shopRecord;
+    const shopifyUrl = `https://${shop}/admin/api/2025-10/graphql.json`;
 
-    // 2️⃣ Initialize Shopify client using fetch to the Admin GraphQL endpoint
-    async function shopifyGraphQLRequest(shop :string, accessToken: string, query: string, variables?: any) {
-      const response = await fetch(`https://${shop}/admin/api/2024-07/graphql.json`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Shopify-Access-Token": accessToken,
-        },
-        body: JSON.stringify({ query, variables }),
-      });
+    // 2️⃣ Fetch customers
+    const customers = await prisma.customer.findMany({
+      where: { numberOfOrders: { gt: 0 } },
+      include: {
+        pointsLedger: { orderBy: { earnedAt: "desc" }, take: 1 },
+      },
+    });
 
-      if (!response.ok) {
-        const text = await response.text();
-        throw new Error(`Shopify GraphQL request failed: ${response.status} ${text}`);
+    console.log(`🧾 Found ${customers.length} customers`);
+
+    // Define tier order for cumulative tags
+    const tierOrder = ["Bronze", "Silver", "Gold", "Platinum"];
+
+    for (const customer of customers) {
+      const amountSpent = Number(customer.amountSpent || 0);
+      const lastEntry = customer.pointsLedger[0];
+      const currentBalance = lastEntry?.balanceAfter || 0;
+
+      // Determine tier + multiplier
+      let tier = "Welcomed";
+      let multiplier = 1;
+      if (amountSpent >= 200 && amountSpent < 500) tier = "Bronze";
+      else if (amountSpent >= 500 && amountSpent < 750) tier = "Silver";
+      else if (amountSpent >= 750 && amountSpent < 1000) tier = "Gold";
+      else if (amountSpent >= 1000) tier = "Platinum";
+
+      switch (tier) {
+        case "Bronze": multiplier = 1; break;
+        case "Silver": multiplier = 1.5; break;
+        case "Gold": multiplier = 2; break;
+        case "Platinum": multiplier = 2.5; break;
       }
 
-      return response.json();
-    }
+      const totalPoints = Math.floor(amountSpent * multiplier);
 
-    // 3️⃣ Determine tags based on tier
-    const tierOrder = ["Bronze", "Silver", "Gold", "Platinum"];
-    const tagIndex = tierOrder.indexOf(tier);
-    if (tagIndex === -1) throw new Error("Invalid tier");
+      // Skip if nothing changed
+      if (customer.loyaltyTitle === tier && totalPoints === currentBalance) {
+        console.log(`ℹ️ Skipped ${customer.firstName} (${tier}) — already up-to-date`);
+        continue;
+      }
 
-    const tagsToApply = tierOrder.slice(0, tagIndex + 1); // e.g., Gold → ["Bronze","Silver","Gold"]
-    const tagsString = tagsToApply.join(", ");
+      // ---- Update DB ----
+      await prisma.$transaction([
+        prisma.customer.update({
+          where: { id: customer.id },
+          data: { loyaltyTitle: tier, updatedAt: new Date() },
+        }),
+        prisma.pointsLedger.create({
+          data: {
+            customerId: customer.id,
+            change: totalPoints - currentBalance,
+            balanceAfter: totalPoints,
+            reason: "Automatic Loyalty Update",
+            sourceType: "CRON_JOB",
+          },
+        }),
+      ]);
 
-    // 4️⃣ Fetch the customer by email
-    const query = `
-      query getCustomer($email: String!) {
-        customers(first: 1, query: $email) {
-          edges {
-            node {
-              id
-              tags
+      // ---- Send email ----
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/send-email`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            to: customer.email,
+            points: totalPoints,
+            tier,
+            name: customer.firstName,
+          }),
+        });
+        if (!response.ok) throw new Error(`Email API failed: ${response.status}`);
+        console.log(`📧 Email sent to ${customer.email} (${tier}, ${totalPoints} pts)`);
+      } catch (mailErr) {
+        console.error(`❌ Failed to send email to ${customer.email}:`, mailErr);
+      }
+
+      // ---- Update Shopify customer tags ----
+      try {
+        // 1️⃣ Get Shopify customer ID and existing tags
+        const getCustomerQuery = `
+          query ($email: String!) {
+            customers(first: 1, query: $email) {
+              edges {
+                node { id tags }
+              }
             }
           }
-        }
-      }
-    `;
-    const customerResponse = await shopifyGraphQLRequest(shop, accessToken, query, { email: customerEmail });
+        `;
+        const res = await fetch(shopifyUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Shopify-Access-Token": accessToken,
+          },
+          body: JSON.stringify({ query: getCustomerQuery, variables: { email: customer.email } }),
+        });
+        const data = await res.json();
+        const shopCustomer = data?.data?.customers?.edges[0]?.node;
 
-    const customerNode = customerResponse.data.customers.edges[0]?.node;
-    if (!customerNode) {
-      return res.status(404).json({ error: "Customer not found in Shopify" });
+        if (shopCustomer) {
+          // 2️⃣ Build cumulative tags
+          const index = tierOrder.indexOf(tier);
+          const tagsToApply = tierOrder.slice(0, index + 1);
+
+          // 3️⃣ Update tags via GraphQL
+          const updateTagsMutation = `
+            mutation ($id: ID!, $tags: [String!]!) {
+              customerUpdate(input: { id: $id, tags: $tags }) {
+                customer { id tags }
+                userErrors { field message }
+              }
+            }
+          `;
+          const updateRes = await fetch(shopifyUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Shopify-Access-Token": accessToken,
+            },
+            body: JSON.stringify({ query: updateTagsMutation, variables: { id: shopCustomer.id, tags: tagsToApply } }),
+          });
+          const updateData = await updateRes.json();
+
+          if (updateData.data.customerUpdate.userErrors.length) {
+            console.error(`❌ Shopify tag update errors:`, updateData.data.customerUpdate.userErrors);
+          }
+        } else {
+          console.warn(`⚠️ Shopify customer not found: ${customer.email}`);
+        }
+      } catch (err) {
+        console.error(`❌ Shopify update failed for ${customer.email}:`, err);
+      }
+
+      console.log(`✅ Updated ${customer.firstName} → ${tier} (${totalPoints} pts)`);
     }
 
-    // 5️⃣ Update the customer tags
-    const mutation = `
-      mutation updateCustomerTags($id: ID!, $tags: [String!]!) {
-        customerUpdate(input: { id: $id, tags: $tags }) {
-          customer {
-            id
-            tags
-          }
-          userErrors {
-            field
-            message
-          }
-        }
-      }
-    `;
-    const updateResponse = await shopifyGraphQLRequest(shop, accessToken, mutation, { id: customerNode.id, tags: tagsToApply });
-
-    const errors = updateResponse.data.customerUpdate.userErrors;
-    if (errors.length) {
-      return res.status(400).json({ error: errors });
-    }
-
-    return res.status(200).json({
-      message: `Customer tags updated successfully`,
-      tagsApplied: tagsToApply,
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: "Internal server error", details: err instanceof Error ? err.message : err });
+    console.log("🎯 Loyalty cron completed successfully.");
+  } catch (error) {
+    console.error("❌ Error in loyalty cron:", error);
+  } finally {
+    await prisma.$disconnect();
   }
-}
+};
