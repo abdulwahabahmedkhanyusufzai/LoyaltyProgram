@@ -1,215 +1,115 @@
 <!-- sections/loyalty-dashboard.liquid -->
-
 <div class="loyalty-dashboard">
+  
+  <!-- Dashboard Header -->
   <div class="dashboard-header">
     <h2>Loyalty Program</h2>
-    <p>Hi {{ customer.first_name | default: "Customer" }}, welcome back.</p>
+    <p>Hi {{ customer.first_name | default: 'Customer' }}, welcome back.</p>
   </div>
 
-  <!-- Points Summary -->
-  <div class="points-summary">
-    <div class="points-info">
-      <h1>{{ section.settings.total_points }}</h1>
-      <p>Total Points</p>
+  <!-- Loyalty Rating / Points Summary -->
+  <div class="loyalty-rating">
+    <div class="points-summary">
+      <h3>Points Summary</h3>
       <p class="tier-text">
         You're {{ section.settings.points_to_next_tier }} points away from Bronze Tier
       </p>
-    </div>
 
-    <div class="tier-progress">
-      <div class="tiers">
-        <span class="tier silver active">
-            <img style="height: 40px;" src="https://cdn.shopify.com/s/files/1/0921/8428/1416/files/silver.png?v=1760793931"/>
-            Silver
-        </span>
-        <span class="tier bronze">
-                 <img style="height: 40px;" src="https://cdn.shopify.com/s/files/1/0921/8428/1416/files/bronze.png?v=1760793539"/>
-
-            Bronze
-        </span>
-        <span class="tier gold">
-        <img style="height: 40px;" src="https://cdn.shopify.com/s/files/1/0921/8428/1416/files/gold.png?v=1760793880"/>
-
-            Gold
-        </span>
-        <span class="tier diamond">
-            <img src="https://cdn.shopify.com/s/files/1/0921/8428/1416/files/gem.png?v=1760793850" style="height:40px"/>
-            Diamond
-        </span>
+      <div class="points-info">
+        <h1>{{ section.settings.total_points }}</h1>
+        <p>Total Points</p>
       </div>
 
-      <div class="tier-bar">
-        <div class="tier-fill" style="width: {{ section.settings.progress_percent }}%;"></div>
+      <!-- Tier Progress -->
+      <div class="progress-board">
+        <div class="tier-progress">
+          <div class="tiers">
+            {% assign tiers_raw = "Bronze:bronze.png:false;Silver:silver.png:true;Gold:gold.png:false;Platinum:gem.png:false" %}
+            {% assign tiers_list = tiers_raw | split: ';' %}
+            {% for tier_item in tiers_list %}
+              {% assign parts = tier_item | split: ':' %}
+              {% assign tier_name = parts[0] %}
+              {% assign tier_img = parts[1] %}
+              {% assign tier_active = parts[2] %}
+              <span class="tier {% if tier_active == 'true' %}active{% endif %}">
+                <img width="40" height="40" style="height:40px;" src="https://cdn.shopify.com/s/files/1/0921/8428/1416/files/{{ tier_img }}?v=1760793539">
+                {{ tier_name }}
+              </span>
+            {% endfor %}
+          </div>
+
+          <div class="tier-bar">
+            <div class="tier-fill" style="width: {{ section.settings.progress_percent }}%;"></div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="points-actions">
+          <button class="earn-btn">Shop & Earn More</button>
+          <button class="redeem-btn">Redeem Points</button>
+        </div>
       </div>
     </div>
 
-    <div class="points-actions">
-      <button class="redeem-btn">Redeem Points</button>
-      <button class="earn-btn">Shop & Earn More</button>
-    </div>
-  </div>
-
-  <!-- Upcoming Discounts -->
-  <div class="discounts-slider">
-    {% for block in section.blocks %}
-      <div class="discount-card">
-        <img src="{{ block.settings.image | image_url: width: 200 }}" alt="Discount" />
-        <div class="discount-text">{{ block.settings.discount_text }}</div>
-      </div>
-    {% endfor %}
+    {% render 'loyalty-sale-product' %}
   </div>
 
   <!-- Recent Transactions -->
-  <div class="transactions">
-    <h3>Recent Transactions</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Action</th>
-          <th>Description</th>
-          <th>Amount</th>
-          <th>Points (+/-)</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in section.settings.transactions %}
+  <div class="loyalty-table">
+    <div class="transactions">
+      <h3>Recent Transactions</h3>
+      <div class="points-actions3">
+        <button class="redeem-btn">Redeem Points</button>
+        <button class="earn-btn">Shop & Earn More</button>
+      </div>
+    </div>
+
+    <div class="order-history">
+      <table class="order-history-table">
+        <thead>
           <tr>
-            <td>{{ item.date }}</td>
-            <td><span class="badge {{ item.action | downcase }}">{{ item.action }}</span></td>
-            <td>{{ item.description }}</td>
-            <td>${{ item.amount }}</td>
-            <td>{{ item.points }}</td>
+            <th>DATE</th>
+            <th>ACTION</th>
+            <th>DESCRIPTION</th>
+            <th>AMOUNT OF</th>
+            <th>POINTS (+/-)</th>
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {% for order in customer.orders limit:10 %}
+            <tr>
+              <td>{{ order.created_at | date: '%b %d, %Y' }}</td>
+              <td><span class="badge {{ order.financial_status }}">{{ order.financial_status_label }}</span></td>
+              <td><a href="{{ order.customer_url }}">{{ order.name }}</a></td>
+              <td>{{ order.total_price | money }}</td>
+              <td><span class="{{ order.fulfillment_status }}">{{ order.fulfillment_status_label }}</span></td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="5">You haven't placed any orders yet.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
+
 </div>
 
-<style>
-.loyalty-dashboard {
-  background: #fdfaf4;
-  padding: 30px;
-  border-radius: 12px;
-  color: #3b2b16;
-  font-family: "Poppins", sans-serif;
-}
-
-.dashboard-header h2 {
-  font-weight: 600;
-  font-size: 24px;
-  margin-bottom: 4px;
-}
-.dashboard-header p {
-  color: #776a58;
-}
-
-.points-summary {
-  background: #fff7e8;
-  border-radius: 10px;
-  padding: 20px;
-  margin-top: 20px;
-}
-
-.points-info h1 {
-  font-size: 40px;
-  color: #533d1a;
-}
-.tier-bar {
-  width: 100%;
-  background: #e6d9c0;
-  border-radius: 4px;
-  height: 6px;
-  margin-top: 8px;
-}
-.tier-fill {
-  background: #c49a63;
-  height: 6px;
-  border-radius: 4px;
-}
-.tiers {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  margin-top: 10px;
-}
-
-.redeem-btn,
-.earn-btn {
-  background: #c49a63;
-  border: none;
-  color: white;
-  border-radius: 6px;
-  padding: 10px 14px;
-  margin-top: 12px;
-  cursor: pointer;
-}
-.redeem-btn {
-  background: #533d1a;
-}
-
-.discounts-slider {
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  margin: 25px 0;
-}
-.discount-card {
-  min-width: 160px;
-  position: relative;
-  border-radius: 8px;
-  overflow: hidden;
-}
-.discount-card img {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-}
-.discount-text {
-  position: absolute;
-  bottom: 6px;
-  left: 8px;
-  background: rgba(0,0,0,0.6);
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-}
-
-.transactions table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-.transactions th, .transactions td {
-  padding: 10px 8px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-.badge {
-  padding: 4px 8px;
-  border-radius: 6px;
-  color: #fff;
-  font-size: 13px;
-}
-.badge.earned {
-  background: #4caf50;
-}
-.badge.redeemed {
-  background: #c62828;
-}
-</style>
+<!-- JS / CSS -->
+{{ 'loyalty-dashboard.css' | asset_url | stylesheet_tag }}
+<script type="module" src="{{ 'loyalty-dashboard.js' | asset_url }}"></script>
+{{ 'loyalty_program.css' | asset_url | stylesheet_tag }}
+<script type="module" src="{{ 'loyalty_program.js' | asset_url }}"></script>
 
 {% schema %}
 {
   "name": "Loyalty Dashboard",
-  "target":"section",
+  "target": "section",
   "settings": [
     { "type": "number", "id": "total_points", "label": "Total Points", "default": 55 },
     { "type": "number", "id": "points_to_next_tier", "label": "Points to Next Tier", "default": 5 },
     { "type": "number", "id": "progress_percent", "label": "Progress Percent", "default": 35 }
-  ],
-  
+  ]
 }
 {% endschema %}

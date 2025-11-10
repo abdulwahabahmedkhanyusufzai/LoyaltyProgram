@@ -1,0 +1,262 @@
+.loyalty-dashboard {
+  background: #fdfaf4;
+  padding: 30px;
+  border-radius: 12px;
+  color: #3b2b16;
+  font-family: "Poppins", sans-serif;
+}
+
+.dashboard-header h2 {
+  font-weight: 600;
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+.dashboard-header p {
+  color: #776a58;
+}
+
+.points-summary {
+  background: #e8e6d9;
+  border-radius: 30px;
+  padding: 20px;
+  margin-top: 9px;
+  width: 100%;
+  height: 301px;
+}
+
+.points-info h1 {
+  font-size: 40px;
+  color: black;
+  font-weight: 500;
+}
+.paragraph {
+  display: flex;
+  justify-content: center;
+}
+.tier-progress {
+  width: 65%;
+}
+/* --- Loyalty Progress Bar --- */
+.tier-bar {
+  width: 100%;
+  height: 14px;
+  background: #eee;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 4px;
+  position: relative;
+}
+
+.tier-fill {
+  display: block !important;
+  height: 100%;
+  width: 0%;
+  background: #734a00; /* Bronze gradient default */
+  border-radius: 10px 0 0 10px;
+  transition: width 1s ease-in-out, background 0.5s ease-in-out;
+}
+.tier img {
+  height: 40px;
+  border: #734a00 2px solid;
+  border-radius: 20px;
+  padding: 6px;
+}
+.tier {
+  position: absolute;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: #776a58;
+}
+
+.tiers {
+  display: block;
+  position: relative;
+  height: 60px;
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+.redeem-btn,
+.earn-btn {
+  border: none;
+  border-radius: 24px;
+  font-size: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  width:172px;
+}
+.tier-text{
+  text-align: center;
+}
+.points-actions3{
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  flex-direction: row;
+  gap: 15px;
+}
+.redeem-btn {
+  background: #734a00;
+  color: white;
+}
+.earn-btn {
+  background: transparent;
+  border: 2px solid #734a00;
+  color: black;
+}
+
+.discounts-slider {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  margin: 25px 0;
+}
+.discount-card {
+  min-width: 160px;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.discount-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+.discount-text {
+  position: absolute;
+  bottom: 6px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.transactions {
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+}
+.transactions table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+.transactions th,
+.transactions td {
+  padding: 10px 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+.badge {
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+}
+.badge.earned {
+  background: #734a00;
+}
+.badge.redeemed {
+  background: #c62828;
+}
+.loyalty-table {
+  border: #b8b5aa 2px solid;
+  border-radius: 26px;
+  padding: 20px;
+}
+.points-actions2 {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 26%;
+}
+.points-actions{
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  flex-direction: column;
+  gap:15px;
+}
+.progress-board {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.order-history {
+  margin-top: 30px;
+}
+
+.order-history h3 {
+  font-weight: 600;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.order-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.order-history-table th,
+.order-history-table td {
+  padding: 10px 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  font-size: 14px;
+}
+
+.order-history-table th {
+  font-weight: 600;
+  color: #776a58;
+}
+
+.order-history-table a {
+  color: #533d1a;
+  font-weight: 600;
+  text-decoration: none;
+}
+.order-history-table a:hover {
+  text-decoration: underline;
+}
+
+/* 💡 NEW: Styles for Order Status Badges */
+/* We already have .badge from your 'transactions' table */
+
+.badge.paid,
+.badge.fulfilled {
+  background: #734a00; /* Green */
+}
+
+.badge.pending {
+  background: #f59e0b; /* Amber/Yellow */
+  color: #3b2b16;
+}
+
+.badge.unfulfilled,
+.badge.partial {
+  background: #60a5fa; /* Blue */
+}
+
+.badge.voided,
+.badge.refunded {
+  background: #776a58; /* Gray */
+}
+.loyalty-rating {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 50px;
+  margin-bottom: 20px;
+}
+ .loyalty-item{
+    max-width: 379px !important;
+  }

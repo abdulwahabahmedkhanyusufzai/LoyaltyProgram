@@ -1,108 +1,103 @@
+// pages/api/update-customer-tags.ts
+import type { NextApiRequest, NextApiResponse } from "next";
+import * as shopify from "@shopify/shopify-api";
 import { PrismaClient } from "@prisma/client";
+
 const prisma = new PrismaClient();
 
-export const runLoyaltyCronJob = async () => {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  const { customerEmail, tier } = req.body;
+
+  if (!customerEmail || !tier) {
+    return res.status(400).json({ error: "Missing customerEmail or tier" });
+  }
+
   try {
-    const customers = await prisma.customer.findMany({
-      where: { numberOfOrders: { gt: 0 } },
-      include: {
-        pointsLedger: {
-          orderBy: { earnedAt: "desc" },
-          take: 1, // 🚀 only fetch last entry instead of all
+    // 1️⃣ Fetch the shop and token from DB
+    const shopRecord = await prisma.shop.findFirst();
+    if (!shopRecord) throw new Error("No shop found in database");
+
+    const { shop, accessToken } = shopRecord;
+
+    // 2️⃣ Initialize Shopify client using fetch to the Admin GraphQL endpoint
+    async function shopifyGraphQLRequest(shop :string, accessToken: string, query: string, variables?: any) {
+      const response = await fetch(`https://${shop}/admin/api/2024-07/graphql.json`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Shopify-Access-Token": accessToken,
         },
-      },
-    });
+        body: JSON.stringify({ query, variables }),
+      });
 
-    console.log(`🧾 Found ${customers.length} customers`);
-
-    for (const customer of customers) {
-      const amountSpent = Number(customer.amountSpent || 0);
-      const lastEntry = customer.pointsLedger[0];
-      const currentBalance = lastEntry?.balanceAfter || 0;
-
-      // ---- Determine tier + multiplier ----
-      let tier = "Welcomed";
-      let multiplier = 1;
-
-      if (amountSpent >= 200 && amountSpent < 500) {
-        tier = "Bronze";
-        multiplier = 1;
-      } else if (amountSpent >= 500 && amountSpent < 750) {
-        tier = "Silver";
-        multiplier = 1.5;
-      } else if (amountSpent >= 750 && amountSpent < 1000) {
-        tier = "Gold";
-        multiplier = 2;
-      } else if (amountSpent >= 1000) {
-        tier = "Platinum";
-        multiplier = 2.5;
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`Shopify GraphQL request failed: ${response.status} ${text}`);
       }
 
-      const totalPoints = Math.floor(amountSpent * multiplier);
-
-      // 🧠 Only update if points changed or tier changed
-      const shouldUpdate =
-        customer.loyaltyTitle !== tier || totalPoints !== currentBalance;
-
-      if (!shouldUpdate) {
-        console.log(
-          `ℹ️ Skipped ${customer.firstName} (${tier}) — already up-to-date`
-        );
-        continue;
-      }
-
-      // ---- Update customer + ledger ----
-      await prisma.$transaction([
-        prisma.customer.update({
-          where: { id: customer.id },
-          data: { loyaltyTitle: tier, updatedAt: new Date() },
-        }),
-        prisma.pointsLedger.create({
-          data: {
-            customerId: customer.id,
-            change: totalPoints - currentBalance,
-            balanceAfter: totalPoints,
-            reason: "Automatic Loyalty Update",
-            sourceType: "CRON_JOB",
-          },
-        }),
-      ]);
-
-      // ---- Send email notification ----
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/send-email`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              to: customer.email,
-              points: totalPoints,
-              tier,
-              name: customer.firstName,
-            }),
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`Email API failed with status ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log(
-          `📧 Email sent to ${customer.email} (${tier}, ${totalPoints} pts): ${JSON.stringify(data)}`
-        );
-      } catch (mailErr) {
-        console.error(`❌ Failed to send email to ${customer.email}:`, mailErr);
-      }
-
-      console.log(`✅ Updated ${customer.firstName} → ${tier} (${totalPoints} pts)`);
+      return response.json();
     }
 
-    console.log("🎯 Loyalty cron completed successfully.");
-  } catch (error) {
-    console.error("❌ Error in loyalty cron:", error);
-  } finally {
-    await prisma.$disconnect();
+    // 3️⃣ Determine tags based on tier
+    const tierOrder = ["Bronze", "Silver", "Gold", "Platinum"];
+    const tagIndex = tierOrder.indexOf(tier);
+    if (tagIndex === -1) throw new Error("Invalid tier");
+
+    const tagsToApply = tierOrder.slice(0, tagIndex + 1); // e.g., Gold → ["Bronze","Silver","Gold"]
+    const tagsString = tagsToApply.join(", ");
+
+    // 4️⃣ Fetch the customer by email
+    const query = `
+      query getCustomer($email: String!) {
+        customers(first: 1, query: $email) {
+          edges {
+            node {
+              id
+              tags
+            }
+          }
+        }
+      }
+    `;
+    const customerResponse = await shopifyGraphQLRequest(shop, accessToken, query, { email: customerEmail });
+
+    const customerNode = customerResponse.data.customers.edges[0]?.node;
+    if (!customerNode) {
+      return res.status(404).json({ error: "Customer not found in Shopify" });
+    }
+
+    // 5️⃣ Update the customer tags
+    const mutation = `
+      mutation updateCustomerTags($id: ID!, $tags: [String!]!) {
+        customerUpdate(input: { id: $id, tags: $tags }) {
+          customer {
+            id
+            tags
+          }
+          userErrors {
+            field
+            message
+          }
+        }
+      }
+    `;
+    const updateResponse = await shopifyGraphQLRequest(shop, accessToken, mutation, { id: customerNode.id, tags: tagsToApply });
+
+    const errors = updateResponse.data.customerUpdate.userErrors;
+    if (errors.length) {
+      return res.status(400).json({ error: errors });
+    }
+
+    return res.status(200).json({
+      message: `Customer tags updated successfully`,
+      tagsApplied: tagsToApply,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Internal server error", details: err instanceof Error ? err.message : err });
   }
-};
+}

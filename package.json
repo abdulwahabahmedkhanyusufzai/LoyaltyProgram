@@ -15,6 +15,7 @@
   "dependencies": {
     "@prisma/client": "^6.16.2",
     "@radix-ui/react-alert-dialog": "^1.1.15",
+    "@shopify/shopify-api": "^12.1.1",
     "animate.css": "^4.1.1",
     "argon2": "^0.44.0",
     "axios": "^1.12.2",
