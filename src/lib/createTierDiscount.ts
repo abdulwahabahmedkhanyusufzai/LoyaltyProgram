@@ -1,5 +1,5 @@
+// src/scripts/createTierDiscounts.ts
 import { PrismaClient } from "@prisma/client";
-
 const prisma = new PrismaClient();
 
 const GET_SEGMENTS_QUERY = `
@@ -44,8 +44,13 @@ const CREATE_SEGMENT_DISCOUNT_MUTATION = `
 
 async function getShopDataFromDb() {
   try {
+    console.log("🟦 Fetching shop data from DB...");
     const shop = await prisma.shop.findFirst();
-    if (!shop?.accessToken || !shop?.shop) return null;
+    if (!shop) {
+      console.error("❌ No shop record found in DB!");
+      return null;
+    }
+    console.log(`✅ Found shop: ${shop.shop}`);
     return { accessToken: shop.accessToken, shopDomain: shop.shop };
   } catch (err) {
     console.error("❌ Prisma error fetching shop:", err);
@@ -53,12 +58,10 @@ async function getShopDataFromDb() {
   }
 }
 
-/**
- * 🔹 Creates Shopify discount codes for customer segments
- * Bronze (€14), Silver (€35), Gold (€49), Platinum (€80)
- */
 export async function createTierDiscounts() {
+  console.log("🚀 Starting Tier Discount Creation...");
   const shopData = await getShopDataFromDb();
+
   if (!shopData) {
     console.error("❌ Shop not found or unauthorized");
     return { error: "Shop not found or unauthorized" };
@@ -66,7 +69,8 @@ export async function createTierDiscounts() {
 
   const { shopDomain, accessToken } = shopData;
 
-  // 1️⃣ Fetch segments
+  // 🟦 STEP 1: Fetch Segments
+  console.log("📡 Fetching segments from Shopify...");
   const segmentRes = await fetch(`https://${shopDomain}/admin/api/2025-10/graphql.json`, {
     method: "POST",
     headers: {
@@ -77,9 +81,16 @@ export async function createTierDiscounts() {
   });
 
   const segmentData = await segmentRes.json();
-  const segments = segmentData?.data?.segments?.edges?.map((e: any) => e.node) || [];
+  if (!segmentData?.data?.segments?.edges) {
+    console.error("❌ Failed to retrieve segments:", segmentData?.errors || segmentData);
+    return { error: "Failed to fetch segments", raw: segmentData };
+  }
 
-  // 2️⃣ Find IDs for each tier segment
+  const segments = segmentData.data.segments.edges.map((e: any) => e.node);
+  console.log(`✅ Retrieved ${segments.length} segments.`);
+  console.table(segments.map((s: any) => ({ id: s.id, name: s.name })));
+
+  // 🟦 STEP 2: Find Tier Segments
   const tierSegments = {
     Bronze: segments.find((s: any) => s.name.toLowerCase().includes("bronze")),
     Silver: segments.find((s: any) => s.name.toLowerCase().includes("silver")),
@@ -87,7 +98,17 @@ export async function createTierDiscounts() {
     Platinum: segments.find((s: any) => s.name.toLowerCase().includes("platinum")),
   };
 
-  // 3️⃣ Discount amounts
+  console.log("🧩 Matched Tier Segments:");
+  console.table(
+    Object.entries(tierSegments).map(([tier, seg]) => ({
+      Tier: tier,
+      Found: !!seg,
+      SegmentID: seg?.id || "N/A",
+      SegmentName: seg?.name || "Not Found",
+    }))
+  );
+
+  // 🟦 STEP 3: Tier Discount Amounts
   const tierDiscounts = {
     Bronze: "14",
     Silver: "35",
@@ -97,9 +118,12 @@ export async function createTierDiscounts() {
 
   const results: Record<string, any> = {};
 
-  // 4️⃣ Create discounts
+  // 🟦 STEP 4: Create Discounts
   for (const [tier, segment] of Object.entries(tierSegments)) {
+    console.log(`\n🔹 Processing Tier: ${tier}`);
+
     if (!segment?.id) {
+      console.warn(`⚠️ Skipping ${tier} — segment not found.`);
       results[tier] = { success: false, error: "Segment not found" };
       continue;
     }
@@ -107,6 +131,9 @@ export async function createTierDiscounts() {
     const amount = tierDiscounts[tier as keyof typeof tierDiscounts];
     const title = `${tier} Tier Discount`;
     const code = `${tier.toUpperCase()}${amount}`;
+
+    console.log(`🧾 Creating Discount: ${title} | Code: ${code} | Amount: €${amount}`);
+    console.log(`🔗 Target Segment ID: ${segment.id}`);
 
     try {
       const res = await fetch(`https://${shopDomain}/admin/api/2025-10/graphql.json`, {
@@ -135,20 +162,42 @@ export async function createTierDiscounts() {
       });
 
       const data = await res.json();
-      const mutationData = data?.data?.discountCodeBasicCreate;
 
+      // Log full response for debugging
+      console.log(`📨 Response for ${tier} Discount:`);
+      console.dir(data, { depth: null });
+
+      const mutationData = data?.data?.discountCodeBasicCreate;
       if (mutationData?.userErrors?.length > 0) {
-        console.error(`${tier} discount errors:`, mutationData.userErrors);
+        console.error(`❌ ${tier} discount creation errors:`, mutationData.userErrors);
         results[tier] = { success: false, errors: mutationData.userErrors };
       } else {
-        results[tier] = { success: true, discount: mutationData.codeDiscountNode };
+        console.log(`✅ ${tier} discount created successfully.`);
+        results[tier] = { success: true, discount: mutationData?.codeDiscountNode };
       }
     } catch (err) {
-      console.error(`❌ Failed to create ${tier} discount:`, err);
-      results[tier] = { success: false, error: "Internal Server Error" };
+      console.error(`💥 Exception during ${tier} discount creation:`, err);
+      results[tier] = { success: false, error: String(err) };
     }
   }
 
-  console.log("✅ Tier discount creation results:", results);
+  console.log("\n🎯 Final Tier Discount Results:");
+  console.table(
+    Object.entries(results).map(([tier, res]) => ({
+      Tier: tier,
+      Success: res.success,
+      Error: res.error || "-",
+    }))
+  );
+
+  console.log("✅ Tier discount creation process completed.");
   return results;
+}
+
+// To run directly (manual trigger)
+if (require.main === module) {
+  createTierDiscounts()
+    .then(() => console.log("🏁 Script finished"))
+    .catch((err) => console.error("❌ Uncaught error:", err))
+    .finally(async () => await prisma.$disconnect());
 }
