@@ -10,23 +10,22 @@ export const runLoyaltyCronJob = async () => {
     const { shop, accessToken } = shopRecord;
     const shopifyUrl = `https://${shop}/admin/api/2025-10/graphql.json`;
 
-    // 2️⃣ Fetch customers
-    const customers = await prisma.customer.findMany({
-      where: { numberOfOrders: { gt: 0 } },
-      include: {
-        pointsLedger: { orderBy: { earnedAt: "desc" }, take: 1 },
-      },
-    });
-
+    // 2️⃣ Fetch customers with numberOfOrders > 0
+    const customers = await prisma.customer.findMany();
     console.log(`🧾 Found ${customers.length} customers`);
 
-    // Define tier order for cumulative tags
+    // Tier order for cumulative tags
     const tierOrder = ["Bronze", "Silver", "Gold", "Platinum"];
 
     for (const customer of customers) {
       const amountSpent = Number(customer.amountSpent || 0);
-      const lastEntry = customer.pointsLedger[0];
-      const currentBalance = lastEntry?.balanceAfter || 0;
+
+      // Fetch last PointsLedger entry safely
+      const lastLedger = await prisma.pointsLedger.findFirst({
+        where: { customerId: customer.id },
+        orderBy: { earnedAt: "desc" },
+      });
+      const currentBalance = lastLedger?.balanceAfter || 0;
 
       // Determine tier + multiplier
       let tier = "Welcomed";
@@ -51,7 +50,7 @@ export const runLoyaltyCronJob = async () => {
         continue;
       }
 
-      // ---- Update DB ----
+      // ---- Update DB: Customer and PointsLedger ----
       await prisma.$transaction([
         prisma.customer.update({
           where: { id: customer.id },
@@ -68,7 +67,7 @@ export const runLoyaltyCronJob = async () => {
         }),
       ]);
 
-      // ---- Send email ----
+      // ---- Send email notification ----
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/send-email`, {
           method: "POST",
@@ -86,9 +85,9 @@ export const runLoyaltyCronJob = async () => {
         console.error(`❌ Failed to send email to ${customer.email}:`, mailErr);
       }
 
-      // ---- Update Shopify customer tags ----
+      // ---- Update Shopify customer tags safely ----
       try {
-        // 1️⃣ Get Shopify customer ID and existing tags
+        // Get Shopify customer ID and existing tags
         const getCustomerQuery = `
           query ($email: String!) {
             customers(first: 1, query: $email) {
@@ -110,11 +109,16 @@ export const runLoyaltyCronJob = async () => {
         const shopCustomer = data?.data?.customers?.edges[0]?.node;
 
         if (shopCustomer) {
-          // 2️⃣ Build cumulative tags
+          // Build cumulative loyalty tags
           const index = tierOrder.indexOf(tier);
-          const tagsToApply = tierOrder.slice(0, index + 1);
+          const loyaltyTags = tierOrder.slice(0, index + 1);
 
-          // 3️⃣ Update tags via GraphQL
+          // Preserve non-loyalty tags
+          const existingTags = shopCustomer.tags?.split(",").map((t: string) => t.trim()) || [];
+          const nonLoyaltyTags = existingTags.filter((t: string) => !tierOrder.includes(t));
+          const tagsToApply = [...nonLoyaltyTags, ...loyaltyTags];
+
+          // Update Shopify tags via GraphQL
           const updateTagsMutation = `
             mutation ($id: ID!, $tags: [String!]!) {
               customerUpdate(input: { id: $id, tags: $tags }) {
@@ -132,7 +136,6 @@ export const runLoyaltyCronJob = async () => {
             body: JSON.stringify({ query: updateTagsMutation, variables: { id: shopCustomer.id, tags: tagsToApply } }),
           });
           const updateData = await updateRes.json();
-
           if (updateData.data.customerUpdate.userErrors.length) {
             console.error(`❌ Shopify tag update errors:`, updateData.data.customerUpdate.userErrors);
           }
