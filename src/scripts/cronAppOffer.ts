@@ -1,6 +1,6 @@
 // src/scripts/cronApplyOffers.ts
 import { runLoyaltyCronJob } from "../app/utils/applyOffertoCustomer";
-import { createTierDiscounts } from "../app/utils/createTierDiscounts"; // adjust the path if different
+import { createTierDiscounts } from "../lib/createTierDiscount"; // adjust the path if different
 import cron from "node-cron";
 
 async function runOffers() {
