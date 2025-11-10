@@ -1,4 +1,3 @@
-// components/TopSellingProductsHorizontal.tsx
 "use client";
 
 import React, { useRef } from "react";
@@ -7,12 +6,12 @@ import { SkeletonProduct } from "./SkeltonOfferFetching";
 
 export const TopSellingProductsHorizontal = () => {
   const { products, loading } = useTopProducts(2, 10);
-   const scrollerRef = useRef<HTMLDivElement | null>(null);
-   const isDown = useRef(false);
-   const startX = useRef(0);
-   const scrollLeft = useRef(0);
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const isDown = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
 
-   const getClientX = (e: any) => {
+  const getClientX = (e: any) => {
     if (e.touches?.length) return e.touches[0].clientX;
     if (e.changedTouches?.length) return e.changedTouches[0].clientX;
     if (typeof e.clientX === "number") return e.clientX;
@@ -55,7 +54,16 @@ export const TopSellingProductsHorizontal = () => {
       } catch {}
     }
   };
-  
+
+  // ✅ If no products, show simple text
+  if (!loading && products.length === 0) {
+    return (
+      <div className="w-full py-4 text-center text-gray-500">
+        No top-selling products available
+      </div>
+    );
+  }
+
   return (
     <div
       ref={scrollerRef}
@@ -71,7 +79,7 @@ export const TopSellingProductsHorizontal = () => {
       onTouchStart={startDrag}
       onTouchMove={moveDrag}
       onTouchEnd={endDrag}
-      className="pt-[5px] flex overflow-x-auto no-scrollbar gap-[5px] scroll-smooth snap-x snap-mandatory cursor-grab "
+      className="pt-[5px] flex overflow-x-auto no-scrollbar gap-[5px] scroll-smooth snap-x snap-mandatory cursor-grab"
       style={{ WebkitOverflowScrolling: "touch", touchAction: "pan-x" }}
     >
       {loading
