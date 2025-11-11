@@ -19,19 +19,28 @@ const GET_SEGMENTS_QUERY = `
   }
 `;
 
-const GET_EXISTING_DISCOUNTS_QUERY = `
-  query {
-    discountCodes(first: 50) {
-      edges {
-        node {
-          id
-          title
-          codes(first: 10) {
-            nodes {
-              code
+const LIST_DISCOUNTS_QUERY = `
+  query ListDiscounts($after: String) {
+    discountNodes(first: 10, after: $after) {
+      nodes {
+        id
+        discount {
+          ... on DiscountCodeBasic {
+            title
+            status
+            codes(first: 10) {
+              nodes { code }
             }
           }
+          ... on DiscountAutomaticBasic {
+            title
+            status
+          }
         }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
       }
     }
   }
@@ -80,6 +89,39 @@ async function getShopDataFromDb() {
     console.error("❌ Prisma error fetching shop:", err);
     return null;
   }
+}
+
+// =======================
+// Fetch All Discounts (Paginated)
+// =======================
+async function fetchAllDiscounts(shopDomain: string, accessToken: string) {
+  let hasNextPage = true;
+  let endCursor: string | null = null;
+  const allDiscounts: any[] = [];
+
+  while (hasNextPage) {
+    const res = await fetch(`https://${shopDomain}/admin/api/2025-10/graphql.json`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Shopify-Access-Token": accessToken,
+      },
+      body: JSON.stringify({
+        query: LIST_DISCOUNTS_QUERY,
+        variables: { after: endCursor },
+      }),
+    });
+
+    const data = await res.json();
+    const nodes = data?.data?.discountNodes?.nodes || [];
+    allDiscounts.push(...nodes);
+
+    const pageInfo = data?.data?.discountNodes?.pageInfo;
+    hasNextPage = pageInfo?.hasNextPage || false;
+    endCursor = pageInfo?.endCursor || null;
+  }
+
+  return allDiscounts;
 }
 
 // =======================
@@ -134,31 +176,28 @@ export async function createTierDiscounts() {
     Platinum: "80",
   };
 
-  // 🟦 STEP 4: Fetch Existing Discounts
+  // 🟦 STEP 4: Fetch Existing Discounts (All Types)
   console.log("🔍 Checking existing discounts...");
-  const discountRes = await fetch(
-    `https://${shopDomain}/admin/api/2025-10/graphql.json`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Shopify-Access-Token": accessToken,
-      },
-      body: JSON.stringify({ query: GET_EXISTING_DISCOUNTS_QUERY }),
-    }
+  const existingDiscounts = await fetchAllDiscounts(shopDomain, accessToken);
+
+  const existingTitles = existingDiscounts
+    .map(d => d.discount?.title)
+    .filter(Boolean);
+
+  const existingCodes = existingDiscounts
+    .flatMap(d => d.discount?.codes?.nodes?.map((c: any) => c.code.toUpperCase()) || [])
+    .filter(Boolean);
+
+  console.log(`📦 Found ${existingDiscounts.length} total discounts.`);
+  console.table(
+    existingDiscounts.map(d => ({
+      id: d.id,
+      title: d.discount?.title,
+      codes: d.discount?.codes?.nodes?.map((c: any) => c.code).join(", "),
+    }))
   );
 
-  const discountData = await discountRes.json();
-  const existingDiscounts =
-    discountData?.data?.discountCodes?.edges?.map((e: any) => e.node) || [];
-
-  console.log(`📦 Found ${existingDiscounts.length} existing discounts.`);
-  const existingTitles = existingDiscounts.map((d: any) => d.title);
-  const existingCodes = existingDiscounts.flatMap(
-    (d: any) => d.codes.nodes.map((c: any) => c.code)
-  );
-
-  // 🟦 STEP 5: Create Discounts (Skip if already exist)
+  // 🟦 STEP 5: Create Discounts (Skip if Already Exists)
   const results: Record<string, any> = {};
 
   for (const [tier, segment] of Object.entries(tierSegments)) {
@@ -181,9 +220,7 @@ export async function createTierDiscounts() {
       continue;
     }
 
-    console.log(
-      `🧾 Creating Discount: ${title} | Code: ${code} | Amount: €${amount}`
-    );
+    console.log(`🧾 Creating Discount: ${title} | Code: ${code} | Amount: €${amount}`);
 
     try {
       const res = await fetch(
