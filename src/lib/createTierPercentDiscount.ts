@@ -41,17 +41,11 @@ export async function createTierPercentageDiscounts() {
 
   const tierSegments: Record<string, any> = {};
   for (const [tier, res] of Object.entries(tierSegmentResults)) {
-    if (res.segment?.id) {
-      // Newly created segment
-      tierSegments[tier] = res.segment;
-      console.log(`✅ Using newly created segment for ${tier}: ${res.segment.id}`);
-    } else if (res.segmentId) {
+    if (res.segmentId) {
       // Existing segment that was skipped
       tierSegments[tier] = { id: res.segmentId };
       console.log(`✅ Using existing segment for ${tier}: ${res.segmentId}`);
-    } else {
-      console.warn(`⚠️ ${tier} segment creation failed, skipping discount for this tier.`);
-    }
+    } 
   }
 
   // -----------------------

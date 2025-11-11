@@ -1,6 +1,6 @@
 // src/scripts/createTierFreeShipping.ts
 import { PrismaClient } from "@prisma/client";
-import { getShopDataFromDb, createTierSegments } from "./createTierDiscount";
+import { getShopDataFromDb } from "./createTierDiscount";
 
 const prisma = new PrismaClient();
 
@@ -38,22 +38,40 @@ export async function createTierFreeShippingDiscounts() {
   const { shopDomain, accessToken } = shopData;
 
   // -----------------------
-  // STEP 1: Ensure Segments Exist
+  // STEP 1: Fetch Existing Segments
   // -----------------------
   const tiers = ["Bronze", "Silver", "Gold", "Platinum"];
-  const tierSegmentResults = await createTierSegments(shopDomain, accessToken, []);
+
+  const fetchSegmentsQuery = `
+    query {
+      segments(first: 50) {
+        edges {
+          node {
+            id
+            name
+          }
+        }
+      }
+    }
+  `;
+
+  const segmentRes = await fetch(`https://${shopDomain}/admin/api/2025-10/graphql.json`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Shopify-Access-Token": accessToken },
+    body: JSON.stringify({ query: fetchSegmentsQuery }),
+  });
+
+  const segmentData = await segmentRes.json();
+  const allSegments = segmentData?.data?.segments?.edges.map((e: any) => e.node) || [];
 
   const tierSegments: Record<string, any> = {};
   for (const tier of tiers) {
-    const res = tierSegmentResults[tier];
-    if (res?.segment?.id) {
-      tierSegments[tier] = res.segment;
-      console.log(`✅ Using segment for ${tier}: ${res.segment.id}`);
-    } else if (res?.segmentId) {
-      tierSegments[tier] = { id: res.segmentId };
-      console.log(`✅ Using existing segment for ${tier}: ${res.segmentId}`);
+    const matched = allSegments.find((s: any) => s.name.toLowerCase().includes(tier.toLowerCase()));
+    if (matched) {
+      tierSegments[tier] = { id: matched.id };
+      console.log(`✅ Found existing segment for ${tier}: ${matched.id}`);
     } else {
-      console.warn(`⚠️ ${tier} segment creation failed`);
+      console.warn(`⚠️ No existing segment found for ${tier}`);
     }
   }
 
@@ -62,9 +80,9 @@ export async function createTierFreeShippingDiscounts() {
   // -----------------------
   const tierRules: Record<string, any> = {
     Bronze: { appliesOncePerCustomer: false, destination: { all: true } }, // No free shipping -> skip
-    Silver: { appliesOncePerCustomer: true, destination: { all: true } }, // On next order
-    Gold: { appliesOncePerCustomer: true, destination: { all: true } },   // On next order
-    Platinum: { appliesOncePerCustomer: false, destination: { all: true } }, // As long as status active
+    Silver: { appliesOncePerCustomer: true, destination: { all: true } },
+    Gold: { appliesOncePerCustomer: true, destination: { all: true } },
+    Platinum: { appliesOncePerCustomer: false, destination: { all: true } },
   };
 
   const results: Record<string, any> = {};
