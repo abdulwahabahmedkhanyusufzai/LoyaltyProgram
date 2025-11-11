@@ -1,12 +1,14 @@
 // src/scripts/createTierDiscountsPercentage.ts
 import { PrismaClient } from "@prisma/client";
-import { CREATE_SEGMENT_DISCOUNT_MUTATION,createTierSegments,fetchAllDiscounts, GET_SEGMENTS_QUERY, getShopDataFromDb} from "./createTierDiscount";
+import {
+  CREATE_SEGMENT_DISCOUNT_MUTATION,
+  createTierSegments,
+  fetchAllDiscounts,
+  GET_SEGMENTS_QUERY,
+  getShopDataFromDb,
+} from "./createTierDiscount";
+
 const prisma = new PrismaClient();
-
-// =======================
-// Helper: Create Segment
-// =======================
-
 
 // =======================
 // Main Function
@@ -14,6 +16,9 @@ const prisma = new PrismaClient();
 export async function createTierPercentageDiscounts() {
   console.log("🚀 Starting Tier Percentage Discount Creation...");
 
+  // -----------------------
+  // STEP 0: Get Shop Data
+  // -----------------------
   const shopData = await getShopDataFromDb();
   if (!shopData) return { error: "Shop not found or unauthorized" };
   const { shopDomain, accessToken } = shopData;
@@ -27,37 +32,25 @@ export async function createTierPercentageDiscounts() {
     body: JSON.stringify({ query: GET_SEGMENTS_QUERY }),
   });
   const segmentData = await segmentRes.json();
-  const segments = segmentData?.data?.segments?.edges?.map((e: any) => e.node) || [];
-
-  const tierTags: Record<string, string> = {
-    Bronze: "Bronze",
-    Silver: "Silver",
-    Gold: "Gold",
-    Platinum: "Platinum",
-  };
-
-  const tierSegments: Record<string, any> = {};
+  const existingSegments = segmentData?.data?.segments?.edges?.map((e: any) => e.node) || [];
 
   // -----------------------
   // STEP 2: Ensure Segments Exist
   // -----------------------
-  for (const [tier, tag] of Object.entries(tierTags)) {
-    const existingSegment = segments.find((s: any) => s.name.toLowerCase().includes(tier.toLowerCase()));
-    if (existingSegment) {
-      console.log(`⚠️ Segment for ${tier} already exists — skipping creation.`);
-      tierSegments[tier] = existingSegment;
+  const tierSegmentResults = await createTierSegments(shopDomain, accessToken, existingSegments);
+
+  const tierSegments: Record<string, any> = {};
+  for (const [tier, res] of Object.entries(tierSegmentResults)) {
+    if (res.segment?.id) {
+      tierSegments[tier] = res.segment;
+      console.log(`✅ Using segment for ${tier}: ${res.segment.id}`);
     } else {
-      console.log(`⚡ Creating missing segment for ${tier}...`);
-      const segment = await createTierSegments(shopDomain, accessToken, existingSegment);
-      if (segment) {
-        tierSegments[tier] = segment;
-        console.log(`✅ Segment created for ${tier} with ID ${segment.id}`);
-      }
+      console.warn(`⚠️ ${tier} segment creation failed, skipping discount for this tier.`);
     }
   }
 
   // -----------------------
-  // STEP 3: Tier Percentage Discounts
+  // STEP 3: Define Tier Percentages
   // -----------------------
   const tierPercentages: Record<string, number> = {
     Bronze: 0.10,
@@ -82,8 +75,8 @@ export async function createTierPercentageDiscounts() {
   // -----------------------
   for (const [tier, segment] of Object.entries(tierSegments)) {
     console.log(`\n🔹 Processing Tier: ${tier}`);
+
     if (!segment?.id) {
-      console.warn(`⚠️ Skipping ${tier} — segment not found.`);
       results[tier] = { success: false, error: "Segment not found" };
       continue;
     }
@@ -117,6 +110,7 @@ export async function createTierPercentageDiscounts() {
           },
         }),
       });
+
       const data = await res.json();
       const mutationData = data?.data?.discountCodeBasicCreate;
 
@@ -133,6 +127,9 @@ export async function createTierPercentageDiscounts() {
     }
   }
 
+  // -----------------------
+  // STEP 6: Log Summary
+  // -----------------------
   console.log("\n🎯 Final Tier Percentage Discount Results:");
   console.table(
     Object.entries(results).map(([tier, res]) => ({
