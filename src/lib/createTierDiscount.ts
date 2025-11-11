@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 // =======================
 // GraphQL Queries & Mutations
 // =======================
-const GET_SEGMENTS_QUERY = `
+export const GET_SEGMENTS_QUERY = `
   query {
     segments(first: 20) {
       edges {
@@ -19,7 +19,7 @@ const GET_SEGMENTS_QUERY = `
   }
 `;
 
-const LIST_DISCOUNTS_QUERY = `
+export const LIST_DISCOUNTS_QUERY = `
   query ListDiscounts($after: String) {
     discountNodes(first: 10, after: $after) {
       nodes {
@@ -41,7 +41,7 @@ const LIST_DISCOUNTS_QUERY = `
   }
 `;
 
-const CREATE_SEGMENT_DISCOUNT_MUTATION = `
+export const CREATE_SEGMENT_DISCOUNT_MUTATION = `
   mutation CreateSegmentDiscountCode($basicCodeDiscount: DiscountCodeBasicInput!) {
     discountCodeBasicCreate(basicCodeDiscount: $basicCodeDiscount) {
       codeDiscountNode {
@@ -67,7 +67,7 @@ const CREATE_SEGMENT_DISCOUNT_MUTATION = `
   }
 `;
 
-const CREATE_SEGMENT_MUTATION = `
+export const CREATE_SEGMENT_MUTATION = `
   mutation CreateSegment($name: String!, $query: String!) {
     segmentCreate(name: $name, query: $query) {
       segment { id name query creationDate lastEditDate }
@@ -79,7 +79,7 @@ const CREATE_SEGMENT_MUTATION = `
 // =======================
 // Fetch Shop Data from DB
 // =======================
-async function getShopDataFromDb() {
+export async function getShopDataFromDb() {
   try {
     console.log("🟦 Fetching shop data from DB...");
     const shop = await prisma.shop.findFirst();
@@ -98,7 +98,7 @@ async function getShopDataFromDb() {
 // =======================
 // Fetch All Discounts (Paginated)
 // =======================
-async function fetchAllDiscounts(shopDomain: string, accessToken: string) {
+export async function fetchAllDiscounts(shopDomain: string, accessToken: string) {
   let hasNextPage = true;
   let endCursor: string | null = null;
   const allDiscounts: any[] = [];
@@ -131,7 +131,7 @@ async function fetchAllDiscounts(shopDomain: string, accessToken: string) {
 // =======================
 // Create Tier Segments If Missing
 // =======================
-async function createTierSegments(shopDomain: string, accessToken: string, existingSegments: any[]) {
+export async function createTierSegments(shopDomain: string, accessToken: string, existingSegments: any[]) {
   const tierTags = ["Bronze", "Silver", "Gold", "Platinum"];
   const results: Record<string, any> = {};
 
