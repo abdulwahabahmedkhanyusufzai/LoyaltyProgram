@@ -3,6 +3,7 @@ import { createTierPercentageDiscounts } from "@/lib/createTierPercentDiscount";
 import { runLoyaltyCronJob } from "../app/utils/applyOffertoCustomer";
 import { createTierDiscounts } from "../lib/createTierDiscount"; // adjust the path if different
 import cron from "node-cron";
+import { createTierFreeShippingDiscounts } from "@/lib/createTierFreeShipping";
 
 async function runOffers() {
   try {
@@ -19,6 +20,8 @@ async function runOffers() {
     const discountPercent = await createTierPercentageDiscounts();
     console.log("Tier Percen Discount Created",discountPercent);
     
+    const tierFree = await createTierFreeShippingDiscounts();
+    console.log("Tier Free Shipping Created",tierFree);
   } catch (err) {
     console.error("❌ Error in cron job:", err);
   }
