@@ -14,7 +14,8 @@ interface ShopifyOrder {
 }
 
 export async function POST(req: Request): Promise<Response> {
-  try {
+   console.log("Webhook trigger");
+    try {
     const secret = process.env.NEXT_SHOPIFY_API_SECRET;
     if (!secret) {
       console.error("❌ Missing NEXT_SHOPIFY_API_SECRET in environment variables");
