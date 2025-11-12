@@ -9,6 +9,11 @@ handle = "loyalty-program-waro"
 [webhooks]
 api_version = "2025-07"
 
+[[webhooks.subscriptions]]
+topics = [ "orders/create" ]
+
+uri = "https://waro.d.codetors.dev/api/order-create"
+
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
 scopes = "write_discounts,read_discounts,read_orders,read_customers,write_customers,write_content,read_content,read_products,write_products,write_files,read_files,write_online_store_navigation,read_online_store_navigation,write_publications,read_publications,write_product_listings,read_product_listings"
