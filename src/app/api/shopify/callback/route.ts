@@ -61,13 +61,9 @@ export async function GET(req) {
           webhookSubscription {
             id
             topic
-            filter
-            endpoint {
-              ... on WebhookHttpEndpoint {
-                callbackUrl
-              }
+            format
+            uri
             }
-          }
           userErrors {
             field
             message
@@ -79,10 +75,8 @@ export async function GET(req) {
     const webhookVariables = {
       topic: "ORDERS_CREATE",
       webhookSubscription: {
-        endpoint: {
-          callbackUrl: `${process.env.NEXT_PUBLIC_API_URL}/api/order-create`,
-        },
-        filter: null, // optional: use filters if needed, e.g., "type:lookbook"
+        uri: `${process.env.NEXT_PUBLIC_API_URL}/api/order-create`,
+        format: "JSON", // optional: use filters if needed, e.g., "type:lookbook"
       },
     };
 
