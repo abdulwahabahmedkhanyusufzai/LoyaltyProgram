@@ -18,7 +18,7 @@ export async function GET(req) {
 
     console.log("🛒 OAuth callback for:", shop);
 
-    // Exchange code for access token
+    // Step 1: Exchange code for access token
     const tokenResponse = await fetch(`https://${shop}/admin/oauth/access_token`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
@@ -31,7 +31,7 @@ export async function GET(req) {
 
     if (!tokenResponse.ok) {
       const err = await tokenResponse.text();
-      console.error("Failed to fetch access token:", err);
+      console.error("❌ Failed to fetch access token:", err);
       return NextResponse.json({ error: "Shopify access token error", details: err }, { status: 500 });
     }
 
@@ -42,10 +42,15 @@ export async function GET(req) {
       return NextResponse.json({ error: "No access token received" }, { status: 500 });
     }
 
-    // Clean existing record (optional)
-    await prisma.shop.deleteMany({});
-    await prisma.shop.create({
-      data: {
+    // Step 2: Store or update shop in DB
+    await prisma.shop.upsert({
+      where: { shop },
+      update: {
+        accessToken: access_token,
+        scope,
+        updatedAt: new Date(),
+      },
+      create: {
         shop,
         accessToken: access_token,
         scope,
@@ -56,9 +61,7 @@ export async function GET(req) {
 
     console.log(`✅ Stored shop credentials for ${shop}`);
 
-    // ----------------------------
-    // 🧩 STEP 2: Register Webhook
-    // ----------------------------
+    // Step 3: Register webhook (GraphQL)
     const webhookMutation = `
       mutation webhookSubscriptionCreate($topic: WebhookSubscriptionTopic!, $webhookSubscription: WebhookSubscriptionInput!) {
         webhookSubscriptionCreate(topic: $topic, webhookSubscription: $webhookSubscription) {
@@ -99,18 +102,21 @@ export async function GET(req) {
 
     const webhookData = await webhookResponse.json();
 
-    if (webhookData?.data?.webhookSubscriptionCreate?.userErrors?.length) {
-      console.error("⚠️ Webhook user errors:", webhookData.data.webhookSubscriptionCreate.userErrors);
+    const userErrors = webhookData?.data?.webhookSubscriptionCreate?.userErrors || [];
+    const webhookInfo = webhookData?.data?.webhookSubscriptionCreate?.webhookSubscription;
+
+    if (userErrors.length > 0) {
+      console.error("⚠️ Webhook user errors:", userErrors);
+    } else if (webhookInfo) {
+      console.log("✅ Webhook registered:", webhookInfo);
     } else {
-      console.log("✅ Webhook registered:", webhookData.data.webhookSubscriptionCreate.webhookSubscription);
+      console.warn("⚠️ Unexpected webhook response:", webhookData);
     }
 
-    // ----------------------------
-    // ✅ STEP 3: Redirect back to app
-    // ----------------------------
+    // Step 4: Redirect back to app
     const appUrl = process.env.NEXT_PUBLIC_API_URL;
     if (!appUrl) {
-      console.error("APP_URL not set in environment");
+      console.error("❌ NEXT_PUBLIC_API_URL not set in environment");
       return NextResponse.json({ error: "Server config error" }, { status: 500 });
     }
 
