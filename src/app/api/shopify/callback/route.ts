@@ -51,7 +51,7 @@ export async function GET(req) {
 
     console.log(`✅ Stored shop credentials for ${shop}`);
 
-    // Step 3: Register webhook (GraphQL, fixed endpoint)
+    // Step 3: Register webhook using latest GraphQL schema
     const webhookMutation = `
       mutation webhookSubscriptionCreate(
         $topic: WebhookSubscriptionTopic!,
@@ -61,7 +61,7 @@ export async function GET(req) {
           webhookSubscription {
             id
             topic
-            format
+            filter
             endpoint {
               ... on WebhookHttpEndpoint {
                 callbackUrl
@@ -79,10 +79,10 @@ export async function GET(req) {
     const webhookVariables = {
       topic: "ORDERS_CREATE",
       webhookSubscription: {
-        format: "JSON",
         endpoint: {
           callbackUrl: `${process.env.NEXT_PUBLIC_API_URL}/api/order-create`,
         },
+        filter: null, // optional: use filters if needed, e.g., "type:lookbook"
       },
     };
 
