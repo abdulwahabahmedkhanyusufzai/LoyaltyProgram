@@ -45,31 +45,28 @@ export async function GET(req) {
     // Step 2: Store or update shop in DB
     await prisma.shop.upsert({
       where: { shop },
-      update: {
-        accessToken: access_token,
-        scope,
-        updatedAt: new Date(),
-      },
-      create: {
-        shop,
-        accessToken: access_token,
-        scope,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
+      update: { accessToken: access_token, scope, updatedAt: new Date() },
+      create: { shop, accessToken: access_token, scope, createdAt: new Date(), updatedAt: new Date() },
     });
 
     console.log(`✅ Stored shop credentials for ${shop}`);
 
-    // Step 3: Register webhook (GraphQL)
+    // Step 3: Register webhook (GraphQL, fixed endpoint)
     const webhookMutation = `
-      mutation webhookSubscriptionCreate($topic: WebhookSubscriptionTopic!, $webhookSubscription: WebhookSubscriptionInput!) {
+      mutation webhookSubscriptionCreate(
+        $topic: WebhookSubscriptionTopic!,
+        $webhookSubscription: WebhookSubscriptionInput!
+      ) {
         webhookSubscriptionCreate(topic: $topic, webhookSubscription: $webhookSubscription) {
           webhookSubscription {
             id
             topic
             format
-            uri
+            endpoint {
+              ... on WebhookHttpEndpoint {
+                callbackUrl
+              }
+            }
           }
           userErrors {
             field
@@ -82,8 +79,10 @@ export async function GET(req) {
     const webhookVariables = {
       topic: "ORDERS_CREATE",
       webhookSubscription: {
-        uri: `${process.env.NEXT_PUBLIC_API_URL}/api/order-create`,
         format: "JSON",
+        endpoint: {
+          callbackUrl: `${process.env.NEXT_PUBLIC_API_URL}/api/order-create`,
+        },
       },
     };
 
@@ -94,14 +93,10 @@ export async function GET(req) {
         "X-Shopify-Access-Token": access_token,
         Accept: "application/json",
       },
-      body: JSON.stringify({
-        query: webhookMutation,
-        variables: webhookVariables,
-      }),
+      body: JSON.stringify({ query: webhookMutation, variables: webhookVariables }),
     });
 
     const webhookData = await webhookResponse.json();
-
     const userErrors = webhookData?.data?.webhookSubscriptionCreate?.userErrors || [];
     const webhookInfo = webhookData?.data?.webhookSubscriptionCreate?.webhookSubscription;
 
