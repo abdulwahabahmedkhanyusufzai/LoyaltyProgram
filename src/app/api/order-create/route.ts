@@ -2,8 +2,6 @@ import crypto from "crypto";
 import { NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
 import { OrderStatus } from "@prisma/client";
-
-// Import your cron job function
 import { runOffers } from "../../../scripts/cronAppOffer";
 
 const VERBOSE_DEBUG = process.env.DEBUG_SHOPIFY_WEBHOOK === "true";
@@ -14,6 +12,7 @@ interface ShopifyOrder {
   total_price: string;
   currency: string;
   financial_status?: string;
+  total_discounts?: string; // Discount amount
   customer?: {
     id: any;
     email?: string;
@@ -24,17 +23,12 @@ interface ShopifyOrder {
   [key: string]: any;
 }
 
-// Map Shopify financial_status to Prisma OrderStatus enum
 const mapFinancialStatusToOrderStatus = (status?: string): OrderStatus => {
   switch (status?.toUpperCase()) {
-    case "PAID":
-      return OrderStatus.COMPLETED;
-    case "REFUNDED":
-      return OrderStatus.REFUNDED;
-    case "CANCELLED":
-      return OrderStatus.CANCELLED;
-    default:
-      return OrderStatus.PENDING;
+    case "PAID": return OrderStatus.COMPLETED;
+    case "REFUNDED": return OrderStatus.REFUNDED;
+    case "CANCELLED": return OrderStatus.CANCELLED;
+    default: return OrderStatus.PENDING;
   }
 };
 
@@ -48,7 +42,7 @@ export async function POST(req: Request): Promise<Response> {
 
     const body = await req.text();
 
-    // Verify HMAC
+    // HMAC verification
     const hash = crypto.createHmac("sha256", secret).update(body, "utf8").digest("base64");
     const hmacBuffer = Buffer.from(hmacHeader, "base64");
     const hashBuffer = Buffer.from(hash, "base64");
@@ -114,13 +108,37 @@ export async function POST(req: Request): Promise<Response> {
       console.log(`✅ Order ${order.orderNumber} saved for customer ${customer.email}`);
     }
 
-    // --- Run Offers Cron Job ---
-    try {
-      console.log("🚀 Running offers cron job...");
-      await runOffers();
-      console.log("✅ Offers cron job executed successfully.");
-    } catch (cronError) {
-      console.error("❌ Error running offers cron job:", cronError);
+    // --- Deduct points if discount applied ---
+    const discountAmount = parseFloat(orderData.total_discounts || "0");
+    if (discountAmount > 0) {
+      const lastLedger = await prisma.pointsLedger.findFirst({
+        where: { customerId: customer.id },
+        orderBy: { earnedAt: "desc" },
+      });
+      const currentBalance = lastLedger?.balanceAfter || 0;
+      const newBalance = currentBalance - discountAmount;
+
+      await prisma.pointsLedger.create({
+        data: {
+          customerId: customer.id,
+          change: -discountAmount,
+          balanceAfter: newBalance,
+          reason: "Discount applied",
+          sourceType: "WEBHOOK_ORDER",
+        },
+      });
+
+      console.log(`🟠 Deducted ${discountAmount} points from ${customer.email}. New balance: ${newBalance}`);
+      console.log("ℹ️ Discount applied, skipping offers cron job.");
+    } else {
+      // --- Run Offers Cron Job only if no discount ---
+      try {
+        console.log("🚀 Running offers cron job...");
+        await runOffers();
+        console.log("✅ Offers cron job executed successfully.");
+      } catch (cronError) {
+        console.error("❌ Error running offers cron job:", cronError);
+      }
     }
 
     return NextResponse.json({ message: "Webhook processed successfully" }, { status: 200 });
