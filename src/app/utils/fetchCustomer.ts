@@ -48,7 +48,7 @@ export function useCustomers() {
     try {
       setLoading(true);
 
-      const resCustomers = await fetch(`/api/customers?first=10`);
+      const resCustomers = await fetch(`/api/customers/byMonth?first=10`);
       const customersData: { customers: CustomerApiResponse[] } = await resCustomers.json();
 
       const resPoints = await fetch(`/api/customers/points`);
