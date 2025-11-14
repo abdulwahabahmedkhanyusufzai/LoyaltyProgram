@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import { NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
+import { OrderStatus } from "@prisma/client";
 
 const VERBOSE_DEBUG = process.env.DEBUG_SHOPIFY_WEBHOOK === "true";
 
@@ -11,6 +12,7 @@ interface ShopifyOrder {
   currency: string;
   financial_status?: string;
   customer?: {
+    id: any;
     email?: string;
     first_name?: string;
     last_name?: string;
@@ -18,6 +20,20 @@ interface ShopifyOrder {
   created_at?: string;
   [key: string]: any;
 }
+
+// Map Shopify financial_status to Prisma OrderStatus enum
+const mapFinancialStatusToOrderStatus = (status?: string): OrderStatus => {
+  switch (status?.toUpperCase()) {
+    case "PAID":
+      return OrderStatus.COMPLETED;
+    case "REFUNDED":
+      return OrderStatus.REFUNDED;
+    case "CANCELLED":
+      return OrderStatus.CANCELLED;
+    default:
+      return OrderStatus.PENDING;
+  }
+};
 
 export async function POST(req: Request): Promise<Response> {
   try {
@@ -55,19 +71,20 @@ export async function POST(req: Request): Promise<Response> {
           lastName: orderData.customer?.last_name || "Unknown",
           numberOfOrders: 0,
           amountSpent: 0,
+          shopifyId: orderData.customer?.id?.toString() || crypto.randomUUID(),
         },
       });
       console.log("✅ Created new customer:", customer.email);
     }
 
-    // Create the order and link to customer
+    // Create the order
     const order = await prisma.order.create({
       data: {
         customerId: customer.id,
         orderNumber: orderData.order_number.toString(),
         totalAmount: parseFloat(orderData.total_price),
         currency: orderData.currency || "EUR",
-        status: orderData.financial_status?.toUpperCase() || "PENDING",
+        status: mapFinancialStatusToOrderStatus(orderData.financial_status),
         createdAt: orderData.created_at ? new Date(orderData.created_at) : new Date(),
       },
     });
@@ -82,8 +99,8 @@ export async function POST(req: Request): Promise<Response> {
     });
 
     console.log(`✅ Order ${order.orderNumber} saved for customer ${customer.email}`);
-    return NextResponse.json({ message: "Webhook processed successfully" }, { status: 200 });
 
+    return NextResponse.json({ message: "Webhook processed successfully" }, { status: 200 });
   } catch (error) {
     console.error("❌ Error processing webhook:", error);
     return NextResponse.json({ message: "Internal server error" }, { status: 500 });
