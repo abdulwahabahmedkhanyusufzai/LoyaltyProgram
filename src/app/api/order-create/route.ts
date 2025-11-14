@@ -3,6 +3,9 @@ import { NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
 import { OrderStatus } from "@prisma/client";
 
+// Import your cron job function
+import {runOffers}  from "../../../scripts/cronAppOffer"; // adjust path accordingly
+
 const VERBOSE_DEBUG = process.env.DEBUG_SHOPIFY_WEBHOOK === "true";
 
 interface ShopifyOrder {
@@ -21,7 +24,6 @@ interface ShopifyOrder {
   [key: string]: any;
 }
 
-// Map Shopify financial_status to Prisma OrderStatus enum
 const mapFinancialStatusToOrderStatus = (status?: string): OrderStatus => {
   switch (status?.toUpperCase()) {
     case "PAID":
@@ -62,7 +64,6 @@ export async function POST(req: Request): Promise<Response> {
 
     // Find or create customer
     let customer = await prisma.customer.findUnique({ where: { email: customerEmail } });
-
     if (!customer) {
       customer = await prisma.customer.create({
         data: {
@@ -99,6 +100,14 @@ export async function POST(req: Request): Promise<Response> {
     });
 
     console.log(`✅ Order ${order.orderNumber} saved for customer ${customer.email}`);
+
+    // --- Run Offer Cron Job ---
+    try {
+      await runOffers(); // make sure runOffers is async
+      console.log("🚀 Offers cron job executed successfully.");
+    } catch (cronError) {
+      console.error("❌ Error running offers cron job:", cronError);
+    }
 
     return NextResponse.json({ message: "Webhook processed successfully" }, { status: 200 });
   } catch (error) {

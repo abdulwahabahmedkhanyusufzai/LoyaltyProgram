@@ -5,7 +5,7 @@ import { createTierDiscounts } from "../lib/createTierDiscount"; // adjust the p
 import cron from "node-cron";
 import { createTierFreeShippingDiscounts } from "@/lib/createTierFreeShipping";
 
-async function runOffers() {
+export async function runOffers() {
   try {
     console.log("🚀 Running loyalty cron + creating tier discounts...");
 
