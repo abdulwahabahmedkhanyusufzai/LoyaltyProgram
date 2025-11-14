@@ -1,4 +1,4 @@
-import { prisma } from "../../../../lib/prisma";
+import { prisma } from "../../../../lib/";
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 
