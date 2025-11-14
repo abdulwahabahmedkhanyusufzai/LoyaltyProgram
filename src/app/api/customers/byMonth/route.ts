@@ -1,12 +1,20 @@
-// File: /pages/api/customers-last-order.ts
-import { PrismaClient } from "@prisma/client";
+// File: /src/app/api/customers-last-order/route.ts
+import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
+export const dynamic = "force-dynamic"; // Important for debugging / always fresh
 
-export async function GET(req:Request) {
+export async function GET(req: Request) {
+  const requestId = crypto.randomUUID();
+  const startTime = Date.now();
+
+  console.log(`\n====================================================`);
+  console.log(`📌 [${requestId}] Incoming GET /customers-last-order`);
+  console.log(`====================================================`);
+
   try {
-    // Fetch customers who have at least one order
+    console.log(`🔍 [${requestId}] Fetching customers with at least 1 order…`);
+
     const customers = await prisma.customer.findMany({
       where: {
         numberOfOrders: { gt: 0 },
@@ -14,38 +22,78 @@ export async function GET(req:Request) {
       include: {
         orders: {
           orderBy: {
-            createdAt: "desc", // get latest orders first
+            createdAt: "desc",
           },
-          take: 1, // only the last order
+          take: 1,
           include: {
-            items: true, // optional: include order items
+            items: true,
           },
         },
         pointsLedger: {
           orderBy: { earnedAt: "desc" },
-          take: 1, // last point entry
+          take: 1,
         },
       },
     });
 
-    // Format response if needed
-    const response = customers.map((customer) => ({
-      id: customer.id,
-      firstName: customer.firstName,
-      lastName: customer.lastName,
-      email: customer.email,
-      loyaltyTitle: customer.loyaltyTitle,
-      numberOfOrders: customer.numberOfOrders,
-      amountSpent: Number(customer.amountSpent),
-      lastOrder: customer.orders[0] || null,
-      lastPointsEntry: customer.pointsLedger[0] || null,
-    }));
+    console.log(
+      `✅ [${requestId}] Prisma returned ${customers.length} customers`
+    );
 
-    return NextResponse.json({ customers: response },{status:200});
-  } catch (error) {
-    console.error("❌ Error fetching customers:", error);
-    return NextResponse.json({ error: "Failed to fetch customers" },{status:400});
+    const response = customers.map((customer) => {
+      console.log(
+        `🧩 [${requestId}] Formatting customer ${customer.email} | Orders: ${customer.numberOfOrders}`
+      );
+
+      return {
+        id: customer.id,
+        firstName: customer.firstName,
+        lastName: customer.lastName,
+        email: customer.email,
+        loyaltyTitle: customer.loyaltyTitle,
+        numberOfOrders: customer.numberOfOrders,
+        amountSpent: Number(customer.amountSpent),
+        lastOrder: customer.orders?.[0] || null,
+        lastPointsEntry: customer.pointsLedger?.[0] || null,
+      };
+    });
+
+    console.log(
+      `🎉 [${requestId}] Success | Total time: ${
+        Date.now() - startTime
+      }ms`
+    );
+
+    return NextResponse.json(
+      {
+        requestId,
+        totalCustomers: response.length,
+        customers: response,
+      },
+      { status: 200 }
+    );
+  } catch (error: any) {
+    console.error(`❌ [${requestId}] ERROR in customers-last-order`);
+    console.error(`❌ Message: ${error.message}`);
+    console.error(`❌ Stack: ${error.stack}`);
+
+    return NextResponse.json(
+      {
+        requestId,
+        error: "Failed to fetch customers",
+        details: error.message,
+      },
+      { status: 500 }
+    );
   } finally {
-    await prisma.$disconnect();
+    try {
+      await prisma.$disconnect();
+      console.log(`🔌 [${requestId}] Prisma disconnected safely`);
+    } catch (disconnectError) {
+      console.error(
+        `⚠️ [${requestId}] Prisma disconnect error:`,
+        disconnectError
+      );
+    }
   }
 }
