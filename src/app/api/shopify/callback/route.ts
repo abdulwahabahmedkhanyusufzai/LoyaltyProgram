@@ -53,30 +53,27 @@ export async function GET(req) {
 
     // Step 3: Register webhook using latest GraphQL schema
     const webhookMutation = `
-      mutation webhookSubscriptionCreate(
-        $topic: WebhookSubscriptionTopic!,
-        $webhookSubscription: WebhookSubscriptionInput!
-      ) {
-        webhookSubscriptionCreate(topic: $topic, webhookSubscription: $webhookSubscription) {
-          webhookSubscription {
-            id
-            topic
-            format
-            uri
-            }
-          userErrors {
-            field
-            message
-          }
-        }
-      }
+     mutation webhookSubscriptionCreate($topic: WebhookSubscriptionTopic!, $webhookSubscription: WebhookSubscriptionInput!)
+      { 
+       webhookSubscriptionCreate(topic: $topic, webhookSubscription: $webhookSubscription)
+        { webhookSubscription 
+         { 
+          id 
+          topic
+          filter
+          uri 
+        }userErrors{ 
+        field
+        message
+              }
+           }
+          }"
     `;
 
     const webhookVariables = {
       topic: "ORDERS_CREATE",
       webhookSubscription: {
-        uri: `${process.env.NEXT_PUBLIC_API_URL}/api/order-create`,
-        format: "JSON", // optional: use filters if needed, e.g., "type:lookbook"
+        uri: `${process.env.NEXT_PUBLIC_API_URL}/api/order-create`,// optional: use filters if needed, e.g., "type:lookbook"
       },
     };
 

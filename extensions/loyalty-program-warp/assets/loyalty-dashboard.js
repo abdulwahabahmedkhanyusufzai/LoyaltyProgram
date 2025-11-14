@@ -53,7 +53,7 @@
 
     pointsEl.textContent = points;
     tierText.textContent = tierMessage;
-    badgeUnfulfilled.textContent = points;
+    badgeUnfulfilled.textContent = `+${points}`;
     animateBar(progressPercent);
     highlightActiveTier(currentTier.name);
   };

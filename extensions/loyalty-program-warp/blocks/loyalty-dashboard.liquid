@@ -1,6 +1,5 @@
 <!-- sections/loyalty-dashboard.liquid -->
 <div class="loyalty-dashboard">
-  
   <!-- Dashboard Header -->
   <div class="dashboard-header">
     <h2>Loyalty Program</h2>
@@ -11,9 +10,7 @@
   <div class="loyalty-rating">
     <div class="points-summary">
       <h3>Points Summary</h3>
-      <p class="tier-text">
-        You're {{ section.settings.points_to_next_tier }} points away from Bronze Tier
-      </p>
+      <p class="tier-text">You're {{ section.settings.points_to_next_tier }} points away from Bronze Tier</p>
 
       <div class="points-info">
         <h1>{{ section.settings.total_points }}</h1>
@@ -24,7 +21,7 @@
       <div class="progress-board">
         <div class="tier-progress">
           <div class="tiers">
-            {% assign tiers_raw = "Bronze:bronze.png:false;Silver:silver.png:true;Gold:gold.png:false;Platinum:gem.png:false" %}
+            {% assign tiers_raw = 'Bronze:bronze.png:false;Silver:silver.png:true;Gold:gold.png:false;Platinum:gem.png:false' %}
             {% assign tiers_list = tiers_raw | split: ';' %}
             {% for tier_item in tiers_list %}
               {% assign parts = tier_item | split: ':' %}
@@ -32,7 +29,12 @@
               {% assign tier_img = parts[1] %}
               {% assign tier_active = parts[2] %}
               <span class="tier {% if tier_active == 'true' %}active{% endif %}">
-                <img width="40" height="40" style="height:40px;" src="https://cdn.shopify.com/s/files/1/0921/8428/1416/files/{{ tier_img }}?v=1760793539">
+                <img
+                  width="40"
+                  height="40"
+                  style="height:40px;"
+                  src="https://cdn.shopify.com/s/files/1/0921/8428/1416/files/{{ tier_img }}?v=1760793539"
+                >
                 {{ tier_name }}
               </span>
             {% endfor %}
@@ -76,13 +78,25 @@
           </tr>
         </thead>
         <tbody>
-          {% for order in customer.orders limit:10 %}
+          {% for order in customer.orders limit: 10 %}
             <tr>
               <td>{{ order.created_at | date: '%b %d, %Y' }}</td>
-              <td><span class="badge {{ order.financial_status }}">{{ order.financial_status_label }}</span></td>
-              <td><a href="{{ order.customer_url }}">{{ order.name }}</a></td>
+              <td>
+                <span class="badge {{ order.financial_status }}">
+                  {%- if order.financial_status == 'paid' %}
+                    Earned
+                  {% else %}
+                    Redeemed
+                  {% endif %}
+                </span>
+              </td>
+              <td>
+                <a href="{{ order.customer_url }}">Order {{ order.name }}</a>
+              </td>
               <td>{{ order.total_price | money }}</td>
-              <td><span class="{{ order.fulfillment_status }}">{{ order.fulfillment_status_label }}</span></td>
+              <td>
+                <span class="{{ order.fulfillment_status }}">{{ order.fulfillment_status_label }}</span>
+              </td>
             </tr>
           {% else %}
             <tr>
@@ -93,7 +107,6 @@
       </table>
     </div>
   </div>
-
 </div>
 
 <!-- JS / CSS -->

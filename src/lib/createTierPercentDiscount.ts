@@ -1,5 +1,4 @@
 // src/scripts/createTierDiscountsPercentage.ts
-import { PrismaClient } from "@prisma/client";
 import {
   CREATE_SEGMENT_DISCOUNT_MUTATION,
   createTierSegments,
@@ -8,7 +7,7 @@ import {
   getShopDataFromDb,
 } from "./createTierDiscount";
 
-const prisma = new PrismaClient();
+
 
 // =======================
 // Main Function
