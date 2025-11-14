@@ -1,9 +1,10 @@
 // File: /pages/api/customers-last-order.ts
 import { PrismaClient } from "@prisma/client";
+import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-export default async function handler(req, res) {
+export default async function GET(req, res) {
   try {
     // Fetch customers who have at least one order
     const customers = await prisma.customer.findMany({
@@ -40,7 +41,7 @@ export default async function handler(req, res) {
       lastPointsEntry: customer.pointsLedger[0] || null,
     }));
 
-    res.status(200).json({ customers: response });
+    return NextResponse.json({ customers: response },{status:200});
   } catch (error) {
     console.error("❌ Error fetching customers:", error);
     res.status(500).json({ error: "Failed to fetch customers" });
