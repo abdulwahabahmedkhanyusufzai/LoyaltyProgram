@@ -12,96 +12,128 @@ export const runLoyaltyCronJob = async () => {
 
     // 2️⃣ Fetch customers
     const customers = await prisma.customer.findMany({
+      where: { numberOfOrders: { gt: 0 } },
       include: {
-        orders: {
-          orderBy: { createdAt: "asc" },
-          include: { pointsLedger: true },
+        pointsLedger: {
+          orderBy: { earnedAt: "desc" },
+          take: 1,
         },
-        pointsLedger: { orderBy: { earnedAt: "desc" }, take: 1 },
+        orders: true,
       },
     });
 
     console.log(`🧾 Found ${customers.length} customers`);
 
+    // Tier order for cumulative Shopify tags
     const tierOrder = ["Bronze", "Silver", "Gold", "Platinum"];
 
     for (const customer of customers) {
-      let totalPoints = 0;
-      let cumulativeSpent = 0;
+      const amountSpent = Number(customer.amountSpent || 0);
+      const lastEntry = customer.pointsLedger[0];
+      let currentBalance = lastEntry?.balanceAfter || 0;
 
-      // Process each order to calculate points individually
-      for (const order of customer.orders) {
-        // Skip if points already awarded for this order
-        if (order.pointsEarned > 0) {
-          totalPoints += order.pointsEarned;
-          cumulativeSpent += Number(order.totalAmount);
-          continue;
-        }
+      // ---- Determine tier + multiplier ----
+      let tier = "Welcomed";
+      let multiplier = 1;
 
-        // Determine tier for this order
-        let tier = "Welcomed";
-        let multiplier = 1;
-        const orderAmount = Number(order.totalAmount);
-        const newCumulativeSpent = cumulativeSpent + orderAmount;
+      if (amountSpent >= 200 && amountSpent < 500) tier = "Bronze";
+      else if (amountSpent >= 500 && amountSpent < 750) tier = "Silver";
+      else if (amountSpent >= 750 && amountSpent < 1000) tier = "Gold";
+      else if (amountSpent >= 1000) tier = "Platinum";
 
-        if (newCumulativeSpent >= 200 && newCumulativeSpent < 500) tier = "Bronze";
-        else if (newCumulativeSpent >= 500 && newCumulativeSpent < 750) tier = "Silver";
-        else if (newCumulativeSpent >= 750 && newCumulativeSpent < 1000) tier = "Gold";
-        else if (newCumulativeSpent >= 1000) tier = "Platinum";
-
-        switch (tier) {
-          case "Bronze": multiplier = 1; break;
-          case "Silver": multiplier = 1.5; break;
-          case "Gold": multiplier = 2; break;
-          case "Platinum": multiplier = 2.5; break;
-        }
-
-        const orderPoints = Math.floor(orderAmount * multiplier);
-
-        // Update order points
-        await prisma.order.update({
-          where: { id: order.id },
-          data: { pointsEarned: orderPoints },
-        });
-
-        // Add to points ledger
-        const lastLedger = customer.pointsLedger[0];
-        const currentBalance = lastLedger?.balanceAfter || 0;
-        const newBalance = currentBalance + orderPoints;
-
-        await prisma.pointsLedger.create({
-          data: {
-            customerId: customer.id,
-            change: orderPoints,
-            balanceAfter: newBalance,
-            reason: `Points from order ${order.orderNumber}`,
-            sourceType: "CRON_JOB",
-            orderId: order.id,
-          },
-        });
-
-        totalPoints += orderPoints;
-        cumulativeSpent += orderAmount;
+      switch (tier) {
+        case "Bronze":
+          multiplier = 1;
+          break;
+        case "Silver":
+          multiplier = 1.5;
+          break;
+        case "Gold":
+          multiplier = 2;
+          break;
+        case "Platinum":
+          multiplier = 2.5;
+          break;
       }
 
-      // Determine overall tier based on cumulativeSpent
-      let tier = "Welcomed";
-      if (cumulativeSpent >= 200 && cumulativeSpent < 500) tier = "Bronze";
-      else if (cumulativeSpent >= 500 && cumulativeSpent < 750) tier = "Silver";
-      else if (cumulativeSpent >= 750 && cumulativeSpent < 1000) tier = "Gold";
-      else if (cumulativeSpent >= 1000) tier = "Platinum";
+      const totalPoints = Math.floor(amountSpent * multiplier);
 
-      // Only update customer if tier changed
-      if (customer.loyaltyTitle !== tier || customer.pointsLedger[0]?.balanceAfter !== totalPoints) {
-        await prisma.customer.update({
+      // ---- Assign points per order (only for customers with more than 1 order) ----
+      if (customer.numberOfOrders > 1 && customer.orders?.length) {
+        for (const order of customer.orders) {
+          const orderAmount = Number(order.totalAmount || 0);
+          const orderPoints = Math.floor(orderAmount * multiplier);
+
+          // Only add points if not already assigned
+          if (order.pointsEarned !== orderPoints) {
+            await prisma.$transaction([
+              prisma.pointsLedger.create({
+                data: {
+                  customerId: customer.id,
+                  change: orderPoints - (order.pointsEarned || 0),
+                  balanceAfter: currentBalance + orderPoints - (order.pointsEarned || 0),
+                  reason: `Points from order ${order.orderNumber}`,
+                  sourceType: "ORDER",
+                  orderId: order.id,
+                },
+              }),
+              prisma.order.update({
+                where: { id: order.id },
+                data: { pointsEarned: orderPoints },
+              }),
+            ]);
+
+            currentBalance += orderPoints - (order.pointsEarned || 0);
+            console.log(`🟢 Assigned ${orderPoints} pts for order ${order.orderNumber} (Customer: ${customer.email})`);
+          }
+        }
+      }
+
+      // 🧠 Only update if points or tier changed
+      const shouldUpdate = customer.loyaltyTitle !== tier || totalPoints !== currentBalance;
+      if (!shouldUpdate) {
+        console.log(`ℹ️ Skipped ${customer.firstName} (${tier}) — already up-to-date`);
+        continue;
+      }
+
+      // ---- Update DB (customer + points ledger) ----
+      await prisma.$transaction([
+        prisma.customer.update({
           where: { id: customer.id },
           data: { loyaltyTitle: tier, updatedAt: new Date() },
+        }),
+        prisma.pointsLedger.create({
+          data: {
+            customerId: customer.id,
+            change: totalPoints - currentBalance,
+            balanceAfter: totalPoints,
+            reason: "Automatic Loyalty Update",
+            sourceType: "CRON_JOB",
+          },
+        }),
+      ]);
+
+      // ---- Send email notification ----
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/send-email`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            to: customer.email,
+            points: totalPoints,
+            tier,
+            name: customer.firstName,
+          }),
         });
+
+        if (!response.ok) throw new Error(`Email API failed with status ${response.status}`);
+        const data = await response.json();
+        console.log(`📧 Email sent to ${customer.email} (${tier}, ${totalPoints} pts): ${JSON.stringify(data)}`);
+      } catch (mailErr) {
+        console.error(`❌ Failed to send email to ${customer.email}:`, mailErr);
       }
 
-      console.log(`✅ Updated ${customer.firstName} → ${tier} (${totalPoints} pts)`);
-
-      // --- Optional: update Shopify tags per customer ---
+      // ---- Update Shopify customer tags (cumulative) ----
       try {
         const getCustomerQuery = `
           query ($email: String!) {
@@ -143,14 +175,19 @@ export const runLoyaltyCronJob = async () => {
             },
             body: JSON.stringify({ query: updateTagsMutation, variables: { id: shopCustomer.id, tags: tagsToApply } }),
           });
+
           const updateData = await updateRes.json();
           if (updateData.data.customerUpdate.userErrors.length) {
             console.error(`❌ Shopify tag update errors:`, updateData.data.customerUpdate.userErrors);
           }
+        } else {
+          console.warn(`⚠️ Shopify customer not found: ${customer.email}`);
         }
       } catch (err) {
         console.error(`❌ Shopify update failed for ${customer.email}:`, err);
       }
+
+      console.log(`✅ Updated ${customer.firstName} → ${tier} (${totalPoints} pts)`);
     }
 
     console.log("🎯 Loyalty cron completed successfully.");
