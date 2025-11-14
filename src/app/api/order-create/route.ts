@@ -4,7 +4,7 @@ import { prisma } from "../../../lib/prisma";
 import { OrderStatus } from "@prisma/client";
 
 // Import your cron job function
-import {runOffers}  from "../../../scripts/cronAppOffer"; // adjust path accordingly
+import { runOffers } from "../../../scripts/cronAppOffer";
 
 const VERBOSE_DEBUG = process.env.DEBUG_SHOPIFY_WEBHOOK === "true";
 
@@ -24,6 +24,7 @@ interface ShopifyOrder {
   [key: string]: any;
 }
 
+// Map Shopify financial_status to Prisma OrderStatus enum
 const mapFinancialStatusToOrderStatus = (status?: string): OrderStatus => {
   switch (status?.toUpperCase()) {
     case "PAID":
@@ -40,29 +41,32 @@ const mapFinancialStatusToOrderStatus = (status?: string): OrderStatus => {
 export async function POST(req: Request): Promise<Response> {
   try {
     const secret = process.env.NEXT_SHOPIFY_API_SECRET;
-    if (!secret) return NextResponse.json({ message: "Server misconfiguration" }, { status: 500 });
+    if (!secret) throw new Error("Server misconfiguration: missing SHOPIFY_API_SECRET");
 
     const hmacHeader = req.headers.get("x-shopify-hmac-sha256");
-    if (!hmacHeader) return NextResponse.json({ message: "Missing HMAC header" }, { status: 400 });
+    if (!hmacHeader) throw new Error("Missing HMAC header");
 
     const body = await req.text();
 
     // Verify HMAC
     const hash = crypto.createHmac("sha256", secret).update(body, "utf8").digest("base64");
-    const hashBuffer = Buffer.from(hash, "base64");
     const hmacBuffer = Buffer.from(hmacHeader, "base64");
-    const valid = hashBuffer.length === hmacBuffer.length && crypto.timingSafeEqual(hashBuffer, hmacBuffer);
-    if (!valid) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    const hashBuffer = Buffer.from(hash, "base64");
+    if (hashBuffer.length !== hmacBuffer.length || !crypto.timingSafeEqual(hashBuffer, hmacBuffer)) {
+      throw new Error("Unauthorized: HMAC verification failed");
+    }
+    if (VERBOSE_DEBUG) console.log("✅ HMAC verified");
 
     const orderData: ShopifyOrder = JSON.parse(body);
-    const customerEmail = orderData.customer?.email;
+    if (VERBOSE_DEBUG) console.log("📦 Incoming order data:", JSON.stringify(orderData, null, 2));
 
+    const customerEmail = orderData.customer?.email;
     if (!customerEmail) {
       console.warn("⚠️ Order has no customer email. Skipping customer update.");
       return NextResponse.json({ message: "No customer email" }, { status: 200 });
     }
 
-    // Find or create customer
+    // --- Find or create customer ---
     let customer = await prisma.customer.findUnique({ where: { email: customerEmail } });
     if (!customer) {
       customer = await prisma.customer.create({
@@ -75,43 +79,54 @@ export async function POST(req: Request): Promise<Response> {
           shopifyId: orderData.customer?.id?.toString() || crypto.randomUUID(),
         },
       });
-      console.log("✅ Created new customer:", customer.email);
+      console.log(`✅ Created new customer: ${customer.email}`);
+    } else if (VERBOSE_DEBUG) {
+      console.log(`ℹ️ Existing customer found: ${customer.email}`);
     }
 
-    // Create the order
-    const order = await prisma.order.create({
-      data: {
-        customerId: customer.id,
-        orderNumber: orderData.order_number.toString(),
-        totalAmount: parseFloat(orderData.total_price),
-        currency: orderData.currency || "EUR",
-        status: mapFinancialStatusToOrderStatus(orderData.financial_status),
-        createdAt: orderData.created_at ? new Date(orderData.created_at) : new Date(),
-      },
+    // --- Check for duplicate order ---
+    let order = await prisma.order.findUnique({
+      where: { orderNumber: orderData.order_number.toString() },
     });
 
-    // Update customer stats
-    await prisma.customer.update({
-      where: { id: customer.id },
-      data: {
-        numberOfOrders: { increment: 1 },
-        amountSpent: { increment: parseFloat(orderData.total_price) },
-      },
-    });
+    if (order) {
+      console.log(`ℹ️ Order ${order.orderNumber} already exists. Skipping creation.`);
+    } else {
+      order = await prisma.order.create({
+        data: {
+          customerId: customer.id,
+          orderNumber: orderData.order_number.toString(),
+          totalAmount: parseFloat(orderData.total_price),
+          currency: orderData.currency || "EUR",
+          status: mapFinancialStatusToOrderStatus(orderData.financial_status),
+          createdAt: orderData.created_at ? new Date(orderData.created_at) : new Date(),
+        },
+      });
 
-    console.log(`✅ Order ${order.orderNumber} saved for customer ${customer.email}`);
+      await prisma.customer.update({
+        where: { id: customer.id },
+        data: {
+          numberOfOrders: { increment: 1 },
+          amountSpent: { increment: parseFloat(orderData.total_price) },
+        },
+      });
 
-    // --- Run Offer Cron Job ---
+      console.log(`✅ Order ${order.orderNumber} saved for customer ${customer.email}`);
+    }
+
+    // --- Run Offers Cron Job ---
     try {
-      await runOffers(); // make sure runOffers is async
-      console.log("🚀 Offers cron job executed successfully.");
+      console.log("🚀 Running offers cron job...");
+      await runOffers();
+      console.log("✅ Offers cron job executed successfully.");
     } catch (cronError) {
       console.error("❌ Error running offers cron job:", cronError);
     }
 
     return NextResponse.json({ message: "Webhook processed successfully" }, { status: 200 });
-  } catch (error) {
-    console.error("❌ Error processing webhook:", error);
-    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
+  } catch (error: any) {
+    console.error("❌ Error processing webhook:", error.message || error);
+    if (VERBOSE_DEBUG) console.error(error.stack);
+    return NextResponse.json({ message: "Internal server error", error: error.message }, { status: 500 });
   }
 }
