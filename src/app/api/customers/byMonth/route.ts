@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-export default async function GET(req:Request) {
+export async function GET(req:Request) {
   try {
     // Fetch customers who have at least one order
     const customers = await prisma.customer.findMany({
