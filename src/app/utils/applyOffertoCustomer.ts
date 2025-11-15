@@ -1,14 +1,22 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-export const runLoyaltyCronJob = async () => {
+export const runLoyaltyCronJob = async (verbose = true) => {
+  const log = (msg: string, ...args: any[]) => verbose && console.log(msg, ...args);
+  const warn = (msg: string, ...args: any[]) => console.warn(msg, ...args);
+  const error = (msg: string, ...args: any[]) => console.error(msg, ...args);
+
   try {
+    const startTime = Date.now();
+    log("🚀 Starting Loyalty Cron Job...");
+
     // 1️⃣ Get shop credentials
     const shopRecord = await prisma.shop.findFirst();
     if (!shopRecord) throw new Error("No shop found in DB");
 
     const { shop, accessToken } = shopRecord;
     const shopifyUrl = `https://${shop}/admin/api/2025-10/graphql.json`;
+    log(`🟦 Shop credentials fetched: ${shop}`);
 
     // 2️⃣ Fetch eligible customers
     const customers = await prisma.customer.findMany({
@@ -18,12 +26,14 @@ export const runLoyaltyCronJob = async () => {
         orders: true,
       },
     });
-
-    console.log(`🧾 Found ${customers.length} customers`);
+    log(`🧾 Found ${customers.length} customers`);
 
     const tierOrder = ["Bronze", "Silver", "Gold", "Platinum"];
 
     for (const customer of customers) {
+      const customerStart = Date.now();
+      log(`\n🔹 Processing customer: ${customer.email} (ID: ${customer.id})`);
+
       const amountSpent = Number(customer.amountSpent || 0);
       const lastEntry = customer.pointsLedger[0];
       let currentBalance = lastEntry?.balanceAfter || 0;
@@ -37,6 +47,7 @@ export const runLoyaltyCronJob = async () => {
 
       const multiplier = { Bronze: 1, Silver: 1.5, Gold: 2, Platinum: 2.5 }[tier] || 1;
       const totalPoints = Math.floor(amountSpent * multiplier);
+      log(`💰 Amount spent: €${amountSpent}, Tier: ${tier}, Multiplier: ${multiplier}, Total points: ${totalPoints}`);
 
       // ---- Assign points per order ----
       if (customer.numberOfOrders > 1 && customer.orders?.length) {
@@ -62,14 +73,16 @@ export const runLoyaltyCronJob = async () => {
               }),
             ]);
             currentBalance += orderPoints - (order.pointsEarned || 0);
-            console.log(`🟢 Assigned ${orderPoints} pts for order ${order.orderNumber} (${customer.email})`);
+            log(`🟢 Assigned ${orderPoints} pts for order ${order.orderNumber}`);
+          } else {
+            log(`ℹ️ Order ${order.orderNumber} already has ${order.pointsEarned} pts`);
           }
         }
       }
 
       // ---- Skip if already up-to-date ----
       if (customer.loyaltyTitle === tier && totalPoints === currentBalance) {
-        console.log(`ℹ️ Skipped ${customer.firstName} — already up-to-date`);
+        log(`ℹ️ Customer ${customer.email} already up-to-date`);
         continue;
       }
 
@@ -89,6 +102,7 @@ export const runLoyaltyCronJob = async () => {
           },
         }),
       ]);
+      log(`📝 Updated DB for ${customer.email} → Tier: ${tier}, Points: ${totalPoints}`);
 
       // ---- Send email notification ----
       try {
@@ -103,105 +117,81 @@ export const runLoyaltyCronJob = async () => {
           }),
         });
         if (!emailRes.ok) throw new Error(`Email API failed: ${emailRes.status}`);
-        console.log(`📧 Email sent to ${customer.email} (${tier}, ${totalPoints} pts)`);
+        log(`📧 Email sent to ${customer.email}`);
       } catch (mailErr) {
-        console.error(`❌ Failed to send email to ${customer.email}:`, mailErr);
+        error(`❌ Failed to send email to ${customer.email}:`, mailErr);
       }
 
-      // ---- Fetch Shopify customer once and reuse ----
+      // ---- Shopify customer fetch ----
       let shopCustomer: { id: string; tags: string[] } | null = null;
       try {
-        const getCustomerQuery = `
-          query ($email: String!) {
-            customers(first: 1, query: $email) {
-              edges { node { id tags } }
-            }
-          }
+        const query = `
+          query ($email: String!) { customers(first: 1, query: $email) { edges { node { id tags } } } }
         `;
-        const customerRes = await fetch(shopifyUrl, {
+        const res = await fetch(shopifyUrl, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Shopify-Access-Token": accessToken,
-          },
-          body: JSON.stringify({ query: getCustomerQuery, variables: { email: customer.email } }),
+          headers: { "Content-Type": "application/json", "X-Shopify-Access-Token": accessToken },
+          body: JSON.stringify({ query, variables: { email: customer.email } }),
         });
-        shopCustomer = (await customerRes.json())?.data?.customers?.edges[0]?.node;
-
-        if (!shopCustomer) {
-          console.warn(`⚠️ Shopify customer not found: ${customer.email}`);
-          continue;
-        }
+        shopCustomer = (await res.json())?.data?.customers?.edges[0]?.node;
+        if (!shopCustomer) warn(`⚠️ Shopify customer not found: ${customer.email}`);
       } catch (err) {
-        console.error(`❌ Shopify customer fetch failed for ${customer.email}:`, err);
-        continue;
+        error(`❌ Shopify fetch failed for ${customer.email}:`, err);
       }
+
+      if (!shopCustomer) continue;
 
       // ---- Update Shopify tags ----
       try {
         const tagsToApply = tierOrder.slice(0, tierOrder.indexOf(tier) + 1);
-        const updateTagsMutation = `
+        const mutation = `
           mutation ($id: ID!, $tags: [String!]!) {
-            customerUpdate(input: { id: $id, tags: $tags }) {
-              customer { id tags }
-              userErrors { field message }
-            }
+            customerUpdate(input: { id: $id, tags: $tags }) { customer { id tags } userErrors { field message } }
           }
         `;
-        const updateTagsRes = await fetch(shopifyUrl, {
+        const res = await fetch(shopifyUrl, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Shopify-Access-Token": accessToken,
-          },
-          body: JSON.stringify({ query: updateTagsMutation, variables: { id: shopCustomer.id, tags: tagsToApply } }),
+          headers: { "Content-Type": "application/json", "X-Shopify-Access-Token": accessToken },
+          body: JSON.stringify({ query: mutation, variables: { id: shopCustomer.id, tags: tagsToApply } }),
         });
-        const updateData = await updateTagsRes.json();
-        if (updateData.data.customerUpdate.userErrors.length)
-          console.error(`❌ Shopify tag update errors:`, updateData.data.customerUpdate.userErrors);
+        const data = await res.json();
+        if (data.data.customerUpdate.userErrors.length) error("❌ Shopify tag errors:", data.data.customerUpdate.userErrors);
+        else log(`🏷️ Tags updated for ${customer.email}: ${tagsToApply.join(", ")}`);
       } catch (err) {
-        console.error(`❌ Shopify tag update failed for ${customer.email}:`, err);
+        error(`❌ Shopify tag update failed for ${customer.email}:`, err);
       }
 
       // ---- Update Shopify metafields ----
       try {
-        const updateMetaMutation = `
-          mutation updateCustomerMetafields($id: ID!, $points: Int!, $tier: String!) {
+        const mutation = `
+          mutation ($id: ID!, $points: Int!, $tier: String!) {
             customerUpdate(input: {
               id: $id,
               metafields: [
                 { namespace: "loyalty", key: "points", type: "number_integer", value: $points },
                 { namespace: "loyalty", key: "tier", type: "single_line_text_field", value: $tier }
               ]
-            }) {
-              customer { id }
-              userErrors { field message }
-            }
+            }) { customer { id } userErrors { field message } }
           }
         `;
-        const updateMetaRes = await fetch(shopifyUrl, {
+        const res = await fetch(shopifyUrl, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Shopify-Access-Token": accessToken,
-          },
-          body: JSON.stringify({ query: updateMetaMutation, variables: { id: shopCustomer.id, points: totalPoints, tier } }),
+          headers: { "Content-Type": "application/json", "X-Shopify-Access-Token": accessToken },
+          body: JSON.stringify({ query: mutation, variables: { id: shopCustomer.id, points: totalPoints, tier } }),
         });
-        const metaData = await updateMetaRes.json();
-        if (metaData.data.customerUpdate.userErrors.length)
-          console.error(`❌ Metafield update errors:`, metaData.data.customerUpdate.userErrors);
-        else
-          console.log(`📦 Metafields updated for ${customer.email}: ${tier} (${totalPoints} pts)`);
-      } catch (metaErr) {
-        console.error(`❌ Failed to update metafields for ${customer.email}:`, metaErr);
+        const data = await res.json();
+        if (data.data.customerUpdate.userErrors.length) error("❌ Shopify metafield errors:", data.data.customerUpdate.userErrors);
+        else log(`📦 Metafields updated for ${customer.email}`);
+      } catch (err) {
+        error(`❌ Shopify metafield update failed for ${customer.email}:`, err);
       }
 
-      console.log(`✅ Updated ${customer.firstName} → ${tier} (${totalPoints} pts)`);
+      log(`✅ Finished processing ${customer.email} in ${(Date.now() - customerStart)}ms`);
     }
 
-    console.log("🎯 Loyalty cron completed successfully.");
-  } catch (error) {
-    console.error("❌ Error in loyalty cron:", error);
+    log(`🎯 Loyalty cron completed successfully in ${(Date.now() - startTime) / 1000}s`);
+  } catch (err) {
+    error("❌ Error in loyalty cron:", err);
   } finally {
     await prisma.$disconnect();
   }

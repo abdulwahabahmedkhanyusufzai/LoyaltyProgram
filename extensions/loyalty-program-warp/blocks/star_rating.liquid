@@ -109,6 +109,8 @@
 </div>
 <script>
   const customerEmail = "{{ customer.email | escape }}"; // Liquid renders here
+  const customerMetafields = "{{ customer.metafields.loyalty.points }}"
+  console.log(customerMetafields,"customer Metafields");
 </script>
 <script type="module" src="{{ 'custom-loyalty.js' | asset_url }}"></script>
 {{ 'custom-loyalty.css' | asset_url | stylesheet_tag }}
