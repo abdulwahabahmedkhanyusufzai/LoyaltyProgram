@@ -30,15 +30,12 @@ export const runLoyaltyCronJob = async () => {
 
       // ---- Determine tier + multiplier ----
       let tier = "Welcomed";
-      let multiplier = 1;
-
       if (amountSpent >= 200 && amountSpent < 500) tier = "Bronze";
       else if (amountSpent >= 500 && amountSpent < 750) tier = "Silver";
       else if (amountSpent >= 750 && amountSpent < 1000) tier = "Gold";
       else if (amountSpent >= 1000) tier = "Platinum";
 
-      multiplier = { Bronze: 1, Silver: 1.5, Gold: 2, Platinum: 2.5 }[tier] || 1;
-
+      const multiplier = { Bronze: 1, Silver: 1.5, Gold: 2, Platinum: 2.5 }[tier] || 1;
       const totalPoints = Math.floor(amountSpent * multiplier);
 
       // ---- Assign points per order ----
@@ -111,7 +108,8 @@ export const runLoyaltyCronJob = async () => {
         console.error(`❌ Failed to send email to ${customer.email}:`, mailErr);
       }
 
-      // ---- Update Shopify customer tags ----
+      // ---- Fetch Shopify customer once and reuse ----
+      let shopCustomer: { id: string; tags: string[] } | null = null;
       try {
         const getCustomerQuery = `
           query ($email: String!) {
@@ -128,30 +126,39 @@ export const runLoyaltyCronJob = async () => {
           },
           body: JSON.stringify({ query: getCustomerQuery, variables: { email: customer.email } }),
         });
-        const shopCustomer = (await customerRes.json())?.data?.customers?.edges[0]?.node;
+        shopCustomer = (await customerRes.json())?.data?.customers?.edges[0]?.node;
 
-        if (shopCustomer) {
-          const tagsToApply = tierOrder.slice(0, tierOrder.indexOf(tier) + 1);
-          const updateTagsMutation = `
-            mutation ($id: ID!, $tags: [String!]!) {
-              customerUpdate(input: { id: $id, tags: $tags }) {
-                customer { id tags }
-                userErrors { field message }
-              }
+        if (!shopCustomer) {
+          console.warn(`⚠️ Shopify customer not found: ${customer.email}`);
+          continue;
+        }
+      } catch (err) {
+        console.error(`❌ Shopify customer fetch failed for ${customer.email}:`, err);
+        continue;
+      }
+
+      // ---- Update Shopify tags ----
+      try {
+        const tagsToApply = tierOrder.slice(0, tierOrder.indexOf(tier) + 1);
+        const updateTagsMutation = `
+          mutation ($id: ID!, $tags: [String!]!) {
+            customerUpdate(input: { id: $id, tags: $tags }) {
+              customer { id tags }
+              userErrors { field message }
             }
-          `;
-          const updateTagsRes = await fetch(shopifyUrl, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-Shopify-Access-Token": accessToken,
-            },
-            body: JSON.stringify({ query: updateTagsMutation, variables: { id: shopCustomer.id, tags: tagsToApply } }),
-          });
-          const updateData = await updateTagsRes.json();
-          if (updateData.data.customerUpdate.userErrors.length)
-            console.error(`❌ Shopify tag update errors:`, updateData.data.customerUpdate.userErrors);
-        } else console.warn(`⚠️ Shopify customer not found: ${customer.email}`);
+          }
+        `;
+        const updateTagsRes = await fetch(shopifyUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Shopify-Access-Token": accessToken,
+          },
+          body: JSON.stringify({ query: updateTagsMutation, variables: { id: shopCustomer.id, tags: tagsToApply } }),
+        });
+        const updateData = await updateTagsRes.json();
+        if (updateData.data.customerUpdate.userErrors.length)
+          console.error(`❌ Shopify tag update errors:`, updateData.data.customerUpdate.userErrors);
       } catch (err) {
         console.error(`❌ Shopify tag update failed for ${customer.email}:`, err);
       }
@@ -183,7 +190,8 @@ export const runLoyaltyCronJob = async () => {
         const metaData = await updateMetaRes.json();
         if (metaData.data.customerUpdate.userErrors.length)
           console.error(`❌ Metafield update errors:`, metaData.data.customerUpdate.userErrors);
-        else console.log(`📦 Metafields updated for ${customer.email}: ${tier} (${totalPoints} pts)`);
+        else
+          console.log(`📦 Metafields updated for ${customer.email}: ${tier} (${totalPoints} pts)`);
       } catch (metaErr) {
         console.error(`❌ Failed to update metafields for ${customer.email}:`, metaErr);
       }
