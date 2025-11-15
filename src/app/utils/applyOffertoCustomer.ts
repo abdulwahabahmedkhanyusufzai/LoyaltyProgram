@@ -133,7 +133,8 @@ export const runLoyaltyCronJob = async (verbose = true) => {
           headers: { "Content-Type": "application/json", "X-Shopify-Access-Token": accessToken },
           body: JSON.stringify({ query, variables: { email: customer.email } }),
         });
-        shopCustomer = (await res.json())?.data?.customers?.edges[0]?.node;
+        const data = await res.json();
+        shopCustomer = data?.data?.customers?.edges[0]?.node;
         if (!shopCustomer) warn(`⚠️ Shopify customer not found: ${customer.email}`);
       } catch (err) {
         error(`❌ Shopify fetch failed for ${customer.email}:`, err);
@@ -155,8 +156,9 @@ export const runLoyaltyCronJob = async (verbose = true) => {
           body: JSON.stringify({ query: mutation, variables: { id: shopCustomer.id, tags: tagsToApply } }),
         });
         const data = await res.json();
+        console.log(`🏷️ Shopify tag update response for ${customer.email}:`, JSON.stringify(data, null, 2));
         if (data.data.customerUpdate.userErrors.length) error("❌ Shopify tag errors:", data.data.customerUpdate.userErrors);
-        else log(`🏷️ Tags updated for ${customer.email}: ${tagsToApply.join(", ")}`);
+        else log(`🏷️ Tags updated: ${tagsToApply.join(", ")}`);
       } catch (err) {
         error(`❌ Shopify tag update failed for ${customer.email}:`, err);
       }
@@ -164,24 +166,39 @@ export const runLoyaltyCronJob = async (verbose = true) => {
       // ---- Update Shopify metafields ----
       try {
         const mutation = `
-          mutation ($id: ID!, $points: Int!, $tier: String!) {
-            customerUpdate(input: {
-              id: $id,
-              metafields: [
-                { namespace: "loyalty", key: "points", type: "number_integer", value: $points },
-                { namespace: "loyalty", key: "tier", type: "single_line_text_field", value: $tier }
-              ]
-            }) { customer { id } userErrors { field message } }
+          mutation updateCustomerMetafields($input: CustomerInput!) {
+            customerUpdate(input: $input) {
+              customer {
+                id
+                metafields(first: 3) {
+                  edges { node { id namespace key value } }
+                }
+              }
+              userErrors { message field }
+            }
           }
         `;
+
+        const input = {
+          id: shopCustomer.id,
+          metafields: [
+            { namespace: "loyalty", key: "points", type: "number_integer", value: totalPoints.toString() },
+            { namespace: "loyalty", key: "tier", type: "single_line_text_field", value: tier },
+          ],
+        };
+
         const res = await fetch(shopifyUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json", "X-Shopify-Access-Token": accessToken },
-          body: JSON.stringify({ query: mutation, variables: { id: shopCustomer.id, points: totalPoints, tier } }),
+          body: JSON.stringify({ query: mutation, variables: { input } }),
         });
+
         const data = await res.json();
-        if (data.data.customerUpdate.userErrors.length) error("❌ Shopify metafield errors:", data.data.customerUpdate.userErrors);
-        else log(`📦 Metafields updated for ${customer.email}`);
+        console.log("📦 Shopify metafield update response:", JSON.stringify(data, null, 2));
+
+        if (data.errors?.length) error(`❌ Shopify GraphQL errors:`, data.errors);
+        if (data.data?.customerUpdate?.userErrors?.length) error(`❌ Shopify userErrors:`, data.data.customerUpdate.userErrors);
+        else log(`📦 Metafields updated successfully for ${customer.email}`);
       } catch (err) {
         error(`❌ Shopify metafield update failed for ${customer.email}:`, err);
       }
