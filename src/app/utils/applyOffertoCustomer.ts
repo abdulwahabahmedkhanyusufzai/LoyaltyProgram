@@ -51,33 +51,93 @@ export const runLoyaltyCronJob = async (verbose = true) => {
 
       // ---- Assign points per order ----
       if (customer.numberOfOrders > 1 && customer.orders?.length) {
-        for (const order of customer.orders) {
-          const orderAmount = Number(order.totalAmount || 0);
-          const orderPoints = Math.floor(orderAmount * multiplier);
+       for (const order of customer.orders) {
+  const orderAmount = Number(order.totalAmount || 0);
+  const orderPoints = Math.floor(orderAmount * multiplier);
 
-          if (order.pointsEarned !== orderPoints) {
-            await prisma.$transaction([
-              prisma.pointsLedger.create({
-                data: {
-                  customerId: customer.id,
-                  change: orderPoints - (order.pointsEarned || 0),
-                  balanceAfter: currentBalance + orderPoints - (order.pointsEarned || 0),
-                  reason: `Points from order ${order.orderNumber}`,
-                  sourceType: "ORDER",
-                  orderId: order.id,
-                },
-              }),
-              prisma.order.update({
-                where: { id: order.id },
-                data: { pointsEarned: orderPoints },
-              }),
-            ]);
-            currentBalance += orderPoints - (order.pointsEarned || 0);
-            log(`🟢 Assigned ${orderPoints} pts for order ${order.orderNumber}`);
-          } else {
-            log(`ℹ️ Order ${order.orderNumber} already has ${order.pointsEarned} pts`);
+  if (order.pointsEarned !== orderPoints) {
+    await prisma.$transaction([
+      prisma.pointsLedger.create({
+        data: {
+          customerId: customer.id,
+          change: orderPoints - (order.pointsEarned || 0),
+          balanceAfter: currentBalance + orderPoints - (order.pointsEarned || 0),
+          reason: `Points from order ${order.orderNumber}`,
+          sourceType: "ORDER",
+          orderId: order.id,
+        },
+      }),
+      prisma.order.update({
+        where: { id: order.id },
+        data: { pointsEarned: orderPoints },
+      }),
+    ]);
+
+    currentBalance += orderPoints - (order.pointsEarned || 0);
+    log(`🟢 Assigned ${orderPoints} pts for order ${order.orderNumber}`);
+
+    // ---- Shopify Order Metafield Update ----
+    try {
+      const orderInput = {
+        id: order.shopifyOrderId, // make sure you store the Shopify order ID in your DB
+        metafields: [
+          {
+            namespace: "loyalty",
+            key: "points",
+            type: "number_integer",
+            value: orderPoints.toString(),
+          },
+        ],
+      };
+
+      const mutation = `
+        mutation OrderMetafieldAdd($input: OrderInput!) {
+          orderUpdate(input: $input) {
+            order {
+              id
+              metafields(first: 5) {
+                edges {
+                  node {
+                    id
+                    namespace
+                    key
+                    value
+                    type
+                  }
+                }
+              }
+            }
+            userErrors {
+              field
+              message
+            }
           }
         }
+      `;
+
+      const res = await fetch(shopifyUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Shopify-Access-Token": accessToken,
+        },
+        body: JSON.stringify({ query: mutation, variables: { input: orderInput } }),
+      });
+
+      const data = await res.json();
+      if (data.data.orderUpdate.userErrors.length) {
+        console.error(`❌ Shopify Order Metafield Errors for order ${order.orderNumber}:`, data.data.orderUpdate.userErrors);
+      } else {
+        console.log(`📦 Order ${order.orderNumber} metafield updated: ${orderPoints} points`);
+      }
+    } catch (err) {
+      console.error(`❌ Shopify Order Metafield update failed for order ${order.orderNumber}:`, err);
+    }
+  } else {
+    log(`ℹ️ Order ${order.orderNumber} already has ${order.pointsEarned} pts`);
+  }
+}
+
       }
 
       // ---- Skip if already up-to-date ----

@@ -9,6 +9,8 @@
 }
 {% endschema %}
 {% if customer %}
+  {% assign points = customer.metafields.loyalty.point %}
+  {% assign tier = customer.metafields.loyalty.tier %}
   <div class="corner_style">
     <div class="corner-books">
       <div class="corner-text">
@@ -30,10 +32,10 @@
           <div class="progress__meta"></div>
         </div>
       </div>
-      <p class="progress_about">Earn 250 more points to reach Gold</p>
+      <p class="progress_about">Earn {{ points }} more points to reach {{ tier }}</p>
     </div>
     <div class="banner_point_info">
-      <p class="banner_point">(55)</p>
+      <p class="banner_point">({{ points }})</p>
       <p>Points Balance</p>
     </div>
 
@@ -109,8 +111,9 @@
 </div>
 <script>
   const customerEmail = "{{ customer.email | escape }}"; // Liquid renders here
-  const customerMetafields = "{{ customer.metafields.loyalty.points }}"
-  console.log(customerMetafields,"customer Metafields");
+  const customerMetafieldPoints = "{{ customer.metafields.loyalty.points }}"
+  const customerMetafieldTier =  "{{ customer.metafields.loyalty.tier }}"
+  console.log(customerMetafieldPoints,customerMetafieldTier,"customer Metafields");
 </script>
 <script type="module" src="{{ 'custom-loyalty.js' | asset_url }}"></script>
 {{ 'custom-loyalty.css' | asset_url | stylesheet_tag }}

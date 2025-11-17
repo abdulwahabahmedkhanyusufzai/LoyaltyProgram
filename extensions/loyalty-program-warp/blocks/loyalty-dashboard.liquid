@@ -6,112 +6,147 @@
     <p>Hi {{ customer.first_name | default: 'Customer' }}, welcome back.</p>
   </div>
 
-  <!-- Loyalty Rating / Points Summary -->
-  <div class="loyalty-rating">
-    <div class="points-summary">
-      <h3>Points Summary</h3>
-      <p class="tier-text">You're {{ section.settings.points_to_next_tier }} points away from Bronze Tier</p>
+  {% if customer %}
+    {% assign points = customer.metafields.loyalty.points | default: 0 %}
+    {% assign tier = customer.metafields.loyalty.tier | default: 'Welcome' %}
 
-      <div class="points-info">
-        <h1>{{ section.settings.total_points }}</h1>
-        <p>Total Points</p>
-      </div>
+    {% comment %}
+      Define tiers with min points
+    {% endcomment %}
+    {% assign tiers_raw = "Bronze:200:bronze.png,Silver:500:silver.png,Gold:750:gold.png,Platinum:1000:gem.png" %}
+    {% assign tiers_list = tiers_raw | split: "," %}
+    {% assign next_tier_name = '' %}
+    {% assign points_to_next = 0 %}
+    {% assign progress_percent = 0 %}
 
-      <!-- Tier Progress -->
-      <div class="progress-board">
-        <div class="tier-progress">
-          <div class="tiers">
-            {% assign tiers_raw = 'Bronze:bronze.png:false;Silver:silver.png:true;Gold:gold.png:false;Platinum:gem.png:false' %}
-            {% assign tiers_list = tiers_raw | split: ';' %}
-            {% for tier_item in tiers_list %}
-              {% assign parts = tier_item | split: ':' %}
-              {% assign tier_name = parts[0] %}
-              {% assign tier_img = parts[1] %}
-              {% assign tier_active = parts[2] %}
-              <span class="tier {% if tier_active == 'true' %}active{% endif %}">
-                <img
-                  width="40"
-                  height="40"
-                  style="height:40px;"
-                  src="https://cdn.shopify.com/s/files/1/0921/8428/1416/files/{{ tier_img }}?v=1760793539"
-                >
-                {{ tier_name }}
-              </span>
-            {% endfor %}
-          </div>
+    {% for t in tiers_list %}
+      {% assign parts = t | split: ":" %}
+      {% assign t_name = parts[0] %}
+      {% assign t_min = parts[1] | plus: 0 %}
+      {% assign t_img = parts[2] %}
 
-          <div class="tier-bar">
-            <div class="tier-fill" style="width: {{ section.settings.progress_percent }}%;"></div>
-          </div>
-        </div>
+      {% if points < t_min and next_tier_name == '' %}
+        {% assign next_tier_name = t_name %}
+        {% assign points_to_next = t_min | minus: points %}
+        {% assign progress_percent = points | times: 100 | divided_by: t_min %}
+      {% endif %}
 
-        <!-- Actions -->
-        <div class="points-actions">
-          <button class="earn-btn">Shop & Earn More</button>
-          <button class="redeem-btn">Redeem Points</button>
-        </div>
-      </div>
-    </div>
+      {% if points >= t_min %}
+        {% assign progress_percent = t_min | times: 100 | divided_by: 1000 %}
+      {% endif %}
+    {% endfor %}
 
-    {% render 'loyalty-sale-product' %}
-  </div>
-
-  <!-- Recent Transactions -->
-  <div class="loyalty-table">
-    <div class="transactions">
-      <h3>Recent Transactions</h3>
-      <div class="points-actions3">
-        <button class="redeem-btn">Redeem Points</button>
-        <button class="earn-btn">Shop & Earn More</button>
-      </div>
-    </div>
-
-    <div class="order-history">
-      <table class="order-history-table">
-        <thead>
-          <tr>
-            <th>DATE</th>
-            <th>ACTION</th>
-            <th>DESCRIPTION</th>
-            <th>AMOUNT OF</th>
-            <th>POINTS (+/-)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for order in customer.orders limit: 10 %}
-            <tr>
-              <td>{{ order.created_at | date: '%b %d, %Y' }}</td>
-              <td>
-                <span class="badge {{ order.financial_status }}">
-                  {%- if order.financial_status == 'paid' %}
-                    Earned
-                  {% else %}
-                    Redeemed
-                  {% endif %}
-                </span>
-              </td>
-              <td>
-                <a href="{{ order.customer_url }}">Order {{ order.name }}</a>
-              </td>
-              <td>{{ order.total_price | money }}</td>
-              <td>
-                <span class="{{ order.fulfillment_status }}">{{ order.fulfillment_status_label }}</span>
-              </td>
-            </tr>
+    <!-- Loyalty Rating / Points Summary -->
+    <div class="loyalty-rating">
+      <div class="points-summary">
+        <h3>Points Summary</h3>
+        <p class="tier-text">
+          {% if next_tier_name != '' %}
+            You're {{ points_to_next }} points away from {{ next_tier_name }} Tier
           {% else %}
-            <tr>
-              <td colspan="5">You haven't placed any orders yet.</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+            You've reached the {{ tier }} Tier!
+          {% endif %}
+        </p>
+
+        <div class="points-info">
+          <h1>{{ points }}</h1>
+          <p>Total Points</p>
+        </div>
+
+        <!-- Tier Progress -->
+        <div class="progress-board">
+          <div class="tier-progress">
+            <div class="tiers">
+              {% for t in tiers_list %}
+                {% assign parts = t | split: ":" %}
+                {% assign t_name = parts[0] %}
+                {% assign t_min = parts[1] | plus: 0 %}
+                {% assign t_img = parts[2] %}
+                <span class="tier {% if points >= t_min %}active{% endif %}" style="left: {{ t_min | times:100 | divided_by:1000 }}%;">
+                  <img
+                    width="40"
+                    height="40"
+                    style="height:40px;"
+                    src="https://cdn.shopify.com/s/files/1/0921/8428/1416/files/{{ t_img }}?v=1760793539"
+                    alt="{{ t_name }}"
+                  >
+                  {{ t_name }}
+                </span>
+              {% endfor %}
+            </div>
+
+            <div class="tier-bar">
+              <div class="tier-fill" style="width: {{ progress_percent }}%;"></div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="points-actions">
+            <button class="earn-btn">Shop & Earn More</button>
+            <button class="redeem-btn">Redeem Points</button>
+          </div>
+        </div>
+      </div>
+
+      {% render 'loyalty-sale-product' %}
     </div>
-  </div>
+
+    <!-- Recent Transactions -->
+    <div class="loyalty-table">
+      <div class="transactions">
+        <h3>Recent Transactions</h3>
+        <div class="points-actions3">
+          <button class="redeem-btn">Redeem Points</button>
+          <button class="earn-btn">Shop & Earn More</button>
+        </div>
+      </div>
+
+      <div class="order-history">
+        <table class="order-history-table">
+          <thead>
+            <tr>
+              <th>DATE</th>
+              <th>ACTION</th>
+              <th>DESCRIPTION</th>
+              <th>AMOUNT OF</th>
+              <th>POINTS (+/-)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in customer.orders limit: 10 %}
+              <tr>
+                <td>{{ order.created_at | date: '%b %d, %Y' }}</td>
+                <td>
+                  <span class="badge {{ order.financial_status }}">
+                    {% if order.financial_status == 'paid' %}
+                      Earned
+                    {% else %}
+                      Redeemed
+                    {% endif %}
+                  </span>
+                </td>
+                <td>
+                  <a href="{{ order.customer_url }}">Order {{ order.name }}</a>
+                </td>
+                <td>{{ order.total_price | money }}</td>
+                <td>
+                  <span class="{{ order.fulfillment_status }}">{{ order.fulfillment_status_label }}</span>
+                </td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="5">You haven't placed any orders yet.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% endif %}
 </div>
 
 <!-- JS / CSS -->
 {{ 'loyalty-dashboard.css' | asset_url | stylesheet_tag }}
-<script type="module" src="{{ 'loyalty-dashboard.js' | asset_url }}"></script>
 {{ 'loyalty_program.css' | asset_url | stylesheet_tag }}
 <script type="module" src="{{ 'loyalty_program.js' | asset_url }}"></script>
 

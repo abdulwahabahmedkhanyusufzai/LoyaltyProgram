@@ -171,7 +171,7 @@ model Order {
   shop           Shop?          @relation(fields: [shopId], references: [id])
   items          OrderItem[]
   pointsLedger   PointsLedger[]
-
+  OrderId        String
   @@index([customerId])
   @@index([shopId])
 }
