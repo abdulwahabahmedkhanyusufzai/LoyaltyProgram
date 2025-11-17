@@ -26,8 +26,7 @@ export async function GET(req: Request) {
         loyaltyTitle: true,
         numberOfOrders: true,
         amountSpent: true,
-        shopifyId: true,
-        orderId :true
+        shopifyId: true
       },
       orderBy: { numberOfOrders: "desc" },
     });
@@ -97,6 +96,7 @@ export async function GET(req: Request) {
                       lastName: customer.lastName,
                       email: customer.email,
                       shopifyId: customer.shopifyId,
+                      orderId : customer.orderId
                     },
                   },
                 },
