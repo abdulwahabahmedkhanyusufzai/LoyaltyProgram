@@ -27,6 +27,7 @@ export async function GET(req: Request) {
         numberOfOrders: true,
         amountSpent: true,
         shopifyId: true,
+        orderId :true
       },
       orderBy: { numberOfOrders: "desc" },
     });
