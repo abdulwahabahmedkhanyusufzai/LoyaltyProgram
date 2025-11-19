@@ -214,11 +214,9 @@ async function run() {
     try {
         const ordersToProcess = await prisma.order.findMany({
             where: {
-                // *** CRITICAL SAFETY FILTER ***
-                shopifyOrderId: null, // ONLY select records that need the ID
+                 // ONLY select records that need the ID
                 orderNumber: { not: "" },
                 pointsEarned: { 
-                    not: null, 
                     gt: 0, 
                 }
             },
