@@ -113,6 +113,8 @@
   const customerEmail = "{{ customer.email | escape }}"; // Liquid renders here
   const customerMetafieldPoints = "{{ customer.metafields.loyalty.points }}"
   const customerMetafieldTier =  "{{ customer.metafields.loyalty.tier }}"
+  const orders = "{{ customer.orders.metafields.loyalty.points }}"
+  console.log(orders,"orders");
   console.log(customerMetafieldPoints,customerMetafieldTier,"customer Metafields");
 </script>
 <script type="module" src="{{ 'custom-loyalty.js' | asset_url }}"></script>

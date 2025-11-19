@@ -19,7 +19,9 @@ export const FieldRenderer = ({
   const personal = formSections.personal.fields;
   const fields = formSections.security.fields;
   const toggles = formSections.notifications.toggles;
-
+  console.log("fields",fields)
+  console.log("personal",personal)
+  console.log("toggles",toggles)
   
    const handleCancel = () => {
     formManager.resetForm();

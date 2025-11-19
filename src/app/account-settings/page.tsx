@@ -24,6 +24,7 @@ const RegisterAsaCustomer = () => {
 
   const [loading, setLoading] = useState(false); // button loading
   const [pageLoading, setPageLoading] = useState(true); // whole page loader
+  const [showPassword, setShowPassword] = useState(false);
 
 useEffect(() => {
   const fetchUserFromAPI = async () => {
