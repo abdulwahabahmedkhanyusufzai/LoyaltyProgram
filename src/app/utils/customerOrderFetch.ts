@@ -21,7 +21,7 @@ type ShopifyOrderNode = {
 
 // Simplified type for Prisma Order record to ensure 'pointsEarned' is accessed safely
 type DbOrder = {
-    id: number;
+    id: string;
     orderNumber: string | null;
     shopifyOrderId: string | null;
     pointsEarned: number | null; 
