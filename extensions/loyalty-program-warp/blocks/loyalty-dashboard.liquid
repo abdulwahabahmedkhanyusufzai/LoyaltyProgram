@@ -130,7 +130,7 @@
                 </td>
                 <td>{{ order.total_price | money }}</td>
                 <td>
-                  <span class="{{ order.fulfillment_status }}">{{ order.metafields.loyalty.points_awarded }}</span>
+                  <span class="{{ order.fulfillment_status }}">{{ order.metafields.loyalty.points}}</span>
                 </td>
               </tr>
             {% else %}
