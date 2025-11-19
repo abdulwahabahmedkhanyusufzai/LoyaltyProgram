@@ -1,7 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-// Assume the 'Order' and 'Shop' types are available from the Prisma client,
-// though for this example we'll use a placeholder type for the order node
-// that is returned from Shopify.
 
 // Initialize Prisma Client
 const prisma = new PrismaClient();
@@ -11,10 +8,23 @@ const SHOPIFY_API_VERSION = "2025-10";
 const SHOPIFY_GRAPHQL_ENDPOINT = (shop: string) => 
     `https://${shop}/admin/api/${SHOPIFY_API_VERSION}/graphql.json`;
 
+// --- Metafield Configuration ---
+const METAFIELD_NAMESPACE = "loyalty";
+const METAFIELD_KEY = "points_awarded";
+const METAFIELD_TYPE = "integer"; 
+
 // --- Type Definition (for clarity) ---
 type ShopifyOrderNode = {
     id: string; // The GraphQL ID (e.g., "gid://shopify/Order/123456")
     name: string; // The customer-facing order number (e.g., "#1001")
+};
+
+// Simplified type for Prisma Order record to ensure 'pointsEarned' is accessed safely
+type DbOrder = {
+    id: number;
+    orderNumber: string | null;
+    shopifyOrderId: string | null;
+    pointsEarned: number | null; 
 };
 
 
@@ -23,10 +33,9 @@ type ShopifyOrderNode = {
 // ----------------------------------------------------
 /**
  * Fetches a Shopify Order by its customer-facing name (order number).
- * Handles adding the '#' prefix and URL/network errors.
  */
 async function fetchOrderFromShopify(shop: string, accessToken: string, orderNumber: string): Promise<ShopifyOrderNode | null> {
-    const operationName = "getOrderByName"; // Add operation name for better logging
+    const operationName = "getOrderByName";
     const query = `
         query ${operationName}($query: String!) {
             orders(first: 1, query: $query) {
@@ -40,11 +49,7 @@ async function fetchOrderFromShopify(shop: string, accessToken: string, orderNum
         }
     `;
 
-    // DEBUG STEP 1: Construct the robust query string for the order name
-    // The query must match the customer-facing name, often including the '#' prefix.
     const customerFacingName = orderNumber.startsWith('#') ? orderNumber : `#${orderNumber}`;
-    // The GraphQL query string requires surrounding quotes and escaping, 
-    // e.g., 'name:"#1001"'.
     const graphQLQueryString = `name:\"${customerFacingName}\"`; 
 
     const variables = {
@@ -64,7 +69,7 @@ async function fetchOrderFromShopify(shop: string, accessToken: string, orderNum
             body: JSON.stringify({ query, variables, operationName }),
         });
 
-        // DEBUG STEP 2: Check for non-200 HTTP status codes
+        // Check for non-200 HTTP status codes
         if (!res.ok) {
             const statusText = res.statusText || 'Unknown Error';
             const responseBody = await res.text();
@@ -74,13 +79,13 @@ async function fetchOrderFromShopify(shop: string, accessToken: string, orderNum
 
         const json = await res.json();
 
-        // DEBUG STEP 3: Check for GraphQL errors (e.g., syntax, permissions)
+        // Check for GraphQL errors
         if (json.errors) {
             console.error("   - ❌ GraphQL Errors:", JSON.stringify(json.errors, null, 2));
             return null;
         }
 
-        // DEBUG STEP 4: Safely access the order data using optional chaining
+        // Safely access the order data
         const order: ShopifyOrderNode | undefined = json.data?.orders?.edges?.[0]?.node;
         
         if (!order) {
@@ -90,21 +95,106 @@ async function fetchOrderFromShopify(shop: string, accessToken: string, orderNum
 
         return order;
     } catch (e) {
-        // DEBUG STEP 5: Catch network/fetch-level errors
+        // Catch network/fetch-level errors
         console.error(`   - ❌ Network/Fetch Error for ${orderNumber}:`, e instanceof Error ? e.message : String(e));
         return null;
     }
 }
 
 // ----------------------------------------------------
+// Shopify Metafield Updater
+// ----------------------------------------------------
+/**
+ * Updates a metafield on a Shopify Order using its GraphQL ID.
+ */
+async function updateOrderMetafield(
+    shop: string, 
+    accessToken: string, 
+    orderGid: string, 
+    value: number
+): Promise<boolean> {
+    const operationName = "updateMetafield";
+    const query = `
+        mutation ${operationName}($metafields: [MetafieldsSetInput!]!) {
+            metafieldsSet(metafields: $metafields) {
+                metafields {
+                    id
+                    namespace
+                    key
+                    value
+                }
+                userErrors {
+                    field
+                    message
+                }
+            }
+        }
+    `;
+    
+    const variables = {
+        metafields: [{
+            ownerId: orderGid,
+            namespace: METAFIELD_NAMESPACE,
+            key: METAFIELD_KEY,
+            value: String(value), // Value must be a string for API
+            type: METAFIELD_TYPE,
+        }],
+    };
+
+    console.log(`   - 💾 Attaching Metafield: ${METAFIELD_NAMESPACE}.${METAFIELD_KEY} = ${value} to ${orderGid}`);
+
+    try {
+        const url = SHOPIFY_GRAPHQL_ENDPOINT(shop);
+        const res = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Shopify-Access-Token": accessToken,
+            },
+            body: JSON.stringify({ query, variables, operationName }),
+        });
+
+        if (!res.ok) {
+            // Log full error details for debugging non-200 responses
+            const statusText = res.statusText || 'Unknown Error';
+            const responseBody = await res.text();
+            console.error(`   - ❌ HTTP Error ${res.status} (${statusText}) during Metafield update. Response: ${responseBody.substring(0, 200)}...`);
+            return false;
+        }
+
+        const json = await res.json();
+
+        if (json.errors) {
+            console.error("   - ❌ GraphQL Errors during Metafield update:", JSON.stringify(json.errors, null, 2));
+            return false;
+        }
+
+        // Check for mutation-specific user errors (e.g., invalid value/type)
+        const userErrors = json.data?.metafieldsSet?.userErrors;
+        if (userErrors && userErrors.length > 0) {
+            console.error("   - ❌ Metafield User Errors:", JSON.stringify(userErrors, null, 2));
+            return false;
+        }
+
+        console.log(`   - ✅ Metafield success: ${METAFIELD_NAMESPACE}.${METAFIELD_KEY} set to ${value}.`);
+        return true;
+
+    } catch (e) {
+        console.error(`   - ❌ Network/Fetch Error during Metafield update for ${orderGid}:`, e instanceof Error ? e.message : String(e));
+        return false;
+    }
+}
+
+
+// ----------------------------------------------------
 // Main Runner (Backfill Orchestrator)
 // ----------------------------------------------------
 /**
- * Main function to orchestrate the backfill process.
+ * Main function to orchestrate the backfill and metafield update process.
  */
 async function run() {
     console.log("================================================");
-    console.log("🔍 Starting Shopify Order ID Backfill Process...");
+    console.log("🔍 Starting Shopify Order Backfill & Metafield Process...");
     console.log(`================================================\n`);
 
     // --- 1. Get Shop Credentials ---
@@ -117,39 +207,50 @@ async function run() {
 
     const { shop, accessToken } = shopRecord;
     console.log(`✅ Loaded credentials for shop: ${shop}`);
+    console.log(`⚡ Metafield Target: ${METAFIELD_NAMESPACE}.${METAFIELD_KEY}\n`);
 
-    // --- 2. Query Orders Missing IDs ---
+
+    // --- 2. Query Orders Missing Shopify ID (The MOST IMPORTANT Check) ---
     try {
-        // Find records where shopifyOrderId is null/undefined AND orderNumber is a non-empty string.
         const ordersToProcess = await prisma.order.findMany({
             where: {
-                shopifyOrderId: null,
+                // *** CRITICAL SAFETY FILTER ***
+                shopifyOrderId: null, // ONLY select records that need the ID
                 orderNumber: { not: "" },
+                pointsEarned: { 
+                    not: null, 
+                    gt: 0, 
+                }
             },
-            orderBy: { id: 'asc' } // Process in a predictable order
+            orderBy: { id: 'asc' }
         });
 
-        console.log(`📌 Found ${ordersToProcess.length} orders to backfill.\n`);
+        console.log(`📌 Found ${ordersToProcess.length} orders MISSING Shopify IDs to backfill.`);
 
         // --- 3. Process Each Order ---
-        let successfulUpdates = 0;
+        let successfulDbUpdates = 0;
+        let successfulMetafieldUpdates = 0;
         let recordsSkipped = 0;
 
-        for (const order of ordersToProcess) {
+        for (const order of ordersToProcess as DbOrder[]) { 
             const dbRecordId = order.id;
             const rawOrderNumber = order.orderNumber;
-            
-            console.log(`--- Processing DB Record ID: ${dbRecordId} (Order: ${rawOrderNumber}) ---`);
+            const pointsValue = order.pointsEarned;
 
-            // DEBUG STEP 6: Input validation before calling external API
-            if (!rawOrderNumber || typeof rawOrderNumber !== 'string' || rawOrderNumber.trim() === '') {
-                console.warn(`   - ⚠️ Skipping (Validation): OrderNumber is invalid/empty for DB ID ${dbRecordId}.`);
+            console.log(`\n--- Processing DB Record ID: ${dbRecordId} (Order: ${rawOrderNumber} | Points: ${pointsValue}) ---`);
+
+            // Input validation and points check
+            if (!rawOrderNumber || typeof rawOrderNumber !== 'string' || rawOrderNumber.trim() === '' || 
+                pointsValue === null || pointsValue <= 0 || !Number.isInteger(pointsValue)) {
+                
+                console.warn(`   - ⚠️ Skipping (Validation): OrderNumber or pointsEarned (${pointsValue}) is invalid for DB ID ${dbRecordId}.`);
                 recordsSkipped++;
                 continue;
             }
             
             const cleanOrderNumber = rawOrderNumber.trim();
             
+            // A. Fetch Shopify Order ID
             const shopifyOrder = await fetchOrderFromShopify(
                 shop,
                 accessToken,
@@ -157,42 +258,57 @@ async function run() {
             );
 
             if (!shopifyOrder) {
-                console.log(`   - ⚠️ Lookup failed for ${cleanOrderNumber}. Skipping update.`);
+                console.log(`   - ⚠️ Lookup failed for ${cleanOrderNumber}. Skipping updates.`);
+                continue;
+            }
+            
+            if (!shopifyOrder.id) {
+                console.error(`   - ❌ DISCOVERY FAILED: Shopify Order object is missing ID for ${cleanOrderNumber}.`);
                 continue;
             }
 
-            // DEBUG STEP 7: Verify structure and content of the discovered order
-            if (!shopifyOrder.id || !shopifyOrder.name) {
-                console.error(`   - ❌ DISCOVERY FAILED: Shopify Order object is missing ID or Name for ${cleanOrderNumber}. Data:`, shopifyOrder);
-                continue;
-            }
+            console.log(`   - 🟢 DISCOVERY SUCCESS: Found Shopify ID: **${shopifyOrder.id}**`);
+            const shopifyGid = shopifyOrder.id;
 
-            console.log(`   - 🟢 DISCOVERY SUCCESS: Found Shopify ID: **${shopifyOrder.id}** (Name: ${shopifyOrder.name})`);
-
-            // --- 4. Update Database Record ---
+            // B. Update Database Record with Shopify ID
             try {
-                const updateResult = await prisma.order.update({
+                await prisma.order.update({
                     where: { id: dbRecordId },
-                    data: { shopifyOrderId: shopifyOrder.id },
+                    // Since we filtered for shopifyOrderId: null, this is safe and necessary.
+                    data: { shopifyOrderId: shopifyGid },
                 });
 
-                console.log(`   - 💾 SUCCESS: Updated DB ID ${dbRecordId} with Shopify ID ${updateResult.shopifyOrderId}`);
-                successfulUpdates++;
+                console.log(`   - 💾 SUCCESS: Updated DB ID ${dbRecordId} with Shopify ID.`);
+                successfulDbUpdates++;
             } catch (updateError) {
-                // DEBUG STEP 8: Catch database specific update errors (e.g., unique constraint violation)
                 console.error(`   - ❌ DB Update Error for DB ID ${dbRecordId}:`, updateError instanceof Error ? updateError.message : String(updateError));
             }
 
-            console.log(`-------------------------------------------------\n`);
+            // C. Update Shopify Metafield using the pointsEarned value
+            const metafieldSuccess = await updateOrderMetafield(
+                shop,
+                accessToken,
+                shopifyGid,
+                pointsValue
+            );
+
+            if (metafieldSuccess) {
+                successfulMetafieldUpdates++;
+            } else {
+                console.warn(`   - ⚠️ Metafield update failed for ${shopifyGid}.`);
+            }
+            
+            console.log(`-------------------------------------------------`);
         }
 
         console.log("\n================================================");
         console.log("🎯 Backfill Process Summary");
         console.log(`================================================`);
-        console.log(`Total Orders Queried: ${ordersToProcess.length}`);
-        console.log(`Successful DB Updates: ${successfulUpdates}`);
-        console.log(`Records Skipped (Invalid Input): ${recordsSkipped}`);
-        console.log(`Remaining to Backfill (or failed API lookup): ${ordersToProcess.length - successfulUpdates - recordsSkipped}`);
+        console.log(`Total Orders Processed (Missing ID): ${ordersToProcess.length}`);
+        console.log(`Successful DB Updates (Shopify ID): ${successfulDbUpdates}`);
+        console.log(`Successful Metafield Updates: ${successfulMetafieldUpdates}`);
+        console.log(`Records Skipped (Input/Points Errors): ${recordsSkipped}`);
+        console.log(`Records Failed (API/DB Errors): ${ordersToProcess.length - successfulDbUpdates - recordsSkipped}`);
 
     } catch (e) {
         console.error("❌ ERROR during main backfill loop:", e);
