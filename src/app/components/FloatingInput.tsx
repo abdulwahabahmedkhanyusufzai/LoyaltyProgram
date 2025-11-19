@@ -54,7 +54,7 @@ export const FloatingInput = ({
           onClick={() => setShowPassword(!showPassword)}
           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
         >
-          {showPassword ? "🙈" : "👁️"} {/* You can replace with an SVG eye */}
+          {showPassword ? "🙈" : <img src="/visibility_24dp.svg" alt="visible password" />} {/* You can replace with an SVG eye */}
         </button>
       )}
     </div>
