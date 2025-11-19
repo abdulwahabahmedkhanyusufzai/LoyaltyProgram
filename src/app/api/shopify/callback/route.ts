@@ -65,6 +65,7 @@ export async function GET(req: Request) {
     webhookSubscription {
       id
       topic
+      filter
     }
     userErrors {
       field
@@ -77,7 +78,7 @@ export async function GET(req: Request) {
     const webhookVariables = {
       topic: "ORDERS_CREATE",
       webhookSubscription: {
-        uri: `${process.env.NEXT_PUBLIC_API_URL}/api/order-create`,
+        callbackUrl: `${process.env.NEXT_PUBLIC_API_URL}/api/order-create`,
       },
     };
 
