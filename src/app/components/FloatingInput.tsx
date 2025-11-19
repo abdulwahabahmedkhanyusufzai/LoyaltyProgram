@@ -29,7 +29,7 @@ export const FloatingInput = ({
       <input
         name={name}
         id={id}
-        type={type}
+        type={inputType}
         placeholder={placeholder}
         value={value ?? ""} // ✅ ensure value never undefined/null
         onChange={onChange} // ✅ no extra wrapper needed
