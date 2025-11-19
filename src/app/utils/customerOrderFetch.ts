@@ -92,7 +92,7 @@ export const runOrderPointsCron = async (verbose = true) => {
           metafields: [
             {
               namespace: "loyalty",
-              key: "points",
+              key: "points_awarded",
               type: "number_integer",
               value: points.toString(),
             },
