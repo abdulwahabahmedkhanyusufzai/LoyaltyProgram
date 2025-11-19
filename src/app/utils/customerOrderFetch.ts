@@ -126,8 +126,6 @@ export const runOrderPointsCron = async (verbose = true) => {
   }
 };
 
-if (require.main === module) {
-  runOrderPointsCron()
-    .then(() => console.log("✅ Cron finished"))
-    .catch((err) => console.error("❌ Cron failed:", err));
-}
+runOrderPointsCron()
+  .then(() => console.log("✅ Cron finished"))
+  .catch((err) => console.error("❌ Cron failed:", err));
