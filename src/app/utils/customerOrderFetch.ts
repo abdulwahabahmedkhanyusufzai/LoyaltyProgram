@@ -19,10 +19,10 @@ async function fetchOrderFromShopify(shop: string, accessToken: string, orderNum
   `;
   
   // OPTIMIZATION: Use the robust query format to match the customer-facing name (e.g., name:"#1001")
-  const customerFacingName = orderNumber.startsWith('#') ? `\"${orderNumber}\"` : `\"#${orderNumber}\"`;
-  const variables = {
-    query: `name:"${customerFacingName}"`,
-  };
+ const customerFacingName = orderNumber.startsWith('#') ? `\"${orderNumber}\"` : `\"#${orderNumber}\"`;
+const variables = {
+  query: `name:"${customerFacingName}"`,
+};
 
   try {
     const res = await fetch(`https://${shop}/admin/api/2025-10/graphql.json`, {
