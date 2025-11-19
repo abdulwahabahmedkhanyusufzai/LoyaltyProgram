@@ -61,11 +61,19 @@ export async function GET(req: Request) {
     // Step 3: Register webhook
     const webhookMutation = `
       mutation webhookSubscriptionCreate($topic: WebhookSubscriptionTopic!, $webhookSubscription: WebhookSubscriptionInput!) {
-        webhookSubscriptionCreate(topic: $topic, webhookSubscription: $webhookSubscription) {
-          webhookSubscription { id topic uri filter }
-          userErrors { field message }
-        }
-      }
+  webhookSubscriptionCreate(topic: $topic, webhookSubscription: $webhookSubscription) {
+    webhookSubscription {
+      id
+      topic
+      filter
+      uri
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
     `;
 
     const webhookVariables = {
