@@ -9,7 +9,7 @@ async function updateOrderMetafield(
   accessToken: string,
   shopifyOrderId: string,
   points: number,
-  orderNumber: number
+  orderNumber: string
 ) {
   const mutation = `
     mutation OrderMetafieldAdd($input: OrderInput!) {
