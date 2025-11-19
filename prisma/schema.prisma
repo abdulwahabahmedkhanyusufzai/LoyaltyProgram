@@ -158,6 +158,7 @@ model Order {
   id             String         @id @default(cuid())
   customerId     String
   shopId         Int?
+  shopifyOrderId String?        @unique
   orderNumber    String         @unique
   totalAmount    Decimal        @default(0)
   currency       String         @default("EUR")
@@ -171,7 +172,6 @@ model Order {
   shop           Shop?          @relation(fields: [shopId], references: [id])
   items          OrderItem[]
   pointsLedger   PointsLedger[]
-  OrderId        String         @default(cuid())
   @@index([customerId])
   @@index([shopId])
 }

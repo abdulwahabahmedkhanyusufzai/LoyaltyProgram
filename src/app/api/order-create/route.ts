@@ -90,6 +90,7 @@ export async function POST(req: Request): Promise<Response> {
         data: {
           customerId: customer.id,
           orderNumber: orderData.order_number.toString(),
+          shopifyOrderId: `gid://shopify/Order/${orderData.id}`,
           totalAmount: parseFloat(orderData.total_price),
           currency: orderData.currency || "EUR",
           status: mapFinancialStatusToOrderStatus(orderData.financial_status),

@@ -78,10 +78,12 @@ export async function fetchOrdersForAllCustomers(shop: string, token: string) {
           update: {
             totalAmount,
             currency,
+            shopifyOrderId: order.id,
             updatedAt: new Date(),
           },
           create: {
             orderNumber: order.name,
+            shopifyOrderId: order.id,
             totalAmount,
             currency,
             createdAt: new Date(order.createdAt),

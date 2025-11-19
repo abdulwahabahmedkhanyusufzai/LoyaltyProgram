@@ -77,61 +77,65 @@ export const runLoyaltyCronJob = async (verbose = true) => {
     log(`🟢 Assigned ${orderPoints} pts for order ${order.orderNumber}`);
 
     // ---- Shopify Order Metafield Update ----
-    try {
-      const orderInput = {
-        id: order.shopifyOrderId, // make sure you store the Shopify order ID in your DB
-        metafields: [
-          {
-            namespace: "loyalty",
-            key: "points",
-            type: "number_integer",
-            value: orderPoints.toString(),
-          },
-        ],
-      };
+    if (!order.shopifyOrderId) {
+      warn(`⚠️ Skipping metafield update for order ${order.orderNumber}: No Shopify Order ID`);
+    } else {
+      try {
+        const orderInput = {
+          id: order.shopifyOrderId,
+          metafields: [
+            {
+              namespace: "loyalty",
+              key: "points",
+              type: "number_integer",
+              value: orderPoints.toString(),
+            },
+          ],
+        };
 
-      const mutation = `
-        mutation OrderMetafieldAdd($input: OrderInput!) {
-          orderUpdate(input: $input) {
-            order {
-              id
-              metafields(first: 5) {
-                edges {
-                  node {
-                    id
-                    namespace
-                    key
-                    value
-                    type
+        const mutation = `
+          mutation OrderMetafieldAdd($input: OrderInput!) {
+            orderUpdate(input: $input) {
+              order {
+                id
+                metafields(first: 5) {
+                  edges {
+                    node {
+                      id
+                      namespace
+                      key
+                      value
+                      type
+                    }
                   }
                 }
               }
-            }
-            userErrors {
-              field
-              message
+              userErrors {
+                field
+                message
+              }
             }
           }
+        `;
+
+        const res = await fetch(shopifyUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Shopify-Access-Token": accessToken,
+          },
+          body: JSON.stringify({ query: mutation, variables: { input: orderInput } }),
+        });
+
+        const data = await res.json();
+        if (data.data.orderUpdate.userErrors.length) {
+          console.error(`❌ Shopify Order Metafield Errors for order ${order.orderNumber}:`, data.data.orderUpdate.userErrors);
+        } else {
+          console.log(`📦 Order ${order.orderNumber} metafield updated: ${orderPoints} points`);
         }
-      `;
-
-      const res = await fetch(shopifyUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Shopify-Access-Token": accessToken,
-        },
-        body: JSON.stringify({ query: mutation, variables: { input: orderInput } }),
-      });
-
-      const data = await res.json();
-      if (data.data.orderUpdate.userErrors.length) {
-        console.error(`❌ Shopify Order Metafield Errors for order ${order.orderNumber}:`, data.data.orderUpdate.userErrors);
-      } else {
-        console.log(`📦 Order ${order.orderNumber} metafield updated: ${orderPoints} points`);
+      } catch (err) {
+        console.error(`❌ Shopify Order Metafield update failed for order ${order.orderNumber}:`, err);
       }
-    } catch (err) {
-      console.error(`❌ Shopify Order Metafield update failed for order ${order.orderNumber}:`, err);
     }
   } else {
     log(`ℹ️ Order ${order.orderNumber} already has ${order.pointsEarned} pts`);
