@@ -23,7 +23,7 @@ export async function GET(req) {
       return NextResponse.redirect(process.env.NEXT_PUBLIC_API_URL);
     }
     // Define the requested scopes and redirect URI
-    const scopes = `write_discounts,read_discounts,read_orders,read_customers,write_customers,write_content,read_content,read_products,write_products,write_files,read_files,write_online_store_navigation,read_online_store_navigation,write_publications,read_publications,write_product_listings,read_product_listings`;
+    const scopes = `write_discounts,read_discounts,read_orders,write_orders,read_customers,write_customers,write_content,read_content,read_products,write_products,write_files,read_files,write_online_store_navigation,read_online_store_navigation,write_publications,read_publications,write_product_listings,read_product_listings`;
     const redirectUri = process.env.APP_URL_RRDIRECT;
 
     // Construct the install URL for Shopify OAuth authentication
