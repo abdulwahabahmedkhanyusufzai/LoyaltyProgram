@@ -172,6 +172,7 @@ model Order {
   shop           Shop?          @relation(fields: [shopId], references: [id])
   items          OrderItem[]
   pointsLedger   PointsLedger[]
+  customer        Customer         @relation(fields: [customerId], references: [id])
   @@index([customerId])
   @@index([shopId])
 }
