@@ -21,7 +21,7 @@ async function fetchOrderFromShopify(shop: string, accessToken: string, orderNum
   // OPTIMIZATION: Use the robust query format to match the customer-facing name (e.g., name:"#1001")
   const customerFacingName = orderNumber.startsWith('#') ? `\"${orderNumber}\"` : `\"#${orderNumber}\"`;
   const variables = {
-    query: `name:"${customerFacingName}\"`,
+    query: `name:"${customerFacingName}"`,
   };
 
   try {
