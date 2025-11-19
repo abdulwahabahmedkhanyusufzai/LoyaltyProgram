@@ -220,7 +220,6 @@ async function run() {
                     gt: 0, 
                 }
             },
-            orderBy: { id: 'asc' }
         });
 
         console.log(`📌 Found ${ordersToProcess.length} orders MISSING Shopify IDs to backfill.`);
