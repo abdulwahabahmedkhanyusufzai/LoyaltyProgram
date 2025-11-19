@@ -125,3 +125,9 @@ export const runOrderPointsCron = async (verbose = true) => {
     await prisma.$disconnect();
   }
 };
+
+if (require.main === module) {
+  runOrderPointsCron()
+    .then(() => console.log("✅ Cron finished"))
+    .catch((err) => console.error("❌ Cron failed:", err));
+}
