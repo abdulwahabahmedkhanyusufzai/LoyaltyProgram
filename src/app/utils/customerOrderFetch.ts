@@ -21,7 +21,16 @@ export const runOrderPointsCron = async (verbose = true) => {
     // 2️⃣ Fetch orders without points
     const orders = await prisma.order.findMany({
       where: { pointsEarned: 0 },
-      include: { customer: true },
+      include: { 
+        customer: {
+          include: {
+            pointsLedger: {
+              orderBy: { earnedAt: 'desc' },
+              take: 1
+            }
+          }
+        }
+      },
     });
 
     log(`🧾 Found ${orders.length} orders without points`);
