@@ -58,7 +58,7 @@ export const POST = async (req: NextRequest) => {
     log("💾 File written to disk:", filePath);
 
     // Step 2: Public URL
-    const publicUrl = `${process.env.NEXT_PUBLIC_API_URL}uploads/${uniqueFileName}`;
+    const publicUrl = `${process.env.NEXT_PUBLIC_API_URL}/uploads/${uniqueFileName}`;
     log("🌍 Public image URL for Shopify:", publicUrl);
 
     // Step 3: Upload to Shopify
