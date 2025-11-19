@@ -49,7 +49,7 @@ async function run() {
   const orders = await prisma.order.findMany({
     where: {
       shopifyOrderId: null,
-      orderNumber: { not: null },
+      NOT:{orderNumber: null },
     },
   });
 
