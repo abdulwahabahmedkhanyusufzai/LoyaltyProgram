@@ -10,7 +10,7 @@ async function fetchOrderFromShopify(shop: string, accessToken: string, orderNum
       orders(first: 1, query: $query) {
         edges {
           node {
-            id // The REQUIRED global ID (e.g., gid://shopify/Order/12345)
+            id 
             name
           }
         }
