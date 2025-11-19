@@ -65,8 +65,6 @@ export async function GET(req: Request) {
     webhookSubscription {
       id
       topic
-      filter
-      uri
     }
     userErrors {
       field
