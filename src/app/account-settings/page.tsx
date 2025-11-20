@@ -41,6 +41,7 @@ useEffect(() => {
         fullName: user.fullName || "",
         email: user.email || "",
         phone: user.phoneNumber || "",
+        language: user.language || "English",
       };
 
       // ✅ Update both states with the same data
