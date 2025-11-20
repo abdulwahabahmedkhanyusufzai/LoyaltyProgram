@@ -92,6 +92,16 @@ export async function GET(req: NextRequest) {
     };
 
     const resp = NextResponse.json(responseBody);
+    
+    // Set language cookie for i18n
+    resp.cookies.set({
+      name: "userLanguage",
+      value: user.language || "English",
+      httpOnly: false,
+      path: "/",
+      sameSite: "strict",
+      maxAge: 60 * 60 * 24 * 365, // 1 year
+    });
 
     if (debugRequested) {
       const debugInfo = {

@@ -124,6 +124,16 @@ export async function POST(req: Request) {
       maxAge: 60 * 60 * 24 * 7, // 7 days
     });
 
+    // Set language cookie for i18n
+    response.cookies.set({
+      name: "userLanguage",
+      value: body.language || user.language || "English",
+      httpOnly: false,
+      path: "/",
+      sameSite: "strict",
+      maxAge: 60 * 60 * 24 * 365, // 1 year
+    });
+
     return response;
 
   } catch (error: unknown) {
