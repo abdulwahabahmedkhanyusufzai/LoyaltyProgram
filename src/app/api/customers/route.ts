@@ -95,8 +95,7 @@ export async function GET(req: Request) {
                       firstName: customer.firstName,
                       lastName: customer.lastName,
                       email: customer.email,
-                      shopifyId: customer.shopifyId,
-                      orderId : customer.orderId
+                      shopifyId: customer.shopifyId
                     },
                   },
                 },
