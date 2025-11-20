@@ -5,6 +5,7 @@ import "./globals.css";
 import ClientLayout from "./components/ClientLayout";
 import { Toaster } from "react-hot-toast";
 import { UserProvider } from "@/lib/UserContext";
+import { IntlProvider } from 'next-intl';
 
 const interTight = Inter_Tight({
   subsets: ["latin"],
@@ -17,19 +18,23 @@ export const metadata: Metadata = {
   description: "Waro the Loyalty Program",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
+  params
 }: {
   children: React.ReactNode;
+  params: { locale: string };
 }) {
+  const locale = params.locale || 'en';
+  const messages = (await import(`../locales/${locale}/en.json`)).default;
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body className={`${interTight.className} antialiased`}>
        <UserProvider>
         <ClientLayout>
-          
+          <IntlProvider locale={locale} messages={messages}>          
           {children}
-       
+           </IntlProvider>
           </ClientLayout>
              </UserProvider>
            <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
