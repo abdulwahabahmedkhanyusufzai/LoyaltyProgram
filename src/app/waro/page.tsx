@@ -58,10 +58,10 @@ const WaroPage = () => {
   }, []);
 
   const stats = [
-    { label: t("stats.loyaltyProgram"), content: <LoyaltyProgram />, redirect: "/loyal-customers/program" },
-    { label: t("stats.topSellingProducts"), content: <TopSellingProductsHorizontal />, redirect: "/topSellingProduct" },
+    { label: t("loyaltyProgram"), content: <LoyaltyProgram />, redirect: "/loyal-customers/program" },
+    { label: t("topSellingProducts"), content: <TopSellingProductsHorizontal />, redirect: "/topSellingProduct" },
     {
-      label: t("stats.totalRegisteredCustomers"),
+      label: t("totalRegisteredCustomers"),
       content: (
         <div className="text-center flex items-center justify-center mt-6 text-[45px] sm:text-[36px] lg:text-[51px] 2xl:text-[71px] font-extrabold text-[#2C2A25]">
           {customerCount !== null ? `${customerCount}+` : <SkeletonLoader />}
@@ -69,7 +69,7 @@ const WaroPage = () => {
       ),
       redirect: "/send-email?customers=true"
     },
-    { label: t("stats.loyalCustomers"), content: <LoyalCustomer />, redirect: "/loyal-customers" },
+    { label: t("loyalCustomers"), content: <LoyalCustomer />, redirect: "/loyal-customers" },
   ];
 
   return (
@@ -88,16 +88,16 @@ const WaroPage = () => {
             <div
               key={stat.label}
               className={`${stat.label === "Top Selling Products"
-                  ? "bg-[#2C2A25]"
-                  : "bg-[#E8E6D9]"
+                ? "bg-[#2C2A25]"
+                : "bg-[#E8E6D9]"
                 } rounded-[24px] sm:rounded-[32px] p-4 sm:p-3 shadow-lg w-[180px] md:w-[205px] md:h-[200px] lg:w-[235px] 2xl:w-[300px] h-[200px] lg:h-[220px] 2xl:h-[280px] flex flex-col flex-shrink-0`}
             >
               {/* Heading + arrow */}
               <div className="flex items-center justify-between">
                 <p
                   className={`${stat.label === "Top Selling Products"
-                      ? "text-white"
-                      : "text-[#000000]"
+                    ? "text-white"
+                    : "text-[#000000]"
                     } text-[12px] sm:text-[14px] 2xl:text-[18px] font-semibold`}
                 >
                   {stat.label === "Total Registered Customers" ?
@@ -110,8 +110,8 @@ const WaroPage = () => {
                 <button
                   onClick={() => router.push(`${stat.redirect}`)}
                   className={`${stat.label === "Top Selling Products"
-                      ? "border-[#E8E6D9]"
-                      : "border-[#2C2A25]"
+                    ? "border-[#E8E6D9]"
+                    : "border-[#2C2A25]"
                     }  cursor-pointer w-[24px] h-[24px] sm:w-[40px] sm:h-[40px] 2xl:w-[48px] 2xl:h-[48px] rounded-full border flex items-center justify-center hover:bg-[#D9D9D9] transition`}
                 >
                   <img
