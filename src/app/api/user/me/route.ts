@@ -112,6 +112,7 @@ export async function GET(req: NextRequest) {
       email: user.email,
       phoneNumber: user.phoneNumber,
       profilePicUrl: user.profilePicUrl,
+      language: user.language,
     };
 
     const resp = NextResponse.json(responseBody);
