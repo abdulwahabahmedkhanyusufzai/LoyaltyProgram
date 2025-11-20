@@ -1,14 +1,4 @@
 {
-    "stats": {
-        "loyaltyProgram": "Programme de fidélité",
-        "topSellingProducts": "Produits les plus vendus",
-        "totalRegisteredCustomers": "Nombre total de clients enregistrés",
-        "loyalCustomers": "Clients fidèles"
-    },
-    "buttons": {
-        "save": "Enregistrer",
-        "cancel": "Annuler"
-    },
     "loyaltyTable": {
         "customersOverview": "Aperçu des clients",
         "addNew": "Ajouter nouveau",
