@@ -44,6 +44,7 @@ model User {
   password        String
   username        String            @unique
   profilePicUrl   String?
+  language        String            @default("English")
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   shopId          Int?
