@@ -80,6 +80,7 @@ export async function GET(req: NextRequest) {
         phoneNumber: payload.phoneNumber ?? null,
         profilePicUrl: payload.profilePicUrl ?? null,
         fromToken: true,
+        language: payload.language ?? "English",
       };
       usedTokenData = true;
     } else {
