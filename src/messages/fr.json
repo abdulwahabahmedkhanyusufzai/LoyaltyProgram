@@ -8,5 +8,31 @@
     "buttons": {
         "save": "Enregistrer",
         "cancel": "Annuler"
+    },
+    "loyaltyTable": {
+        "customersOverview": "Aperçu des clients",
+        "addNew": "Ajouter nouveau",
+        "arrow": "Flèche",
+        "customer": "Client",
+        "totalPoints": "Points totaux",
+        "amountOrders": "Nombre de commandes",
+        "action": "Action",
+        "delete": "Supprimer",
+        "view": "Voir",
+        "noCustomersMonth": "Aucun client pour ce mois",
+        "months": [
+            "Janvier",
+            "Février",
+            "Mars",
+            "Avril",
+            "Mai",
+            "Juin",
+            "Juillet",
+            "Août",
+            "Septembre",
+            "Octobre",
+            "Novembre",
+            "Décembre"
+        ]
     }
 }

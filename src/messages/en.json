@@ -8,5 +8,31 @@
     "buttons": {
         "save": "Save",
         "cancel": "Cancel"
+    },
+    "loyaltyTable": {
+        "customersOverview": "Customers Overview",
+        "addNew": "Add New",
+        "arrow": "Arrow",
+        "customer": "Customer",
+        "totalPoints": "Total Points",
+        "amountOrders": "Amount of Orders",
+        "action": "Action",
+        "delete": "Delete",
+        "view": "View",
+        "noCustomersMonth": "No customers for this month",
+        "months": [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+        ]
     }
 }
