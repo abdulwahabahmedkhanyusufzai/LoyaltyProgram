@@ -1,44 +1,41 @@
-// layout.tsx (server)
+// src/app/layout.tsx
+import { ReactNode } from "react";
 import type { Metadata } from "next";
 import { Inter_Tight } from "next/font/google";
 import "./globals.css";
-import ClientLayout from "./components/ClientLayout";
+import ClientLayout from "../app/components/ClientLayout";
 import { Toaster } from "react-hot-toast";
 import { UserProvider } from "@/lib/UserContext";
-import {ClientIntlProvider}  from '../app/components/ClientIntlProvider';
+
 
 const interTight = Inter_Tight({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-inter-tight",
+    subsets: ["latin"],
+    weight: ["400", "500", "700"],
+    variable: "--font-inter-tight",
 });
 
 export const metadata: Metadata = {
-  title: "Waro | Loyalty Program",
-  description: "Waro the Loyalty Program",
+    title: "Waro | Loyalty Program",
+    description: "Waro the Loyalty Program",
 };
 
-export default async function RootLayout({
-  children,
-  params
-}: {
-  children: React.ReactNode;
-  params: { locale: string };
-}) {
-  const locale = params.locale || 'en';
-  const messages = (await import(`../locales/${locale}.json`)).default;
-  return (
-    <html lang={locale}>
-      <body className={`${interTight.className} antialiased`}>
-       <UserProvider>
-        <ClientLayout>
-          <ClientIntlProvider locale={locale} messages={messages}>          
-          {children}
-           </ClientIntlProvider>
-          </ClientLayout>
-             </UserProvider>
-           <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
-      </body>
-    </html>
-  );
+
+export default function RootLayout({ children }: { children: ReactNode }) {
+    return (
+        <html>
+            <body className={`${interTight.className} antialiased`}>
+                <UserProvider>
+                    <ClientLayout>
+                        {children}
+                    </ClientLayout>
+                </UserProvider>
+                <Toaster position="top-center" reverseOrder={false} />
+            </body>
+
+        </html>
+    );
 }
+
+// NOTE: You must also move the shared metadata and font definitions
+// to src/app/layout.tsx or keep them in the client-side layout,
+// depending on your preference.
