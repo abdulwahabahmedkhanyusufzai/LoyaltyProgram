@@ -1,0 +1,52 @@
+{
+  "nav": {
+    "waro": "Waro",
+    "analytics": "Analytics",
+    "viewLoyaltyProgram": "View the loyalty program",
+    "viewLoyalCustomers": "View the list of loyal customers",
+    "addRemoveLoyal": "Add or remove a loyal customer",
+    "sendEmail": "Send an email",
+    "adventCalendar": "Advent calendar"
+  },
+  "bottom": {
+    "accountSettings": "Account Settings",
+    "logout": "Logout"
+  },
+  "tiers": {
+    "welcomed": "Welcomed: Less than 20 points",
+    "guest": "Guest: Between 20 and 30 points",
+    "host": "Host: Between 31 and 4500 points",
+    "test": "Test: More than 4500 points"
+  },
+  "rows": {
+    "cashback": "Cashback per point",
+    "freeDelivery": "Free Delivery",
+    "immediateDiscount": "Immediate Discount",
+    "productSuggestions": "Product Suggestions",
+    "loyaltyOffer": "Loyalty Offer",
+    "birthdayOffer": "Birthday Offer"
+  },
+  "offers": {
+    "cashback": "Cashback per point",
+    "birthday": "Birthday Offer",
+    "loyalty": "Loyalty Offer"
+  },
+  "formSections": {
+    "personalDetails": "Personal Details",
+    "security": "Security",
+    "notifications": "Notifications",
+    "preferences": "Preferences",
+    "fullName": "Full Name",
+    "emailAddress": "Email Address",
+    "phoneNumber": "Phone Number",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "receiveSystemAlerts": "Receive system alerts via email",
+    "receiveNotifications": "Receive notifications",
+    "weeklyReports": "Weekly reports",
+    "language": "Language",
+    "english": "English",
+    "french": "French"
+  }
+}

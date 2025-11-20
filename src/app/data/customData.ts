@@ -1,18 +1,83 @@
 const navItems = [
   { name: "Waro", icon: "/waro-off.png", icon2: "/waro_on.png", path: "/waro" },
-  { name: "Analytics", icon: "/analytics-off.png", icon2: "/analytics-on.png", path: "/analytics" },
-  { name: "View the loyalty program", icon: "/viewloyaltyoff.png", icon2: "/viewloyaltyon.png", path: "/loyalty-program" },
-  { name: "View the list of loyal customers", icon: "/loyal-customers-off.png", icon2: "/loyal-customers-on.png", path: "/loyal-customers" },
-  { name: "Add or remove a loyal customer", icon: "/addorremoveloyal.png", icon2: "/addorremoveloyal-on.png", path: "/add-remove-loyal" },
-  { name: "Send an email", icon: "/email.png", icon2: "/email-on.png", path: "/send-email" },
-  { name: "Advent calendar", icon: "/calendar.png", icon2: "/calendar-on.png", path: "/calendar" },
+  {
+    name: "Analytics",
+    icon: "/analytics-off.png",
+    icon2: "/analytics-on.png",
+    path: "/analytics",
+  },
+  {
+    name: "View the loyalty program",
+    icon: "/viewloyaltyoff.png",
+    icon2: "/viewloyaltyon.png",
+    path: "/loyalty-program",
+  },
+  {
+    name: "View the list of loyal customers",
+    icon: "/loyal-customers-off.png",
+    icon2: "/loyal-customers-on.png",
+    path: "/loyal-customers",
+  },
+  {
+    name: "Add or remove a loyal customer",
+    icon: "/addorremoveloyal.png",
+    icon2: "/addorremoveloyal-on.png",
+    path: "/add-remove-loyal",
+  },
+  {
+    name: "Send an email",
+    icon: "/email.png",
+    icon2: "/email-on.png",
+    path: "/send-email",
+  },
+  {
+    name: "Advent calendar",
+    icon: "/calendar.png",
+    icon2: "/calendar-on.png",
+    path: "/calendar",
+  },
 ];
 const CustomerEmailData = [
-    { name: "Lorem Ipsum", email: "johanne@yahoo.com", lastOrder: "-", points: "0 points", purchases: "€0.0", title: "Welcomed" },
-    { name: "Lorem Ipsum", email: "shleysyze@hotmail.com", lastOrder: "-", points: "0 points", purchases: "€0.0", title: "Welcomed" },
-    { name: "Lorem Ipsum", email: "nath.zolo@free.fr", lastOrder: "-", points: "0 points", purchases: "€0.0", title: "Welcomed" },
-    { name: "Lorem Ipsum", email: "christian_leveque@orange.fr", lastOrder: "-", points: "0 points", purchases: "€0.0", title: "Welcomed" },
-    { name: "Lorem Ipsum", email: "maryse.guivarch@gmail.com", lastOrder: "03.11.2024", points: "4 points", purchases: "€48.9", title: "Welcomed" },
+  {
+    name: "Lorem Ipsum",
+    email: "johanne@yahoo.com",
+    lastOrder: "-",
+    points: "0 points",
+    purchases: "€0.0",
+    title: "Welcomed",
+  },
+  {
+    name: "Lorem Ipsum",
+    email: "shleysyze@hotmail.com",
+    lastOrder: "-",
+    points: "0 points",
+    purchases: "€0.0",
+    title: "Welcomed",
+  },
+  {
+    name: "Lorem Ipsum",
+    email: "nath.zolo@free.fr",
+    lastOrder: "-",
+    points: "0 points",
+    purchases: "€0.0",
+    title: "Welcomed",
+  },
+  {
+    name: "Lorem Ipsum",
+    email: "christian_leveque@orange.fr",
+    lastOrder: "-",
+    points: "0 points",
+    purchases: "€0.0",
+    title: "Welcomed",
+  },
+  {
+    name: "Lorem Ipsum",
+    email: "maryse.guivarch@gmail.com",
+    lastOrder: "03.11.2024",
+    points: "4 points",
+    purchases: "€48.9",
+    title: "Welcomed",
+  },
 ];
 const tiers = [
   { label: "Welcomed: Less than 20 points", color: "#734A00" },
@@ -66,65 +131,118 @@ const rows = [
     ],
   },
 ];
-const LoyalCustomer = [{
-      name: "Lorem Ipsum",
-      email: "johanne@yahoo.com",
-      lastOrder: "-",
-      points: "0 points",
-      purchases: "€0.0",
-      title: "Welcomed",
-    },
-    {
-      name: "Lorem Ipsum",
-      email: "shleysyze@hotmail.com",
-      lastOrder: "-",
-      points: "0 points",
-      purchases: "€0.0",
-      title: "Welcomed",
-    },
-    {
-      name: "Lorem Ipsum",
-      email: "nath.zolo@free.fr",
-      lastOrder: "-",
-      points: "0 points",
-      purchases: "€0.0",
-      title: "Welcomed",
-    },
-    {
-      name: "Lorem Ipsum",
-      email: "christian_leveque@orange.fr",
-      lastOrder: "-",
-      points: "0 points",
-      purchases: "€0.0",
-      title: "Welcomed",
-    },
-    {
-      name: "Lorem Ipsum",
-      email: "maryse.guivarch@gmail.com",
-      lastOrder: "03.11.2024",
-      points: "4 points",
-      purchases: "€48.9",
-      title: "Welcomed",
-    },
-  ]
-const products = [
-  { src: 'grainbag.png', alt: 'Grain Bag' },
-  { src: 'towel.png', alt: 'Towel' },
-  { src: 'shawl.png', alt: 'Shawl' },
-  { src: 'towel.png', alt: 'Towel' }, // duplicate if needed
+const LoyalCustomer = [
+  {
+    name: "Lorem Ipsum",
+    email: "johanne@yahoo.com",
+    lastOrder: "-",
+    points: "0 points",
+    purchases: "€0.0",
+    title: "Welcomed",
+  },
+  {
+    name: "Lorem Ipsum",
+    email: "shleysyze@hotmail.com",
+    lastOrder: "-",
+    points: "0 points",
+    purchases: "€0.0",
+    title: "Welcomed",
+  },
+  {
+    name: "Lorem Ipsum",
+    email: "nath.zolo@free.fr",
+    lastOrder: "-",
+    points: "0 points",
+    purchases: "€0.0",
+    title: "Welcomed",
+  },
+  {
+    name: "Lorem Ipsum",
+    email: "christian_leveque@orange.fr",
+    lastOrder: "-",
+    points: "0 points",
+    purchases: "€0.0",
+    title: "Welcomed",
+  },
+  {
+    name: "Lorem Ipsum",
+    email: "maryse.guivarch@gmail.com",
+    lastOrder: "03.11.2024",
+    points: "4 points",
+    purchases: "€48.9",
+    title: "Welcomed",
+  },
 ];
- const LoyaltyTableCustomers = [
-    { id: 1, name: "Zeke Arton", img: "tableimg1.png", points: 539, orders: "$3430.05" },
-    { id: 2, name: "Zed Rawe", img: "tableimg2.png", points: 473, orders: "$5218.22" },
-    { id: 3, name: "Yank Luddy", img: "Background.png", points: 462, orders: "$9157.04" },
-    { id: 4, name: "Yank Luddy", img: "Background.png", points: 462, orders: "$9157.04" },
-    { id: 5, name: "Yank Luddy", img: "Background.png", points: 462, orders: "$9157.04" },
-    { id: 6, name: "Yank Luddy", img: "Background.png", points: 462, orders: "$9157.04" },
-    { id: 7, name: "Yank Luddy", img: "Background.png", points: 462, orders: "$9157.04" },
-  ];
-  const bottomItems = [
-  { name: "Account Settings", icon: "/calendar.png", icon2: "/calendar-on.png", path: "/account-settings" },
-  { name: "Logout", icon: "/logout-off.png", icon2: "/logout-off.png", path: "/logout" },
+const products = [
+  { src: "grainbag.png", alt: "Grain Bag" },
+  { src: "towel.png", alt: "Towel" },
+  { src: "shawl.png", alt: "Shawl" },
+  { src: "towel.png", alt: "Towel" }, // duplicate if needed
+];
+const LoyaltyTableCustomers = [
+  {
+    id: 1,
+    name: "Zeke Arton",
+    img: "tableimg1.png",
+    points: 539,
+    orders: "$3430.05",
+  },
+  {
+    id: 2,
+    name: "Zed Rawe",
+    img: "tableimg2.png",
+    points: 473,
+    orders: "$5218.22",
+  },
+  {
+    id: 3,
+    name: "Yank Luddy",
+    img: "Background.png",
+    points: 462,
+    orders: "$9157.04",
+  },
+  {
+    id: 4,
+    name: "Yank Luddy",
+    img: "Background.png",
+    points: 462,
+    orders: "$9157.04",
+  },
+  {
+    id: 5,
+    name: "Yank Luddy",
+    img: "Background.png",
+    points: 462,
+    orders: "$9157.04",
+  },
+  {
+    id: 6,
+    name: "Yank Luddy",
+    img: "Background.png",
+    points: 462,
+    orders: "$9157.04",
+  },
+  {
+    id: 7,
+    name: "Yank Luddy",
+    img: "Background.png",
+    points: 462,
+    orders: "$9157.04",
+  },
+];
+const bottomItems = [
+  {
+    name: "Account Settings",
+    icon: "/calendar.png",
+    icon2: "/calendar-on.png",
+    path: "/account-settings",
+  },
+  {
+    name: "Logout",
+    icon: "/logout-off.png",
+    icon2: "/logout-off.png",
+    path: "/logout",
+  },
 ];
 const rewards = [
   { count: "2", label: "10% OFF" },
@@ -133,30 +251,32 @@ const rewards = [
 ];
 const offers = [
   {
-    src: 'coins.jpg',
-    alt: 'Cashback per point',
-    title: 'Cashback per point',
-    desc: 'Euro 10 = 01 Point',
+    src: "coins.jpg",
+    alt: "Cashback per point",
+    title: "Cashback per point",
+    desc: "Euro 10 = 01 Point",
   },
   {
-    src: 'birthday.jpg',
-    alt: 'Birthday Offer',
-    title: 'Birthday Offer',
-    desc: '15% on the order',
+    src: "birthday.jpg",
+    alt: "Birthday Offer",
+    title: "Birthday Offer",
+    desc: "15% on the order",
   },
   {
-    src: 'loyaltyoffers.jpg',
-    alt: 'Loyalty Offer',
-    title: 'Loyalty Offer',
-    desc: '5% on the 3rd order',
+    src: "loyaltyoffers.jpg",
+    alt: "Loyalty Offer",
+    title: "Loyalty Offer",
+    desc: "5% on the 3rd order",
   },
 ];
 const LotaltyProgramCustomers = [
-    
-    { src: "profile.jpg", name: "Emily Mark", email: "Emilymark@mail.com" },
-    { src: "christopher.jpg", name: "Christopher", email: "Christopher@mail.com" },
-    { src: "zeyanda.jpg", name: "Zeyenda", email: "Zeyenda@mail.com" },
- 
+  { src: "profile.jpg", name: "Emily Mark", email: "Emilymark@mail.com" },
+  {
+    src: "christopher.jpg",
+    name: "Christopher",
+    email: "Christopher@mail.com",
+  },
+  { src: "zeyanda.jpg", name: "Zeyenda", email: "Zeyenda@mail.com" },
 ];
 
 const CustomersUsageChartData = [
@@ -167,7 +287,7 @@ const CustomersUsageChartData = [
   { date: "Jun 29 2025", customers: 20000 },
 ];
 
-const PieChartData= [
+const PieChartData = [
   { name: "Active Users", value: 85 },
   { name: "Inactive Users", value: 15 },
 ];
@@ -207,7 +327,11 @@ const formSections = {
     fields: [
       { type: "password", name: "password", label: "Current Password" },
       { type: "password", name: "confirmPassword", label: "New Password" },
-      { type: "password", name: "confirmNewPassword", label: "Confirm New Password" },
+      {
+        type: "password",
+        name: "confirmNewPassword",
+        label: "Confirm New Password",
+      },
     ],
   },
   notifications: {
@@ -226,4 +350,20 @@ const formSections = {
     },
   },
 };
-export  {PieChartData,CustomersUsageChartData,CustomerEmailData,tiers,rows,LoyalCustomer,products,LoyaltyTableCustomers,navItems,bottomItems,rewards,offers,LotaltyProgramCustomers,initialForm,formSections};
+export {
+  PieChartData,
+  CustomersUsageChartData,
+  CustomerEmailData,
+  tiers,
+  rows,
+  LoyalCustomer,
+  products,
+  LoyaltyTableCustomers,
+  navItems,
+  bottomItems,
+  rewards,
+  offers,
+  LotaltyProgramCustomers,
+  initialForm,
+  formSections,
+};
