@@ -20,15 +20,12 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
     children,
-    params
 }: {
     children: React.ReactNode;
-    params: { locale: string };
 }) {
-    const locale = params.locale || 'en';
-    const messages = (await import(`../locales/${locale}.json`)).default;
+    const messages = (await import(`../locales/en.json`)).default;
     return (
-        <html lang={locale}>
+        <html lang="en">
             <body className={`${interTight.className} antialiased`}>
                 <UserProvider>
                     <ClientLayout>
