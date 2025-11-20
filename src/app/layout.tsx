@@ -19,6 +19,19 @@ export const metadata: Metadata = {
     description: "Waro the Loyalty Program",
 };
 
+// Helper to dynamically load and merge multiple JSON files
+async function loadLocaleMessages(locale: string) {
+    const messageFiles = ["stats", "loyaltyTable"]; // add other files if needed
+    const messagesArray = await Promise.all(
+        messageFiles.map(async (file) => {
+            const module = await import(`../messages/${locale}/${file}.json`);
+            return module.default;
+        })
+    );
+    // Merge all messages into a single object
+    return Object.assign({}, ...messagesArray);
+}
+
 export default async function RootLayout({
     children,
 }: {
@@ -31,8 +44,8 @@ export default async function RootLayout({
     // Map "English" and "French" to locale codes
     const locale = userLanguage.toLowerCase() === 'french' ? 'fr' : 'en';
 
-    // Load the appropriate messages
-    const messages = (await import(`../messages/${locale}.json`)).default;
+    // Load and merge messages from multiple files
+    const messages = await loadLocaleMessages(locale);
 
     return (
         <html lang={locale}>
