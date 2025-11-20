@@ -6,6 +6,7 @@ import ClientLayout from "../app/components/ClientLayout";
 import { Toaster } from "react-hot-toast";
 import { UserProvider } from "@/lib/UserContext";
 import { NextIntlClientProvider } from 'next-intl';
+import { cookies } from 'next/headers';
 
 const interTight = Inter_Tight({
     subsets: ["latin"],
@@ -23,13 +24,22 @@ export default async function RootLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const messages = (await import(`../messages/en.json`)).default;
+    // Get user's language preference from cookie
+    const cookieStore = await cookies();
+    const userLanguage = cookieStore.get('userLanguage')?.value || 'English';
+
+    // Map "English" and "French" to locale codes
+    const locale = userLanguage.toLowerCase() === 'french' ? 'fr' : 'en';
+
+    // Load the appropriate messages
+    const messages = (await import(`../messages/${locale}.json`)).default;
+
     return (
-        <html lang="en">
+        <html lang={locale}>
             <body className={`${interTight.className} antialiased`}>
                 <UserProvider>
                     <ClientLayout>
-                        <NextIntlClientProvider locale="en" messages={messages}>
+                        <NextIntlClientProvider locale={locale} messages={messages}>
                             {children}
                         </NextIntlClientProvider>
                     </ClientLayout>
