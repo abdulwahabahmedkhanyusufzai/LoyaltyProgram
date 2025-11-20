@@ -21,7 +21,7 @@ const WaroPage = () => {
   const [isDown, setIsDown] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-   const [customerCount, setCustomerCount] = useState<number | null>(null); 
+  const [customerCount, setCustomerCount] = useState<number | null>(null);
   const router = useRouter();
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!scrollRef.current) return;
@@ -40,10 +40,10 @@ const WaroPage = () => {
     const walk = (x - startX) * 1;
     scrollRef.current.scrollLeft = scrollLeft - walk;
   };
-  
-  const t = useTranslations();
 
-   useEffect(() => {
+  const t = useTranslations("stats");
+
+  useEffect(() => {
     const fetchCustomerCount = async () => {
       try {
         const res = await fetch(`/api/customers?mode=count`);
@@ -58,19 +58,19 @@ const WaroPage = () => {
   }, []);
 
   const stats = [
-  { label: t("stats.loyaltyProgram"), content: <LoyaltyProgram />,redirect: "/loyal-customers/program" },
-  { label: t("stats.topSellingProducts"), content: <TopSellingProductsHorizontal/>, redirect:"/topSellingProduct"},
-  {
-    label: t("stats.totalRegisteredCustomers"),
-    content: (
-      <div className="text-center flex items-center justify-center mt-6 text-[45px] sm:text-[36px] lg:text-[51px] 2xl:text-[71px] font-extrabold text-[#2C2A25]">
-        {customerCount !== null ? `${customerCount}+` : <SkeletonLoader/>}
-      </div>
-    ),
-    redirect:"/send-email?customers=true"
-  },
-  { label: t("stats.loyalCustomers"), content: <LoyalCustomer /> ,redirect: "/loyal-customers" },
-];
+    { label: t("stats.loyaltyProgram"), content: <LoyaltyProgram />, redirect: "/loyal-customers/program" },
+    { label: t("stats.topSellingProducts"), content: <TopSellingProductsHorizontal />, redirect: "/topSellingProduct" },
+    {
+      label: t("stats.totalRegisteredCustomers"),
+      content: (
+        <div className="text-center flex items-center justify-center mt-6 text-[45px] sm:text-[36px] lg:text-[51px] 2xl:text-[71px] font-extrabold text-[#2C2A25]">
+          {customerCount !== null ? `${customerCount}+` : <SkeletonLoader />}
+        </div>
+      ),
+      redirect: "/send-email?customers=true"
+    },
+    { label: t("stats.loyalCustomers"), content: <LoyalCustomer />, redirect: "/loyal-customers" },
+  ];
 
   return (
     <div className="p-4 sm:p-6 lg:p-7 space-y-8 bg-[#ffffff] min-h-screen">
@@ -87,35 +87,32 @@ const WaroPage = () => {
           {stats.map((stat) => (
             <div
               key={stat.label}
-              className={`${
-                stat.label === "Top Selling Products"
+              className={`${stat.label === "Top Selling Products"
                   ? "bg-[#2C2A25]"
                   : "bg-[#E8E6D9]"
-              } rounded-[24px] sm:rounded-[32px] p-4 sm:p-3 shadow-lg w-[180px] md:w-[205px] md:h-[200px] lg:w-[235px] 2xl:w-[300px] h-[200px] lg:h-[220px] 2xl:h-[280px] flex flex-col flex-shrink-0`}
+                } rounded-[24px] sm:rounded-[32px] p-4 sm:p-3 shadow-lg w-[180px] md:w-[205px] md:h-[200px] lg:w-[235px] 2xl:w-[300px] h-[200px] lg:h-[220px] 2xl:h-[280px] flex flex-col flex-shrink-0`}
             >
               {/* Heading + arrow */}
               <div className="flex items-center justify-between">
                 <p
-                  className={`${
-                    stat.label === "Top Selling Products"
+                  className={`${stat.label === "Top Selling Products"
                       ? "text-white"
                       : "text-[#000000]"
-                  } text-[12px] sm:text-[14px] 2xl:text-[18px] font-semibold`}
+                    } text-[12px] sm:text-[14px] 2xl:text-[18px] font-semibold`}
                 >
-                  {stat.label === "Total Registered Customers" ? 
-                   <p>Total Registered<br/> Customers</p>
-                  :(
-                  stat.label
-                  )}
+                  {stat.label === "Total Registered Customers" ?
+                    <p>Total Registered<br /> Customers</p>
+                    : (
+                      stat.label
+                    )}
                 </p>
-                  
+
                 <button
-                onClick={() => router.push(`${stat.redirect}`)}
-                  className={`${
-                    stat.label === "Top Selling Products"
+                  onClick={() => router.push(`${stat.redirect}`)}
+                  className={`${stat.label === "Top Selling Products"
                       ? "border-[#E8E6D9]"
                       : "border-[#2C2A25]"
-                  }  cursor-pointer w-[24px] h-[24px] sm:w-[40px] sm:h-[40px] 2xl:w-[48px] 2xl:h-[48px] rounded-full border flex items-center justify-center hover:bg-[#D9D9D9] transition`}
+                    }  cursor-pointer w-[24px] h-[24px] sm:w-[40px] sm:h-[40px] 2xl:w-[48px] 2xl:h-[48px] rounded-full border flex items-center justify-center hover:bg-[#D9D9D9] transition`}
                 >
                   <img
                     src={

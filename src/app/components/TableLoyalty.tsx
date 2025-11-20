@@ -1,11 +1,5 @@
 "use client";
 
-declare module 'next-intl' {
-  interface AppConfig {
-    Messages: typeof import('../../messages/en/loyaltyTable.json');
-  }
-}
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import MonthDropdown from "./MonthDropdown";
