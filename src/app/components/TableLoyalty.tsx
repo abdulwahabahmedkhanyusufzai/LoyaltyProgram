@@ -1,5 +1,11 @@
 "use client";
 
+declare module 'next-intl' {
+  interface AppConfig {
+    Messages: typeof import('../../messages/en/loyaltyTable.json');
+  }
+}
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import MonthDropdown from "./MonthDropdown";
@@ -18,22 +24,9 @@ export const LoyaltyTable = () => {
   const { customers, loading, fetchCustomers } = useCustomers();
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
-  // Get month names from translation (object -> array)
-  // Get month names from translation (array)
 
-  function tArray<T = string>(key: string): T[] {
-    const value = t(key, { "returnObjects": "true" }) as unknown;
 
-    if (Array.isArray(value)) {
-      return value as T[];
-    }
-
-    // fallback: empty array if value is not an array
-    return [];
-  }
-
-  const monthNames = tArray<string>("months");
-
+  const monthNames: string[] = Array.from({ length: 12 }, (_, i) => t(`months.${i}`));
 
 
   // Narrow type safely
