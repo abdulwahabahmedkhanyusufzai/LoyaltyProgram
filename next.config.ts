@@ -1,13 +1,13 @@
+import createNextIntlPlugin from 'next-intl/plugin';
+
+const withNextIntl = createNextIntlPlugin();
+
 const nextConfig = {
-  i18n: {
-    locales: ['en', 'fr'],
-    defaultLocale: 'en',
-  },
   experimental: {
     serverActions: {
-      bodySizeLimit: '2mb',
+      bodySizeLimit: 2 * 1024 * 1024, // 2MB in bytes
     },
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

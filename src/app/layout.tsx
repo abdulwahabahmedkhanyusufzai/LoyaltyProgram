@@ -23,13 +23,13 @@ export default async function RootLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const messages = (await import(`../locales/en.json`)).default;
+    const messages = (await import(`../messages/en.json`)).default;
     return (
         <html lang="en">
             <body className={`${interTight.className} antialiased`}>
                 <UserProvider>
                     <ClientLayout>
-                        <NextIntlClientProvider>
+                        <NextIntlClientProvider locale="en" messages={messages}>
                             {children}
                         </NextIntlClientProvider>
                     </ClientLayout>
