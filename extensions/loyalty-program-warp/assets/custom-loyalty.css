@@ -123,8 +123,8 @@
   color: rgba(0, 0, 0, 0.7);
 }
 .progress_about {
-  font-size: 8px;
-  margin-top: 6px;
+  font-size: 10px;
+  margin-top: 2px;
 }
 .banner_point_info {
   color: rgb(255, 255, 255);
@@ -134,4 +134,7 @@
     display: flex;
     justify-content: end;
     align-items: end;
+}
+p{
+  margin: 2px;
 }

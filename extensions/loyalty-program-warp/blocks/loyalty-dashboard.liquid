@@ -15,9 +15,14 @@
     {% endcomment %}
     {% assign tiers_raw = "Bronze:200:bronze.png,Silver:500:silver.png,Gold:750:gold.png,Platinum:1000:gem.png" %}
     {% assign tiers_list = tiers_raw | split: "," %}
+
+    {% comment %}
+      --- NEW FIXED PROGRESS LOGIC ---
+      Progress ALWAYS uses 0 → 1000 max
+    {% endcomment %}
+    {% assign max_points = 1000 %}
     {% assign next_tier_name = '' %}
     {% assign points_to_next = 0 %}
-    {% assign progress_percent = 0 %}
 
     {% for t in tiers_list %}
       {% assign parts = t | split: ":" %}
@@ -28,13 +33,13 @@
       {% if points < t_min and next_tier_name == '' %}
         {% assign next_tier_name = t_name %}
         {% assign points_to_next = t_min | minus: points %}
-        {% assign progress_percent = points | times: 100 | divided_by: t_min %}
-      {% endif %}
-
-      {% if points >= t_min %}
-        {% assign progress_percent = t_min | times: 100 | divided_by: 1000 %}
       {% endif %}
     {% endfor %}
+
+    {% assign progress_percent = points | times: 100 | divided_by: max_points %}
+    {% if progress_percent > 100 %}
+      {% assign progress_percent = 100 %}
+    {% endif %}
 
     <!-- Loyalty Rating / Points Summary -->
     <div class="loyalty-rating">
@@ -62,7 +67,9 @@
                 {% assign t_name = parts[0] %}
                 {% assign t_min = parts[1] | plus: 0 %}
                 {% assign t_img = parts[2] %}
-                <span class="tier {% if points >= t_min %}active{% endif %}" style="left: {{ t_min | times:100 | divided_by:1000 }}%;">
+
+                <span class="tier {% if points >= t_min %}active{% endif %}"
+                      style="left: {{ t_min | times:100 | divided_by:1000 }}%;">
                   <img
                     width="40"
                     height="40"
@@ -130,7 +137,7 @@
                 </td>
                 <td>{{ order.total_price | money }}</td>
                 <td>
-                  <span class="{{ order.fulfillment_status }}">{{ order.metafields.loyalty.points}}</span>
+                  <span class="{{ order.fulfillment_status }}">{{ order.metafields.loyalty.points }}</span>
                 </td>
               </tr>
             {% else %}
