@@ -21,7 +21,7 @@ export const LoyaltyTable = () => {
   // Get month names from translation (object -> array)
   // Get month names from translation (array)
   const monthNames = t("months") as unknown as string[];
-
+  console.log(monthNames);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const monthName = monthNames[selectedMonth];
 
