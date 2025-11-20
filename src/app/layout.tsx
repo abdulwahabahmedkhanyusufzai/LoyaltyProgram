@@ -5,7 +5,7 @@ import "./globals.css";
 import ClientLayout from "./components/ClientLayout";
 import { Toaster } from "react-hot-toast";
 import { UserProvider } from "@/lib/UserContext";
-import { IntlProvider } from 'next-intl';
+import {ClientIntlProvider}  from '../app/components/ClientIntlProvider';
 
 const interTight = Inter_Tight({
   subsets: ["latin"],
@@ -32,9 +32,9 @@ export default async function RootLayout({
       <body className={`${interTight.className} antialiased`}>
        <UserProvider>
         <ClientLayout>
-          <IntlProvider locale={locale} messages={messages}>          
+          <ClientIntlProvider locale={locale} messages={messages}>          
           {children}
-           </IntlProvider>
+           </ClientIntlProvider>
           </ClientLayout>
              </UserProvider>
            <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
