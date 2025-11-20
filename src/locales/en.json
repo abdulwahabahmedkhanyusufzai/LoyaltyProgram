@@ -1,0 +1,12 @@
+{
+    "stats": {
+        "loyaltyProgram": "Loyalty Program",
+        "topSellingProducts": "Top Selling Products",
+        "totalRegisteredCustomers": "Total Registered Customers",
+        "loyalCustomers": "Loyal Customers"
+    },
+    "buttons": {
+        "save": "Save",
+        "cancel": "Cancel"
+    }
+}

@@ -7,6 +7,7 @@ import { LoyaltyTable } from "../components/TableLoyalty";
 import { ActivityCalendar } from "../components/LoyalCalendar";
 import { useRouter } from "next/navigation";
 import { TopSellingProductsHorizontal } from "../components/HorizontalScroller";
+import { useTranslations } from "next-intl";
 
 
 
@@ -39,6 +40,8 @@ const WaroPage = () => {
     const walk = (x - startX) * 1;
     scrollRef.current.scrollLeft = scrollLeft - walk;
   };
+  
+  const t = useTranslations();
 
    useEffect(() => {
     const fetchCustomerCount = async () => {
@@ -55,10 +58,10 @@ const WaroPage = () => {
   }, []);
 
   const stats = [
-  { label: "Loyalty Program", content: <LoyaltyProgram />,redirect: "/loyal-customers/program" },
-  { label: "Top Selling Products", content: <TopSellingProductsHorizontal/>, redirect:"/topSellingProduct"},
+  { label: t("stats.loyaltyProgram"), content: <LoyaltyProgram />,redirect: "/loyal-customers/program" },
+  { label: t("stats.topSellingProducts"), content: <TopSellingProductsHorizontal/>, redirect:"/topSellingProduct"},
   {
-    label: `Total Registered Customers`,
+    label: t("stats.totalRegisteredCustomers"),
     content: (
       <div className="text-center flex items-center justify-center mt-6 text-[45px] sm:text-[36px] lg:text-[51px] 2xl:text-[71px] font-extrabold text-[#2C2A25]">
         {customerCount !== null ? `${customerCount}+` : <SkeletonLoader/>}
@@ -66,7 +69,7 @@ const WaroPage = () => {
     ),
     redirect:"/send-email?customers=true"
   },
-  { label: "Loyal Customers", content: <LoyalCustomer /> ,redirect: "/loyal-customers" },
+  { label: t("stats.loyalCustomers"), content: <LoyalCustomer /> ,redirect: "/loyal-customers" },
 ];
 
   return (
