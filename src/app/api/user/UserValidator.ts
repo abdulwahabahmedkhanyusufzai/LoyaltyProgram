@@ -1,9 +1,9 @@
 // validators/UserValidator.ts
 export class UserValidator {
   static validateRegistration(data: any) {
-    const { fullName, email, phone, password, confirmPassword } = data;
+    const { fullName, email, phone, password, confirmPassword ,language } = data;
 
-    if (!fullName || !email || !phone || !password || !confirmPassword) {
+    if (!fullName || !email || !phone || !password || !confirmPassword || !language) {
       throw new Error("All fields are required");
     }
     if (password !== confirmPassword) {
@@ -12,9 +12,9 @@ export class UserValidator {
   }
 
    static validateUpdate(data: any) {
-    const { fullName, phone, password, confirmPassword } = data;
+    const { fullName, phone, password, confirmPassword,language } = data;
 
-    if (!fullName || !phone) {
+    if (!fullName || !phone || !language ) {
       throw new Error("Full name and phone number are required");
     }
 
