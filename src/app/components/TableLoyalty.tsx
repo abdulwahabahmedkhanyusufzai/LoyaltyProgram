@@ -19,11 +19,12 @@ export const LoyaltyTable = () => {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
   // Get month names from translation (object -> array)
-  const monthsObj = t("months") as unknown;
-  const monthNames = Object.values(monthsObj);
+  // Get month names from translation (array)
+  const monthNames = t("months") as unknown as string[];
 
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const monthName = monthNames[selectedMonth];
+
 
   useEffect(() => {
     fetchCustomers();

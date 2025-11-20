@@ -10,19 +10,19 @@
         "delete": "Delete",
         "view": "View",
         "noCustomersMonth": "No customers for this month",
-        "months": {
-            "January": "January",
-            "February": "February",
-            "March": "March",
-            "April": "April",
-            "May": "May",
-            "June": "June",
-            "July": "July",
-            "August": "August",
-            "September": "September",
-            "October": "October",
-            "November": "November",
-            "December": "December"
-        }
+        "months": [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+        ]
     }
 }
