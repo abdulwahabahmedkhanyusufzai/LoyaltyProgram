@@ -21,12 +21,20 @@ export const LoyaltyTable = () => {
   // Get month names from translation (object -> array)
   // Get month names from translation (array)
 
-  function tArray(key: string): string[] {
-    const value = t(key, { returnObjects: true });
-    return Array.isArray(value) ? (value as string[]) : [];
+  function tArray<T = string>(key: string): T[] {
+    const value = t(key, { "returnObjects": "true" }) as unknown;
+
+    if (Array.isArray(value)) {
+      return value as T[];
+    }
+
+    // fallback: empty array if value is not an array
+    return [];
   }
 
-  const monthNames = tArray("months");
+  const monthNames = tArray<string>("months");
+
+
 
   // Narrow type safely
   console.log(monthNames[0]);
