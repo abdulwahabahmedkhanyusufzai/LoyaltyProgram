@@ -69,6 +69,7 @@ export class UserService {
   }
 
   async createUser(data: {
+    language: any;
     fullName: string;
     email: string;
     phone: string;
@@ -102,7 +103,7 @@ export class UserService {
 
   async updateUser(
     userId: string,
-    data: { fullName?: string; phone?: string; password?: string; profilePicUrl?: string }
+    data: { fullName?: string; phone?: string; password?: string; profilePicUrl?: string; language?: any }
   ) {
     debug("Updating user:", userId, "with data:", { ...data, password: data.password ? "[HIDDEN]" : undefined });
 
@@ -116,6 +117,7 @@ export class UserService {
       debug("Password re-hashed for update");
     }
     if (data.profilePicUrl) updateData.profilePicUrl = data.profilePicUrl;
+    if (data.language) updateData.language = data.language;
 
     const updated = await prisma.user.update({
       where: { id: userId },

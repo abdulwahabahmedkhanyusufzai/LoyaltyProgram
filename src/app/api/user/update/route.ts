@@ -88,6 +88,7 @@ export async function POST(req: Request) {
       // Create user
       UserValidator.validateRegistration(body);
       user = await userService.createUser({
+        language: body.language || undefined,
         fullName: body.fullName,
         email: body.email,
         phone: body.phone,
