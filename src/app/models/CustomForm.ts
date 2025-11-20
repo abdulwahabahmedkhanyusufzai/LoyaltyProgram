@@ -8,6 +8,7 @@ export class CustomerForm {
   confirmNewPassword = "";
   profilePicFile: File | null = null;       // actual File
   profilePicPreview: string = "";
+  language : string;
              // object URL for preview
   errors: Record<string, string> = {};
 
@@ -56,6 +57,7 @@ export class CustomerForm {
       // for backend: you can send file as FormData if needed
       password: this.confirmNewPassword,
       confirmPassword: this.confirmNewPassword,
+      language : this.language
     };
   }
 }

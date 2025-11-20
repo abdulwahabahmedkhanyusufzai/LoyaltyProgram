@@ -91,8 +91,9 @@ export class UserService {
         username,
         profilePicUrl: data.profilePicUrl,
         password: hashedPassword,
+        language : data.language
       },
-      select: { id: true, fullName: true, email: true, username: true, phoneNumber: true, profilePicUrl: true },
+      select: { id: true, fullName: true, email: true, username: true, phoneNumber: true, profilePicUrl: true ,language:true},
     });
 
     debug("User created:", user);

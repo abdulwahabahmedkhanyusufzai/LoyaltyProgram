@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { UserService } from "../UserService";
 import { UserValidator } from "../UserValidator";
 import { prisma } from "../../../../lib/prisma";
+import { Languages } from "lucide-react";
 
 function jsonResponse(data: any, status = 200) {
   const res = NextResponse.json(data, { status });
@@ -12,7 +13,6 @@ function jsonResponse(data: any, status = 200) {
 }
 
 const userService = new UserService();
-
 
 export async function POST(req: Request) {
   try {
@@ -81,6 +81,7 @@ export async function POST(req: Request) {
         phone: body.phone,
         password: body.password || undefined,
         profilePicUrl: profilePicUrl || existingUser.profilePicUrl,
+        language : body.language || undefined,
       });
       message = "User updated successfully";
     } else {
