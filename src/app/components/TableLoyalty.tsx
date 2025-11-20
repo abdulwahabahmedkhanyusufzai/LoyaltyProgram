@@ -18,11 +18,9 @@ export const LoyaltyTable = () => {
   const { customers, loading, fetchCustomers } = useCustomers();
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
-  // Get translated month names as array
-  const monthNamesFromTranslation = t("months");
-  const monthNames: string[] = typeof monthNamesFromTranslation === 'string'
-    ? JSON.parse(monthNamesFromTranslation)
-    : monthNamesFromTranslation;
+  // Get month names from translation (object -> array)
+  const monthsObj = t("months") as unknown;
+  const monthNames = Object.values(monthsObj);
 
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const monthName = monthNames[selectedMonth];
@@ -47,6 +45,7 @@ export const LoyaltyTable = () => {
 
   return (
     <div className="w-full lg:w-[724px] lg:h-[500px] 2xl:w-[949px] 2xl:h-[533px] border border-[#a59f9f] rounded-[24px] sm:rounded-[32px] p-3 sm:p-4 flex flex-col relative">
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <h1 className="text-[16px] sm:text-[18px] font-semibold">
@@ -60,6 +59,7 @@ export const LoyaltyTable = () => {
             <span>{t("addNew")}</span>
             <span className="text-[16px] sm:text-[18px]">+</span>
           </button>
+
           <MonthDropdown
             currentMonth={monthName}
             onMonthChange={(newMonth) => {
@@ -68,9 +68,10 @@ export const LoyaltyTable = () => {
               fetchCalendarData(newMonth);
             }}
           />
+
           <button
             onClick={() => router.push("/add-remove-loyal")}
-            className="cursor-pointer hover:bg-[#D9D9D9] border-[#a59f9f]  w-[40px] h-[40px] sm:w-[48px] sm:h-[48px] rounded-full border flex items-center justify-center"
+            className="cursor-pointer hover:bg-[#D9D9D9] border-[#a59f9f] w-[40px] h-[40px] sm:w-[48px] sm:h-[48px] rounded-full border flex items-center justify-center"
           >
             <img
               src="Arrow1.svg"
@@ -86,9 +87,7 @@ export const LoyaltyTable = () => {
         <table className="w-full border-collapse min-w-[600px]">
           <thead>
             <tr className="border-b border-[#D2D1CA] text-left text-[#2C2A25] text-[12px] sm:text-[14px] font-medium">
-              <th className="p-2 sm:p-3 rounded-tl-[12px] uppercase">
-                {t("customer")}
-              </th>
+              <th className="p-2 sm:p-3 rounded-tl-[12px] uppercase">{t("customer")}</th>
               <th className="p-2 sm:p-3 uppercase">{t("totalPoints")}</th>
               <th className="p-2 sm:p-3 uppercase">{t("amountOrders")}</th>
               <th className="p-2 sm:p-3 rounded-tr-[12px] uppercase">{t("action")}</th>
@@ -134,6 +133,7 @@ export const LoyaltyTable = () => {
         </table>
       </div>
 
+      {/* Dialogs */}
       <DeletedDialog
         selectedCustomer={selectedCustomer}
         setSelectedCustomer={setSelectedCustomer}
