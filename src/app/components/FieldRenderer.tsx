@@ -151,7 +151,7 @@ export const Select = ({ form, handleChange }: any) => {
     <Section title={formSections.preferences.title}>
       <select
         name={select.name}
-        value={select.name || ""}
+        value={form[select.name] || ""}
         onChange={handleChange}
         className={`w-full border rounded-full px-4 py-3 text-sm sm:text-base ${
           form.errors?.[select.name]
