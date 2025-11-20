@@ -176,7 +176,7 @@ export async function POST(req: Request): Promise<Response> {
     if (discountAmount > 0) {
       console.log("🟠 Discount detected → applying tier penalty");
 
-      const tier = getTierByAmount(updatedCustomer!.amountSpent);
+      const tier = getTierByAmount(Number(updatedCustomer!.amountSpent));
       const penalty = getTierPenalty(tier);
 
       const lastLedger = await prisma.pointsLedger.findFirst({
