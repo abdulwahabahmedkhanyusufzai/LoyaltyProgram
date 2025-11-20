@@ -53,7 +53,7 @@ export class UserService {
     debug("Fetching user by ID:", id);
     return prisma.user.findUnique({
       where: { id },
-      select: { id: true, fullName: true, email: true, username: true, phoneNumber: true, profilePicUrl: true },
+      select: { id: true, fullName: true, email: true, username: true, phoneNumber: true, profilePicUrl: true, language: true },
     });
   }
 
