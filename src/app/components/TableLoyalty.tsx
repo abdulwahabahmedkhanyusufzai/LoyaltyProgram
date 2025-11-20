@@ -20,10 +20,13 @@ export const LoyaltyTable = () => {
 
   // Get month names from translation (object -> array)
   // Get month names from translation (array)
-  const monthNames = t("months") as unknown as string[];
+  const monthsObj = t("months", { returnObjects: true }) as unknown;
+
+  // Narrow type safely
+  const monthNames: string[] = Array.isArray(monthsObj) ? monthsObj : [];
   console.log(monthNames[0]);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
-  const monthName = monthNames[selectedMonth];
+  const monthName: string = monthNames[selectedMonth];
 
 
   useEffect(() => {

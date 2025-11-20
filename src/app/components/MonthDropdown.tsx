@@ -9,8 +9,8 @@ export default function MonthDropdown({
   onMonthChange: (month: string) => void;
 }) {
   const months = [
-    "January","February","March","April","May","June",
-    "July","August","September","October","November","December"
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
   ];
 
   const [open, setOpen] = useState(false);
@@ -60,9 +60,8 @@ export default function MonthDropdown({
                 onMonthChange(month);
                 setOpen(false);
               }}
-              className={`px-4 py-2 text-sm cursor-pointer hover:bg-[#2C2A25] hover:text-white transition ${
-                currentMonth === month ? "bg-[#2C2A25] text-white" : ""
-              }`}
+              className={`px-4 py-2 text-sm cursor-pointer hover:bg-[#2C2A25] hover:text-white transition ${currentMonth === month ? "bg-[#2C2A25] text-white" : ""
+                }`}
             >
               {month}
             </div>
