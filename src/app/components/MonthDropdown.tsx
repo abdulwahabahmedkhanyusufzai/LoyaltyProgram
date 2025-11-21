@@ -12,7 +12,7 @@ export default function MonthDropdown({
   const t = useTranslations("loyaltyTable");
 
   // map numbers 0-11 to translated month names
-  const monthNames: string[] = Array.from({ length: 12 }, (_, i) => t(`${i}`));
+  const monthNames: string[] = Array.from({ length: 12 }, (_, i) => t(`months.${i}`));
 
   const currentIndex = monthNames.findIndex((m) => m === currentMonth);
   const [selectedMonthIndex, setSelectedMonthIndex] = useState<number>(
