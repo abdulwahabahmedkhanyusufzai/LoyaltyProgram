@@ -1,14 +1,14 @@
 "use client";
 import React from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { navItems } from "../data/customData";
+import { useNavData } from "../data/customData";
 import { useUser } from "../../lib/UserContext"; // ✅ import context
 
 const Sidebar = ({ open, setOpen }) => {
   const router = useRouter();
   const pathname = usePathname();
   const { user, setUser } = useUser(); // ✅ get user + setter from context
-
+  const { navItems } = useNavData();
   const bottomItems = [
     {
       name: "Account Settings",
@@ -25,7 +25,7 @@ const Sidebar = ({ open, setOpen }) => {
 
   const handleAuthClick = async (item) => {
     if (item.name === "Logout") {
-       
+
       router.push("/logout");
     } else {
       router.push("/login");
@@ -40,9 +40,9 @@ const Sidebar = ({ open, setOpen }) => {
       item.name === "Login" || item.name === "Logout"
         ? () => handleAuthClick(item)
         : () => {
-            router.push(item.path);
-            setOpen(false);
-          };
+          router.push(item.path);
+          setOpen(false);
+        };
 
     return (
       <li key={item.name} className="relative">
