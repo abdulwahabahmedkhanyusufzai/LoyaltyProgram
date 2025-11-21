@@ -11,7 +11,7 @@ function LoyalCustomersList() {
   const [customers, setCustomers] = useState<any[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [step, setStep] = useState(1);
-  const [selectedTab, setSelectedTab] = useState("Home");
+  const [selectedTab, setSelectedTab] = useState(t("tabsHome"));
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
@@ -26,10 +26,10 @@ function LoyalCustomersList() {
     setCustomerIdFromUrl(id);
     if (id) {
       setStep(0);
-      setSelectedTab("Clients");
+      setSelectedTab(t("tabsClient"));
     } else {
       setStep(1);
-      setSelectedTab("Home");
+      setSelectedTab(t("tabsHome"));
     }
   }, []);
 
@@ -114,15 +114,15 @@ function LoyalCustomersList() {
           type="default"
           onChange={(tab) => {
             setSelectedTab(tab);
-            if (tab === "Program") setStep(2);
-            if (tab === "Home") setStep(1);
-            if (tab === "Clients") setStep(0);
+            if (tab === t("tabsProgram")) setStep(2);
+            if (tab === t("tabsHome")) setStep(1);
+            if (tab === t("tabsClient")) setStep(0);
           }}
           activeTab={selectedTab}
         />
 
         {/* Home Tab */}
-        {selectedTab === "Home" && step === 1 && (
+        {selectedTab === t("tabsHome") && step === 1 && (
           <>
             {/* Search Bar */}
             <div className="flex flex-col lg:flex-row lg:justify-between gap-3">
@@ -183,11 +183,11 @@ function LoyalCustomersList() {
         )}
 
         {/* Program Tab */}
-        {selectedTab === "Program" && step === 2 && <ProgramLoyal2 />}
+        {selectedTab === t("tabsProgram") && step === 2 && <ProgramLoyal2 />}
       </div>
 
       {/* Pagination */}
-      {selectedTab === "Home" && step === 1 && (
+      {selectedTab === t("tabsHome") && step === 1 && (
         <div className="mt-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
           {/* Left */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
@@ -229,7 +229,7 @@ function LoyalCustomersList() {
       )}
 
       {/* Clients Tab */}
-      {selectedTab === "Clients" && step === 0 && (
+      {selectedTab === t("tabsClient") && step === 0 && (
         <LoyaltyDashboard
           currentCustomers={
             customerIdFromUrl
