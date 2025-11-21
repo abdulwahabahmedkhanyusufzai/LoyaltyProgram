@@ -1,0 +1,15 @@
+{
+  "loyalCustomersList": "Liste des Clients Fidèles",
+  "customersRegistered": "Clients inscrits au programme de fidélité",
+  "searchPlaceholder": "Rechercher par nom, titre, e-mail",
+  "lastFirstName": "Nom / Prénom",
+  "emailRegistration": "E-mail / Inscription",
+  "lastOrders": "Dernières Commandes",
+  "purchases": "Achats (€)",
+  "loyaltyTitle": "Titre de Fidélité",
+  "noCustomersFound": "Aucun client trouvé.",
+  "showingEntries": "Affichage de {page} à {endIndex} sur {total} entrées",
+  "tabsHome": "Accueil",
+  "tabsClients": "Clients",
+  "tabsProgram": "Programme"
+}

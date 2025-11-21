@@ -24,6 +24,7 @@ export default getRequestConfig(async () => {
     "homeSection",
     "registerCustomer",
     "add-remove-loyal",
+    "loyalCustomerManage",
   ];
 
   // Dynamically import all files

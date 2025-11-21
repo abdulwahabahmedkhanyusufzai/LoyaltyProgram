@@ -5,6 +5,7 @@ import Tabs from "../components/ButtonGroup";
 import ProgramLoyal2 from "./program/page";
 import { customerService } from "../utils/CustomerService";
 import LoyaltyDashboard from "../components/LoyaltyDashboard";
+import { useTranslations } from "next-intl";
 
 function LoyalCustomersList() {
   const [customers, setCustomers] = useState<any[]>([]);
@@ -15,7 +16,7 @@ function LoyalCustomersList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [customerIdFromUrl, setCustomerIdFromUrl] = useState<string | null>(null);
-
+  const t = useTranslations();
   const PAGE_SIZE = 10;
 
   // Detect URL param for customerId
@@ -104,7 +105,7 @@ function LoyalCustomersList() {
         <div className="flex items-center justify-start mb-0">
           <img src="PremiumLoyalty.png" alt="" className="h-[37px] w-[37px]" />
           <h2 className="text-xl sm:text-2xl font-bold text-[#2C2A25] ml-2">
-            Loyal Customers List
+            {t("loyalCustomersList")}
           </h2>
         </div>
 
@@ -126,13 +127,13 @@ function LoyalCustomersList() {
             {/* Search Bar */}
             <div className="flex flex-col lg:flex-row lg:justify-between gap-3">
               <p className="text-gray-500 text-sm lg:text-lg">
-                Customers Registered in the loyalty program
+                {t("customersRegistered")}
               </p>
               <div className="w-full lg:w-[398px] relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Search by name, title, email"
+                  placeholder={t("searchPlaceholder")}
                   className="w-full border border-gray-300 rounded-full pl-10 pr-4 py-2 focus:ring-2 focus:ring-yellow-400 outline-none"
                   value={searchTerm}
                   onChange={(e) => {
@@ -148,11 +149,11 @@ function LoyalCustomersList() {
               <table className="min-w-full text-left border-collapse table-auto">
                 <thead>
                   <tr className="border-b border-gray-200 text-gray-600">
-                    <th className="py-3 px-2 sm:px-4 text-xs sm:text-sm">Last / First Name</th>
-                    <th className="py-3 px-2 sm:px-4 text-xs sm:text-sm">Email / Registration</th>
-                    <th className="py-3 px-2 sm:px-4 text-xs sm:text-sm">Last Orders</th>
-                    <th className="py-3 px-2 sm:px-4 text-xs sm:text-sm">Purchases (€)</th>
-                    <th className="py-3 px-2 sm:px-4 text-xs sm:text-sm">Loyalty Title</th>
+                    <th className="py-3 px-2 sm:px-4 text-xs sm:text-sm">{t("lastFirstName")}</th>
+                    <th className="py-3 px-2 sm:px-4 text-xs sm:text-sm">{t("emailRegistration")}</th>
+                    <th className="py-3 px-2 sm:px-4 text-xs sm:text-sm">{t("lastOrders")}</th>
+                    <th className="py-3 px-2 sm:px-4 text-xs sm:text-sm">{t("purchases")}</th>
+                    <th className="py-3 px-2 sm:px-4 text-xs sm:text-sm">{t("loyaltyTitle")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -168,7 +169,7 @@ function LoyalCustomersList() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={5} className="text-center py-4 text-gray-500">No customers found.</td>
+                      <td colSpan={5} className="text-center py-4 text-gray-500">{t("noCustomersFound")}</td>
                     </tr>
                   )}
                 </tbody>
@@ -200,7 +201,7 @@ function LoyalCustomersList() {
               ))}
             </select>
             <span className="text-sm text-gray-700">
-              Showing {page} to {endIndex} of {filteredCustomers.length} entries
+              {t("showingEntries", { page, endIndex, total: filteredCustomers.length })}
             </span>
           </div>
 
@@ -213,9 +214,8 @@ function LoyalCustomersList() {
                     key={p}
                     onClick={() => setPage(p)}
                     style={{ boxShadow: "2px 2px 2px 0px #00000040" }}
-                    className={`px-3 py-1 rounded min-w-[40px] text-center ${
-                      page === p ? "bg-[#FEFCED] text-black" : "bg-[#FEFCED] text-gray-500"
-                    }`}
+                    className={`px-3 py-1 rounded min-w-[40px] text-center ${page === p ? "bg-[#FEFCED] text-black" : "bg-[#FEFCED] text-gray-500"
+                      }`}
                   >
                     {p}
                   </button>

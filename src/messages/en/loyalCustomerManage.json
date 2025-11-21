@@ -1,0 +1,15 @@
+{
+  "loyalCustomersList": "Loyal Customers List",
+  "customersRegistered": "Customers Registered in the loyalty program",
+  "searchPlaceholder": "Search by name, title, email",
+  "lastFirstName": "Last / First Name",
+  "emailRegistration": "Email / Registration",
+  "lastOrders": "Last Orders",
+  "purchases": "Purchases (€)",
+  "loyaltyTitle": "Loyalty Title",
+  "noCustomersFound": "No customers found.",
+  "showingEntries": "Showing {page} to {endIndex} of {total} entries",
+  "tabsHome": "Home",
+  "tabsClients": "Clients",
+  "tabsProgram": "Program"
+}
