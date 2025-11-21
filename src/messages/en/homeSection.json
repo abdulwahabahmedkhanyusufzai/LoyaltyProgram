@@ -1,0 +1,16 @@
+{
+  "homeSection": {
+    "title": "Sending a targeted Email",
+    "subtitle": "Choose the recipient group",
+    "options": {
+      "hosts": "Hosts",
+      "guests": "Guests",
+      "welcomed": "Welcomed",
+      "specificPerson": "A particular person",
+      "test": "Test",
+      "all": "All"
+    },
+    "nextButton": "Next",
+    "sendEmailTab": "Send an Email"
+  }
+}
