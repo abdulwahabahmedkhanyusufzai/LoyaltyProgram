@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { rewards } from "../data/customData";
+import { useNavData } from "../data/customData";
 
 interface RewardBadgeProps {
   date: number; // always a marked date
@@ -8,6 +8,7 @@ interface RewardBadgeProps {
 }
 
 const RewardBadge = ({ date, label }: RewardBadgeProps) => {
+
   return (
     <div
       className="flex items-center bg-[#2C2A25] text-white border border-[#2C2A25] 
@@ -37,6 +38,7 @@ interface RewardsRowProps {
 }
 
 const RewardsRow = ({ markedDates }: RewardsRowProps) => {
+  const { rewards } = useNavData();
   // Filter only rewards that have marked dates
   const badgesToShow = rewards
     .map((reward, idx) => ({ ...reward, date: markedDates[idx] }))
