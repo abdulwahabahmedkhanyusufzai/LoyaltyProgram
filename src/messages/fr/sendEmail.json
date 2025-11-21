@@ -1,21 +1,26 @@
 {
   "sendEmail": {
     "placeholders": {
-      "recipient": "To (Recipient)",
-      "subject": "Subject"
+      "recipient": "À (Destinataire)",
+      "subject": "Objet"
     },
-    "bannerText": "Free shipping for over $50 and a full one-year return policy.",
+    "bannerText": "Livraison gratuite pour plus de 50 $ et une politique de retour d'un an complète.",
+    "template": {
+      "title": "THE WARO",
+      "subtitle": "VOUS AVEZ GAGNÉ",
+      "points": "POINTS"
+    },
     "buttons": {
-      "send": "Send Email",
-      "sending": "Sending..."
+      "send": "Envoyer l'e-mail",
+      "sending": "Envoi..."
     },
     "errors": {
-      "fillAllFields": "Please fill in all fields.",
-      "invalidEmail": "Please enter a valid email address.",
-      "sendFailed": "Failed to send email."
+      "fillAllFields": "Veuillez remplir tous les champs.",
+      "invalidEmail": "Veuillez saisir une adresse e-mail valide.",
+      "sendFailed": "Échec de l'envoi de l'e-mail."
     },
     "success": {
-      "sentTo": "✅ Email sent to {email}"
+      "sentTo": "✅ E-mail envoyé à {email}"
     }
   }
 }

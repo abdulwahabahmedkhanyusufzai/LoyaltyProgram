@@ -5,6 +5,11 @@
       "subject": "Subject"
     },
     "bannerText": "Free shipping for over $50 and a full one-year return policy.",
+    "template": {
+      "title": "THE WARO",
+      "subtitle": "YOU HAVE WON",
+      "points": "POINTS"
+    },
     "buttons": {
       "send": "Send Email",
       "sending": "Sending..."
