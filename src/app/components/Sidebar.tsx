@@ -9,7 +9,7 @@ const Sidebar = ({ open, setOpen }) => {
   const router = useRouter();
   const pathname = usePathname();
   const { user, setUser } = useUser(); // ✅ get user + setter from context
-  const t = useTranslations("navigation");
+  const t = useTranslations("nav");
   const { navItems } = useNavData(t);;
   const bottomItems = [
     {

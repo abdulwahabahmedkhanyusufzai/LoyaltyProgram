@@ -16,7 +16,7 @@ export const FieldRenderer = ({
   loading,
   setLoading
 }: any) => {
-  const t = useTranslations("navigation");
+  const t = useTranslations("formSections");
   const { formSections } = useNavData(t);
   const select = formSections.preferences.select;
   const personal = formSections.personal.fields;
@@ -148,7 +148,7 @@ export const FieldRenderer = ({
 };
 
 export const Select = ({ form, handleChange }: any) => {
-  const t = useTranslations("navigation");
+  const t = useTranslations("formSections");
   const { formSections } = useNavData(t);
   const select = formSections.preferences.select;
 
@@ -174,7 +174,7 @@ export const Select = ({ form, handleChange }: any) => {
 };
 
 export const Toggled = ({ form, handleChange }: any) => {
-  const t = useTranslations("navigation");
+  const t = useTranslations("formSections");
   const { formSections } = useNavData(t);
   const toggles = formSections.notifications.toggles;
   return (
@@ -197,7 +197,7 @@ export const Toggled = ({ form, handleChange }: any) => {
 };
 
 export const Personal = ({ form, handleChange, setFormData, formManager }: any) => {
-  const t = useTranslations("navigation");
+  const t = useTranslations("formSections");
   const { formSections } = useNavData(t);
 
   const personal = formSections.personal.fields;

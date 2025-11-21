@@ -1,43 +1,43 @@
 export function useNavData(t: (key: string) => string) {
   const navItems = [
     {
-      name: t("nav.waro"),
+      name: t("waro"),
       icon: "/waro-off.png",
       icon2: "/waro_on.png",
       path: "/waro",
     },
     {
-      name: t("nav.analytics"),
+      name: t("analytics"),
       icon: "/analytics-off.png",
       icon2: "/analytics-on.png",
       path: "/analytics",
     },
     {
-      name: t("nav.viewLoyaltyProgram"),
+      name: t("viewLoyaltyProgram"),
       icon: "/viewloyaltyoff.png",
       icon2: "/viewloyaltyon.png",
       path: "/loyalty-program",
     },
     {
-      name: t("nav.viewLoyalCustomers"),
+      name: t("viewLoyalCustomers"),
       icon: "/loyal-customers-off.png",
       icon2: "/loyal-customers-on.png",
       path: "/loyal-customers",
     },
     {
-      name: t("nav.addRemoveLoyal"),
+      name: t("addRemoveLoyal"),
       icon: "/addorremoveloyal.png",
       icon2: "/addorremoveloyal-on.png",
       path: "/add-remove-loyal",
     },
     {
-      name: t("nav.sendEmail"),
+      name: t("sendEmail"),
       icon: "/email.png",
       icon2: "/email-on.png",
       path: "/send-email",
     },
     {
-      name: t("nav.adventCalendar"),
+      name: t("adventCalendar"),
       icon: "/calendar.png",
       icon2: "/calendar-on.png",
       path: "/calendar",
@@ -321,46 +321,46 @@ export function useNavData(t: (key: string) => string) {
   // data/customData.ts
   const formSections = {
     personal: {
-      title: t("formSections.personalDetails"),
+      title: t("personalDetails"),
       fields: [
-        { type: "text", name: "fullName", label: t("formSections.fullName") },
-        { type: "email", name: "email", label: t("formSections.emailAddress") },
-        { type: "tel", name: "phone", label: t("formSections.phoneNumber") },
+        { type: "text", name: "fullName", label: t("fullName") },
+        { type: "email", name: "email", label: t("emailAddress") },
+        { type: "tel", name: "phone", label: t("phoneNumber") },
       ],
     },
     security: {
-      title: t("formSections.security"),
+      title: t("security"),
       fields: [
         {
           type: "password",
           name: "password",
-          label: t("formSections.currentPassword"),
+          label: t("currentPassword"),
         },
         {
           type: "password",
           name: "confirmPassword",
-          label: t("formSections.newPassword"),
+          label: t("newPassword"),
         },
         {
           type: "password",
           name: "confirmNewPassword",
-          label: t("formSections.confirmNewPassword"),
+          label: t("confirmNewPassword"),
         },
       ],
     },
     notifications: {
       title: "Notifications",
       toggles: [
-        { name: "systemAlerts", label: t("formSections.notifications") },
+        { name: "systemAlerts", label: t("notifications") },
         {
           name: "notifications",
-          label: t("formSections.receiveNotifications"),
+          label: t("receiveNotifications"),
         },
-        { name: "weeklyReports", label: t("formSections.weeklyReports") },
+        { name: "weeklyReports", label: t("weeklyReports") },
       ],
     },
     preferences: {
-      title: t("formSections.preferences"),
+      title: t("preferences"),
       select: {
         name: "language",
         options: ["English", "French"],

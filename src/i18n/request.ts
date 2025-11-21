@@ -10,7 +10,7 @@ export default getRequestConfig(async () => {
   const locale = userLanguage.toLowerCase() === "french" ? "fr" : "en";
 
   // List of message files to merge
-  const messageFiles = ["stats", "loyaltyTable", "navigation"];
+  const messageFiles = ["stats", "loyaltyTable", "nav"];
 
   // Dynamically import all files
   const messagesArray = await Promise.all(
