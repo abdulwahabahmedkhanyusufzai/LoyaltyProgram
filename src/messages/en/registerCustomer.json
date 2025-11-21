@@ -1,0 +1,23 @@
+{
+  "RegisterAsaCustomer": {
+    "updateCustomer": "Update Customer",
+    "registerCustomer": "Register as a Customer",
+    "customerDetails": "Customer Details",
+    "fullName": "Full Name",
+    "email": "Email",
+    "phone": "Phone",
+    "password": "Password",
+    "sendActivationMail": "Send me an activation mail",
+    "loyaltyProgram": "Loyalty Program",
+    "tier": "Tier",
+    "pointsBalance": "Point Balance",
+    "saving": "Saving...",
+    "saveAndRegister": "Save and Register",
+    "cancel": "Cancel",
+    "errorFullNameEmail": "Full name and email are required!",
+    "errorSaveCustomer": "Failed to save customer.",
+    "successUpdateCustomer": "Customer updated successfully!",
+    "successRegisterCustomer": "Customer registered successfully!",
+    "errorSomethingWentWrong": "Something went wrong while saving customer."
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "RegisterAsaCustomer": {
+    "updateCustomer": "Mettre à jour le client",
+    "registerCustomer": "Enregistrer un client",
+    "customerDetails": "Détails du client",
+    "fullName": "Nom complet",
+    "email": "Email",
+    "phone": "Téléphone",
+    "password": "Mot de passe",
+    "sendActivationMail": "Envoyez-moi un mail d'activation",
+    "loyaltyProgram": "Programme de fidélité",
+    "tier": "Niveau",
+    "pointsBalance": "Solde de points",
+    "saving": "Enregistrement...",
+    "saveAndRegister": "Enregistrer et inscrire",
+    "cancel": "Annuler",
+    "errorFullNameEmail": "Le nom complet et l'email sont requis !",
+    "errorSaveCustomer": "Échec de l'enregistrement du client.",
+    "successUpdateCustomer": "Client mis à jour avec succès !",
+    "successRegisterCustomer": "Client enregistré avec succès !",
+    "errorSomethingWentWrong": "Une erreur est survenue lors de l'enregistrement du client."
+  }
+}

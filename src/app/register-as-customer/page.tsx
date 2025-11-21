@@ -1,18 +1,18 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { customerService } from "../utils/CustomerService";
 import { FloatingInput } from "../components/FloatingInput";
-import DatePicker from "react-datepicker";
 import ExpiryDatePicker from "../components/ExpiryDate";
 import toast from "react-hot-toast";
 
-// ✅ Debug helper
 const debugLog = (label: string, data?: any) => {
   console.log(`%c[RegisterAsaCustomer] ${label}`, "color: #734A00; font-weight: bold;", data ?? "");
 };
 
 const RegisterAsaCustomer = () => {
+  const t = useTranslations("RegisterAsaCustomer");
   const router = useRouter();
   const [customerIdFromUrl, setCustomerIdFromUrl] = useState<string | null>(null);
   const [customers, setCustomers] = useState<any[]>([]);
@@ -30,7 +30,6 @@ const RegisterAsaCustomer = () => {
     expiry: "",
   });
 
-  // 🧭 Prefill form if customerId exists
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("customerId");
@@ -75,7 +74,6 @@ const RegisterAsaCustomer = () => {
     loadCustomers();
   }, [router]);
 
-  // 🧩 Track form input
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, id, value, type, checked } = e.target as HTMLInputElement;
     const key = name || id;
@@ -84,18 +82,16 @@ const RegisterAsaCustomer = () => {
     debugLog(`Input changed → ${key}`, newValue);
   };
 
-  // 💾 Register or Update
   const handleSave = async () => {
     debugLog("Submitting form", form);
 
     if (!form.fullName || !form.email) {
-      toast.error("Full name and email are required!");
+      toast.error(t("errorFullNameEmail"));
       return;
     }
 
     setSubmitting(true);
     try {
-      // 🧠 Check if the customer already exists
       const existingCustomer = customers.find(
         (c) =>
           c.email?.toLowerCase() === form.email.toLowerCase() ||
@@ -121,19 +117,19 @@ const RegisterAsaCustomer = () => {
       debugLog("API Response:", result);
 
       if (!response.ok) {
-        toast.error(result.error || "Failed to save customer.");
+        toast.error(result.error || t("errorSaveCustomer"));
         return;
       }
 
       if (existingCustomer) {
-        toast.success("✅ Customer updated successfully!");
+        toast.success(t("successUpdateCustomer"));
       } else {
-        toast.success("✅ Customer registered successfully!");
+        toast.success(t("successRegisterCustomer"));
       }
       router.refresh();
     } catch (err: any) {
       console.error("❌ Error saving customer:", err);
-      toast.error("Something went wrong while saving customer.");
+      toast.error(t("errorSomethingWentWrong"));
     } finally {
       setSubmitting(false);
     }
@@ -164,23 +160,21 @@ const RegisterAsaCustomer = () => {
   return (
     <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen">
       <div className="max-w-3xl mx-auto bg-[#fffef9] rounded-2xl shadow-sm border border-gray-200 p-6">
-        {/* Header */}
         <div className="flex justify-between items-center gap-2 mb-6">
           <div className="flex items-center">
             <img src="PremiumLoyalty.png" alt="" className="h-[37px] w-[37px]" />
             <h2 className="text-xl sm:text-2xl font-bold text-[#2C2A25]">
-              {customerIdFromUrl ? "Update Customer" : "Register as a Customer"}
+              {customerIdFromUrl ? t("updateCustomer") : t("registerCustomer")}
             </h2>
           </div>
         </div>
 
-        {/* Customer Details */}
         <div className="space-y-4">
-          <h3 className="text-lg font-bold text-[#2C2A25] mb-4">Customer Details</h3>
-          <FloatingInput id="fullName" placeholder="Full Name" value={form.fullName} onChange={handleChange} />
-          <FloatingInput id="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} />
-          <FloatingInput id="phone" type="tel" placeholder="Phone" value={form.phone} onChange={handleChange} />
-          <FloatingInput id="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} />
+          <h3 className="text-lg font-bold text-[#2C2A25] mb-4">{t("customerDetails")}</h3>
+          <FloatingInput id="fullName" placeholder={t("fullName")} value={form.fullName} onChange={handleChange} />
+          <FloatingInput id="email" type="email" placeholder={t("email")} value={form.email} onChange={handleChange} />
+          <FloatingInput id="phone" type="tel" placeholder={t("phone")} value={form.phone} onChange={handleChange} />
+          <FloatingInput id="password" type="password" placeholder={t("password")} value={form.password} onChange={handleChange} />
 
           <label className="flex items-center gap-2 text-gray-700">
             <input
@@ -190,38 +184,35 @@ const RegisterAsaCustomer = () => {
               onChange={handleChange}
               className="w-4 h-4 text-yellow-600 border-gray-300 rounded"
             />
-            Send me an activation mail
+            {t("sendActivationMail")}
           </label>
         </div>
 
-        {/* Loyalty Program */}
         <div className="mt-8 space-y-4">
-          <h3 className="text-lg font-bold text-[#2C2A25] mb-4">Loyalty Program</h3>
-          <FloatingInput id="tier" placeholder="Tier" value={form.tier} onChange={handleChange} />
-          <FloatingInput id="points" type="number" placeholder="Point Balance" value={form.points} onChange={handleChange} />
-         <ExpiryDatePicker form={form} setForm={setForm}/>
-         </div>
+          <h3 className="text-lg font-bold text-[#2C2A25] mb-4">{t("loyaltyProgram")}</h3>
+          <FloatingInput id="tier" placeholder={t("tier")} value={form.tier} onChange={handleChange} />
+          <FloatingInput id="points" type="number" placeholder={t("pointsBalance")} value={form.points} onChange={handleChange} />
+          <ExpiryDatePicker form={form} setForm={setForm} />
+        </div>
 
-        {/* Buttons */}
         <div className="mt-6 space-y-3">
           <button
             onClick={handleSave}
             disabled={submitting}
-            className={`w-full py-3 rounded-full font-semibold text-white transition ${
-              submitting ? "bg-gray-400" : "bg-[#734A00] hover:bg-[#5a3800]"
-            }`}
+            className={`w-full py-3 rounded-full font-semibold text-white transition ${submitting ? "bg-gray-400" : "bg-[#734A00] hover:bg-[#5a3800]"
+              }`}
           >
             {submitting
-              ? "Saving..."
+              ? t("saving")
               : customerIdFromUrl
-              ? "Update Customer"
-              : "Save and Register"}
+                ? t("updateCustomer")
+                : t("saveAndRegister")}
           </button>
           <button
             onClick={handleCancel}
             className="w-full bg-gray-300 text-gray-800 py-3 rounded-full font-semibold hover:bg-gray-400 transition "
           >
-            Cancel
+            {t("cancel")}
           </button>
         </div>
       </div>
