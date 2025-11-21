@@ -9,7 +9,7 @@ export default function MonthDropdown({
   currentMonth: string;
   onMonthChange: (month: string) => void;
 }) {
-  const t = useTranslations("months");
+  const t = useTranslations("loyaltyTable");
 
   // map numbers 0-11 to translated month names
   const monthNames: string[] = Array.from({ length: 12 }, (_, i) => t(`${i}`));
