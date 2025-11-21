@@ -1,14 +1,15 @@
 "use client";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
-const MainContent = ({pointsIssued,loadingPoints,pointsRedeemed,redemptionRate,loadingRedemption,setActiveChart,offersCount,loadingOffers,mostActiveTier,loadingTier}) => {
+const MainContent = ({ pointsIssued, loadingPoints, pointsRedeemed, redemptionRate, loadingRedemption, setActiveChart, offersCount, loadingOffers, mostActiveTier, loadingTier }) => {
   const router = useRouter();
+  const t = useTranslations();
 
 
-  
   const toggleActiveChart = () => {
-     setActiveChart("pointsIssued");
+    setActiveChart("pointsIssued");
   }
   const toggleActiveChart2 = () => {
     setActiveChart("pointsRedeemed");
@@ -16,7 +17,7 @@ const MainContent = ({pointsIssued,loadingPoints,pointsRedeemed,redemptionRate,l
   const toggleOfferChart = () => {
     setActiveChart("ActiveOfferCampign");
   }
-  const toggleAverageChart= () => {
+  const toggleAverageChart = () => {
     setActiveChart("AverageRedeemptionRate");
   }
   const toggleMostActiveTier = () => {
@@ -24,29 +25,29 @@ const MainContent = ({pointsIssued,loadingPoints,pointsRedeemed,redemptionRate,l
   }
   const baseStats = [
     {
-      label: "Points Issued",
+      label: t("pointsIssued")
       value: pointsIssued !== null ? pointsIssued : "–",
       onClick: () => toggleActiveChart(),
     },
     {
-      label: "Points Redeemed",
-      value: pointsRedeemed !== null ? pointsRedeemed: "–",
-      onClick:() => toggleActiveChart2(),
+      label: t("pointsRedeemed"),
+      value: pointsRedeemed !== null ? pointsRedeemed : "–",
+      onClick: () => toggleActiveChart2(),
     },
     {
-      label: "Active Campaigns",
+      label: t("activeCampaigns"),
       value: offersCount ?? "–",
-      onClick:() => toggleOfferChart(),
+      onClick: () => toggleOfferChart(),
     },
     {
-      label: "Avg. Redemption Rate",
-      value:  redemptionRate ,
-      onClick:() => toggleAverageChart(),
+      label: t("avgRedemptionRate"),
+      value: redemptionRate,
+      onClick: () => toggleAverageChart(),
     },
     {
-      label: "Most Active Tier",
+      label: t("mostActiveTier"),
       value: mostActiveTier,
-      onClick:() => toggleMostActiveTier(),
+      onClick: () => toggleMostActiveTier(),
     },
   ];
 
@@ -56,11 +57,11 @@ const MainContent = ({pointsIssued,loadingPoints,pointsRedeemed,redemptionRate,l
     <div className="flex gap-2 sm:gap-3 p-2 min-w-max">
       {baseStats.map((stat) => {
         const isLoading =
-          (stat.label === "Points Issued" && loadingPoints) ||
-          (stat.label === "Points Redeemed" && loadingPoints) ||
-          (stat.label === "Active Campaigns" && loadingOffers) ||
-          (stat.label === "Most Active Tier" && loadingTier) || 
-          (stat.label === "Avg. Redemption Rate" && loadingRedemption);;
+          (stat.label === t("pointsIssued") && loadingPoints) ||
+          (stat.label === t("pointsRedeemed") && loadingPoints) ||
+          (stat.label === t("activeCampaigns") && loadingOffers) ||
+          (stat.label === t("mostActiveTier") && loadingTier) ||
+          (stat.label === t("avgRedemptionRate") && loadingRedemption);;
 
         return (
           <div
@@ -73,10 +74,10 @@ const MainContent = ({pointsIssued,loadingPoints,pointsRedeemed,redemptionRate,l
           >
             <div className="flex items-center justify-between">
               <p className="text-[11px] xs:text-[10px] sm:text-[12px] 2xl:text-[16px] font-semibold text-[#2C2A25]">
-                 {stat.label === "Avg. Redemption Rate" ? (
+                {stat.label === t("avgRedemptionRate") ? (
                   <>
-                    Avg. Redemption
-                    <br /> Rate
+                    {t("avgRedemptionRate").split(" ")[0]}
+                    <br /> {t("avgRedemptionRate").split(" ")[1]}
                   </>
                 ) : (
                   stat.label
