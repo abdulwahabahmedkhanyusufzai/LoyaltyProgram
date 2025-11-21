@@ -10,15 +10,8 @@ const Sidebar = ({ open, setOpen }) => {
   const pathname = usePathname();
   const { user, setUser } = useUser(); // ✅ get user + setter from context
   const t = useTranslations("nav");
-  const { navItems } = useNavData(t);;
-  const bottomItems = [
-    {
-      name: "Account Settings",
-      icon: "/calendar.png",
-      icon2: "/calendar-on.png",
-      path: "/account-settings",
-    },
-  ];
+  const { navItems, bottomItems } = useNavData(t);;
+
 
   // ✅ Auth item changes automatically based on context
   const authItem = user
