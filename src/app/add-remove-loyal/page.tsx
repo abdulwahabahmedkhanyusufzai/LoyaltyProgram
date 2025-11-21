@@ -8,7 +8,7 @@ import { Customer, useCustomers } from "../utils/fetchCustomer";
 import { useTranslations } from "next-intl";
 
 function LoyalCustomersList() {
-  const t = useTranslations("LoyalCustomersList");
+  const t = useTranslations();
   const router = useRouter();
   const { customers, loading, fetchCustomers } = useCustomers();
   const [deleting, setDeleting] = useState(false);
