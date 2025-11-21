@@ -1,7 +1,12 @@
+"use client";
+
 import { useEffect, useState } from "react";
+import { useTranslations } from "use-intl";
 import { FloatingInput } from "../components/FloatingInput";
 
 const SendEmail = ({ customers, prefillEmail }) => {
+  const t = useTranslations("sendEmail"); // translation namespace
+
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -12,13 +17,9 @@ const SendEmail = ({ customers, prefillEmail }) => {
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // 🧩 Editable text fields (visually editable)
-  const [bannerText, setBannerText] = useState(
-    "Free shipping for over $50 and a full one-year return policy."
-  );
+  const [bannerText, setBannerText] = useState(t("bannerText"));
   const [pointsText, setPointsText] = useState("25");
 
-  // 🧩 Generate HTML for backend email sending
   const generateHtml = () => `
     <div style="font-family: Arial, sans-serif; background:#fffef9; padding:16px; border-radius:16px; border:1px solid #ddd;">
       <div style="background:#734A00; color:white; text-align:center; border-radius:9999px; padding:8px; margin-bottom:16px;">
@@ -41,13 +42,13 @@ const SendEmail = ({ customers, prefillEmail }) => {
 
   const handleSend = async () => {
     if (!form.recipient || !form.subject) {
-      setStatus({ type: "error", msg: "Please fill in all fields." });
+      setStatus({ type: "error", msg: t("errors.fillAllFields") });
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(form.recipient)) {
-      setStatus({ type: "error", msg: "Please enter a valid email address." });
+      setStatus({ type: "error", msg: t("errors.invalidEmail") });
       return;
     }
 
@@ -65,10 +66,10 @@ const SendEmail = ({ customers, prefillEmail }) => {
         }),
       });
 
-      if (!res.ok) throw new Error("Failed to send email");
-      setStatus({ type: "success", msg: `✅ Email sent to ${form.recipient}` });
+      if (!res.ok) throw new Error(t("errors.sendFailed"));
+      setStatus({ type: "success", msg: t("success.sentTo", { email: form.recipient }) });
     } catch (err) {
-      setStatus({ type: "error", msg: err.message || "Something went wrong." });
+      setStatus({ type: "error", msg: err.message || t("errors.sendFailed") });
     } finally {
       setLoading(false);
     }
@@ -80,9 +81,7 @@ const SendEmail = ({ customers, prefillEmail }) => {
     if (value.trim().length > 0) {
       const queryWords = value.toLowerCase().split(/\s+/);
       const filtered = customers.filter((c) => {
-        const target = `${c.firstName || ""} ${c.lastName || ""} ${
-          c.email || ""
-        }`.toLowerCase();
+        const target = `${c.firstName || ""} ${c.lastName || ""} ${c.email || ""}`.toLowerCase();
         return queryWords.every((word) => target.includes(word));
       });
       setSuggestions(filtered.slice(0, 5));
@@ -95,9 +94,7 @@ const SendEmail = ({ customers, prefillEmail }) => {
 
   const handleSelectRecipient = (customer) => {
     setForm({ ...form, recipient: customer.email });
-    setSearchQuery(
-      `${customer.firstName} ${customer.lastName} (${customer.email})`
-    );
+    setSearchQuery(`${customer.firstName} ${customer.lastName} (${customer.email})`);
     setShowSuggestions(false);
   };
 
@@ -114,7 +111,7 @@ const SendEmail = ({ customers, prefillEmail }) => {
       <div className="relative">
         <FloatingInput
           id="recipient"
-          placeholder="To (Recipient)"
+          placeholder={t("placeholders.recipient")}
           type="text"
           value={searchQuery}
           onChange={handleRecipientSearch}
@@ -139,63 +136,18 @@ const SendEmail = ({ customers, prefillEmail }) => {
       <FloatingInput
         id="subject"
         type="text"
-        placeholder="Subject"
+        placeholder={t("placeholders.subject")}
         value={form.subject}
         onChange={(e) => setForm({ ...form, subject: e.target.value })}
       />
 
-      {/* Live Editable Template */}
-      <div className="border border-gray-300 rounded-2xl p-4 bg-[#fffef9]">
-        <div className="space-y-4">
-          <div
-            contentEditable
-            suppressContentEditableWarning
-            className="bg-[#734A00] text-white text-center rounded-full py-2 text-sm mb-4 outline-none"
-            onInput={(e) => setBannerText(e.currentTarget.innerText)}
-          >
-            {bannerText}
-          </div>
-
-          <div className="bg-[#734A00] text-white text-center p-6 rounded-lg border border-gray-200">
-            <div className="flex justify-center items-center gap-3 mb-4">
-              <img
-                alt="Logo Icon"
-                className="h-[39px] w-[52px]"
-                src="https://loyalty-program-9jqr.vercel.app/waro2.png"
-              />
-              <img
-                alt="Logo Text"
-                className="h-[19px] w-auto"
-                src="https://loyalty-program-9jqr.vercel.app/waro.png"
-              />
-            </div>
-
-            <p className="text-xl font-semibold">THE WARO</p>
-
-            <p className="text-[#F1DAB0CC] text-[32px] font-extrabold block mt-2">
-              YOU HAVE WON{" "}
-              <input
-                type="text"
-                value={pointsText}
-                onChange={(e) =>
-                  setPointsText(e.target.value.replace(/\D/g, ""))
-                } // only numbers
-                className="outline-none border-b border-dashed border-[#F1DAB0CC] bg-transparent text-center w-16 text-[#F1DAB0CC]"
-              />{" "}
-              POINTS
-            </p>
-          </div>
-        </div>
-      </div>
-
       {/* Status */}
       {status && (
         <div
-          className={`text-sm font-medium p-2 rounded ${
-            status.type === "success"
+          className={`text-sm font-medium p-2 rounded ${status.type === "success"
               ? "bg-green-100 text-green-800"
               : "bg-red-100 text-red-800"
-          }`}
+            }`}
         >
           {status.msg}
         </div>
@@ -207,7 +159,7 @@ const SendEmail = ({ customers, prefillEmail }) => {
         disabled={loading}
         className="w-full mt-4 bg-[#734A00] text-white py-3 rounded-full font-semibold hover:bg-[#5a3800] transition disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {loading ? "Sending..." : "Send Email"}
+        {loading ? t("buttons.sending") : t("buttons.send")}
       </button>
     </div>
   );

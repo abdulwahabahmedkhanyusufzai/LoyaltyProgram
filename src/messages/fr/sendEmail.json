@@ -1,0 +1,21 @@
+{
+  "sendEmail": {
+    "placeholders": {
+      "recipient": "To (Recipient)",
+      "subject": "Subject"
+    },
+    "bannerText": "Free shipping for over $50 and a full one-year return policy.",
+    "buttons": {
+      "send": "Send Email",
+      "sending": "Sending..."
+    },
+    "errors": {
+      "fillAllFields": "Please fill in all fields.",
+      "invalidEmail": "Please enter a valid email address.",
+      "sendFailed": "Failed to send email."
+    },
+    "success": {
+      "sentTo": "✅ Email sent to {email}"
+    }
+  }
+}
