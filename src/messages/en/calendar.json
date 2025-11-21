@@ -1,0 +1,42 @@
+{
+  "title": "Advent Calendar",
+  "buttons": {
+    "editCalendar": "Edit Calendar",
+    "exitEdit": "Exit Edit Mode",
+    "done": "Done",
+    "saveCalendar": "Save Calendar",
+    "saving": "Saving..."
+  },
+  "messages": {
+    "nothingToDo": "Nothing to Do",
+    "calendarSaved": "Calendar saved successfully!"
+  },
+  "placeholders": {
+    "eventName": "Event name"
+  },
+  "types": {
+    "discount": "Discount",
+    "cashback": "Cashback",
+    "loyalty": "Loyalty"
+  },
+  "errors": {
+    "failedToLoadCalendar": "Failed to load calendar",
+    "failedToSave": "Failed to save calendar"
+  },
+  "months": {
+    "Aug": "August",
+    "Sep": "September",
+    "Oct": "October",
+    "Nov": "November",
+    "Dec": "December"
+  },
+  "weekdays": {
+    "sun": "Sun",
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "title": "Calendrier de l'Avent",
+  "buttons": {
+    "editCalendar": "Modifier le calendrier",
+    "exitEdit": "Quitter le mode édition",
+    "done": "Terminé",
+    "saveCalendar": "Enregistrer le calendrier",
+    "saving": "Enregistrement..."
+  },
+  "messages": {
+    "nothingToDo": "Rien à faire",
+    "calendarSaved": "Calendrier enregistré avec succès !"
+  },
+  "placeholders": {
+    "eventName": "Nom de l'événement"
+  },
+  "types": {
+    "discount": "Remise",
+    "cashback": "Remboursement",
+    "loyalty": "Fidélité"
+  },
+  "errors": {
+    "failedToLoadCalendar": "Échec du chargement du calendrier",
+    "failedToSave": "Échec de l'enregistrement du calendrier"
+  },
+  "months": {
+    "Aug": "Août",
+    "Sep": "Septembre",
+    "Oct": "Octobre",
+    "Nov": "Novembre",
+    "Dec": "Décembre"
+  },
+  "weekdays": {
+    "sun": "Dim",
+    "mon": "Lun",
+    "tue": "Mar",
+    "wed": "Mer",
+    "thu": "Jeu",
+    "fri": "Ven",
+    "sat": "Sam"
+  }
+}
