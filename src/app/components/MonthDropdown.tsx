@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import { useTranslations } from "use-intl";
 
 export default function MonthDropdown({
   currentMonth,
@@ -8,6 +9,7 @@ export default function MonthDropdown({
   currentMonth: string;
   onMonthChange: (month: string) => void;
 }) {
+  const t = useTranslations();
   const months: string[] = Array.from({ length: 12 }, (_, i) => t(`${i}`));
 
   const [open, setOpen] = useState(false);
