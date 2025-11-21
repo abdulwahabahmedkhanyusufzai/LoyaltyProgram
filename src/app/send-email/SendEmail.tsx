@@ -5,7 +5,7 @@ import { useTranslations } from "use-intl";
 import { FloatingInput } from "../components/FloatingInput";
 
 const SendEmail = ({ customers, prefillEmail }) => {
-  const t = useTranslations("sendEmail"); // translation namespace
+  const t = useTranslations("sendEmail");
 
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -17,6 +17,7 @@ const SendEmail = ({ customers, prefillEmail }) => {
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Editable template texts
   const [bannerText, setBannerText] = useState(t("bannerText"));
   const [pointsText, setPointsText] = useState("25");
 
@@ -140,6 +141,50 @@ const SendEmail = ({ customers, prefillEmail }) => {
         value={form.subject}
         onChange={(e) => setForm({ ...form, subject: e.target.value })}
       />
+
+      {/* Live Editable Template */}
+      <div className="border border-gray-300 rounded-2xl p-4 bg-[#fffef9]">
+        <div className="space-y-4">
+          <div
+            contentEditable
+            suppressContentEditableWarning
+            className="bg-[#734A00] text-white text-center rounded-full py-2 text-sm mb-4 outline-none"
+            onInput={(e) => setBannerText(e.currentTarget.innerText)}
+          >
+            {bannerText}
+          </div>
+
+          <div className="bg-[#734A00] text-white text-center p-6 rounded-lg border border-gray-200">
+            <div className="flex justify-center items-center gap-3 mb-4">
+              <img
+                alt="Logo Icon"
+                className="h-[39px] w-[52px]"
+                src="https://loyalty-program-9jqr.vercel.app/waro2.png"
+              />
+              <img
+                alt="Logo Text"
+                className="h-[19px] w-auto"
+                src="https://loyalty-program-9jqr.vercel.app/waro.png"
+              />
+            </div>
+
+            <p className="text-xl font-semibold">{t("template.title")}</p>
+
+            <p className="text-[#F1DAB0CC] text-[32px] font-extrabold block mt-2">
+              {t("template.subtitle")}{" "}
+              <input
+                type="text"
+                value={pointsText}
+                onChange={(e) =>
+                  setPointsText(e.target.value.replace(/\D/g, ""))
+                }
+                className="outline-none border-b border-dashed border-[#F1DAB0CC] bg-transparent text-center w-16 text-[#F1DAB0CC]"
+              />{" "}
+              {t("template.points")}
+            </p>
+          </div>
+        </div>
+      </div>
 
       {/* Status */}
       {status && (
