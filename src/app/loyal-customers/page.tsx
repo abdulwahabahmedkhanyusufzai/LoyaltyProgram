@@ -8,6 +8,7 @@ import LoyaltyDashboard from "../components/LoyaltyDashboard";
 import { useTranslations } from "next-intl";
 
 function LoyalCustomersList() {
+  const t = useTranslations();
   const [customers, setCustomers] = useState<any[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [step, setStep] = useState(1);
@@ -16,7 +17,7 @@ function LoyalCustomersList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [customerIdFromUrl, setCustomerIdFromUrl] = useState<string | null>(null);
-  const t = useTranslations();
+
   const PAGE_SIZE = 10;
 
   // Detect URL param for customerId
