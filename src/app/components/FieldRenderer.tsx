@@ -25,7 +25,7 @@ export const FieldRenderer = ({
   console.log("fields", fields)
   console.log("personal", personal)
   console.log("toggles", toggles)
-
+  console.log(t("navigation.formSections.fullName"));
   const handleCancel = () => {
     formManager.resetForm();
     setFormData({
@@ -199,6 +199,7 @@ export const Toggled = ({ form, handleChange }: any) => {
 export const Personal = ({ form, handleChange, setFormData, formManager }: any) => {
   const t = useTranslations("navigation");
   const { formSections } = useNavData(t);
+
   const personal = formSections.personal.fields;
   console.log("personal name", personal.map((item: any) => (item.name)));
 
