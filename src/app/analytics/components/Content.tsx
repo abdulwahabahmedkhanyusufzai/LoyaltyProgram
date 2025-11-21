@@ -25,7 +25,7 @@ const MainContent = ({ pointsIssued, loadingPoints, pointsRedeemed, redemptionRa
   }
   const baseStats = [
     {
-      label: t("pointsIssued")
+      label: t("pointsIssued"),
       value: pointsIssued !== null ? pointsIssued : "–",
       onClick: () => toggleActiveChart(),
     },
