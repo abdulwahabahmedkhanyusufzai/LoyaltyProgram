@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "use-intl";
 import Tabs from "../components/ButtonGroup";
 import LoginList from "../components/login";
 import { Loader } from "./Loader";
@@ -12,8 +13,10 @@ import HandlePageChange from "./HandlePageChange";
 import { useCustomers } from "./hooks/useCustomer";
 
 function LoyalCustomersList() {
+  const t = useTranslations("loyalCustomers"); // translation namespace
+
   const [step, setStep] = useState(1);
-  const [selectedTab, setSelectedTab] = useState("Home");
+  const [selectedTab, setSelectedTab] = useState(t("tabs.home"));
   const { customers, totalCount, loading } = useCustomers();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -21,21 +24,20 @@ function LoyalCustomersList() {
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
 
-    useEffect(() => {
-    // This runs only on the client, so window is defined
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const emailParam = params.get("email");
     const customerParam = params.get("customers");
 
     if (emailParam) {
       setSelectedEmail(emailParam);
-    setSelectedTab("Send an Email");
-    setStep(2);
-    }else if(customerParam){
-      setSelectedTab("Customers");
+      setSelectedTab(t("tabs.sendEmail"));
+      setStep(2);
+    } else if (customerParam) {
+      setSelectedTab(t("tabs.customers"));
       setStep(1);
-    }else{
-      setSelectedTab("Home");
+    } else {
+      setSelectedTab(t("tabs.home"));
       setStep(0);
     }
   }, [typeof window !== "undefined" ? window.location.search : ""]);
@@ -60,7 +62,7 @@ function LoyalCustomersList() {
 
   const handleEmailClick = (email: string) => {
     setSelectedEmail(email);
-    setSelectedTab("Send an Email");
+    setSelectedTab(t("tabs.sendEmail"));
     setStep(2);
   };
 
@@ -73,47 +75,51 @@ function LoyalCustomersList() {
   if (loading) return <Loader />;
 
   return (
+    <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen">
+      {!isLoggedIn && showLogin && (
+        <LoginList onClose={() => setShowLogin(false)} onLogin={handleLoginSuccess} />
+      )}
 
-      <div className="p-4 sm:p-7 space-y-6 bg-white min-h-screen">
-        {!isLoggedIn && showLogin && (
-          <LoginList onClose={() => setShowLogin(false)} onLogin={handleLoginSuccess} />
+      <div className="max-w-6xl mx-auto bg-[#fffef9] rounded-2xl shadow-sm border border-gray-200 p-6">
+        <Header />
+        <Tabs
+          type="emails"
+          onChange={(tab) => {
+            setSelectedTab(tab);
+            if (tab === t("tabs.sendEmail")) setStep(2);
+            if (tab === t("tabs.home")) setStep(0);
+            if (tab === t("tabs.customers")) setStep(1);
+          }}
+          activeTab={selectedTab}
+        />
+
+        {selectedTab === t("tabs.customers") && step === 1 && (
+          <CustomerSection
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            currentCustomers={currentCustomers}
+            onEmailClick={handleEmailClick}
+          />
         )}
 
-        <div className="max-w-6xl mx-auto bg-[#fffef9] rounded-2xl shadow-sm border border-gray-200 p-6">
-          <Header />
-          <Tabs
-            type="emails"
-            onChange={(tab) => {
-              setSelectedTab(tab);
-              if (tab === "Send an Email") setStep(2);
-              if (tab === "Home") setStep(0);
-              if (tab === "Customers") setStep(1);
-            }}
-            activeTab={selectedTab}
-          />
+        {selectedTab === t("tabs.home") && step === 0 && (
+          <HomeSection setStep={setStep} setSelectedTab={setSelectedTab} />
+        )}
 
-          {selectedTab === "Customers" && step === 1 && (
-            <CustomerSection
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              currentCustomers={currentCustomers}
-              onEmailClick={handleEmailClick}
-            />
-          )}
-
-          {selectedTab === "Home" && step === 0 && (
-            <HomeSection setStep={setStep} setSelectedTab={setSelectedTab} />
-          )}
-
-          {selectedTab === "Send an Email" && step === 2 && (
-            <SendEmail customers={customers} prefillEmail={selectedEmail} />
-          )}
-        </div>
-
-        {selectedTab === "Customers" && step === 1 && (
-          <HandlePageChange page={page} setPage={setPage} PAGE_SIZE={PAGE_SIZE} totalCount={totalCount} />
+        {selectedTab === t("tabs.sendEmail") && step === 2 && (
+          <SendEmail customers={customers} prefillEmail={selectedEmail} />
         )}
       </div>
+
+      {selectedTab === t("tabs.customers") && step === 1 && (
+        <HandlePageChange
+          page={page}
+          setPage={setPage}
+          PAGE_SIZE={PAGE_SIZE}
+          totalCount={totalCount}
+        />
+      )}
+    </div>
   );
 }
 

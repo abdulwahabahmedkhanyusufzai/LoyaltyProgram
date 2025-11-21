@@ -1,0 +1,9 @@
+{
+  "loyalCustomers": {
+    "tabs": {
+      "home": "Accueil",
+      "customers": "Clients",
+      "sendEmail": "Envoyer un e-mail"
+    }
+  }
+}
