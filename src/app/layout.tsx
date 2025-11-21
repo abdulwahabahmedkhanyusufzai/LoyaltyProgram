@@ -51,11 +51,13 @@ export default async function RootLayout({
         <html lang={locale}>
             <body className={`${interTight.className} antialiased`}>
                 <UserProvider>
-                    <ClientLayout>
-                        <NextIntlClientProvider locale={locale} messages={messages}>
+                    <NextIntlClientProvider locale={locale} messages={messages}>
+                        <ClientLayout>
+
                             {children}
-                        </NextIntlClientProvider>
-                    </ClientLayout>
+
+                        </ClientLayout>
+                    </NextIntlClientProvider>
                 </UserProvider>
                 <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
             </body>
