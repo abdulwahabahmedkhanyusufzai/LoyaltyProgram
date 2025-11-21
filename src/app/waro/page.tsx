@@ -87,7 +87,7 @@ const WaroPage = () => {
           {stats.map((stat) => (
             <div
               key={stat.label}
-              className={`${stat.label === "Top Selling Products"
+              className={`${stat.label === t("topSellingProducts")
                 ? "bg-[#2C2A25]"
                 : "bg-[#E8E6D9]"
                 } rounded-[24px] sm:rounded-[32px] p-4 sm:p-3 shadow-lg w-[180px] md:w-[205px] md:h-[200px] lg:w-[235px] 2xl:w-[300px] h-[200px] lg:h-[220px] 2xl:h-[280px] flex flex-col flex-shrink-0`}
@@ -95,12 +95,12 @@ const WaroPage = () => {
               {/* Heading + arrow */}
               <div className="flex items-center justify-between">
                 <p
-                  className={`${stat.label === "Top Selling Products"
+                  className={`${stat.label === t("topSellingProducts")
                     ? "text-white"
                     : "text-[#000000]"
                     } text-[12px] sm:text-[14px] 2xl:text-[18px] font-semibold`}
                 >
-                  {stat.label === "Total Registered Customers" ?
+                  {stat.label === t("totalRegisteredCustomers") ?
                     <p>Total Registered<br /> Customers</p>
                     : (
                       stat.label
@@ -109,14 +109,14 @@ const WaroPage = () => {
 
                 <button
                   onClick={() => router.push(`${stat.redirect}`)}
-                  className={`${stat.label === "Top Selling Products"
+                  className={`${stat.label === t("topSellingProducts")
                     ? "border-[#E8E6D9]"
                     : "border-[#2C2A25]"
                     }  cursor-pointer w-[24px] h-[24px] sm:w-[40px] sm:h-[40px] 2xl:w-[48px] 2xl:h-[48px] rounded-full border flex items-center justify-center hover:bg-[#D9D9D9] transition`}
                 >
                   <img
                     src={
-                      stat.label === "Top Selling Products"
+                      stat.label === t("topSellingProducts")
                         ? `Arrow12.svg`
                         : `Arrow1.svg`
                     }
