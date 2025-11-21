@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 // Helper to dynamically load and merge multiple JSON files
 async function loadLocaleMessages(locale: string) {
-    const messageFiles = ["stats", "loyaltyTable", "nav", "header", "analytics", "calendar", "tabs", "loyalCustomer", "sendEmail"]; // add other files if needed
+    const messageFiles = ["stats", "loyaltyTable", "nav", "header", "analytics", "calendar", "tabs", "loyalCustomer", "sendEmail", "customer"]; // add other files if needed
     const messagesArray = await Promise.all(
         messageFiles.map(async (file) => {
             const module = await import(`../messages/${locale}/${file}.json`);
