@@ -13,7 +13,7 @@ export const Header = ({ onToggle }: HeaderProps) => {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const bellRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
-  const t = useTranslations("header");
+  const t = useTranslations();
   // 🧠 Global user from context
   const { user, refreshUser } = useUser();
 
