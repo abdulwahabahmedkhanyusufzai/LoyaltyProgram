@@ -22,6 +22,7 @@ export default getRequestConfig(async () => {
     "sendEmail",
     "customer",
     "homeSection",
+    "registerCustomer",
   ];
 
   // Dynamically import all files
