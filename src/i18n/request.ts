@@ -19,6 +19,7 @@ export default getRequestConfig(async () => {
     "calendar",
     "tabs",
     "loyalCustomer",
+    "sendEmail",
   ];
 
   // Dynamically import all files
