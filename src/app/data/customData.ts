@@ -1,7 +1,4 @@
-import { useTranslations } from "next-intl";
-
-export function useNavData() {
-  const t = useTranslations("navigation");
+export function useNavData(t: (key: string) => string) {
   const navItems = [
     {
       name: t("nav.waro"),

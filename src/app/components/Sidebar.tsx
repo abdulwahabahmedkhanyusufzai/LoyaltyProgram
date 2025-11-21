@@ -3,12 +3,14 @@ import React from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useNavData } from "../data/customData";
 import { useUser } from "../../lib/UserContext"; // ✅ import context
+import { useTranslations } from "next-intl";
 
 const Sidebar = ({ open, setOpen }) => {
   const router = useRouter();
   const pathname = usePathname();
   const { user, setUser } = useUser(); // ✅ get user + setter from context
-  const { navItems } = useNavData();
+  const t = useTranslations("navigation");
+  const { navItems } = useNavData(t);;
   const bottomItems = [
     {
       name: "Account Settings",

@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { useNavData } from "../data/customData";
+import { useTranslations } from "next-intl";
 
 interface RewardBadgeProps {
   date: number; // always a marked date
@@ -38,7 +39,8 @@ interface RewardsRowProps {
 }
 
 const RewardsRow = ({ markedDates }: RewardsRowProps) => {
-  const { rewards } = useNavData();
+  const t = useTranslations("navigation");
+  const { rewards } = useNavData(t);
   // Filter only rewards that have marked dates
   const badgesToShow = rewards
     .map((reward, idx) => ({ ...reward, date: markedDates[idx] }))

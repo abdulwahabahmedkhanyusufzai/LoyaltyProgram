@@ -7,6 +7,7 @@ import { ProfilePicUploader } from "./ProfilePicture";
 import { LoadingButton } from "./LoadingButton";
 import toast from "react-hot-toast";
 import { FormManager } from "../utils/FormManger";
+import { useTranslations } from "next-intl";
 
 export const FieldRenderer = ({
   form,
@@ -15,7 +16,8 @@ export const FieldRenderer = ({
   loading,
   setLoading
 }: any) => {
-  const { formSections } = useNavData();
+  const t = useTranslations("navigation");
+  const { formSections } = useNavData(t);
   const select = formSections.preferences.select;
   const personal = formSections.personal.fields;
   const fields = formSections.security.fields;
@@ -146,7 +148,8 @@ export const FieldRenderer = ({
 };
 
 export const Select = ({ form, handleChange }: any) => {
-  const { formSections } = useNavData();
+  const t = useTranslations("navigation");
+  const { formSections } = useNavData(t);
   const select = formSections.preferences.select;
 
   return (
@@ -171,7 +174,8 @@ export const Select = ({ form, handleChange }: any) => {
 };
 
 export const Toggled = ({ form, handleChange }: any) => {
-  const { formSections } = useNavData();
+  const t = useTranslations("navigation");
+  const { formSections } = useNavData(t);
   const toggles = formSections.notifications.toggles;
   return (
     <div className="space-y-3">
@@ -193,7 +197,8 @@ export const Toggled = ({ form, handleChange }: any) => {
 };
 
 export const Personal = ({ form, handleChange, setFormData, formManager }: any) => {
-  const { formSections } = useNavData();
+  const t = useTranslations("navigation");
+  const { formSections } = useNavData(t);
   const personal = formSections.personal.fields;
   console.log("personal name", personal.map((item: any) => (item.name)));
 
