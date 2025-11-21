@@ -8,10 +8,7 @@ export default function MonthDropdown({
   currentMonth: string;
   onMonthChange: (month: string) => void;
 }) {
-  const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
+  const months: string[] = Array.from({ length: 12 }, (_, i) => t(`${i}`));
 
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
