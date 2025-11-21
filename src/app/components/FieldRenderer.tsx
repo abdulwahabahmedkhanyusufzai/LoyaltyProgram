@@ -146,6 +146,7 @@ export const FieldRenderer = ({
 };
 
 export const Select = ({ form, handleChange }: any) => {
+  const { formSections } = useNavData();
   const select = formSections.preferences.select;
 
   return (
@@ -155,8 +156,8 @@ export const Select = ({ form, handleChange }: any) => {
         value={form[select.name] || ""}
         onChange={handleChange}
         className={`w-full border rounded-full px-4 py-3 text-sm sm:text-base ${form.errors?.[select.name]
-            ? "border-red-500 bg-red-50"
-            : "border-gray-300"
+          ? "border-red-500 bg-red-50"
+          : "border-gray-300"
           }`}
       >
         {select.options.map((opt: string) => (
@@ -170,6 +171,7 @@ export const Select = ({ form, handleChange }: any) => {
 };
 
 export const Toggled = ({ form, handleChange }: any) => {
+  const { formSections } = useNavData();
   const toggles = formSections.notifications.toggles;
   return (
     <div className="space-y-3">
@@ -191,6 +193,7 @@ export const Toggled = ({ form, handleChange }: any) => {
 };
 
 export const Personal = ({ form, handleChange, setFormData, formManager }: any) => {
+  const { formSections } = useNavData();
   const personal = formSections.personal.fields;
   console.log("personal name", personal.map((item: any) => (item.name)));
 
