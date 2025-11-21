@@ -1,0 +1,19 @@
+{
+  "premiumIcon": "Icône fidélité Premium",
+  "addRemoveCustomers": "Ajouter ou Supprimer des Clients",
+  "addNew": "Ajouter Nouveau",
+  "customersAddRemove": "Ajouter ou Supprimer des Clients",
+  "searchPlaceholder": "Rechercher par nom, titre, e-mail, date",
+  "search": "Rechercher",
+  "lastFirstName": "Nom / Prénom",
+  "emailRegistration": "E-mail / Inscription",
+  "lastOrder": "Dernière Commande",
+  "purchases": "Achats (€)",
+  "loyaltyPoints": "Points de Fidélité",
+  "loyaltyTitle": "Titre de Fidélité",
+  "action": "Action",
+  "edit": "Modifier",
+  "delete": "Supprimer",
+  "viewProfile": "Voir Profil",
+  "totalCustomers": "Nombre Total de Clients: {count}"
+}

@@ -1,0 +1,19 @@
+{
+  "premiumIcon": "Premium loyalty icon",
+  "addRemoveCustomers": "Add or Remove Customers",
+  "addNew": "Add New",
+  "customersAddRemove": "Customers Add or Remove",
+  "searchPlaceholder": "Search by name, title, email, date",
+  "search": "Search",
+  "lastFirstName": "Last Name / First Name",
+  "emailRegistration": "Email / Registration",
+  "lastOrder": "Last Order",
+  "purchases": "Purchases (€)",
+  "loyaltyPoints": "Loyalty Points",
+  "loyaltyTitle": "Loyalty Title",
+  "action": "Action",
+  "edit": "Edit",
+  "delete": "Delete",
+  "viewProfile": "View Profile",
+  "totalCustomers": "Total Customers: {count}"
+}
