@@ -1,0 +1,16 @@
+{
+  "homeSection": {
+    "title": "Envoi d'un e-mail ciblé",
+    "subtitle": "Choisissez le groupe de destinataires",
+    "options": {
+      "hosts": "Hôtes",
+      "guests": "Invités",
+      "welcomed": "Accueillis",
+      "specificPerson": "Une personne en particulier",
+      "test": "Test",
+      "all": "Tous"
+    },
+    "nextButton": "Suivant",
+    "sendEmailTab": "Envoyer un e-mail"
+  }
+}
