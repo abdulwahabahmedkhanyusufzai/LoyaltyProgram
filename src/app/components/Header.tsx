@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "../../lib/UserContext";
+import { useTranslations } from "next-intl";
 
 type HeaderProps = {
   onToggle?: (open: boolean) => void;
@@ -12,7 +13,7 @@ export const Header = ({ onToggle }: HeaderProps) => {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const bellRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
-
+  const t = useTranslations("header");
   // 🧠 Global user from context
   const { user, refreshUser } = useUser();
 
@@ -41,10 +42,11 @@ export const Header = ({ onToggle }: HeaderProps) => {
 
   // Dummy notifications
   const notifications = [
-    { id: 1, message: "Your loyalty points have been updated!" },
-    { id: 2, message: "New offer: 20% off selected items" },
-    { id: 3, message: "Your subscription will expire in 5 days" },
+    { id: 1, message: t("notifPointsUpdated") },
+    { id: 2, message: t("notifNewOffer") },
+    { id: 3, message: t("notifSubscriptionExpire") },
   ];
+
 
   return (
     <div className="ml-0 lg:ml-[290px] 2xl:ml-[342px] flex items-center justify-between px-4 py-3 bg-white relative">
@@ -61,7 +63,7 @@ export const Header = ({ onToggle }: HeaderProps) => {
             WARO
           </h1>
           <p className="text-[#2C2A25] text-sm sm:text-base">
-            Welcome to the Loyalty Program.
+            {t("welcome")}
           </p>
         </div>
       </div>
@@ -82,7 +84,7 @@ export const Header = ({ onToggle }: HeaderProps) => {
         {notificationsOpen && (
           <div className="absolute top-12 right-0 w-80 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
             <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200">
-              <h2 className="text-lg font-bold text-gray-800">Notifications</h2>
+              <h2 className="text-lg font-bold text-gray-800">{t("notifications")}</h2>
               <button
                 onClick={toggleNotifications}
                 className="text-gray-400 hover:text-gray-600 font-bold text-xl"
@@ -92,7 +94,7 @@ export const Header = ({ onToggle }: HeaderProps) => {
             </div>
             <div className="max-h-72 overflow-y-auto p-3 space-y-2">
               {notifications.length === 0 ? (
-                <p className="text-gray-500 text-sm text-center">No notifications</p>
+                <p className="text-gray-500 text-sm text-center">{t("noNotifications")}</p>
               ) : (
                 notifications.map((n) => (
                   <div
