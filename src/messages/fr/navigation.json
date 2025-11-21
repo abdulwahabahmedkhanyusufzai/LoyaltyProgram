@@ -1,0 +1,52 @@
+{
+  "nav": {
+    "waro": "Waro",
+    "analytics": "Analytique",
+    "viewLoyaltyProgram": "Voir le programme de fidélité",
+    "viewLoyalCustomers": "Voir la liste des clients fidèles",
+    "addRemoveLoyal": "Ajouter ou retirer un client fidèle",
+    "sendEmail": "Envoyer un e-mail",
+    "adventCalendar": "Calendrier de l’Avent"
+  },
+  "bottom": {
+    "accountSettings": "Paramètres du compte",
+    "logout": "Se déconnecter"
+  },
+  "tiers": {
+    "welcomed": "Accueilli : Moins de 20 points",
+    "guest": "Invité : Entre 20 et 30 points",
+    "host": "Hôte : Entre 31 et 4500 points",
+    "test": "Test : Plus de 4500 points"
+  },
+  "rows": {
+    "cashback": "Cashback par point",
+    "freeDelivery": "Livraison gratuite",
+    "immediateDiscount": "Remise immédiate",
+    "productSuggestions": "Suggestions de produits",
+    "loyaltyOffer": "Offre de fidélité",
+    "birthdayOffer": "Offre anniversaire"
+  },
+  "offers": {
+    "cashback": "Cashback par point",
+    "birthday": "Offre anniversaire",
+    "loyalty": "Offre de fidélité"
+  },
+  "formSections": {
+    "personalDetails": "Informations personnelles",
+    "security": "Sécurité",
+    "notifications": "Notifications",
+    "preferences": "Préférences",
+    "fullName": "Nom complet",
+    "emailAddress": "Adresse e-mail",
+    "phoneNumber": "Numéro de téléphone",
+    "currentPassword": "Mot de passe actuel",
+    "newPassword": "Nouveau mot de passe",
+    "confirmNewPassword": "Confirmer le nouveau mot de passe",
+    "receiveSystemAlerts": "Recevoir les alertes système par e-mail",
+    "receiveNotifications": "Recevoir les notifications",
+    "weeklyReports": "Rapports hebdomadaires",
+    "language": "Langue",
+    "english": "Anglais",
+    "french": "Français"
+  }
+}

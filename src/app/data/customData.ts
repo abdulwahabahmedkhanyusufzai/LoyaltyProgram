@@ -1,37 +1,45 @@
+import { useTranslations } from "next-intl";
+
+const t = useTranslations("navigation");
 const navItems = [
-  { name: "Waro", icon: "/waro-off.png", icon2: "/waro_on.png", path: "/waro" },
   {
-    name: "Analytics",
+    name: t("nav.waro"),
+    icon: "/waro-off.png",
+    icon2: "/waro_on.png",
+    path: "/waro",
+  },
+  {
+    name: t("nav.analytics"),
     icon: "/analytics-off.png",
     icon2: "/analytics-on.png",
     path: "/analytics",
   },
   {
-    name: "View the loyalty program",
+    name: t("nav.viewLoyaltyProgram"),
     icon: "/viewloyaltyoff.png",
     icon2: "/viewloyaltyon.png",
     path: "/loyalty-program",
   },
   {
-    name: "View the list of loyal customers",
+    name: t("nav.viewLoyalCustomers"),
     icon: "/loyal-customers-off.png",
     icon2: "/loyal-customers-on.png",
     path: "/loyal-customers",
   },
   {
-    name: "Add or remove a loyal customer",
+    name: t("nav.addRemoveLoyal"),
     icon: "/addorremoveloyal.png",
     icon2: "/addorremoveloyal-on.png",
     path: "/add-remove-loyal",
   },
   {
-    name: "Send an email",
+    name: t("nav.sendEmail"),
     icon: "/email.png",
     icon2: "/email-on.png",
     path: "/send-email",
   },
   {
-    name: "Advent calendar",
+    name: t("nav.adventCalendar"),
     icon: "/calendar.png",
     icon2: "/calendar-on.png",
     path: "/calendar",
@@ -80,18 +88,18 @@ const CustomerEmailData = [
   },
 ];
 const tiers = [
-  { label: "Welcomed: Less than 20 points", color: "#734A00" },
-  { label: "Guest: Between 20 and 30 points", color: "#B47A11" },
-  { label: "Host: Between 31 and 4500 points", color: "#402A00" },
-  { label: "Test: More than 4500 points", color: "#384551" },
+  { label: t("tiers.welcomed"), color: "#734A00" },
+  { label: t("tiers.guest"), color: "#B47A11" },
+  { label: t("tiers.host"), color: "#402A00" },
+  { label: t("tiers.test"), color: "#384551" },
 ];
 const rows = [
   {
-    label: "Cashback per point",
+    label: t("rows.cashback"),
     values: ["10 points = €10", "10 points = €10", "10 points = €13", "-"],
   },
   {
-    label: "Free Delivery",
+    label: t("rows.freeDelivery"),
     values: [
       "From €400 spent over 2 years",
       "From €400 spent over 2 years",
@@ -100,7 +108,7 @@ const rows = [
     ],
   },
   {
-    label: "Immediate Discount",
+    label: t("rows.immediateDiscount"),
     values: [
       "5% on the first order",
       "10% cumulative",
@@ -109,7 +117,7 @@ const rows = [
     ],
   },
   {
-    label: "Product Suggestions",
+    label: t("rows.productSuggestions"),
     values: [
       "Offer suggestion if purchasing from category X",
       "Offer suggestion if purchasing from one or more categories",
@@ -118,11 +126,11 @@ const rows = [
     ],
   },
   {
-    label: "Loyalty Offer",
+    label: t("rows.loyaltyOffer"),
     values: ["No", "5% on the 3rd order", "5% on the 3rd order", "-"],
   },
   {
-    label: "Birthday Offer",
+    label: t("rows.birthdayOffer"),
     values: [
       "15% on the order of your choice (valid 45 days)",
       "15% on the order of your choice (valid 45 days)",
@@ -232,13 +240,13 @@ const LoyaltyTableCustomers = [
 ];
 const bottomItems = [
   {
-    name: "Account Settings",
+    name: t("bottom.accountSettings"),
     icon: "/calendar.png",
     icon2: "/calendar-on.png",
     path: "/account-settings",
   },
   {
-    name: "Logout",
+    name: t("bottom.logout"),
     icon: "/logout-off.png",
     icon2: "/logout-off.png",
     path: "/logout",
@@ -252,20 +260,20 @@ const rewards = [
 const offers = [
   {
     src: "coins.jpg",
-    alt: "Cashback per point",
-    title: "Cashback per point",
+    alt: t("offers.cashback"),
+    title: t("offers.cashback"),
     desc: "Euro 10 = 01 Point",
   },
   {
     src: "birthday.jpg",
-    alt: "Birthday Offer",
-    title: "Birthday Offer",
+    alt: t("offers.birthday"),
+    title: t("offers.birthday"),
     desc: "15% on the order",
   },
   {
     src: "loyaltyoffers.jpg",
-    alt: "Loyalty Offer",
-    title: "Loyalty Offer",
+    alt: t("offers.loyalty"),
+    title: t("offers.loyalty"),
     desc: "5% on the 3rd order",
   },
 ];
@@ -315,35 +323,43 @@ const initialForm = {
 // data/customData.ts
 const formSections = {
   personal: {
-    title: "Personal Details",
+    title: t("formSections.personalDetails"),
     fields: [
-      { type: "text", name: "fullName", label: "Full Name" },
-      { type: "email", name: "email", label: "Email Address" },
-      { type: "tel", name: "phone", label: "Phone Number" },
+      { type: "text", name: "fullName", label: t("formSections.fullName") },
+      { type: "email", name: "email", label: t("formSections.emailAddress") },
+      { type: "tel", name: "phone", label: t("formSections.phoneNumber") },
     ],
   },
   security: {
-    title: "Security",
+    title: t("formSections.security"),
     fields: [
-      { type: "password", name: "password", label: "Current Password" },
-      { type: "password", name: "confirmPassword", label: "New Password" },
+      {
+        type: "password",
+        name: "password",
+        label: t("formSections.currentPassword"),
+      },
+      {
+        type: "password",
+        name: "confirmPassword",
+        label: t("formSections.newPassword"),
+      },
       {
         type: "password",
         name: "confirmNewPassword",
-        label: "Confirm New Password",
+        label: t("formSections.confirmNewPassword"),
       },
     ],
   },
   notifications: {
     title: "Notifications",
     toggles: [
-      { name: "systemAlerts", label: "Receive system alerts via email" },
-      { name: "notifications", label: "Receive notifications" },
-      { name: "weeklyReports", label: "Weekly reports" },
+      { name: "systemAlerts", label: t("formSections.notifications") },
+      { name: "notifications", label: t("formSections.receiveNotifications") },
+      { name: "weeklyReports", label: t("formSections.weeklyReports") },
     ],
   },
   preferences: {
-    title: "Preferences",
+    title: t("formSections.preferences"),
     select: {
       name: "language",
       options: ["English", "French"],
