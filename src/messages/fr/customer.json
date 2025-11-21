@@ -1,0 +1,22 @@
+{
+  "customerSection": {
+    "placeholders": {
+      "search": "Rechercher par nom, titre, email, date"
+    },
+    "buttons": {
+      "search": "Rechercher",
+      "email": "Email"
+    },
+    "tableHeaders": {
+      "name": "Nom / Prénom",
+      "email": "Email / Inscription",
+      "lastOrder": "Dernière commande",
+      "loyaltyPoints": "Points de fidélité",
+      "purchases": "Achats (€)",
+      "loyaltyTitle": "Titre fidélité",
+      "action": "Action"
+    },
+    "emptyState": "Aucun client trouvé.",
+    "totalCustomers": "Nombre total de clients : {count}"
+  }
+}

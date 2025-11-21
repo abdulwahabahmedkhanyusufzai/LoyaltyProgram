@@ -1,7 +1,12 @@
+"use client";
+
 import { Search } from "lucide-react";
 import { FloatingInput } from "../components/FloatingInput";
+import { useTranslations } from "use-intl";
 
-const CustomerSection = ({ searchQuery, setSearchQuery, currentCustomers,onEmailClick }) => {
+const CustomerSection = ({ searchQuery, setSearchQuery, currentCustomers, onEmailClick }) => {
+  const t = useTranslations("customerSection");
+
   // 🔎 Filter customers based on query
   const filteredCustomers = currentCustomers.filter((c) => {
     const q = searchQuery.toLowerCase();
@@ -17,12 +22,8 @@ const CustomerSection = ({ searchQuery, setSearchQuery, currentCustomers,onEmail
 
   const handleSearchClick = (e) => {
     e.preventDefault();
-    // Right now filtering is real-time on input,
-    // but you can add "on button click" logic here if needed.
     console.log("Searching for:", searchQuery);
   };
-
-
 
   return (
     <>
@@ -33,7 +34,7 @@ const CustomerSection = ({ searchQuery, setSearchQuery, currentCustomers,onEmail
           <FloatingInput
             id="Search"
             type="text"
-            placeholder="Search by name, title, email, date"
+            placeholder={t("placeholders.search")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10"
@@ -42,7 +43,7 @@ const CustomerSection = ({ searchQuery, setSearchQuery, currentCustomers,onEmail
             onClick={handleSearchClick}
             className="absolute right-1 top-1/2 -translate-y-1/2 bg-[#734A00] text-white h-[40px] w-[90px] rounded-[32px] text-sm"
           >
-            Search
+            {t("buttons.search")}
           </button>
         </div>
       </div>
@@ -52,55 +53,43 @@ const CustomerSection = ({ searchQuery, setSearchQuery, currentCustomers,onEmail
         <table className="min-w-[900px] w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-gray-200 text-gray-600">
-              <th className="py-3 px-4">Last Name / First Name</th>
-              <th className="py-3 px-4">Email / Registration</th>
-              <th className="py-3 px-4">Last Order</th>
-              <th className="py-3 px-4">Loyalty Points</th>
-              <th className="py-3 px-4">Purchases (€)</th>
-              <th className="py-3 px-4">Loyalty Title</th>
-              <th className="py-3 px-4">Action</th>
+              <th className="py-3 px-4">{t("tableHeaders.name")}</th>
+              <th className="py-3 px-4">{t("tableHeaders.email")}</th>
+              <th className="py-3 px-4">{t("tableHeaders.lastOrder")}</th>
+              <th className="py-3 px-4">{t("tableHeaders.loyaltyPoints")}</th>
+              <th className="py-3 px-4">{t("tableHeaders.purchases")}</th>
+              <th className="py-3 px-4">{t("tableHeaders.loyaltyTitle")}</th>
+              <th className="py-3 px-4">{t("tableHeaders.action")}</th>
             </tr>
           </thead>
           <tbody>
             {filteredCustomers.map((c, i) => (
-              <tr
-                key={i}
-                className="border-b border-gray-100 hover:bg-gray-50 transition"
-              >
-                <td className="py-3 px-4">
-                  {c.lastName} {c.firstName}
-                </td>
+              <tr key={i} className="border-b border-gray-100 hover:bg-gray-50 transition">
+                <td className="py-3 px-4">{c.lastName} {c.firstName}</td>
                 <td className="py-3 px-4 text-gray-600">{c.email}</td>
                 <td className="py-3 px-4">{c.numberOfOrders}</td>
                 <td className="py-3 px-4">{c.loyaltyPoints}</td>
                 <td className="py-3 px-4">€ {Number(c.amountSpent).toFixed()}</td>
+                <td className="py-3 px-4 text-[#2C2A25] font-medium">{c.loyaltyTitle}</td>
                 <td className="py-3 px-4 text-[#2C2A25] font-medium">
-                  {c.loyaltyTitle}
-                </td>
-                <td className="py-3 px-4 text-[#2C2A25] font-medium">
-                <button
-  className="cursor-pointer active:scale-90 transform transition duration-150 ease-in-out"
-   onClick={() => onEmailClick(c.email)}
->
-  <img
-    src="Emailbtn.png"
-    alt="Email"
-    className="w-[36px] h-[36px] pointer-events-none"
-  />
-</button>
-
+                  <button
+                    className="cursor-pointer active:scale-90 transform transition duration-150 ease-in-out"
+                    onClick={() => onEmailClick(c.email)}
+                  >
+                    <img
+                      src="Emailbtn.png"
+                      alt={t("buttons.email")}
+                      className="w-[36px] h-[36px] pointer-events-none"
+                    />
+                  </button>
                 </td>
               </tr>
             ))}
 
-            {/* Show empty state if no match */}
             {filteredCustomers.length === 0 && (
               <tr>
-                <td
-                  colSpan={7}
-                  className="py-6 text-center text-gray-400 italic"
-                >
-                  No customers found.
+                <td colSpan={7} className="py-6 text-center text-gray-400 italic">
+                  {t("emptyState")}
                 </td>
               </tr>
             )}
@@ -110,7 +99,7 @@ const CustomerSection = ({ searchQuery, setSearchQuery, currentCustomers,onEmail
 
       {/* Footer */}
       <div className="flex flex-col sm:flex-row justify-between items-center mt-4 text-sm text-gray-500 gap-2">
-        <span>Total Customers: {filteredCustomers.length}</span>
+        <span>{t("totalCustomers", { count: filteredCustomers.length })}</span>
       </div>
     </>
   );
