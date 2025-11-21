@@ -1,0 +1,9 @@
+{
+  "tabs": {
+    "home": "Home",
+    "clients": "Clients",
+    "program": "Program",
+    "customers": "Customers",
+    "sendEmail": "Send an Email"
+  }
+}

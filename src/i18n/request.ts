@@ -17,6 +17,7 @@ export default getRequestConfig(async () => {
     "header",
     "analytics",
     "calendar",
+    "tabs",
   ];
 
   // Dynamically import all files

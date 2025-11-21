@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useTranslations } from "use-intl";
 
 type TabsProps = {
   type?: "default" | "emails";
@@ -8,48 +9,34 @@ type TabsProps = {
 };
 
 export default function Tabs({ type = "default", activeTab, onChange }: TabsProps) {
-  const tabs = ["Home", "Clients", "Program"];
-  const emailsTabs = ["Home", "Customers", "Send an Email"];
+  const t = useTranslations("tabs"); // Translation namespace
 
-  // Pick which list to use based on prop
+  // Translated tab labels
+  const tabs = [t("home"), t("clients"), t("program")];
+  const emailsTabs = [t("home"), t("customers"), t("sendEmail")];
+
   const tabList = type === "emails" ? emailsTabs : tabs;
 
-  // Fallback to internal state if no activeTab is provided
   const [internalActive, setInternalActive] = useState(tabList[0]);
   const currentActive = activeTab ?? internalActive;
 
   const handleClick = (tab: string) => {
-    if (onChange) {
-      onChange(tab); // notify parent
-    } else {
-      setInternalActive(tab); // use internal state
-    }
+    if (onChange) onChange(tab);
+    else setInternalActive(tab);
   };
 
   return (
     <div className="my-[10px] mb-6">
-      <div
-        className="
-          flex justify-center 
-          lg:justify-center  /* desktop: center align */
-          overflow-x-auto lg:overflow-visible /* mobile: scroll, desktop: normal */
-        "
-      >
-        <div
-          className="
-            inline-flex flex-nowrap rounded-full border border-gray-300 overflow-hidden shadow-sm
-            min-w-max /* ensures buttons can stretch freely */
-          "
-        >
+      <div className="flex justify-center lg:justify-center overflow-x-auto lg:overflow-visible">
+        <div className="inline-flex flex-nowrap rounded-full border border-gray-300 overflow-hidden shadow-sm min-w-max">
           {tabList.map((tab) => (
             <button
               key={tab}
               onClick={() => handleClick(tab)}
               className={`px-4 sm:px-6 py-2 rounded-full text-sm sm:text-base font-medium transition-colors whitespace-nowrap
-                ${
-                  currentActive === tab
-                    ? "bg-[#6a4e1e] text-white"
-                    : "bg-white text-gray-600 hover:bg-gray-100"
+                ${currentActive === tab
+                  ? "bg-[#6a4e1e] text-white"
+                  : "bg-white text-gray-600 hover:bg-gray-100"
                 }`}
             >
               {tab}
