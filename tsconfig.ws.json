@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,           // Enable emitting JS
+    "outDir": "server-build",  // Compiled JS output folder
+    "module": "CommonJS",      // Node.js compatible
+    "target": "ES2020",        // Needed for Prisma private fields
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/server/**/*.ts"] // Only compile your server code
+}
