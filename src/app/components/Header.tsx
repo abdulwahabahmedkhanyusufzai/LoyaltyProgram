@@ -71,8 +71,8 @@ export const Header = ({ onToggle }: HeaderProps) => {
 
   // WebSocket connection
 useEffect(() => {
-  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-  const wsUrl = `${protocol}://${window.location.hostname}:3001`;
+const wsUrl = `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/ws`;
+
 
   console.log("[WS] Trying to connect to:", wsUrl);
 
