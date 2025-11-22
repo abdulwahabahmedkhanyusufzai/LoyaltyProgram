@@ -2,14 +2,15 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   const encoder = new TextEncoder();
-  let interval: NodeJS.Timer;
+  let interval: ReturnType<typeof setInterval>;
+  let heartbeat: ReturnType<typeof setInterval>;
 
   const stream = new ReadableStream({
     async start(controller) {
       let lastCheck = new Date();
 
       // Heartbeat every 15s
-      const heartbeat = setInterval(() => {
+      heartbeat = setInterval(() => {
         controller.enqueue(encoder.encode(`data: {}\n\n`));
       }, 15000);
 
