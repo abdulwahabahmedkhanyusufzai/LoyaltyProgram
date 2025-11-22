@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Dispatch, SetStateAction } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/lib/UserContext";
 import { useTranslations } from "next-intl";
@@ -12,7 +12,11 @@ type Notification = {
   read?: boolean;
 };
 
-export const Header = () => {
+type HeaderProps = {
+  onToggle?: Dispatch<SetStateAction<boolean>>; // for mobile sidebar toggle
+};
+
+export const Header = ({ onToggle }: HeaderProps) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -21,10 +25,10 @@ export const Header = () => {
   const t = useTranslations();
   const { user } = useUser();
 
+  // toggle notifications dropdown
   const toggleNotifications = () => {
     setNotificationsOpen((prev) => {
       if (!prev) {
-        // Mark all notifications as read
         setNotifications((prevNotifs) =>
           prevNotifs.map((n) => ({ ...n, read: true }))
         );
@@ -34,49 +38,29 @@ export const Header = () => {
     });
   };
 
-  // Close dropdown when clicking outside
-useEffect(() => {
-  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-  const wsUrl = `${protocol}://${window.location.host}/api/ws`;
-  const ws = new WebSocket(wsUrl);
-
-  ws.onopen = () => console.log("WebSocket connected");
-
-  ws.onmessage = (event) => {
-    try {
-      const { type, data } = JSON.parse(event.data);
-
-      if (type === "initial") {
-        setNotifications(data);
-        setUnreadCount(data.filter((n: any) => !n.read).length);
-      }
-
-      if (type === "new") {
-        setNotifications((prev) => {
-          const ids = new Set(prev.map((n) => n.id));
-          const newItems = data
-            .filter((n: any) => !ids.has(n.id))
-            .map((n: any) => ({ ...n, read: false }));
-          setUnreadCount((uc) => uc + newItems.length);
-          return [...newItems, ...prev].slice(0, 50);
-        });
-      }
-    } catch (err) {
-      console.error("WS parse error:", err);
-    }
+  // toggle sidebar (mobile)
+  const toggleSidebar = () => {
+    if (onToggle) onToggle((prev) => !prev);
   };
 
-  ws.onerror = (err) => console.error("WebSocket error:", err);
-  ws.onclose = () => console.log("WebSocket disconnected");
-
-  return () => ws.close();
-}, []);
-
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (bellRef.current && !bellRef.current.contains(e.target as Node)) {
+        setNotificationsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // WebSocket connection
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:3001");
+    const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+    const wsUrl = `${protocol}://${window.location.host}/api/ws`;
+    const ws = new WebSocket(wsUrl);
 
+    ws.onopen = () => console.log("WebSocket connected");
     ws.onmessage = (event) => {
       try {
         const { type, data } = JSON.parse(event.data);
@@ -84,9 +68,7 @@ useEffect(() => {
         if (type === "initial") {
           setNotifications(data);
           setUnreadCount(data.filter((n: any) => !n.read).length);
-        }
-
-        if (type === "new") {
+        } else if (type === "new") {
           setNotifications((prev) => {
             const ids = new Set(prev.map((n) => n.id));
             const newItems = data
@@ -100,15 +82,30 @@ useEffect(() => {
         console.error("WS parse error:", err);
       }
     };
-
-    ws.onerror = (err) => console.error("WS error:", err);
+    ws.onerror = (err) => console.error("WebSocket error:", err);
+    ws.onclose = () => console.log("WebSocket disconnected");
 
     return () => ws.close();
   }, []);
 
   return (
-    <div className="flex justify-between items-center p-4 bg-white shadow">
-      <button ref={bellRef} onClick={toggleNotifications} className="relative">
+    <div className="flex justify-between items-center p-4 bg-white shadow relative">
+      {/* Mobile toggle button */}
+      <button
+        className="lg:hidden p-2 mr-2"
+        onClick={toggleSidebar}
+      >
+        ☰
+      </button>
+
+      <div className="text-xl font-bold flex-1">WARO</div>
+
+      {/* Notifications */}
+      <button
+        ref={bellRef}
+        onClick={toggleNotifications}
+        className="relative"
+      >
         <img src="/bell-icon.png" alt="bell" />
         {unreadCount > 0 && (
           <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
@@ -116,7 +113,7 @@ useEffect(() => {
       </button>
 
       {notificationsOpen && (
-        <div className="absolute right-0 mt-2 w-80 bg-white border rounded shadow-lg max-h-72 overflow-y-auto">
+        <div className="absolute right-0 mt-2 w-80 bg-white border rounded shadow-lg max-h-72 overflow-y-auto z-50">
           {notifications.length === 0 ? (
             <p className="text-center p-3">{t("noNotifications")}</p>
           ) : (
