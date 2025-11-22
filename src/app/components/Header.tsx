@@ -19,23 +19,15 @@ type HeaderProps = {
 
 export const Header = ({ onToggle }: HeaderProps) => {
   const [open, setOpen] = useState(false);
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const router = useRouter();
   const t = useTranslations();
   const { user } = useUser();
-  const { notifications, unreadCount, markAllRead,toggleNotifications,bellRef } = useNotifications();
+  const { notifications, unreadCount, markAllRead,toggleNotifications,bellRef,notificationsOpen } = useNotifications();
   const toggleSidebar = () => {
     const newOpen = !open;
     setOpen(newOpen);
     onToggle?.(newOpen);
   };
-
-  // Close dropdown when clicking outside
- 
-
-  // WebSocket connection
-
-
 
   return (
     <div className="sticky top-0 z-50 ml-0 lg:ml-[290px] 2xl:ml-[342px] flex items-center justify-between px-4 py-3 bg-white/90 backdrop-blur-md border-b border-gray-200">
