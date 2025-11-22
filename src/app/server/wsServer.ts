@@ -1,5 +1,5 @@
 import { WebSocketServer } from "ws";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "../../lib/prisma";
 
 let wss: WebSocketServer | null = null;
 const clients = new Set<WebSocket>();
