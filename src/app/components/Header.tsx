@@ -66,28 +66,26 @@ export const Header = ({ onToggle }: HeaderProps) => {
       evt = new EventSource("/api/notifications/stream");
 
       evt.onmessage = (e) => {
-        try {
-          const data: Notification[] = JSON.parse(e.data);
+  const parsed = JSON.parse(e.data);
+  const eventType = (e as any).type || "message"; // depends on your SSE event
 
-          if (Array.isArray(data) && data.length > 0) {
-            setNotifications((prev) => {
-              // Deduplicate by ID
-              const ids = new Set(prev.map((n) => n.id));
-              const newItems = data
-                .filter((n) => !ids.has(n.id))
-                .map((n) => ({ ...n, read: false })); // new items are unread
+  if (eventType === "initial") {
+    // populate with all existing notifications, mark read/unread correctly
+    setNotifications(parsed.map(n => ({ ...n, read: n.read ?? false })));
+    setUnreadCount(parsed.filter(n => !n.read).length);
+  } else if (eventType === "new") {
+    // append new notifications
+    setNotifications(prev => {
+      const ids = new Set(prev.map(n => n.id));
+      const newItems = parsed
+        .filter(n => !ids.has(n.id))
+        .map(n => ({ ...n, read: false }));
+      if (newItems.length > 0) setUnreadCount(uc => uc + newItems.length);
+      return [...newItems, ...prev].slice(0, 50);
+    });
+  }
+};
 
-              // Update unread count
-              if (newItems.length > 0) setUnreadCount((uc) => uc + newItems.length);
-
-              // Merge new + existing notifications, keep max 50
-              return [...newItems, ...prev].slice(0, 50);
-            });
-          }
-        } catch (err) {
-          console.error("SSE parsing error:", err);
-        }
-      };
 
       evt.onerror = () => {
         console.error("SSE connection error, reconnecting...");
