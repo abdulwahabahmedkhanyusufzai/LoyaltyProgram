@@ -13,19 +13,38 @@ export async function GET() {
   console.log("[SSE] New client connected");
 
   const stream = new ReadableStream({
-    start(controller) {
+    async start(controller) {
       console.log("[SSE] Stream started");
 
       // Send initial connection event
       controller.enqueue(encoder.encode(`event: connected\ndata: ok\n\n`));
 
-      // Heartbeat every 15s
+      // 1️⃣ Send existing notifications (up to 50)
+      try {
+        const allNotifications = await prisma.notification.findMany({
+          orderBy: { createdAt: "asc" },
+          take: 50,
+        });
+
+        if (allNotifications.length > 0) {
+          lastCheck = allNotifications[allNotifications.length - 1].createdAt;
+          console.log("[SSE] Sending existing notifications:", allNotifications.length);
+
+          controller.enqueue(
+            encoder.encode(`event: initial\ndata: ${JSON.stringify(allNotifications)}\n\n`)
+          );
+        }
+      } catch (err) {
+        console.error("[SSE] Error fetching initial notifications:", err);
+      }
+
+      // 2️⃣ Heartbeat every 15s
       heartbeatInterval = setInterval(() => {
         console.log("[SSE] Sending heartbeat");
         controller.enqueue(encoder.encode(`data: {}\n\n`));
       }, 15000);
 
-      // Poll database every 3s
+      // 3️⃣ Poll database every 3s for new notifications
       notificationInterval = setInterval(async () => {
         try {
           console.log("[SSE] Checking for new notifications since", lastCheck);
@@ -36,11 +55,11 @@ export async function GET() {
           });
 
           if (newNotifications.length > 0) {
-            console.log("[SSE] Found new notifications:", newNotifications.length);
             lastCheck = newNotifications[newNotifications.length - 1].createdAt;
+            console.log("[SSE] Found new notifications:", newNotifications.length);
 
             controller.enqueue(
-              encoder.encode(`data: ${JSON.stringify(newNotifications)}\n\n`)
+              encoder.encode(`event: new\ndata: ${JSON.stringify(newNotifications)}\n\n`)
             );
           } else {
             console.log("[SSE] No new notifications");
@@ -58,7 +77,6 @@ export async function GET() {
     },
   });
 
-  // Catch client aborts
   const response = new Response(stream, {
     headers: {
       "Content-Type": "text/event-stream",
@@ -68,6 +86,5 @@ export async function GET() {
   });
 
   console.log("[SSE] Response prepared, sending to client");
-
   return response;
 }
