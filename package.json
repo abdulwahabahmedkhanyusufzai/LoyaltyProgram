@@ -10,7 +10,9 @@
     "start": "next start",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
     "setup": "prisma generate && prisma migrate deploy",
-    "run:offer": "npx ts-node-esm src/scripts/cronAppOffer.ts"
+    "run:offer": "npx ts-node-esm src/scripts/cronAppOffer.ts",
+    "dev:ws": "ts-node src/server/wsServer.ts",
+    "start:ws": "node dist/server/wsServer.js"
   },
   "dependencies": {
     "@prisma/client": "^6.16.2",
