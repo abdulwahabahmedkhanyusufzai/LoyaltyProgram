@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
 import { OrderStatus } from "@prisma/client";
 import { runOffers } from "../../../scripts/cronAppOffer";
+import { broadcastNotification } from "@/app/server/wsServer";
 
 const VERBOSE_DEBUG = process.env.DEBUG_SHOPIFY_WEBHOOK === "true";
 const ADMIN_TOKEN = process.env.SHOPIFY_ADMIN_API_ACCESS_TOKEN;
@@ -191,7 +192,7 @@ export async function POST(req: Request): Promise<Response> {
         `✅ Order ${order.orderNumber} saved for customer ${customer.email}`
       );
 
-      await prisma.notification.create({
+      const notification = await prisma.notification.create({
         data: {
           type: "order",
           title: "New Order Received",
@@ -203,7 +204,10 @@ export async function POST(req: Request): Promise<Response> {
           },
         },
       });
+          broadcastNotification(notification);
+
     }
+    
 
     // -------- Get updated customer for tier calculation --------
     const updatedCustomer = await prisma.customer.findUnique({

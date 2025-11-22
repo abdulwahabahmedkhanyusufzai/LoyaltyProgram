@@ -2,40 +2,29 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { useUser } from "../../lib/UserContext";
+import { useUser } from "@/lib/UserContext";
 import { useTranslations } from "next-intl";
 
 type Notification = {
   id: string;
   message: string;
   createdAt: string;
-  read?: boolean; // track read/unread
+  read?: boolean;
 };
 
-type HeaderProps = {
-  onToggle?: (open: boolean) => void;
-};
-
-export const Header = ({ onToggle }: HeaderProps) => {
-  const [open, setOpen] = useState(false);
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
+export const Header = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const bellRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
   const t = useTranslations();
   const { user } = useUser();
 
-  const toggleSidebar = () => {
-    const newOpen = !open;
-    setOpen(newOpen);
-    onToggle?.(newOpen);
-  };
-
   const toggleNotifications = () => {
     setNotificationsOpen((prev) => {
       if (!prev) {
-        // Mark all notifications as read when dropdown opens
+        // Mark all notifications as read
         setNotifications((prevNotifs) =>
           prevNotifs.map((n) => ({ ...n, read: true }))
         );
@@ -46,130 +35,107 @@ export const Header = ({ onToggle }: HeaderProps) => {
   };
 
   // Close dropdown when clicking outside
+useEffect(() => {
+  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+  const wsUrl = `${protocol}://${window.location.host}/api/ws`;
+  const ws = new WebSocket(wsUrl);
+
+  ws.onopen = () => console.log("WebSocket connected");
+
+  ws.onmessage = (event) => {
+    try {
+      const { type, data } = JSON.parse(event.data);
+
+      if (type === "initial") {
+        setNotifications(data);
+        setUnreadCount(data.filter((n: any) => !n.read).length);
+      }
+
+      if (type === "new") {
+        setNotifications((prev) => {
+          const ids = new Set(prev.map((n) => n.id));
+          const newItems = data
+            .filter((n: any) => !ids.has(n.id))
+            .map((n: any) => ({ ...n, read: false }));
+          setUnreadCount((uc) => uc + newItems.length);
+          return [...newItems, ...prev].slice(0, 50);
+        });
+      }
+    } catch (err) {
+      console.error("WS parse error:", err);
+    }
+  };
+
+  ws.onerror = (err) => console.error("WebSocket error:", err);
+  ws.onclose = () => console.log("WebSocket disconnected");
+
+  return () => ws.close();
+}, []);
+
+
+  // WebSocket connection
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (bellRef.current && !bellRef.current.contains(event.target as Node)) {
-        setNotificationsOpen(false);
+    const ws = new WebSocket("ws://localhost:3001");
+
+    ws.onmessage = (event) => {
+      try {
+        const { type, data } = JSON.parse(event.data);
+
+        if (type === "initial") {
+          setNotifications(data);
+          setUnreadCount(data.filter((n: any) => !n.read).length);
+        }
+
+        if (type === "new") {
+          setNotifications((prev) => {
+            const ids = new Set(prev.map((n) => n.id));
+            const newItems = data
+              .filter((n: any) => !ids.has(n.id))
+              .map((n: any) => ({ ...n, read: false }));
+            setUnreadCount((uc) => uc + newItems.length);
+            return [...newItems, ...prev].slice(0, 50);
+          });
+        }
+      } catch (err) {
+        console.error("WS parse error:", err);
       }
     };
-    if (notificationsOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [notificationsOpen]);
 
-  // SSE: Listen for real-time notifications and merge with existing
-  useEffect(() => {
-    let evt: EventSource;
+    ws.onerror = (err) => console.error("WS error:", err);
 
-    const connect = () => {
-      evt = new EventSource("/api/notifications/stream");
-
-      evt.onmessage = (e) => {
-  const parsed = JSON.parse(e.data);
-  const eventType = (e as any).type || "message"; // depends on your SSE event
-
-  if (eventType === "initial") {
-    // populate with all existing notifications, mark read/unread correctly
-    setNotifications(parsed.map(n => ({ ...n, read: n.read ?? false })));
-    setUnreadCount(parsed.filter(n => !n.read).length);
-  } else if (eventType === "new") {
-    // append new notifications
-    setNotifications(prev => {
-      const ids = new Set(prev.map(n => n.id));
-      const newItems = parsed
-        .filter(n => !ids.has(n.id))
-        .map(n => ({ ...n, read: false }));
-      if (newItems.length > 0) setUnreadCount(uc => uc + newItems.length);
-      return [...newItems, ...prev].slice(0, 50);
-    });
-  }
-};
-
-
-      evt.onerror = () => {
-        console.error("SSE connection error, reconnecting...");
-        evt.close();
-        setTimeout(connect, 3000);
-      };
-    };
-
-    connect();
-    return () => evt.close();
+    return () => ws.close();
   }, []);
 
   return (
-    <div className="sticky top-0 z-50 ml-0 lg:ml-[290px] 2xl:ml-[342px] flex items-center justify-between px-4 py-3 bg-white/90 backdrop-blur-md border-b border-gray-200">
-      {/* Left Side */}
-      <div className="flex items-center gap-4">
-        <button onClick={toggleSidebar} className="text-[#2C2A25] text-2xl focus:outline-none lg:hidden">
-          ☰
-        </button>
-        <div className="flex flex-col">
-          <h1 className="text-[28px] sm:text-[35px] lg:text-[30px] font-bold text-[#2C2A25]">WARO</h1>
-          <p className="text-[#2C2A25] text-sm sm:text-base">{t("welcome")}</p>
-        </div>
-      </div>
-
-      {/* Right Side */}
-      <div className="flex items-center gap-4 sm:gap-6 relative">
-        {/* Bell Icon */}
-        <button
-          ref={bellRef}
-          onClick={toggleNotifications}
-          className="cursor-pointer relative flex items-center justify-center p-2 rounded-full border border-gray-300 w-[45px] h-[45px] sm:w-[50px] sm:h-[50px] lg:w-[55px] lg:h-[55px] hover:bg-gray-100"
-        >
-          <img src="/bell-icon.png" className="h-5 w-5 sm:h-6 sm:w-6" alt="bell" />
-          {unreadCount > 0 && <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>}
-        </button>
-
-        {/* Notifications Dropdown */}
-        {notificationsOpen && (
-          <div className="absolute top-12 right-0 w-80 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
-            <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200">
-              <h2 className="text-lg font-bold text-gray-800">{t("notifications")}</h2>
-              <button onClick={toggleNotifications} className="text-gray-400 hover:text-gray-600 font-bold text-xl">
-                ×
-              </button>
-            </div>
-            <div className="max-h-72 overflow-y-auto p-3 space-y-2">
-              {notifications.length === 0 ? (
-                <p className="text-gray-500 text-sm text-center">{t("noNotifications")}</p>
-              ) : (
-                notifications.map((n) => (
-                  <div
-                    key={n.id}
-                    className={`flex flex-col p-3 rounded-lg cursor-pointer shadow-sm transition ${
-                      n.read ? "bg-gray-50 hover:bg-gray-100" : "bg-yellow-50 hover:bg-yellow-100"
-                    }`}
-                  >
-                    <p className="text-gray-800 text-sm">{n.message}</p>
-                    <span className="text-gray-400 text-xs mt-1">{new Date(n.createdAt).toLocaleTimeString()}</span>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
+    <div className="flex justify-between items-center p-4 bg-white shadow">
+      <button ref={bellRef} onClick={toggleNotifications} className="relative">
+        <img src="/bell-icon.png" alt="bell" />
+        {unreadCount > 0 && (
+          <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
         )}
+      </button>
 
-        {/* Profile */}
-        <button
-          onClick={() => router.push("/account-settings")}
-          className="cursor-pointer p-1 rounded-full hover:ring-2 hover:ring-gray-300"
-        >
-          {user ? (
-            <img
-              src={user?.profilePicUrl || "/profile.jpg"}
-              className="h-[45px] w-[45px] sm:h-[50px] sm:w-[50px] lg:h-[55px] lg:w-[55px] object-cover rounded-full bg-white"
-              alt="profile"
-            />
+      {notificationsOpen && (
+        <div className="absolute right-0 mt-2 w-80 bg-white border rounded shadow-lg max-h-72 overflow-y-auto">
+          {notifications.length === 0 ? (
+            <p className="text-center p-3">{t("noNotifications")}</p>
           ) : (
-            <div className="flex items-center justify-center bg-white rounded-full h-[45px] w-[45px] sm:h-[50px] sm:w-[50px] lg:h-[55px] lg:w-[55px]">
-              <div className="h-6 w-6 border-2 border-gray-300 border-t-[#734A00] rounded-full animate-spin"></div>
-            </div>
+            notifications.map((n) => (
+              <div
+                key={n.id}
+                className={`p-3 border-b cursor-pointer ${
+                  n.read ? "bg-gray-50" : "bg-yellow-50"
+                }`}
+              >
+                <p>{n.message}</p>
+                <span className="text-xs text-gray-400">
+                  {new Date(n.createdAt).toLocaleTimeString()}
+                </span>
+              </div>
+            ))
           )}
-        </button>
-      </div>
+        </div>
+      )}
     </div>
   );
 };
