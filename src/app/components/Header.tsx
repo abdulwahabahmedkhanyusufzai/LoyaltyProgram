@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "../../lib/UserContext";
 import { useTranslations } from "next-intl";
+import { useNotifications } from "@/lib/useNotifications";
 
 type Notification = {
   id: string;
@@ -19,31 +20,18 @@ type HeaderProps = {
 export const Header = ({ onToggle }: HeaderProps) => {
   const [open, setOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
   const bellRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
   const t = useTranslations();
   const { user } = useUser();
-
+  const { notifications, unreadCount, markAllRead,toggleNotifications } = useNotifications();
   const toggleSidebar = () => {
     const newOpen = !open;
     setOpen(newOpen);
     onToggle?.(newOpen);
   };
 
-  const toggleNotifications = () => {
-    setNotificationsOpen((prev) => {
-      if (!prev) {
-        // Mark all notifications as read when dropdown opens
-        setNotifications((prevNotifs) =>
-          prevNotifs.map((n) => ({ ...n, read: true }))
-        );
-        setUnreadCount(0);
-      }
-      return !prev;
-    });
-  };
+  
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -70,41 +58,6 @@ export const Header = ({ onToggle }: HeaderProps) => {
   }, []);
 
   // WebSocket connection
-useEffect(() => {
-const wsUrl = `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/ws`;
-
-
-  console.log("[WS] Trying to connect to:", wsUrl);
-
-  const ws = new WebSocket(wsUrl);
-
-  ws.onopen = () => console.log("[WS] Connected to WebSocket server");
-  ws.onmessage = (event) => {
-    console.log("[WS] Incoming:", event.data);
-    try {
-      const { type, notifications } = JSON.parse(event.data);
-
-      if (type === "initial") {
-        setNotifications(notifications);
-        setUnreadCount(
-          notifications.filter((n: any) => !n.read).length
-        );
-      }
-
-      if (type === "new") {
-        setNotifications((prev) => [notifications[0], ...prev]);
-        setUnreadCount((c) => c + 1);
-      }
-    } catch (err) {
-      console.error("[WS] JSON parse error:", err);
-    }
-  };
-
-  ws.onerror = (err) => console.error("[WS] Error:", err);
-  ws.onclose = () => console.log("[WS] Disconnected");
-
-  return () => ws.close();
-}, []);
 
 
   return (
