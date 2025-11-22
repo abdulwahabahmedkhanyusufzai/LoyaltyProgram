@@ -2,33 +2,45 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   const encoder = new TextEncoder();
-  let interval: ReturnType<typeof setInterval>;
-  let heartbeat: ReturnType<typeof setInterval>;
+
+  let notificationInterval: ReturnType<typeof setInterval>;
+  let heartbeatInterval: ReturnType<typeof setInterval>;
 
   const stream = new ReadableStream({
     async start(controller) {
-      let lastCheck = new Date();
+      let lastCheck = new Date(0); // fetch from the beginning
 
-      // Heartbeat every 15s
-      heartbeat = setInterval(() => {
+      // Heartbeat every 15s to keep connection alive
+      heartbeatInterval = setInterval(() => {
         controller.enqueue(encoder.encode(`data: {}\n\n`));
       }, 15000);
 
-      interval = setInterval(async () => {
-        const newNotifications = await prisma.notification.findMany({
-          where: { createdAt: { gt: lastCheck } },
-          orderBy: { createdAt: "desc" },
-        });
+      // Poll database every 3s
+      notificationInterval = setInterval(async () => {
+        try {
+          const newNotifications = await prisma.notification.findMany({
+            where: { createdAt: { gt: lastCheck } },
+            orderBy: { createdAt: "asc" },
+          });
 
-        if (newNotifications.length > 0) {
-          lastCheck = newNotifications[0].createdAt; // use newest notification timestamp
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify(newNotifications)}\n\n`));
+          if (newNotifications.length > 0) {
+            lastCheck = newNotifications[newNotifications.length - 1].createdAt;
+            controller.enqueue(
+              encoder.encode(`data: ${JSON.stringify(newNotifications)}\n\n`)
+            );
+          }
+        } catch (err) {
+          console.error("SSE notification error:", err);
         }
-      }, 1500);
+      }, 3000);
+
+      // Initial message
+      controller.enqueue(encoder.encode(`event: connected\ndata: ok\n\n`));
     },
+
     cancel() {
-      clearInterval(interval);
-      clearInterval(heartbeat);
+      clearInterval(notificationInterval);
+      clearInterval(heartbeatInterval);
     },
   });
 
