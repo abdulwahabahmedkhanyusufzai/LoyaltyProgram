@@ -1,105 +1,72 @@
-import { WebSocketServer, WebSocket } from "ws";
+import { createServer } from "http";
+import { Server as SocketIOServer } from "socket.io";
 import { prisma } from "../../lib/prisma";
 
-let wss: WebSocketServer | null = null;
-const clients = new Set<WebSocket>();
+let io: SocketIOServer | null = null;
 
-// --- Heartbeat to keep connections alive ---
-function heartbeat(ws: WebSocket) {
-  ws.isAlive = true;
-  ws.on("pong", () => {
-    ws.isAlive = true;
-  });
-}
-
-// --- Start WS server (standalone or attachable) ---
-export function startWebSocketServer(server?: any) {
-  if (wss) {
-    console.log("[WS] Server already running");
-    return wss;
+export function startSocketServer(httpServer?: any) {
+  if (io) {
+    console.log("[IO] Socket.IO server already running");
+    return io;
   }
 
-  if (server) {
+  if (httpServer) {
     // Attach to existing HTTP server
-    wss = new WebSocketServer({ noServer: true });
-    server.on("upgrade", (req, socket, head) => {
-      wss!.handleUpgrade(req, socket, head, (ws) => {
-        wss!.emit("connection", ws, req);
-      });
+    io = new SocketIOServer(httpServer, {
+      path: "/ws",
+      cors: {
+        origin: "*", // adjust for your frontend domain
+        methods: ["GET", "POST"],
+      },
     });
-    console.log("[WS] WebSocket attached to HTTP server");
+    console.log("[IO] Socket.IO attached to HTTP server");
   } else {
     // Standalone server
-    wss = new WebSocketServer({ port: 3001 });
-    console.log("[WS] Standalone WebSocket server running on ws://localhost:3001");
+    const server = createServer();
+    io = new SocketIOServer(server, {
+      path: "/ws",
+      cors: {
+        origin: "*",
+        methods: ["GET", "POST"],
+      },
+    });
+    server.listen(3001, () =>
+      console.log("[IO] Standalone Socket.IO server running on http://localhost:3001")
+    );
   }
 
-  // --- Connection handler ---
-  wss.on("connection", async (ws) => {
-    clients.add(ws);
-    ws.isAlive = true;
-    heartbeat(ws);
+  io.on("connection", async (socket) => {
+    console.log("[IO] Client connected. Socket ID:", socket.id);
 
-    console.log("[WS] Client connected. Total clients:", clients.size);
-
-    // Send last 50 notifications
     try {
       const notifications = await prisma.notification.findMany({
         orderBy: { createdAt: "desc" },
         take: 50,
       });
-      ws.send(JSON.stringify({ type: "initial", notifications }));
+      socket.emit("initial", notifications);
     } catch (err) {
-      console.error("[WS] Failed to fetch notifications:", err);
+      console.error("[IO] Failed to fetch notifications:", err);
     }
 
-    ws.on("message", (msg) => {
-      console.log("[WS] Message from client:", msg.toString());
+    socket.on("disconnect", () => {
+      console.log("[IO] Client disconnected. Socket ID:", socket.id);
     });
 
-    ws.on("close", () => {
-      clients.delete(ws);
-      console.log("[WS] Client disconnected. Remaining clients:", clients.size);
+    socket.on("client-message", (msg) => {
+      console.log("[IO] Message from client:", msg);
     });
-
-    ws.on("error", (err) => console.error("[WS] Client error:", err));
   });
 
-  // --- Heartbeat interval ---
-  const interval = setInterval(() => {
-    clients.forEach((ws) => {
-      if (!ws.isAlive) {
-        console.log("[WS] Terminating dead client");
-        return ws.terminate();
-      }
-      ws.isAlive = false;
-      ws.ping();
-    });
-  }, 30000);
-
-  wss.on("close", () => clearInterval(interval));
-  wss.on("error", (err) => console.error("[WS] Server error:", err));
-
-  return wss;
+  return io;
 }
 
-// --- Broadcast helper ---
+// Broadcast helper
 export function broadcastNotification(notification: any) {
-  const msg = JSON.stringify({ type: "new", notifications: [notification] });
-  clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      try {
-        client.send(msg);
-      } catch (err) {
-        console.error("[WS] Broadcast failed:", err);
-      }
-    }
-  });
+  if (!io) return;
+  io.emit("new", [notification]);
 }
 
-// --- Standalone run (ES module compatible) ---
-import { fileURLToPath } from "url";
-const __filename = fileURLToPath(import.meta.url);
-if (process.argv[1] === __filename) {
-  startWebSocketServer();
+// Standalone run
+if (require.main === module) {
+  startSocketServer();
 }
