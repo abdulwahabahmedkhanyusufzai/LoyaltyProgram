@@ -20,44 +20,21 @@ type HeaderProps = {
 export const Header = ({ onToggle }: HeaderProps) => {
   const [open, setOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const bellRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
   const t = useTranslations();
   const { user } = useUser();
-  const { notifications, unreadCount, markAllRead,toggleNotifications } = useNotifications();
+  const { notifications, unreadCount, markAllRead,toggleNotifications,bellRef } = useNotifications();
   const toggleSidebar = () => {
     const newOpen = !open;
     setOpen(newOpen);
     onToggle?.(newOpen);
   };
 
-  
-
   // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (bellRef.current && !bellRef.current.contains(event.target as Node)) {
-        setNotificationsOpen(false);
-      }
-    };
-    if (notificationsOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [notificationsOpen]);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (bellRef.current && !bellRef.current.contains(e.target as Node)) {
-        setNotificationsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+ 
 
   // WebSocket connection
+
 
 
   return (

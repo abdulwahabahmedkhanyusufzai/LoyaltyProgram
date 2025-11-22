@@ -15,9 +15,32 @@ export function useNotifications() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-
+   const bellRef = useRef<HTMLButtonElement>(null);
+ 
 const wsRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap> | null>(null);
   const reconnectRef = useRef<number | null>(null);
+
+   useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (bellRef.current && !bellRef.current.contains(e.target as Node)) {
+        setNotificationsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+    useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (bellRef.current && !bellRef.current.contains(event.target as Node)) {
+          setNotificationsOpen(false);
+        }
+      };
+      if (notificationsOpen) {
+        document.addEventListener("mousedown", handleClickOutside);
+      }
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [notificationsOpen]);
 
   // Toggle dropdown & mark all as read
   const toggleNotifications = useCallback(() => {
@@ -96,6 +119,7 @@ const wsRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap> | null>(null);
     notifications,
     unreadCount,
     notificationsOpen,
+    bellRef,
     toggleNotifications,
     markAllRead,
   };
