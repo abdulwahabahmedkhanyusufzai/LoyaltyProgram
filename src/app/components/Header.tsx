@@ -11,6 +11,7 @@ type HeaderProps = {
 export const Header = ({ onToggle }: HeaderProps) => {
   const [open, setOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [notifications, setNotifications] = useState<any[]>([]);
   const bellRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
   const t = useTranslations();
@@ -26,6 +27,7 @@ export const Header = ({ onToggle }: HeaderProps) => {
     setNotificationsOpen((prev) => !prev);
   };
 
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (bellRef.current && !bellRef.current.contains(event.target as Node)) {
@@ -40,11 +42,23 @@ export const Header = ({ onToggle }: HeaderProps) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [notificationsOpen]);
 
-  const notifications = [
-    { id: 1, message: t("notifPointsUpdated") },
-    { id: 2, message: t("notifNewOffer") },
-    { id: 3, message: t("notifSubscriptionExpire") },
-  ];
+  // -------------------------------
+  // SSE: Listen for real-time notifications
+  // -------------------------------
+  useEffect(() => {
+    const evt = new EventSource("/api/notifications/stream");
+
+    evt.onmessage = (e) => {
+      try {
+        const data = JSON.parse(e.data);
+        setNotifications((prev) => [...data, ...prev]);
+      } catch (err) {
+        console.error("Failed to parse notifications:", err);
+      }
+    };
+
+    return () => evt.close();
+  }, []);
 
   return (
     <div className="sticky top-0 z-50 ml-0 lg:ml-[290px] 2xl:ml-[342px]
@@ -80,9 +94,12 @@ export const Header = ({ onToggle }: HeaderProps) => {
           lg:w-[55px] lg:h-[55px] hover:bg-gray-100"
         >
           <img src="/bell-icon.png" className="h-5 w-5 sm:h-6 sm:w-6" alt="bell" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+          {notifications.length > 0 && (
+            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+          )}
         </button>
 
+        {/* Notifications Dropdown */}
         {notificationsOpen && (
           <div className="absolute top-12 right-0 w-80 bg-white border border-gray-200 
           rounded-xl shadow-lg z-50">
@@ -109,7 +126,9 @@ export const Header = ({ onToggle }: HeaderProps) => {
                     hover:bg-gray-100 transition cursor-pointer shadow-sm"
                   >
                     <p className="text-gray-800 text-sm">{n.message}</p>
-                    <span className="text-gray-400 text-xs mt-1">Just now</span>
+                    <span className="text-gray-400 text-xs mt-1">
+                      {new Date(n.createdAt).toLocaleTimeString()}
+                    </span>
                   </div>
                 ))
               )}
@@ -117,6 +136,7 @@ export const Header = ({ onToggle }: HeaderProps) => {
           </div>
         )}
 
+        {/* Profile */}
         <button
           onClick={() => router.push("/account-settings")}
           className="cursor-pointer p-1 rounded-full hover:ring-2 hover:ring-gray-300"

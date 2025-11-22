@@ -21,11 +21,16 @@ function getTierByAmount(amountSpent: number) {
 
 function getTierPenalty(tier: string) {
   switch (tier) {
-    case "Bronze": return 200;
-    case "Silver": return 500;
-    case "Gold": return 750;
-    case "Platinum": return 1000;
-    default: return 0;
+    case "Bronze":
+      return 200;
+    case "Silver":
+      return 500;
+    case "Gold":
+      return 750;
+    case "Platinum":
+      return 1000;
+    default:
+      return 0;
   }
 }
 
@@ -59,17 +64,21 @@ async function writeTierPenaltyMetafield(orderGid: string, penalty: number) {
     ],
   };
 
-  const response = await fetch(`https://${SHOP}/admin/api/2024-10/graphql.json`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Shopify-Access-Token": ADMIN_TOKEN,
-    },
-    body: JSON.stringify({ query, variables }),
-  });
+  const response = await fetch(
+    `https://${SHOP}/admin/api/2024-10/graphql.json`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Shopify-Access-Token": ADMIN_TOKEN,
+      },
+      body: JSON.stringify({ query, variables }),
+    }
+  );
 
   const json = await response.json();
-  if (VERBOSE_DEBUG) console.log("📝 Metafield write response:", JSON.stringify(json, null, 2));
+  if (VERBOSE_DEBUG)
+    console.log("📝 Metafield write response:", JSON.stringify(json, null, 2));
 }
 
 // ----------------------
@@ -77,10 +86,14 @@ async function writeTierPenaltyMetafield(orderGid: string, penalty: number) {
 // ----------------------
 const mapFinancialStatusToOrderStatus = (status?: string): OrderStatus => {
   switch (status?.toUpperCase()) {
-    case "PAID": return OrderStatus.COMPLETED;
-    case "REFUNDED": return OrderStatus.REFUNDED;
-    case "CANCELLED": return OrderStatus.CANCELLED;
-    default: return OrderStatus.PENDING;
+    case "PAID":
+      return OrderStatus.COMPLETED;
+    case "REFUNDED":
+      return OrderStatus.REFUNDED;
+    case "CANCELLED":
+      return OrderStatus.CANCELLED;
+    default:
+      return OrderStatus.PENDING;
   }
 };
 
@@ -90,7 +103,8 @@ const mapFinancialStatusToOrderStatus = (status?: string): OrderStatus => {
 export async function POST(req: Request): Promise<Response> {
   try {
     const secret = process.env.NEXT_SHOPIFY_API_SECRET;
-    if (!secret) throw new Error("Server misconfiguration: missing SHOPIFY_API_SECRET");
+    if (!secret)
+      throw new Error("Server misconfiguration: missing SHOPIFY_API_SECRET");
 
     const hmacHeader = req.headers.get("x-shopify-hmac-sha256");
     if (!hmacHeader) throw new Error("Missing HMAC header");
@@ -98,11 +112,17 @@ export async function POST(req: Request): Promise<Response> {
     const body = await req.text();
 
     // HMAC verification
-    const hash = crypto.createHmac("sha256", secret).update(body, "utf8").digest("base64");
+    const hash = crypto
+      .createHmac("sha256", secret)
+      .update(body, "utf8")
+      .digest("base64");
     const hmacBuffer = Buffer.from(hmacHeader, "base64");
     const hashBuffer = Buffer.from(hash, "base64");
 
-    if (hashBuffer.length !== hmacBuffer.length || !crypto.timingSafeEqual(hashBuffer, hmacBuffer)) {
+    if (
+      hashBuffer.length !== hmacBuffer.length ||
+      !crypto.timingSafeEqual(hashBuffer, hmacBuffer)
+    ) {
       throw new Error("Unauthorized: HMAC verification failed");
     }
     if (VERBOSE_DEBUG) console.log("✅ HMAC verified");
@@ -112,11 +132,16 @@ export async function POST(req: Request): Promise<Response> {
     const customerEmail = orderData.customer?.email;
     if (!customerEmail) {
       console.warn("⚠️ Order has no customer email. Skipping customer update.");
-      return NextResponse.json({ message: "No customer email" }, { status: 200 });
+      return NextResponse.json(
+        { message: "No customer email" },
+        { status: 200 }
+      );
     }
 
     // -------- Find or Create Customer --------
-    let customer = await prisma.customer.findUnique({ where: { email: customerEmail } });
+    let customer = await prisma.customer.findUnique({
+      where: { email: customerEmail },
+    });
 
     if (!customer) {
       customer = await prisma.customer.create({
@@ -147,7 +172,9 @@ export async function POST(req: Request): Promise<Response> {
           totalAmount: parseFloat(orderData.total_price),
           currency: orderData.currency || "EUR",
           status: mapFinancialStatusToOrderStatus(orderData.financial_status),
-          createdAt: orderData.created_at ? new Date(orderData.created_at) : new Date(),
+          createdAt: orderData.created_at
+            ? new Date(orderData.created_at)
+            : new Date(),
         },
       });
 
@@ -160,7 +187,22 @@ export async function POST(req: Request): Promise<Response> {
         },
       });
 
-      console.log(`✅ Order ${order.orderNumber} saved for customer ${customer.email}`);
+      console.log(
+        `✅ Order ${order.orderNumber} saved for customer ${customer.email}`
+      );
+
+      await prisma.notification.create({
+        data: {
+          type: "order",
+          title: "New Order Received",
+          message: `Order #${order.orderNumber} was created.`,
+          data: {
+            orderNumber: order.orderNumber,
+            amount: order.totalAmount,
+            customer: customerEmail,
+          },
+        },
+      });
     }
 
     // -------- Get updated customer for tier calculation --------
@@ -204,7 +246,10 @@ export async function POST(req: Request): Promise<Response> {
       console.log(`⚡ Tier: ${tier}, Penalty Applied: ${penalty} points`);
       console.log("ℹ️ Discount applied → skipping offers cron");
 
-      return NextResponse.json({ message: "Discount: tier penalty applied" }, { status: 200 });
+      return NextResponse.json(
+        { message: "Discount: tier penalty applied" },
+        { status: 200 }
+      );
     }
 
     // =============================================================
@@ -213,11 +258,16 @@ export async function POST(req: Request): Promise<Response> {
     console.log("🚀 Running Offers Cron (no discount used)...");
     await runOffers();
 
-    return NextResponse.json({ message: "Webhook processed successfully" }, { status: 200 });
-
+    return NextResponse.json(
+      { message: "Webhook processed successfully" },
+      { status: 200 }
+    );
   } catch (error: any) {
     console.error("❌ Webhook error:", error.message || error);
     if (VERBOSE_DEBUG) console.error(error.stack);
-    return NextResponse.json({ message: "Internal server error", error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { message: "Internal server error", error: error.message },
+      { status: 500 }
+    );
   }
 }
