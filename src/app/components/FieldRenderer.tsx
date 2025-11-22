@@ -26,6 +26,18 @@ export const FieldRenderer = ({
   console.log("personal", personal)
   console.log("toggles", toggles)
   console.log(t("navigation.formSections.fullName"));
+  const handleSecuritySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    // Assuming you need a different validation/submission function for security
+    // For now, we'll reuse handleRegister but you should adapt it later
+    await handleRegister(); 
+  };
+
+  const handleGeneralSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await handleRegister();
+  };
+
   const handleCancel = () => {
     formManager.resetForm();
     setFormData({
@@ -58,6 +70,7 @@ export const FieldRenderer = ({
       setLoading(false);
     }
   };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -80,13 +93,12 @@ export const FieldRenderer = ({
 
   console.log("form", form);
   return (
+    <>
     <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleRegister();
-      }}
-    >
-      <>
+        onSubmit={handleSecuritySubmit} // 💡 Use the new handler
+        className="space-y-6 mb-10" // Add some spacing for separation
+      >
+      
         {/* ✅ Personal Info Section */}
         {personal && (
           <Personal
@@ -120,7 +132,11 @@ export const FieldRenderer = ({
         <LoadingButton loading={loading} type="submit">
           Save Password
         </LoadingButton>
+         
+         </form>
 
+         <form onSubmit={handleGeneralSubmit} className="space-y-6">
+          
         {/* ✅ Notification Toggles */}
         {toggles && <Toggled form={form} handleChange={handleChange} />}
 
@@ -142,8 +158,9 @@ export const FieldRenderer = ({
             Cancel
           </button>
         </div>
-      </>
+      
     </form>
+    </>
   );
 };
 

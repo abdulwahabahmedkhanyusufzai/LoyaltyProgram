@@ -1,17 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState} from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "../../lib/UserContext";
 import { useTranslations } from "next-intl";
 import { useNotifications } from "@/lib/useNotifications";
-
-type Notification = {
-  id: string;
-  message: string;
-  createdAt: string;
-  read?: boolean; // track read/unread
-};
 
 type HeaderProps = {
   onToggle?: (open: boolean) => void;
