@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
+import { io,Socket } from "socket.io-client";
+import { DefaultEventsMap } from "@socket.io/component-emitter";
 
 export type Notification = {
   id: string;
@@ -14,7 +16,7 @@ export function useNotifications() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
-  const wsRef = useRef<WebSocket | null>(null);
+const wsRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap> | null>(null);
   const reconnectRef = useRef<number | null>(null);
 
   // Toggle dropdown & mark all as read
@@ -33,46 +35,55 @@ export function useNotifications() {
   // WebSocket connection
   const connect = useCallback(() => {
     const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-    const wsUrl = `${protocol}://${window.location.host}/ws`;
-    console.log("[WS] Attempting connection to", wsUrl);
+    // Socket.IO is smart enough to figure out the path and transport,
+    // but you need to connect to the base URL and specify the 'path'.
+    const serverUrl = `${window.location.protocol}//${window.location.host}`;
+    console.log("[IO] Attempting connection to", serverUrl);
 
-    const ws = new WebSocket(wsUrl);
-    wsRef.current = ws;
+    // 💡 Use the Socket.IO client to connect
+    const socket = io(serverUrl, {
+      path: "/ws", // Must match the 'path' configured on the server
+      transports: ["websocket"], // Optional: forces WebSocket transport
+    });
 
-    ws.onopen = () => console.log("[WS] Connected to server");
+    wsRef.current = socket;
 
-    ws.onmessage = (event) => {
-      try {
-        const { type, notifications: newNotifications } = JSON.parse(event.data);
+    socket.on("connect", () => console.log("[IO] Connected to server"));
+    socket.on("disconnect", () =>
+      console.warn("[IO] Disconnected. Attempting to reconnect...")
+    ); // Socket.IO handles automatic reconnection by default!
 
-        if (type === "initial") {
-          setNotifications(newNotifications);
-          setUnreadCount(newNotifications.filter((n: any) => !n.read).length);
-        } else if (type === "new") {
-          setNotifications((prev) =>
-            [newNotifications[0], ...prev].slice(0, 50)
-          );
-          setUnreadCount((c) => c + 1);
-        }
-      } catch (err) {
-        console.error("[WS] Failed to parse message:", err);
-      }
-    };
+    // 💡 Listen for the exact events emitted by your server
+    socket.on("initial", (newNotifications: Notification[]) => {
+      console.log("[IO] Received initial data");
+      setNotifications(newNotifications);
+      setUnreadCount(newNotifications.filter((n) => !n.read).length);
+    });
 
-    ws.onerror = (err) => console.error("[WS] Error:", err);
+    socket.on("new", (newNotifications: Notification[]) => {
+      console.log("[IO] Received new notification");
+      setNotifications((prev) =>
+        [newNotifications[0], ...prev].slice(0, 50)
+      );
+      setUnreadCount((c) => c + 1);
+    });
 
-    ws.onclose = () => {
-      console.warn("[WS] Disconnected. Reconnecting in 3s...");
-      reconnectRef.current = window.setTimeout(connect, 3000);
-    };
+    socket.on("connect_error", (err) => console.error("[IO] Connection Error:", err));
+    
+    // Cleanup function (important!)
+    return () => {
+      socket.close(); // Disconnects the socket
+    }
+
   }, []);
 
   useEffect(() => {
-    connect();
+    // 💡 Connect and get the cleanup function
+    const disconnect = connect();
 
     return () => {
-      if (reconnectRef.current) clearTimeout(reconnectRef.current);
-      wsRef.current?.close();
+      // 💡 Execute the cleanup function
+      if (disconnect) disconnect();
     };
   }, [connect]);
 
