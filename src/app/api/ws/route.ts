@@ -1,4 +1,4 @@
-import { startWebSocketServer } from "../../server/wsServer";
+import { startSocketServer } from "../../server/wsServer";
 
 let wsServerStarted = false; // Prevent double-start
 
@@ -27,7 +27,7 @@ export const GET = async (req: Request) => {
     console.log("🟦 [WS INIT] Starting WebSocket server…");
 
     // Try to start server
-    await startWebSocketServer(socketServer);
+    await startSocketServer(socketServer);
 
     wsServerStarted = true;
 
