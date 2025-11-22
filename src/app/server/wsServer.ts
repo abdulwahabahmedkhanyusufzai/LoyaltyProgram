@@ -1,13 +1,11 @@
 import { WebSocketServer } from "ws";
-import { prisma } from "../../lib/prisma.ts";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
+import { prisma } from "../../lib/prisma";
 
 let wss: WebSocketServer | null = null;
 const clients = new Set<WebSocket>();
 
 export function startWebSocketServer(server?: any) {
-  if (wss) return wss; // already started
+  if (wss) return wss;
 
   if (server) {
     wss = new WebSocketServer({ noServer: true });
@@ -48,8 +46,7 @@ export function broadcastNotification(notification: any) {
   });
 }
 
-// ESM-compatible standalone run
-const __filename = fileURLToPath(import.meta.url);
-if (process.argv[1] === __filename) {
+// Standalone run
+if (require.main === module) {
   startWebSocketServer();
 }
