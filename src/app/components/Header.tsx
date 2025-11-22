@@ -70,38 +70,42 @@ export const Header = ({ onToggle }: HeaderProps) => {
   }, []);
 
   // WebSocket connection
-  useEffect(() => {
-    const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-    const wsUrl = `${protocol}://${window.location.host}/api/ws`;
-    const ws = new WebSocket(wsUrl);
+useEffect(() => {
+  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+  const wsUrl = `${protocol}://${window.location.hostname}:3001`;
 
-    ws.onopen = () => console.log("WebSocket connected");
-    ws.onmessage = (event) => {
-      try {
-        const { type, data } = JSON.parse(event.data);
+  console.log("[WS] Trying to connect to:", wsUrl);
 
-        if (type === "initial") {
-          setNotifications(data);
-          setUnreadCount(data.filter((n: any) => !n.read).length);
-        } else if (type === "new") {
-          setNotifications((prev) => {
-            const ids = new Set(prev.map((n) => n.id));
-            const newItems = data
-              .filter((n: any) => !ids.has(n.id))
-              .map((n: any) => ({ ...n, read: false }));
-            setUnreadCount((uc) => uc + newItems.length);
-            return [...newItems, ...prev].slice(0, 50);
-          });
-        }
-      } catch (err) {
-        console.error("WS parse error:", err);
+  const ws = new WebSocket(wsUrl);
+
+  ws.onopen = () => console.log("[WS] Connected to WebSocket server");
+  ws.onmessage = (event) => {
+    console.log("[WS] Incoming:", event.data);
+    try {
+      const { type, notifications } = JSON.parse(event.data);
+
+      if (type === "initial") {
+        setNotifications(notifications);
+        setUnreadCount(
+          notifications.filter((n: any) => !n.read).length
+        );
       }
-    };
-    ws.onerror = (err) => console.error("WebSocket error:", err);
-    ws.onclose = () => console.log("WebSocket disconnected");
 
-    return () => ws.close();
-  }, []);
+      if (type === "new") {
+        setNotifications((prev) => [notifications[0], ...prev]);
+        setUnreadCount((c) => c + 1);
+      }
+    } catch (err) {
+      console.error("[WS] JSON parse error:", err);
+    }
+  };
+
+  ws.onerror = (err) => console.error("[WS] Error:", err);
+  ws.onclose = () => console.log("[WS] Disconnected");
+
+  return () => ws.close();
+}, []);
+
 
   return (
     <div className="sticky top-0 z-50 ml-0 lg:ml-[290px] 2xl:ml-[342px] flex items-center justify-between px-4 py-3 bg-white/90 backdrop-blur-md border-b border-gray-200">
