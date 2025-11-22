@@ -1,8 +1,16 @@
 "use client";
+
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "../../lib/UserContext";
 import { useTranslations } from "next-intl";
+
+type Notification = {
+  id: string;
+  message: string;
+  createdAt: string;
+  read?: boolean; // track read/unread
+};
 
 type HeaderProps = {
   onToggle?: (open: boolean) => void;
@@ -11,7 +19,7 @@ type HeaderProps = {
 export const Header = ({ onToggle }: HeaderProps) => {
   const [open, setOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const [notifications, setNotifications] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const bellRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
@@ -25,11 +33,16 @@ export const Header = ({ onToggle }: HeaderProps) => {
   };
 
   const toggleNotifications = () => {
-    setNotificationsOpen((prev) => !prev);
-    if (!notificationsOpen) {
-      // Dropdown opened → mark all as read
-      setUnreadCount(0);
-    }
+    setNotificationsOpen((prev) => {
+      if (!prev) {
+        // Mark all notifications as read when dropdown opens
+        setNotifications((prevNotifs) =>
+          prevNotifs.map((n) => ({ ...n, read: true }))
+        );
+        setUnreadCount(0);
+      }
+      return !prev;
+    });
   };
 
   // Close dropdown when clicking outside
@@ -54,25 +67,34 @@ export const Header = ({ onToggle }: HeaderProps) => {
 
       evt.onmessage = (e) => {
         try {
-          const data = JSON.parse(e.data);
-          if (Array.isArray(data)) {
+          const data: Notification[] = JSON.parse(e.data);
+
+          if (Array.isArray(data) && data.length > 0) {
             setNotifications((prev) => {
               // Deduplicate by ID
               const ids = new Set(prev.map((n) => n.id));
-              const newItems = data.filter((n: any) => !ids.has(n.id));
-              const combined = [...newItems, ...prev].slice(0, 50); // max 50
-              if (newItems.length > 0) setUnreadCount((uc) => uc + newItems.length);
-              return combined;
+              const newItems = data
+                .filter((n) => !ids.has(n.id))
+                .map((n) => ({ ...n, read: false })); // new items are unread
+
+              // Update unread count
+              if (newItems.length > 0) {
+                setUnreadCount((uc) => uc + newItems.length);
+              }
+
+              return [...newItems, ...prev].slice(0, 50); // max 50 notifications
             });
           }
-        } catch {
-          // heartbeat or invalid data
+        } catch (err) {
+          // likely heartbeat or invalid data
+          console.error("SSE parsing error:", err);
         }
       };
 
       evt.onerror = () => {
+        console.error("SSE connection error, reconnecting...");
         evt.close();
-        setTimeout(connect, 3000); // reconnect after 3s
+        setTimeout(connect, 3000);
       };
     };
 
@@ -137,8 +159,8 @@ export const Header = ({ onToggle }: HeaderProps) => {
                 notifications.map((n) => (
                   <div
                     key={n.id}
-                    className="flex flex-col p-3 bg-gray-50 rounded-lg 
-                    hover:bg-gray-100 transition cursor-pointer shadow-sm"
+                    className={`flex flex-col p-3 rounded-lg cursor-pointer shadow-sm transition 
+                      ${n.read ? "bg-gray-50 hover:bg-gray-100" : "bg-yellow-50 hover:bg-yellow-100"}`}
                   >
                     <p className="text-gray-800 text-sm">{n.message}</p>
                     <span className="text-gray-400 text-xs mt-1">
