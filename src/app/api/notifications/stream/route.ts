@@ -1,16 +1,21 @@
+// src/app/api/notifications/stream/route.ts
 import { prisma } from "@/lib/prisma";
+
+export const runtime = "nodejs"; // important for SSE
 
 export async function GET() {
   const encoder = new TextEncoder();
 
+  let lastCheck = new Date(0); // start from beginning
   let notificationInterval: ReturnType<typeof setInterval>;
   let heartbeatInterval: ReturnType<typeof setInterval>;
 
   const stream = new ReadableStream({
-    async start(controller) {
-      let lastCheck = new Date(0); // fetch from the beginning
+    start(controller) {
+      // Send initial message
+      controller.enqueue(encoder.encode(`event: connected\ndata: ok\n\n`));
 
-      // Heartbeat every 15s to keep connection alive
+      // Heartbeat every 15s
       heartbeatInterval = setInterval(() => {
         controller.enqueue(encoder.encode(`data: {}\n\n`));
       }, 15000);
@@ -25,6 +30,7 @@ export async function GET() {
 
           if (newNotifications.length > 0) {
             lastCheck = newNotifications[newNotifications.length - 1].createdAt;
+
             controller.enqueue(
               encoder.encode(`data: ${JSON.stringify(newNotifications)}\n\n`)
             );
@@ -33,9 +39,6 @@ export async function GET() {
           console.error("SSE notification error:", err);
         }
       }, 3000);
-
-      // Initial message
-      controller.enqueue(encoder.encode(`event: connected\ndata: ok\n\n`));
     },
 
     cancel() {
