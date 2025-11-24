@@ -1,6 +1,6 @@
 import { createServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
-import { prisma } from "../../lib/prisma";
+import { prisma } from "../src/lib/prisma";
 
 let io: SocketIOServer | null = null;
 
