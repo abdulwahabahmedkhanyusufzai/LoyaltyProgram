@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { io,Socket } from "socket.io-client";
-import { DefaultEventsMap } from "@socket.io/component-emitter";
+import { io, Socket } from "socket.io-client";
 
 export type Notification = {
   id: string;
@@ -15,100 +14,97 @@ export function useNotifications() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-   const bellRef = useRef<HTMLButtonElement>(null);
- 
-const wsRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap> | null>(null);
-  const reconnectRef = useRef<number | null>(null);
+  const bellRef = useRef<HTMLButtonElement>(null);
+  
+  // We keep the socket in a ref to access it elsewhere if needed, 
+  // but we control it inside useEffect
+  const wsRef = useRef<Socket | null>(null);
 
-   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (bellRef.current && !bellRef.current.contains(e.target as Node)) {
+  // 1. Handle Click Outside (UI Logic)
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        notificationsOpen &&
+        bellRef.current &&
+        !bellRef.current.contains(event.target as Node)
+      ) {
         setNotificationsOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [notificationsOpen]);
 
-    useEffect(() => {
-      const handleClickOutside = (event: MouseEvent) => {
-        if (bellRef.current && !bellRef.current.contains(event.target as Node)) {
-          setNotificationsOpen(false);
-        }
-      };
-      if (notificationsOpen) {
-        document.addEventListener("mousedown", handleClickOutside);
-      }
-      return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [notificationsOpen]);
-
-  // Toggle dropdown & mark all as read
-  const toggleNotifications = useCallback(() => {
-    setNotificationsOpen((prev) => {
-      if (!prev) {
-        setNotifications((prevNotifs) =>
-          prevNotifs.map((n) => ({ ...n, read: true }))
-        );
-        setUnreadCount(0);
-      }
-      return !prev;
-    });
-  }, []);
-
-  // WebSocket connection
-  const connect = useCallback(() => {
+  // 2. WebSocket Connection Logic (The Fix)
+  useEffect(() => {
+    // Determine URL dynamically
     const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-    // Socket.IO is smart enough to figure out the path and transport,
-    // but you need to connect to the base URL and specify the 'path'.
-    const serverUrl = `${window.location.protocol}//${window.location.host}`;
-    console.log("[IO] Attempting connection to", serverUrl);
+    const host = window.location.host;
+    // NOTE: socket.io automatically handles protocol, usually just the host is enough
+    const serverUrl = `${window.location.protocol}//${host}`;
 
-    // 💡 Use the Socket.IO client to connect
+    console.log("[IO] Initializing connection to:", serverUrl);
+
     const socket = io(serverUrl, {
-      path: "/ws", // Must match the 'path' configured on the server
-      transports: ["websocket"], // Optional: forces WebSocket transport
+      path: "/ws", // Ensure this matches your server config exactly
+      transports: ["websocket"],
+      reconnectionAttempts: 5, // Stop trying after 5 fails
     });
 
     wsRef.current = socket;
 
-    socket.on("connect", () => console.log("[IO] Connected to server"));
-    socket.on("disconnect", () =>
-      console.warn("[IO] Disconnected. Attempting to reconnect...")
-    ); // Socket.IO handles automatic reconnection by default!
+    // --- Event Listeners ---
 
-    // 💡 Listen for the exact events emitted by your server
-    socket.on("initial", (newNotifications: Notification[]) => {
-      console.log("[IO] Received initial data");
-      setNotifications(newNotifications);
-      setUnreadCount(newNotifications.filter((n) => !n.read).length);
+    socket.on("connect", () => {
+      console.log("[IO] Connected successfully. ID:", socket.id);
     });
 
-    socket.on("new", (newNotifications: Notification[]) => {
-      console.log("[IO] Received new notification");
-      setNotifications((prev) =>
-        [newNotifications[0], ...prev].slice(0, 50)
-      );
-      setUnreadCount((c) => c + 1);
+    socket.on("connect_error", (err) => {
+      console.error("[IO] Connection failed:", err.message);
     });
 
-    socket.on("connect_error", (err) => console.error("[IO] Connection Error:", err));
-    
-    // Cleanup function (important!)
+    // Handle "Initial" load (History)
+    socket.on("initial", (data: Notification[]) => {
+      console.log("[IO] 'initial' event received", data);
+      if (Array.isArray(data)) {
+        setNotifications(data);
+        setUnreadCount(data.filter((n) => !n.read).length);
+      }
+    });
+
+    // Handle "New" notification (Real-time)
+    socket.on("new", (payload: Notification | Notification[]) => {
+      console.log("[IO] 'new' event received:", payload);
+
+      // 🛑 BUG FIX: Handle if server sends an Array OR a single Object
+      const newItems = Array.isArray(payload) ? payload : [payload];
+
+      setNotifications((prev) => {
+        // Add new items to the top, keep list at 50 max
+        return [...newItems, ...prev].slice(0, 50);
+      });
+
+      setUnreadCount((prev) => prev + newItems.length);
+    });
+
+    // Cleanup: This runs when the component unmounts
     return () => {
-      socket.close(); // Disconnects the socket
-    }
-
-  }, []);
-
-  useEffect(() => {
-    // 💡 Connect and get the cleanup function
-    const disconnect = connect();
-
-    return () => {
-      // 💡 Execute the cleanup function
-      if (disconnect) disconnect();
+      console.log("[IO] Component unmounting, disconnecting...");
+      socket.disconnect();
     };
-  }, [connect]);
+  }, []); // Empty dependency array = runs once on mount
+
+  // 3. UI Actions
+  const toggleNotifications = useCallback(() => {
+    setNotificationsOpen((prev) => {
+      if (!prev) {
+        // If opening, mark visible as read (optional UX choice)
+        // Or you might want to do this only when clicking specific items
+        // setUnreadCount(0); 
+      }
+      return !prev;
+    });
+  }, []);
 
   const markAllRead = useCallback(() => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
