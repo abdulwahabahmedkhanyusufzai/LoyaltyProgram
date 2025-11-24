@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
-
+import { getSocket } from "@/lib/socket";
 export type Notification = {
   id: string;
   message: string;
@@ -32,60 +32,48 @@ export function useNotifications() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [notificationsOpen]);
 
-  // 2. WebSocket Connection (Simplified)
   useEffect(() => {
-    const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-    const host = window.location.host;
-    const serverUrl = `${window.location.protocol}//${host}`;
-
-    console.log(`[IO] Connecting to ${serverUrl}...`);
-
-    const socket = io(serverUrl, {
-      path: "/ws",
-      transports: ["websocket"],
-      reconnectionAttempts: 5,
-      // No query needed anymore
-    });
-
-    wsRef.current = socket;
+    const socket = getSocket();
 
     socket.on("connect", () => {
-      console.log("[IO] Connected. Socket ID:", socket.id);
+      console.log("[IO] Connected:", socket.id);
     });
 
-    socket.on("connect_error", (err) => {
-      console.error("[IO] Connection failed:", err.message);
+    socket.on("disconnect", () => {
+      console.log("[IO] Disconnected");
     });
 
-    // Handle History (Last 50 items)
-    socket.on("initial", (data: Notification[]) => {
-      console.log("[IO] Initial Load:", data);
-      if (Array.isArray(data)) {
-        setNotifications(data);
-        setUnreadCount(data.filter((n) => !n.read).length);
-      }
+    socket.on("initial", (data) => {
+      console.log("[IO] Initial:", data);
+      setNotifications(data);
+      setUnreadCount(data.filter((n) => !n.read).length);
     });
 
-    // Handle Live Updates
-    socket.on("new", (payload: Notification | Notification[]) => {
-      console.log("[IO] 🔔 LIVE Notification:", payload);
-      
-      const newItems = Array.isArray(payload) ? payload : [payload];
+    socket.on("new", (list) => {
+      console.log("[IO] LIVE NEW:", list);
+
+      const items = Array.isArray(list) ? list : [list];
 
       setNotifications((prev) => {
-        const newIds = new Set(newItems.map(i => i.id));
-        const filteredPrev = prev.filter(p => !newIds.has(p.id));
-        return [...newItems, ...filteredPrev].slice(0, 50);
+        const ids = new Set(items.map((i) => i.id));
+        const filteredPrev = prev.filter((p) => !ids.has(p.id));
+        return [...items, ...filteredPrev].slice(0, 50);
       });
 
-      setUnreadCount((prev) => prev + newItems.length);
+      setUnreadCount((prev) => prev + items.length);
     });
 
     return () => {
-      socket.disconnect();
+      // ❗ DO NOT DISCONNECT HERE
+      // It will kill the socket for all pages
+      console.log("[IO] Cleanup listeners only");
+      socket.off("initial");
+      socket.off("new");
+      socket.off("connect");
+      socket.off("disconnect");
     };
-  }, []); // Run once on mount
-
+  }, [])
+  
   const toggleNotifications = useCallback(() => {
     setNotificationsOpen((prev) => !prev);
   }, []);
