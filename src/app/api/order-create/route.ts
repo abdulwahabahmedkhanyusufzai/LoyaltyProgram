@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
 import { OrderStatus } from "@prisma/client";
 import { runOffers } from "../../../scripts/cronAppOffer";
-import { broadcastNotification } from "@/app/server/wsServer";
+import { broadcastNotification } from "../../../../server/wsServer";
 
 const VERBOSE_DEBUG = process.env.DEBUG_SHOPIFY_WEBHOOK === "true";
 const ADMIN_TOKEN = process.env.SHOPIFY_ADMIN_API_ACCESS_TOKEN;
@@ -204,7 +204,7 @@ export async function POST(req: Request): Promise<Response> {
           },
         },
       });
-          broadcastNotification(notification);
+      broadcastNotification(notification);
 
     }
     
