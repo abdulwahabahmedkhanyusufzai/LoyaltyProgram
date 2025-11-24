@@ -2,71 +2,69 @@ import { createServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
 import { prisma } from "../../lib/prisma";
 
-let io: SocketIOServer | null = null;
+// 1. DEFINE TYPE FOR GLOBAL
+declare global {
+  var io: SocketIOServer | undefined;
+}
 
 export function startSocketServer(httpServer?: any) {
-  if (io) {
-    console.log("[IO] Socket.IO server already running");
-    return io;
+  // If we already have a global instance, return it (Prevent duplicates)
+  if (global.io) {
+    console.log("[IO] Using existing global Socket.IO instance");
+    return global.io;
   }
 
+  let io: SocketIOServer;
+
+  const options = {
+    path: "/ws",
+    cors: { origin: "*", methods: ["GET", "POST"] },
+  };
+
   if (httpServer) {
-    // Attach to existing HTTP server
-    io = new SocketIOServer(httpServer, {
-      path: "/ws",
-      cors: {
-        origin: "*", // adjust for your frontend domain
-        methods: ["GET", "POST"],
-      },
-    });
-    console.log("[IO] Socket.IO attached to HTTP server");
+    io = new SocketIOServer(httpServer, options);
+    console.log("[IO] Attached to existing HTTP server");
   } else {
-    // Standalone server
     const server = createServer();
-    io = new SocketIOServer(server, {
-      path: "/ws",
-      cors: {
-        origin: "*",
-        methods: ["GET", "POST"],
-      },
-    });
+    io = new SocketIOServer(server, options);
     server.listen(3001, () =>
-      console.log("[IO] Standalone Socket.IO server running on http://localhost:3001")
+      console.log("[IO] Standalone server running on :3001")
     );
   }
 
-  io.on("connection", async (socket) => {
-    console.log("[IO] Client connected. Socket ID:", socket.id);
+  // 2. ASSIGN TO GLOBAL
+  global.io = io;
 
+  io.on("connection", async (socket) => {
+    console.log("[IO] Client connected:", socket.id);
+    
+    // Send history
     try {
       const notifications = await prisma.notification.findMany({
         orderBy: { createdAt: "desc" },
         take: 50,
       });
       socket.emit("initial", notifications);
-    } catch (err) {
-      console.error("[IO] Failed to fetch notifications:", err);
+    } catch (e) {
+      console.error(e);
     }
-
-    socket.on("disconnect", () => {
-      console.log("[IO] Client disconnected. Socket ID:", socket.id);
-    });
-
-    socket.on("client-message", (msg) => {
-      console.log("[IO] Message from client:", msg);
-    });
   });
 
   return io;
 }
 
-// Broadcast helper
+// 3. ROBUST BROADCAST FUNCTION
 export function broadcastNotification(notification: any) {
-  if (!io) return;
-  io.emit("new", [notification]);
-}
+  // Try to grab the global instance
+  const io = global.io;
 
-// Standalone run
-if (require.main === module) {
-  startSocketServer();
+  if (!io) {
+    console.error("❌ [IO] Broadcast FAILED. Socket server not found in global scope.");
+    return;
+  }
+
+  console.log(`✅ [IO] Broadcasting Order #${notification.data?.orderNumber || 'Unknown'}`);
+  
+  // Emit to everyone
+  io.emit("new", [notification]);
 }
