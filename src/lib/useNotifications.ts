@@ -35,10 +35,13 @@ export function useNotifications() {
   // 2. Socket.IO connection
   useEffect(() => {
     // Connect to server
-    const socket = io("https:waro.d.codetors.dev/ws", {
-      transports: ["websocket"],
-      autoConnect: true,
-    });
+    const WS_URL =
+  process.env.NODE_ENV === "production"
+    ? "wss://" + window.location.hostname + "/ws"
+    : "ws://localhost:3001";
+
+const socket = io(WS_URL, { transports: ["websocket"] });
+
 
     wsRef.current = socket;
 
