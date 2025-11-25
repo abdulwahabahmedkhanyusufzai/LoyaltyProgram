@@ -35,12 +35,15 @@ export function useNotifications() {
   // 2. Socket.IO connection
   useEffect(() => {
     // Connect to server
-    const WS_URL =
+  const WS_URL =
   process.env.NODE_ENV === "production"
-    ? "wss://" + window.location.hostname + "/ws" +  "/socket.io/"
+    ? "wss://" + window.location.hostname + "/ws"
     : "ws://localhost:3001";
 
-const socket = io(WS_URL, { transports: ["websocket"] });
+const socket = io(WS_URL, {
+  transports: ["websocket"],
+  path: "/socket.io", // default Socket.IO path on server
+});
 
 
     wsRef.current = socket;
