@@ -28,14 +28,13 @@ export const LoyaltyTable = () => {
   const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth());
   const monthName: string = monthNames[selectedMonth] ?? "";
 
-
-  useEffect(() => {
-    fetchCustomers();
-  }, [fetchCustomers]);
-
   const fetchCalendarData = async (month: string) => {
     fetch(`/api/get-calendar?month=${month}`);
   };
+
+  useEffect(() => {
+  fetchCustomers(selectedMonth + 1); // fetch current month at mount
+}, [fetchCustomers, selectedMonth]);
 
   const handleDeleteClick = (customer: any) => {
     setSelectedCustomer(customer);
