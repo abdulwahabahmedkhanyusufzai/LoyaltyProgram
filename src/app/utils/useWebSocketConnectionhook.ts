@@ -1,47 +1,48 @@
 import { useEffect, useRef } from "react";
-import { io } from "socket.io-client";
-import { WebsocketEventEnum } from "../types/socket";
+import { io, Socket } from "socket.io-client";
+import { WebsocketEventEnum } from "../../../types/socket";
 
-const useWebSocketConnectionHook = (cb: (arg: unknown) => void, event: WebsocketEventEnum)=> {
+const useWebSocketConnectionHook = (
+  cb: (arg: unknown) => void,
+  event: WebsocketEventEnum
+) => {
+  // socket reference
+  const socketRef = useRef<Socket | null>(null);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const socketRef = useRef<any>(null);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  function socketClient() {
-    const socket = io({
+  useEffect(() => {
+    // connect to server with explicit URL and CORS support
+    const socket = io("http://localhost:4000", {
       transports: ["websocket"],
+      autoConnect: true,
     });
 
     socket.on("connect", () => {
-      socket.on(event as unknown as string, (data) => {
+      console.log("Socket connected with ID:", socket.id);
+
+      // subscribe to your custom event
+      socket.on(event as string, (data) => {
         cb(data);
       });
-      console.log("Connected");
     });
 
     socket.on("disconnect", () => {
-      console.log("Disconnected");
+      console.log("Socket disconnected");
     });
 
-    socket.on("connect_error", async (err) => {
-      console.log(`connect_error due to ${err.message}`);
-      await fetch('/api/socket');
+    socket.on("connect_error", (err) => {
+      console.error("Socket connect_error:", err.message);
+      // Do not fetch localhost here; it causes 404 & CORS issues
     });
 
-  
     socketRef.current = socket;
-  }
 
-  useEffect(() => {
-    socketClient();
-    return ()=> {
-      socketRef?.current?.disconnect();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[]);
+    // clean up on unmount
+    return () => {
+      socketRef.current?.disconnect();
+    };
+  }, [cb, event]);
 
-
-}
+  return socketRef;
+};
 
 export default useWebSocketConnectionHook;

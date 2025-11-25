@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation";
 import { useUser } from "../../lib/UserContext";
 import { useTranslations } from "next-intl";
 import { useNotifications } from "@/lib/useNotifications";
-import useWebSocketConnectionHook from "../utils/useWebSocketConnectionhook";
-import { WebsocketEventEnum } from "../types/socket";
 type HeaderProps = {
   onToggle?: (open: boolean) => void;
 };
@@ -23,9 +21,7 @@ export const Header = ({ onToggle }: HeaderProps) => {
     onToggle?.(newOpen);
   };
   
-    useWebSocketConnectionHook(() => {
-     console.log("me conected");
-   }, WebsocketEventEnum.MY_EVENT_NAME);
+  
   return (
     <div className="sticky top-0 z-50 ml-0 lg:ml-[290px] 2xl:ml-[342px] flex items-center justify-between px-4 py-3 bg-white/90 backdrop-blur-md border-b border-gray-200">
       {/* Left Side */}

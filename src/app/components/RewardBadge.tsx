@@ -39,7 +39,7 @@ interface RewardsRowProps {
 }
 
 const RewardsRow = ({ markedDates }: RewardsRowProps) => {
-  const t = useTranslations("navigation");
+  const t = useTranslations();
   const { rewards } = useNavData(t);
   // Filter only rewards that have marked dates
   const badgesToShow = rewards

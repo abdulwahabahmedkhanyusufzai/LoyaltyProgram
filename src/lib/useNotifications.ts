@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
-import { getSocket } from "@/lib/socket";
+
 export type Notification = {
   id: string;
   message: string;
@@ -17,7 +17,7 @@ export function useNotifications() {
   const bellRef = useRef<HTMLButtonElement>(null);
   const wsRef = useRef<Socket | null>(null);
 
-  // 1. Handle Click Outside
+  // 1. Handle click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -32,48 +32,39 @@ export function useNotifications() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [notificationsOpen]);
 
+  // 2. Socket.IO connection
   useEffect(() => {
-    const socket = getSocket();
+    // Connect to server
+    const socket = io("http://localhost:4000", {
+      transports: ["websocket"],
+      autoConnect: true,
+    });
+
+    wsRef.current = socket;
+
+    // Listen for new notifications
+    socket.on("NEW_NOTIFICATION", (notification: Notification) => {
+      setNotifications((prev) => [notification, ...prev]);
+      setUnreadCount((prev) => prev + 1);
+    });
 
     socket.on("connect", () => {
-      console.log("[IO] Connected:", socket.id);
+      console.log("Connected to notifications socket:", socket.id);
     });
 
     socket.on("disconnect", () => {
-      console.log("[IO] Disconnected");
+      console.log("Disconnected from notifications socket");
     });
 
-    socket.on("initial", (data) => {
-      console.log("[IO] Initial:", data);
-      setNotifications(data);
-      setUnreadCount(data.filter((n) => !n.read).length);
-    });
-
-    socket.on("new", (list) => {
-      console.log("[IO] LIVE NEW:", list);
-
-      const items = Array.isArray(list) ? list : [list];
-
-      setNotifications((prev) => {
-        const ids = new Set(items.map((i) => i.id));
-        const filteredPrev = prev.filter((p) => !ids.has(p.id));
-        return [...items, ...filteredPrev].slice(0, 50);
-      });
-
-      setUnreadCount((prev) => prev + items.length);
+    socket.on("connect_error", (err) => {
+      console.error("Socket connect_error:", err.message);
     });
 
     return () => {
-      // ❗ DO NOT DISCONNECT HERE
-      // It will kill the socket for all pages
-      console.log("[IO] Cleanup listeners only");
-      socket.off("initial");
-      socket.off("new");
-      socket.off("connect");
-      socket.off("disconnect");
+      socket.disconnect();
     };
-  }, [])
-  
+  }, []);
+
   const toggleNotifications = useCallback(() => {
     setNotificationsOpen((prev) => !prev);
   }, []);

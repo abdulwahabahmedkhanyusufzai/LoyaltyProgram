@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
 import { OrderStatus } from "@prisma/client";
 import { runOffers } from "../../../scripts/cronAppOffer";
-import { broadcastNotification } from "../../../../server/wsServer";
+import { io } from "../../../../server/server";
 
 const VERBOSE_DEBUG = process.env.DEBUG_SHOPIFY_WEBHOOK === "true";
 const ADMIN_TOKEN = process.env.SHOPIFY_ADMIN_API_ACCESS_TOKEN;
@@ -226,11 +226,7 @@ export async function POST(req: Request): Promise<Response> {
       });
 
       step("Broadcasting WebSocket Notification", notification);
-      await fetch("http://localhost:3001/broadcast", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(notification),
-});
+      io.emit("NEW_NOTIFICATION", notification);
 
     }
 

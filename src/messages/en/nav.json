@@ -18,19 +18,6 @@
     "host": "Host: Between 31 and 4500 points",
     "test": "Test: More than 4500 points"
   },
-  "rows": {
-    "cashback": "Cashback per point",
-    "freeDelivery": "Free Delivery",
-    "immediateDiscount": "Immediate Discount",
-    "productSuggestions": "Product Suggestions",
-    "loyaltyOffer": "Loyalty Offer",
-    "birthdayOffer": "Birthday Offer"
-  },
-  "offers": {
-    "cashback": "Cashback per point",
-    "birthday": "Birthday Offer",
-    "loyalty": "Loyalty Offer"
-  },
   "formSections": {
     "personalDetails": "Personal Details",
     "security": "Security",

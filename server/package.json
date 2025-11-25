@@ -1,0 +1,19 @@
+{
+  "name": "loyalty-server",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "ts-node server.ts",
+    "start": "node dist/server.js",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.5",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.9.3"
+  }
+}
