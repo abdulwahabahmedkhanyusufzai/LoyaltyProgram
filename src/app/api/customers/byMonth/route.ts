@@ -4,19 +4,55 @@ import crypto from "crypto";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: Request) {
+interface MonthFilterBody {
+  year: number;
+  month: number; // 1-12
+}
+
+export async function POST(req: Request) {
   const requestId = crypto.randomUUID();
   const startTime = Date.now();
 
-  console.log(`[${requestId}] GET /customers triggered`);
+  console.log(`[${requestId}] POST /customers-by-month triggered`);
 
   try {
-    console.log(`[${requestId}] Starting Prisma query for customers with orders > 0`);
+    const body: MonthFilterBody = await req.json();
+    const { year, month } = body;
+
+    if (!year || !month || month < 1 || month > 12) {
+      return NextResponse.json(
+        { requestId, error: "Invalid year or month" },
+        { status: 400 }
+      );
+    }
+
+    console.log(`[${requestId}] Filtering customers for ${year}-${month.toString().padStart(2, "0")}`);
+
+    // Compute month range
+    const startDate = new Date(Date.UTC(year, month - 1, 1));
+    const endDate = new Date(Date.UTC(year, month, 1)); // next month start
+
+    console.log(`[${requestId}] Month range: ${startDate.toISOString()} - ${endDate.toISOString()}`);
 
     const customers = await prisma.customer.findMany({
-      where: { numberOfOrders: { gt: 0 } },
+      where: {
+        orders: {
+          some: {
+            createdAt: {
+              gte: startDate,
+              lt: endDate,
+            },
+          },
+        },
+      },
       include: {
         orders: {
+          where: {
+            createdAt: {
+              gte: startDate,
+              lt: endDate,
+            },
+          },
           orderBy: { createdAt: "desc" },
           take: 1,
           include: { items: true },
@@ -32,9 +68,6 @@ export async function GET(req: Request) {
 
     const response = customers.map((c, index) => {
       try {
-        const lastOrder = c.orders?.[0] || null;
-        const lastPointsEntry = c.pointsLedger?.[0] || null;
-
         return {
           id: c.id,
           firstName: c.firstName,
@@ -43,8 +76,8 @@ export async function GET(req: Request) {
           loyaltyTitle: c.loyaltyTitle,
           numberOfOrders: c.numberOfOrders,
           amountSpent: Number(c.amountSpent),
-          lastOrder,
-          lastPointsEntry,
+          lastOrder: c.orders?.[0] || null,
+          lastPointsEntry: c.pointsLedger?.[0] || null,
         };
       } catch (mapError: any) {
         console.error(`[${requestId}] ERROR mapping customer at index ${index}:`, mapError);
@@ -63,12 +96,7 @@ export async function GET(req: Request) {
     const duration = Date.now() - startTime;
     console.error(`[${requestId}] FATAL ERROR after ${duration}ms:`, error);
     return NextResponse.json(
-      {
-        requestId,
-        error: "Failed to fetch customers",
-        details: error.message,
-        stack: error.stack,
-      },
+      { requestId, error: "Failed to fetch customers", details: error.message, stack: error.stack },
       { status: 500 }
     );
   }
