@@ -12,25 +12,28 @@ import {
 } from "recharts";
 import { useEffect, useState } from "react";
 
+interface PointsRedeemedChartProps {
+  pointsRedeemed: number;
+  loadingRedemption: boolean;
+  chartType?: "bar" | "line"; // optional, default "line"
+}
+
 export const PointsRedeemedChart = ({
   pointsRedeemed,
   loadingRedemption,
-  chartType = "line", // 👈 can be "bar" or "line"
-}) => {
-  const [data, setData] = useState<any[]>([]);
+  chartType = "line",
+}: PointsRedeemedChartProps) => {
+  const [data, setData] = useState<{ name: string; redeemed: number }[]>([]);
 
   useEffect(() => {
     if (!loadingRedemption) {
-      // Simulated monthly data (you can replace this with real API data)
-      const generatedData = [
-        { name: "Jan", redeemed: Math.floor(pointsRedeemed * 0.1) || 0 },
-        { name: "Feb", redeemed: Math.floor(pointsRedeemed * 0.15) || 0 },
-        { name: "Mar", redeemed: Math.floor(pointsRedeemed * 0.08) || 0 },
-        { name: "Apr", redeemed: Math.floor(pointsRedeemed * 0.2) || 0 },
-        { name: "May", redeemed: Math.floor(pointsRedeemed * 0.18) || 0 },
-        { name: "Jun", redeemed: Math.floor(pointsRedeemed * 0.12) || 0 },
-      ];
-      setData(generatedData);
+      // Real data: just show the same total for each month (or zero if none)
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+      const chartData = months.map((month) => ({
+        name: month,
+        redeemed: pointsRedeemed ?? 0, // use real data
+      }));
+      setData(chartData);
     }
   }, [pointsRedeemed, loadingRedemption]);
 
@@ -38,27 +41,6 @@ export const PointsRedeemedChart = ({
     <div className="bg-[#E8E6D9] p-4 rounded-2xl shadow-md w-full h-[400px] flex flex-col">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-bold text-gray-900">Customer Points Redeemed</h2>
-        {/* Optional: Toggle buttons if you want user to switch chart types */}
-        {/* 
-        <div className="flex gap-2">
-          <button
-            onClick={() => setChartType("bar")}
-            className={`px-3 py-1 text-sm rounded-md border ${
-              chartType === "bar" ? "bg-black text-white" : "bg-gray-100"
-            }`}
-          >
-            Bar
-          </button>
-          <button
-            onClick={() => setChartType("line")}
-            className={`px-3 py-1 text-sm rounded-md border ${
-              chartType === "line" ? "bg-black text-white" : "bg-gray-100"
-            }`}
-          >
-            Line
-          </button>
-        </div>
-        */}
       </div>
 
       {loadingRedemption ? (
