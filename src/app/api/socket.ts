@@ -1,11 +1,11 @@
 
 import type { NextApiRequest } from "next"
 import { Server } from "socket.io"
-import { type NextApiResponseWithSocket } from "../../types/socket";
+import { type NextApiResponseWithSocket } from "../types/socket";
 
 
 
-export const GET = async (_req: NextApiRequest, res: NextApiResponseWithSocket) => {
+export default function SocketHandler(_req: NextApiRequest, res: NextApiResponseWithSocket) {
  if (res.socket.server.io) {
     res.end();
     return;
