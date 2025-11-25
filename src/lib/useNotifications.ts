@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
 
 export type Notification = {
+  data: any;
   id: string;
   message: string;
   createdAt: string;
