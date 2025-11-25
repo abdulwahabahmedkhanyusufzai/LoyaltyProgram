@@ -97,43 +97,45 @@ export const LoyaltyTable = () => {
               <th className="p-2 sm:p-3 rounded-tr-[12px] uppercase">{t("action")}</th>
             </tr>
           </thead>
-          <tbody className="text-[13px] sm:text-[15px] text-[#2C2A25]">
-            {monthName === monthNames[9] ? // October
-              customers.slice(0, 10).map((customer) => (
-                <tr key={customer.id} className="border-b border-[#D2D1CA]">
-                  <td className="flex items-center p-2 sm:p-3">
-                    <div
-                      className="w-[28px] h-[28px] sm:w-[32px] sm:h-[32px] rounded-full flex items-center justify-center text-white font-bold mr-[12px] sm:mr-[20px]"
-                      style={{ backgroundColor: customer.bgColor }}
-                    >
-                      {customer.initial}
-                    </div>
-                    <div>
-                      <div className="font-semibold">{customer.firstName} {customer.lastName}</div>
-                      <div className="text-xs text-gray-500">{customer.email}</div>
-                    </div>
-                  </td>
-                  <td className="p-2 sm:p-3">{customer.points}</td>
-                  <td className="p-2 sm:p-3">{customer.orders}</td>
-                  <td className="p-2 sm:p-3">
-                    <div className="flex gap-2 sm:gap-[10px]">
-                      <button onClick={() => handleDeleteClick(customer)} className="cursor-pointer hover:opacity-70">
-                        <img src="dustbuin.png" className="w-[16px] sm:w-[20px]" alt={t("delete")} />
-                      </button>
-                      <button onClick={() => handleViewClick(customer)} className="cursor-pointer hover:opacity-70">
-                        <img src="eye.png" className="w-[16px] sm:w-[20px]" alt={t("view")} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              )) : (
-                <tr>
-                  <td colSpan={4} className="text-center p-4 text-gray-500">
-                    {t("noCustomersMonth")}
-                  </td>
-                </tr>
-              )}
-          </tbody>
+        <tbody className="text-[13px] sm:text-[15px] text-[#2C2A25]">
+  {customers.length > 0 ? (
+    customers.slice(0, 10).map((customer) => (
+      <tr key={customer.id} className="border-b border-[#D2D1CA]">
+        <td className="flex items-center p-2 sm:p-3">
+          <div
+            className="w-[28px] h-[28px] sm:w-[32px] sm:h-[32px] rounded-full flex items-center justify-center text-white font-bold mr-[12px] sm:mr-[20px]"
+            style={{ backgroundColor: customer.bgColor }}
+          >
+            {customer.initial || "?"}
+          </div>
+          <div>
+            <div className="font-semibold">{customer.firstName || "Unknown"} {customer.lastName || ""}</div>
+            <div className="text-xs text-gray-500">{customer.email || "N/A"}</div>
+          </div>
+        </td>
+        <td className="p-2 sm:p-3">{customer.points ?? 0}</td>
+        <td className="p-2 sm:p-3">{customer.orders ?? 0}</td>
+        <td className="p-2 sm:p-3">
+          <div className="flex gap-2 sm:gap-[10px]">
+            <button onClick={() => handleDeleteClick(customer)} className="cursor-pointer hover:opacity-70">
+              <img src="dustbuin.png" className="w-[16px] sm:w-[20px]" alt={t("delete")} />
+            </button>
+            <button onClick={() => handleViewClick(customer)} className="cursor-pointer hover:opacity-70">
+              <img src="eye.png" className="w-[16px] sm:w-[20px]" alt={t("view")} />
+            </button>
+          </div>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan={4} className="text-center p-4 text-gray-500">
+        {t("noCustomersMonth")}
+      </td>
+    </tr>
+  )}
+</tbody>
+
         </table>
       </div>
 
