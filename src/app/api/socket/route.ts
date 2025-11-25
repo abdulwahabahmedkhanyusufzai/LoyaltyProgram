@@ -1,7 +1,7 @@
 
 import type { NextApiRequest } from "next"
 import { Server } from "socket.io"
-import { type NextApiResponseWithSocket } from "../types/socket";
+import { type NextApiResponseWithSocket } from "../../types/socket";
 
 
 
