@@ -18,19 +18,52 @@ export function useNotifications() {
   const wsRef = useRef<Socket | null>(null);
 
   // 1. Handle click outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        notificationsOpen &&
-        bellRef.current &&
-        !bellRef.current.contains(event.target as Node)
-      ) {
-        setNotificationsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [notificationsOpen]);
+ useEffect(() => {
+  const WS_URL =
+    process.env.NODE_ENV === "production"
+      ? `https://${window.location.host}`
+      : "http://localhost:3001";
+
+  const socket = io(WS_URL, {
+    transports: ["websocket"],
+    path: "/socket.io",
+  });
+
+  wsRef.current = socket;
+
+  socket.on("connect", () => {
+    console.log("Connected to notifications socket:", socket.id);
+  });
+
+  socket.on("disconnect", (reason) => {
+    console.log("Disconnected from notifications socket:", reason);
+  });
+
+  socket.on("connect_error", (err) => {
+    console.error("Socket connect_error:", err.message, err);
+  });
+
+  socket.on("error", (err) => {
+    console.error("Socket error:", err);
+  });
+
+  socket.on("OLD_NOTIFICATIONS", (oldNotifications: Notification[]) => {
+    console.log("Received old notifications:", oldNotifications.length);
+    setNotifications(oldNotifications);
+  });
+
+  socket.on("NEW_NOTIFICATION", (notification: Notification) => {
+    setNotifications((prev) => [notification, ...prev]);
+    setUnreadCount((prev) => prev + 1);
+  });
+
+  return () => {
+    socket.off("NEW_NOTIFICATION");
+    socket.off("OLD_NOTIFICATIONS");
+    socket.disconnect();
+  };
+}, []);
+
 
   // 2. Socket.IO connection
   useEffect(() => {
