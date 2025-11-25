@@ -27,33 +27,17 @@ export const PointsIssuedChart = ({
   >([]);
 
   // Generate mock weekly data whenever values update
-  useEffect(() => {
-    if (!loadingPoints && pointsIssued > 0) {
-      const issuedData = [
-        Math.floor(pointsIssued * 0.2),
-        Math.floor(pointsIssued * 0.25),
-        Math.floor(pointsIssued * 0.3),
-        Math.floor(pointsIssued * 0.25),
-      ];
-
-      const redeemedData = [
-        Math.floor(pointsRedeemed * 0.15),
-        Math.floor(pointsRedeemed * 0.25),
-        Math.floor(pointsRedeemed * 0.3),
-        Math.floor(pointsRedeemed * 0.3),
-      ];
-
-      const generated = ["Week 1", "Week 2", "Week 3", "Week 4"].map(
-        (week, i) => ({
-          week,
-          issued: issuedData[i],
-          redeemed: redeemedData[i],
-        })
-      );
-
-      setChartData(generated);
-    }
-  }, [pointsIssued, pointsRedeemed, loadingPoints]);
+ useEffect(() => {
+  if (!loadingPoints) {
+    const weeks = ["Week 1", "Week 2", "Week 3", "Week 4"];
+    const chartData = weeks.map((week) => ({
+      week,
+      issued: pointsIssued,   // same total for every week
+      redeemed: pointsRedeemed, // same total for every week
+    }));
+    setChartData(chartData);
+  }
+}, [pointsIssued, pointsRedeemed, loadingPoints]);
 
   const redemptionRate =
     pointsIssued > 0 ? ((pointsRedeemed / pointsIssued) * 100).toFixed(2) : "0";
