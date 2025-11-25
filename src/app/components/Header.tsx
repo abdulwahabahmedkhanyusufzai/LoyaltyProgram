@@ -63,7 +63,7 @@ export const Header = ({ onToggle }: HeaderProps) => {
 
         {/* Notifications Dropdown */}
         {notificationsOpen && (
-          <div className="absolute top-12 right-0 w-80 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
+          <div className="absolute top-12 right-30 w-80 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
             <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200">
               <h2 className="text-lg font-bold text-gray-800">{t("notifications")}</h2>
               <button onClick={toggleNotifications} className="text-gray-400 hover:text-gray-600 font-bold text-xl">
@@ -85,7 +85,7 @@ export const Header = ({ onToggle }: HeaderProps) => {
                       <p className="text-gray-800 text-sm">Customer: {n.data.customer}</p>
                     )}
                     {n.data?.amount && (
-                      <p>Amount: ${n.data.amount}</p>
+                      <p className="text-gray-800 text-sm">Amount: ${n.data.amount}</p>
                     )}
 
                     <span className="text-gray-400 text-xs mt-1">{formatLocalTime(n.createdAt)}</span>
