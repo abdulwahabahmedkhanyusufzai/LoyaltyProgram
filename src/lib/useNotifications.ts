@@ -37,7 +37,7 @@ export function useNotifications() {
     // Connect to server
     const WS_URL =
   process.env.NODE_ENV === "production"
-    ? "wss://" + window.location.hostname + "/socket.io/"
+    ? "wss://" + window.location.hostname + "/ws" +  "/socket.io/"
     : "ws://localhost:3001";
 
 const socket = io(WS_URL, { transports: ["websocket"] });
