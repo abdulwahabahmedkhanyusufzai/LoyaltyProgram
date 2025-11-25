@@ -226,7 +226,12 @@ export async function POST(req: Request): Promise<Response> {
       });
 
       step("Broadcasting WebSocket Notification", notification);
-      broadcastNotification(notification);
+      await fetch("http://localhost:3001/broadcast", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(notification),
+});
+
     }
 
     // ----------------------------------------------------------------
