@@ -101,7 +101,7 @@ const WaroPage = () => {
                     } text-[12px] sm:text-[14px] 2xl:text-[18px] font-semibold`}
                 >
                   {stat.label === t("totalRegisteredCustomers") ?
-                    <p>Total Registered<br /> Customers</p>
+                   t("totalRegisteredCustomers")
                     : (
                       stat.label
                     )}
