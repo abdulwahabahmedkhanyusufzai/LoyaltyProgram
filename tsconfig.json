@@ -7,29 +7,27 @@
       "esnext"
     ],
     "allowJs": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
-    "strict": false,
-    "noImplicitAny": false,
-    "strictNullChecks": false,
+    "strict": false, // ❌ Disable all strict checks
+    "noImplicitAny": false, // ❌ Allow implicit any
+    "strictNullChecks": false, // ❌ Disable null checks
     "strictFunctionTypes": false,
     "strictBindCallApply": false,
     "noImplicitThis": false,
     "alwaysStrict": false,
     "useUnknownInCatchVariables": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
+    "noUnusedLocals": false, // ❌ Allow unused variables
+    "noUnusedParameters": false, // ❌ Allow unused params
     "noImplicitReturns": false,
     "noFallthroughCasesInSwitch": false,
-    "noEmit": false, // ✅ Allow emitting JS files
-    "module": "commonjs", // ✅ Node.js compatible
-    "moduleResolution": "node", // ✅ Node-style resolution
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "isolatedModules": true, // ✅ Needed for server compilation
+    "isolatedModules": true, // ❌ Disable isolatedModules strictness
     "jsx": "react-jsx",
     "incremental": true,
-    "outDir": "dist", // ✅ Output compiled JS here
     "plugins": [
       {
         "name": "next"
@@ -47,8 +45,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "src/server/**/*.ts",
-    "server/**/*.ts"
+    "src/server/**/*.ts"
   ],
   "exclude": [
     "node_modules"
