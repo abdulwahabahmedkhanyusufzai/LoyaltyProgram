@@ -12,31 +12,20 @@ import {
 const AverageRedemptionRateChart = ({ redemptionRate, loadingRedemption }) => {
   const [data, setData] = useState([]);
 
-useEffect(() => {
-  console.log("🔍 Debug =>", { loadingRedemption, redemptionRate, type: typeof redemptionRate });
+  const MONTHS = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+  ];
 
-  if (!loadingRedemption && redemptionRate != null) {
-    const base = Number(String(redemptionRate).replace('%', '').trim());
-
-    if (isNaN(base)) {
-      console.log("⚠️ Redemption rate is not a valid number:", redemptionRate);
-      return;
+  useEffect(() => {
+    if (!loadingRedemption && redemptionRate != null) {
+      const generatedData = MONTHS.map((month) => ({
+        name: month,
+        rate: Number(redemptionRate)
+      }));
+      setData(generatedData);
     }
-
-    const generatedData = [
-      { name: "Jan", rate: +(base * 0.85).toFixed(2) },
-      { name: "Feb", rate: +(base * 0.9).toFixed(2) },
-      { name: "Mar", rate: +(base * 1.05).toFixed(2) },
-      { name: "Apr", rate: +(base * 1.1).toFixed(2) },
-      { name: "May", rate: +(base * 0.95).toFixed(2) },
-      { name: "Jun", rate: +(base * 1.15).toFixed(2) },
-    ];
-
-    console.log("✅ Generated Data:", generatedData);
-    setData(generatedData);
-  }
-}, [redemptionRate, loadingRedemption]);
-
+  }, [redemptionRate, loadingRedemption]);
 
   return (
     <div className="bg-[#E8E6D9] p-4 rounded-2xl shadow-xl w-full h-[400px] flex flex-col">
@@ -46,7 +35,6 @@ useEffect(() => {
 
       {loadingRedemption ? (
         <div className="flex items-center justify-center flex-1">
-          {/* Spinner */}
           <div className="w-10 h-10 border-4 border-gray-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
       ) : data.length === 0 ? (
@@ -55,25 +43,15 @@ useEffect(() => {
         </div>
       ) : (
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={data}
-            margin={{ top: 10, right: 30, left: 0, bottom: 10 }}
-          >
+          <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 10 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#CFCBC0" />
-
-            <XAxis
-              dataKey="name"
-              stroke="#734A00"
-              tick={{ fontSize: 12, fontWeight: "500" }}
-            />
-
+            <XAxis dataKey="name" stroke="#734A00" tick={{ fontSize: 12, fontWeight: "500" }} />
             <YAxis
-              domain={[0, (dataMax) => Math.max(120, dataMax + 10)]}
+              domain={[0, Math.max(Number(redemptionRate) + 5, 10)]}
               tickFormatter={(val) => `${val}%`}
               stroke="#734A00"
               tick={{ fontSize: 12, fontWeight: "500" }}
             />
-
             <Tooltip
               formatter={(val) => [`${Number(val).toFixed(2)}%`, "Rate"]}
               labelStyle={{ color: "#734A00", fontWeight: "bold" }}
@@ -85,7 +63,6 @@ useEffect(() => {
                 boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
               }}
             />
-
             <Line
               type="monotone"
               dataKey="rate"

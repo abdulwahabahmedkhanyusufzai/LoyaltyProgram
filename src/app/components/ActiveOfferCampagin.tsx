@@ -15,15 +15,14 @@ export const ActiveOffersChart = ({ totalOffers, loadingOffers }) => {
 
   useEffect(() => {
     if (!loadingOffers) {
-      // Simulated active offer trend across months
-      const generatedData = [
-        { name: "Jan", active: Math.floor(totalOffers * 0.4) },
-        { name: "Feb", active: Math.floor(totalOffers * 0.5) },
-        { name: "Mar", active: Math.floor(totalOffers * 0.6) },
-        { name: "Apr", active: Math.floor(totalOffers * 0.7) },
-        { name: "May", active: Math.floor(totalOffers * 0.65) },
-        { name: "Jun", active: Math.floor(totalOffers * 0.75) },
-      ];
+      // SAME REAL VALUE FOR ALL MONTHS
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+
+      const generatedData = months.map((m) => ({
+        name: m,
+        active: totalOffers, // REAL VALUE, NO MATH
+      }));
+
       setData(generatedData);
     }
   }, [totalOffers, loadingOffers]);
@@ -44,7 +43,10 @@ export const ActiveOffersChart = ({ totalOffers, loadingOffers }) => {
         </div>
       ) : (
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 10 }}>
+          <LineChart
+            data={data}
+            margin={{ top: 10, right: 30, left: 0, bottom: 10 }}
+          >
             <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
             <XAxis dataKey="name" tick={{ fontSize: 12 }} />
             <YAxis />

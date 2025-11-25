@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   ResponsiveContainer,
-  
   XAxis,
   YAxis,
   Tooltip,
@@ -13,40 +12,18 @@ import {
 const MostActiveTierChart = ({ mostActiveTier, loadingTier }) => {
   const [data, setData] = useState([]);
 
+  const TIERS = ["Bronze", "Silver", "Gold", "Platinum", "Diamond"];
+
   useEffect(() => {
-    console.log("🔍 Debug =>", { loadingTier, mostActiveTier });
-
     if (!loadingTier && mostActiveTier) {
-      // Example: mostActiveTier = { name: "Gold", rate: "45.6%" }
-      const tierName = mostActiveTier || "Unknown";
-      const base = 80;
-
-      if (isNaN(base)) {
-        console.warn("⚠️ Tier rate is not a valid number:", 80);
-        return;
-      }
-
-      // Generate mock relative tier data
-      const generatedData = [
-        { name: "Bronze", rate: +(base * 0.6).toFixed(2) },
-        { name: "Silver", rate: +(base * 0.8).toFixed(2) },
-        { name: "Gold", rate: base },
-        { name: "Platinum", rate: +(base * 1.1).toFixed(2) },
-        { name: "Diamond", rate: +(base * 1.25).toFixed(2) },
-      ];
-
+      // Highlight the selected tier, set others to 0
+      const generatedData = TIERS.map((tier) => ({
+        name: tier,
+        rate: tier === mostActiveTier ? 100 : 0,
+      }));
       setData(generatedData);
     }
   }, [mostActiveTier, loadingTier]);
-
-  // Tier color palette
-  const COLORS = {
-    Bronze: "#cd7f32",
-    Silver: "#c0c0c0",
-    Gold: "#ffd700",
-    Platinum: "#e5e4e2",
-    Diamond: "#b9f2ff",
-  };
 
   return (
     <div className="bg-[#E8E6D9] p-4 rounded-2xl shadow-xl w-full h-[400px] flex flex-col">
@@ -62,10 +39,7 @@ const MostActiveTierChart = ({ mostActiveTier, loadingTier }) => {
         </div>
       ) : (
         <ResponsiveContainer width="100%" height="100%">
-        <LineChart
-            data={data}
-            margin={{ top: 10, right: 30, left: 0, bottom: 10 }}
-          >
+          <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 10 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#CFCBC0" />
             <XAxis
               dataKey="name"
@@ -73,13 +47,13 @@ const MostActiveTierChart = ({ mostActiveTier, loadingTier }) => {
               tick={{ fontSize: 12, fontWeight: "500" }}
             />
             <YAxis
-              domain={[0, (dataMax) => Math.max(100, dataMax + 10)]}
+              domain={[0, 120]}
               tickFormatter={(val) => `${val}%`}
               stroke="#734A00"
               tick={{ fontSize: 12, fontWeight: "500" }}
             />
             <Tooltip
-              formatter={(val) => [`${Number(val).toFixed(2)}%`, "Activity"]}
+              formatter={(val) => [`${val}%`, "Activity"]}
               labelStyle={{ color: "#734A00", fontWeight: "bold" }}
               itemStyle={{ color: "#000000" }}
               contentStyle={{
@@ -103,6 +77,5 @@ const MostActiveTierChart = ({ mostActiveTier, loadingTier }) => {
     </div>
   );
 };
-
 
 export default MostActiveTierChart;
