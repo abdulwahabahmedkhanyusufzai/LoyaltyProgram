@@ -13,9 +13,10 @@ const server = createServer(app);
 
 // Initialize Socket.IO on the same server
 export const io = new IOServer(server, {
-  cors: { origin: "http://localhost:4000" },
+cors: { origin: "https://waro.d.codetors.dev" },
   transports: ["websocket"],
-});
+  path: "/socket.io",
+ });
 
 // Listen for client connections
 io.on("connection", async (socket) => {
