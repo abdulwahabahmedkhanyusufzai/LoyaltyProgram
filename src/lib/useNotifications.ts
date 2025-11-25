@@ -35,7 +35,7 @@ export function useNotifications() {
   // 2. Socket.IO connection
   useEffect(() => {
     // Connect to server
-    const socket = io("http://localhost:5001", {
+    const socket = io("http://localhost:3001", {
       transports: ["websocket"],
       autoConnect: true,
     });
