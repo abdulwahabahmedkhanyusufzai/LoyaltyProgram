@@ -68,8 +68,10 @@ export const LoyaltyTable = () => {
             currentMonth={monthName}
             onMonthChange={(newMonth) => {
               const idx = monthNames.indexOf(newMonth);
-              if (idx !== -1) setSelectedMonth(idx);
-              fetchCalendarData(newMonth + 1);
+              if (idx !== -1){
+                setSelectedMonth(idx);
+              fetchCustomers(idx + 1);
+              }
             }}
           />
 
