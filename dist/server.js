@@ -21,6 +21,6 @@ io.on('connection', function (socket) {
         console.log('Client disconnected');
     });
 });
-httpServer.listen(4000, function () {
-    console.log('Socket.IO server running on http://localhost:4000');
+httpServer.listen(4001, function () {
+    console.log('Socket.IO server running on http://localhost:4001');
 });

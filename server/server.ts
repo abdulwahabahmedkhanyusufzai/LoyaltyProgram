@@ -13,7 +13,7 @@ const server = createServer(app);
 
 // Initialize Socket.IO on the same server
 export const io = new IOServer(server, {
-  cors: { origin: "http://localhost:3000" },
+  cors: { origin: "http://localhost:4001" },
   transports: ["websocket"],
 });
 
@@ -46,6 +46,6 @@ app.post("/broadcast", (req, res) => {
 });
 
 // Start server
-server.listen(4000, () => {
-  console.log("Server + Socket.IO running on http://localhost:4000");
+server.listen(4001, () => {
+  console.log("Server + Socket.IO running on http://localhost:4001");
 });
