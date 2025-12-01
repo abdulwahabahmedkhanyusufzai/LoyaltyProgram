@@ -41,10 +41,18 @@ export class FormManager {
     const formData = new FormData();
     const payload = this.form.toPayload();
 
-    // Append profile fields
-    if (payload.fullName) formData.append("fullName", payload.fullName);
-    if (payload.email) formData.append("email", payload.email);
-    if (payload.phone) formData.append("phone", payload.phone);
+    // Append profile fields - Always append required fields even if empty string (validation will handle it, or we ensure they are not empty)
+    // Actually, UserValidator requires them to be truthy. 
+    // If the form has them as empty strings, validation will fail anyway, but we must send them.
+    // However, the issue might be that `if (payload.fullName)` checks for truthiness, so empty string is not sent.
+    // We should check for undefined/null or just append.
+    
+    if (payload.fullName !== undefined) formData.append("fullName", payload.fullName);
+    if (payload.email !== undefined) formData.append("email", payload.email);
+    if (payload.phone !== undefined) formData.append("phone", payload.phone);
+    if (payload.language !== undefined) formData.append("language", payload.language); // Validator requires language too
+    
+    // Password is optional for update
     if (payload.password) formData.append("password", payload.password);
     
     // Append the file if it exists
