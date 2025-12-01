@@ -113,3 +113,29 @@ export async function fetchOrderProductImage(orderName: string): Promise<string 
 
   return imageUrl || null;
 }
+
+export async function fetchProductImage(productId: string): Promise<string | null> {
+  const productQuery = `
+    query ProductImageList($productId: ID!) {
+      product(id: $productId) {
+        media(first: 1, query: "media_type:IMAGE", sortKey: POSITION) {
+          nodes {
+            ... on MediaImage {
+              image {
+                url
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  // Ensure ID is in GID format if it's just a number
+  const gid = productId.startsWith("gid://") ? productId : `gid://shopify/Product/${productId}`;
+  
+  const productData = await shopifyQuery(productQuery, { productId: gid });
+  const imageUrl = productData?.product?.media?.nodes?.[0]?.image?.url;
+
+  return imageUrl || null;
+}

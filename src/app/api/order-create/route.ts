@@ -213,7 +213,23 @@ export async function POST(req: Request): Promise<Response> {
       step("Order Saved + Customer Updated");
 
       // Fetch product image from Shopify
-      const imageUrl = await fetchOrderProductImage(orderData.name);
+      // Try getting product ID from line items first (faster & more reliable)
+      let imageUrl: string | null = null;
+      const firstLineItem = orderData.line_items?.[0];
+      
+      if (firstLineItem?.product_id) {
+        step("Fetching image by Product ID", { productId: firstLineItem.product_id });
+        // Import the new helper dynamically or assume it's imported
+        const { fetchProductImage } = require("../../../lib/shopify"); 
+        imageUrl = await fetchProductImage(firstLineItem.product_id.toString());
+      }
+
+      // Fallback to searching by name if no product ID or image found
+      if (!imageUrl) {
+        step("Fallback: Fetching image by Order Name", { orderName: orderData.name });
+        imageUrl = await fetchOrderProductImage(orderData.name);
+      }
+      
       step("Fetched Product Image", { imageUrl });
 
       const notification = await prisma.notification.create({
