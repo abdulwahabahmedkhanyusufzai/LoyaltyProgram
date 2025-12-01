@@ -38,6 +38,6 @@ app.post("/broadcast", (req, res) => {
     res.status(200).json({ ok: true });
 });
 // Start server
-server.listen(4001, () => {
-    console.log("Server + Socket.IO running on http://localhost:4001");
+server.listen(3001, () => {
+    console.log("Server + Socket.IO running on http://localhost:3001");
 });
