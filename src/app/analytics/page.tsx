@@ -23,6 +23,7 @@ function useAnalyticsData() {
     pointsRedeemed: 0,
     redemptionRate: "–",
     mostActiveTier: "–",
+    pointsHistory: [],
   });
 
   const [loading, setLoading] = useState({
@@ -37,15 +38,17 @@ function useAnalyticsData() {
       setLoading({ offers: true, points: true, redemption: true, tier: true });
 
       // Fetch all data in parallel
-      const [offersRes, pointsRes, tierRes] = await Promise.all([
+      const [offersRes, pointsRes, tierRes, historyRes] = await Promise.all([
         fetch("/api/offers"),
         fetch("/api/customers/points"),
         fetch("/api/customers/most-active-tier"),
+        fetch("/api/analytics/points-history"),
       ]);
 
       const offersData: OffersResponse = await offersRes.json();
       const pointsData: PointsResponse[] = await pointsRes.json();
       const tierData = await tierRes.json();
+      const historyData = await historyRes.json();
 
       // Compute points and redemption rate
       const totalPoints = pointsData.reduce(
@@ -56,9 +59,10 @@ function useAnalyticsData() {
       setData({
         offersCount: offersData?.offers?.length || 0,
         pointsIssued: totalPoints,
-        pointsRedeemed: totalPoints,
+        pointsRedeemed: totalPoints, // This might still be total, but graph uses history
         redemptionRate: totalPoints ? "100%" : "0%",
         mostActiveTier: tierData?.mostActiveTier || "–",
+        pointsHistory: historyData || [], // Store history
       });
     } catch (err) {
       console.error("❌ Error fetching analytics data:", err);
@@ -68,6 +72,7 @@ function useAnalyticsData() {
         pointsRedeemed: 0,
         redemptionRate: "–",
         mostActiveTier: "–",
+        pointsHistory: [],
       });
     } finally {
       setLoading({

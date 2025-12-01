@@ -12,32 +12,20 @@ import {
 } from "recharts";
 
 interface PointsIssuedChartProps {
-  pointsIssued: number; // passed from parent
+  pointsIssued: number;
   pointsRedeemed: number;
   loadingPoints: boolean;
+  pointsHistory: { week: string; issued: number; redeemed: number }[]; // New prop
 }
 
 export const PointsIssuedChart = ({
   pointsIssued,
   pointsRedeemed,
   loadingPoints,
+  pointsHistory,
 }: PointsIssuedChartProps) => {
-  const [chartData, setChartData] = useState<
-    { week: string; issued: number; redeemed: number }[]
-  >([]);
-
-  // Generate mock weekly data whenever values update
- useEffect(() => {
-  if (!loadingPoints) {
-    const weeks = ["Week 1", "Week 2", "Week 3", "Week 4"];
-    const chartData = weeks.map((week) => ({
-      week,
-      issued: pointsIssued,   // same total for every week
-      redeemed: pointsRedeemed, // same total for every week
-    }));
-    setChartData(chartData);
-  }
-}, [pointsIssued, pointsRedeemed, loadingPoints]);
+  // Use passed history data directly
+  const chartData = pointsHistory && pointsHistory.length > 0 ? pointsHistory : [];
 
   const redemptionRate =
     pointsIssued > 0 ? ((pointsRedeemed / pointsIssued) * 100).toFixed(2) : "0";
