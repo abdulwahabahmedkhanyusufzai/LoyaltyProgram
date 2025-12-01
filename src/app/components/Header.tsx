@@ -80,12 +80,9 @@ export const Header = ({ onToggle }: HeaderProps) => {
                     className={`flex flex-col p-3 rounded-lg cursor-pointer shadow-sm transition ${n.read ? "bg-gray-50 hover:bg-gray-100" : "bg-yellow-50 hover:bg-yellow-100"
                       }`}
                   >
-                    <p className="text-gray-800 text-sm">{n.message}</p>
+                    <p className="text-gray-800 text-sm"></p>
                     {n.data?.customer && (
-                      <p className="text-gray-800 text-sm">Customer: {n.data.customer}</p>
-                    )}
-                    {n.data?.amount && (
-                      <p className="text-gray-800 text-sm">Amount: ${n.data.amount}</p>
+                      <p className="text-gray-800 text-sm">Customer: {n.data.customer} placed an order of Amount: ${n.data.amount} {n.message}</p>
                     )}
 
                     <span className="text-gray-400 text-xs mt-1">{formatLocalTime(n.createdAt)}</span>
