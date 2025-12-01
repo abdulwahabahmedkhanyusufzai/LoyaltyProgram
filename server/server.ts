@@ -26,13 +26,25 @@ const server = createServer(app);
 // Initialize Socket.IO
 export const io = new IOServer(server, {
   cors: { origin: "https://waro.d.codetors.dev" },
-  transports: ["polling", "websocket"],
+  transports: ["websocket"],
   path: "/socket.io",
 });
 
 // Handle client connections
 io.on("connection", async (socket: Socket) => {
   log("Client connected", { socketId: socket.id });
+
+  // Push old notifications
+  try {
+    const oldNotifications = await prisma.notification.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 50,
+    });
+    log("Sending OLD_NOTIFICATIONS to client", { socketId: socket.id, count: oldNotifications.length });
+    socket.emit("OLD_NOTIFICATIONS", oldNotifications);
+  } catch (err) {
+    log("Error fetching old notifications", err);
+  }
 
   // HEALTH CHECK EVENT
   socket.on("ping_test", (msg) => {
