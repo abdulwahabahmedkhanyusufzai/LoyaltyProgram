@@ -80,7 +80,6 @@ export const Header = ({ onToggle }: HeaderProps) => {
                     className={`flex flex-col p-3 rounded-lg cursor-pointer shadow-sm transition ${n.read ? "bg-gray-50 hover:bg-gray-100" : "bg-yellow-50 hover:bg-yellow-100"
                       }`}
                   >
-                    <p className="text-gray-800 text-sm">{n.data?.customer} placed an order of Amount: ${n.data.amount}</p>
                     <div className="flex items-start gap-3">
                       {n.imageUrl && (
                         <img 
@@ -90,7 +89,7 @@ export const Header = ({ onToggle }: HeaderProps) => {
                         />
                       )}
                       <div className="flex-1">
-                        <p className="text-gray-800 text-sm font-medium">{n.message}</p>
+                        <p className="text-gray-800 text-sm font-medium">{n.data?.customer} placed an order of Amount: ${n.data.amount} {n.message}</p>
                         <span className="text-gray-400 text-xs mt-1 block">{formatLocalTime(n.createdAt)}</span>
                       </div>
                     </div>
