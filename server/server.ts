@@ -18,21 +18,6 @@ function log(step: string, data?: any) {
   console.log(`\n[${time}] 🔹 ${step}`);
   if (data !== undefined) console.log("Data:", data);
 }
-
-// Create HTTP server
-const server = createServer(app);
-
-// Initialize Socket.IO
-export const io = new IOServer(server, {
-  cors: { origin: "https://waro.d.codetors.dev" },
-  transports: ["websocket"],
-  path: "/socket.io",
-});
-
-// Listen for client connections
-io.on("connection", async (socket: Socket) => {
-  log("Client connected", { socketId: socket.id });
-
   // Push old notifications
   try {
     const oldNotifications = await prisma.notification.findMany({
