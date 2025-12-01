@@ -89,6 +89,7 @@ export async function GET(req: NextRequest) {
       phoneNumber: user.phoneNumber,
       profilePicUrl: user.profilePicUrl,
       language: user.language || "English", // latest language from DB
+      notifications: user.notifications || {}, // Return notifications
     };
 
     const resp = NextResponse.json(responseBody);
