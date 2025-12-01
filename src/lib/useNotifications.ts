@@ -26,7 +26,7 @@ export function useNotifications() {
         : "http://localhost:3001";
 
     const socket = io(WS_URL, {
-      transports: ["websocket"],
+      transports: ["polling", "websocket"],
       path: "/socket.io",
     });
 

@@ -25,7 +25,7 @@ const server = createServer(app);
 // Initialize Socket.IO
 export const io = new IOServer(server, {
   cors: { origin: "https://waro.d.codetors.dev" },
-  transports: ["websocket"],
+  transports: ["polling", "websocket"],
   path: "/socket.io",
 });
 
