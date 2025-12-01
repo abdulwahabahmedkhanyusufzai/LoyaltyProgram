@@ -91,10 +91,23 @@ export const FieldRenderer = ({
     formManager?.handleChange?.(e);
 
     // ✅ Always update local form state
-    setFormData((prev: any) => ({
-      ...prev,
-      [name]: fieldValue,
-    }));
+    setFormData((prev: any) => {
+        // Check if this field belongs to notifications
+        if (["systemAlerts", "notifications", "weeklyReports"].includes(name)) {
+            return {
+                ...prev,
+                notifications: {
+                    ...prev.notifications,
+                    [name]: fieldValue
+                }
+            };
+        }
+        
+        return {
+            ...prev,
+            [name]: fieldValue,
+        };
+    });
   };
 
   console.log("form", form);

@@ -52,8 +52,11 @@ export class FormManager {
     if (payload.phone !== undefined) formData.append("phone", payload.phone);
     if (payload.language !== undefined) formData.append("language", payload.language); // Validator requires language too
     
-    // Password is optional for update
-    if (payload.password) formData.append("password", payload.password);
+    // Password is optional for update, but if provided, confirmPassword is required by validator
+    if (payload.password) {
+        formData.append("password", payload.password);
+        formData.append("confirmPassword", payload.confirmPassword);
+    }
     
     // Append the file if it exists
     if (this.form.profilePicFile) {

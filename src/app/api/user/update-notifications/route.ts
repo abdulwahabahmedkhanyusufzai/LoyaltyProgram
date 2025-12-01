@@ -21,12 +21,17 @@ export async function POST(req: Request) {
     const updateData: any = {};
     if (body.language) updateData.language = body.language;
     
+    console.log("Received body:", JSON.stringify(body, null, 2));
+
     // Handle separate notification fields
     if (body.notifications) {
+        console.log("Processing notifications:", body.notifications);
         if (body.notifications.systemAlerts !== undefined) updateData.systemAlerts = body.notifications.systemAlerts;
         if (body.notifications.notifications !== undefined) updateData.allowNotifications = body.notifications.notifications; // Map 'notifications' toggle to 'allowNotifications'
         if (body.notifications.weeklyReports !== undefined) updateData.weeklyReports = body.notifications.weeklyReports;
     }
+
+    console.log("Update data prepared for UserService:", updateData);
 
     await userService.updateUser(existingUser.id, updateData);
     
