@@ -15,31 +15,22 @@ async function main() {
 
   console.log(`Found ${notifications.length} notifications to backfill.`);
 
-  for (const notification of notifications) {
-    const data = notification.data as any;
     if (data?.orderNumber) {
-      console.log(`Processing notification ${notification.id} for order #${data.orderNumber}...`);
+      console.log(`Processing notification ${notification.id} for order ${data.orderNumber}...`);
       
-      // Order number in notification data might be just the number (e.g. "1035")
-      // fetchOrderProductImage expects the order name (e.g. "#1035")
-      // If data.orderNumber already has #, don't add it.
-      const orderName = data.orderNumber.toString().startsWith("#") 
-        ? data.orderNumber 
-        : `#${data.orderNumber}`;
-      
-      const imageUrl = await fetchOrderProductImage(orderName);
+      // Pass the order number directly to the helper, which now handles variations
+      const imageUrl = await fetchOrderProductImage(data.orderNumber.toString());
       
       if (imageUrl) {
         await prisma.notification.update({
           where: { id: notification.id },
           data: { imageUrl },
         });
-        console.log(`Updated notification ${notification.id} with image.`);
+        console.log(`✅ Updated notification ${notification.id} with image: ${imageUrl}`);
       } else {
-        console.log(`No image found for order ${orderName}.`);
+        console.log(`❌ No image found for order ${data.orderNumber}.`);
       }
     }
-  }
 
   console.log("Backfill complete.");
 }
