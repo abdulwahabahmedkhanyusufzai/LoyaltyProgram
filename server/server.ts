@@ -8,6 +8,10 @@ const prisma = new PrismaClient();
 const app = express();
 app.use(express.json());
 
+console.log("---------------------------------------------------");
+console.log("SERVER STARTING - " + new Date().toISOString());
+console.log("---------------------------------------------------");
+
 // Utility: timestamped log
 function log(step: string, data?: any) {
   const time = new Date().toISOString();
@@ -73,7 +77,13 @@ server.listen(3001, () => {
   log("Server + Socket.IO running", { url: "http://localhost:3001", path: "/socket.io" });
   
   // Run backfill on startup
-  runBackfill().catch(err => log("Backfill failed", err));
+  runBackfill(prisma).catch(err => log("Backfill failed", err));
+
+  // Run backfill every hour (3600000 ms)
+  setInterval(() => {
+    log("Running periodic backfill...");
+    runBackfill(prisma).catch(err => log("Periodic backfill failed", err));
+  }, 3600000);
 });
 
 // Catch unhandled promise rejections
