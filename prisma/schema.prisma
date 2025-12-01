@@ -44,9 +44,11 @@ model User {
   password        String
   username        String            @unique
   profilePicUrl   String?
-  language        String            @default("English")
-  notifications   Json?
-  createdAt       DateTime          @default(now())
+  language           String            @default("English")
+  systemAlerts       Boolean           @default(false)
+  allowNotifications Boolean           @default(false)
+  weeklyReports      Boolean           @default(false)
+  createdAt          DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   shopId          Int?
   OfferRedemption OfferRedemption[]

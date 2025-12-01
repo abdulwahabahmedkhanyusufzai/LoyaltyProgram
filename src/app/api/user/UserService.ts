@@ -45,7 +45,7 @@ export class UserService {
     debug("Fetching user by email:", email);
     return prisma.user.findUnique({
       where: { email },
-      select: { id: true, fullName: true, email: true, username: true, phoneNumber: true, profilePicUrl: true, notifications: true },
+      select: { id: true, fullName: true, email: true, username: true, phoneNumber: true, profilePicUrl: true, systemAlerts: true, allowNotifications: true, weeklyReports: true },
     });
   }
 
@@ -53,7 +53,7 @@ export class UserService {
     debug("Fetching user by ID:", id);
     return prisma.user.findUnique({
       where: { id },
-      select: { id: true, fullName: true, email: true, username: true, phoneNumber: true, profilePicUrl: true, language: true, notifications: true },
+      select: { id: true, fullName: true, email: true, username: true, phoneNumber: true, profilePicUrl: true, language: true, systemAlerts: true, allowNotifications: true, weeklyReports: true },
     });
   }
 
@@ -103,7 +103,7 @@ export class UserService {
 
   async updateUser(
     userId: string,
-    data: { fullName?: string; phone?: string; password?: string; profilePicUrl?: string; language?: any; notifications?: any }
+    data: { fullName?: string; phone?: string; password?: string; profilePicUrl?: string; language?: any; systemAlerts?: boolean; allowNotifications?: boolean; weeklyReports?: boolean }
   ) {
     debug("Updating user:", userId, "with data:", { ...data, password: data.password ? "[HIDDEN]" : undefined });
 
@@ -118,12 +118,14 @@ export class UserService {
     }
     if (data.profilePicUrl) updateData.profilePicUrl = data.profilePicUrl;
     if (data.language) updateData.language = data.language;
-    if (data.notifications) updateData.notifications = data.notifications;
+    if (data.systemAlerts !== undefined) updateData.systemAlerts = data.systemAlerts;
+    if (data.allowNotifications !== undefined) updateData.allowNotifications = data.allowNotifications;
+    if (data.weeklyReports !== undefined) updateData.weeklyReports = data.weeklyReports;
 
     const updated = await prisma.user.update({
       where: { id: userId },
       data: updateData,
-      select: { id: true, fullName: true, email: true, username: true, phoneNumber: true, profilePicUrl: true, notifications: true },
+      select: { id: true, fullName: true, email: true, username: true, phoneNumber: true, profilePicUrl: true, systemAlerts: true, allowNotifications: true, weeklyReports: true },
     });
 
     debug("User updated:", updated);

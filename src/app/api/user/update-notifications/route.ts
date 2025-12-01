@@ -20,7 +20,13 @@ export async function POST(req: Request) {
     // Update Notifications & Language
     const updateData: any = {};
     if (body.language) updateData.language = body.language;
-    if (body.notifications) updateData.notifications = body.notifications;
+    
+    // Handle separate notification fields
+    if (body.notifications) {
+        if (body.notifications.systemAlerts !== undefined) updateData.systemAlerts = body.notifications.systemAlerts;
+        if (body.notifications.notifications !== undefined) updateData.allowNotifications = body.notifications.notifications; // Map 'notifications' toggle to 'allowNotifications'
+        if (body.notifications.weeklyReports !== undefined) updateData.weeklyReports = body.notifications.weeklyReports;
+    }
 
     await userService.updateUser(existingUser.id, updateData);
     
