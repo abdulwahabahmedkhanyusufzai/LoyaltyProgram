@@ -8,29 +8,33 @@ const prisma = new PrismaClient();
 const app = express();
 app.use(express.json());
 
+// Startup banner
 console.log("---------------------------------------------------");
 console.log("SERVER STARTING - " + new Date().toISOString());
 console.log("---------------------------------------------------");
 
-// Utility: timestamped log
+// Timestamp logger
 function log(step: string, data?: any) {
   const time = new Date().toISOString();
   console.log(`\n[${time}] 🔹 ${step}`);
   if (data !== undefined) console.log("Data:", data);
 }
-  // Push old notifications
-  try {
-    const oldNotifications = await prisma.notification.findMany({
-      orderBy: { createdAt: "desc" },
-      take: 50,
-    });
-    log("Sending OLD_NOTIFICATIONS to client", { socketId: socket.id, count: oldNotifications.length });
-    socket.emit("OLD_NOTIFICATIONS", oldNotifications);
-  } catch (err) {
-    log("Error fetching old notifications", err);
-  }
 
-  // Listen for custom events if needed
+// Create HTTP server
+const server = createServer(app);
+
+// Initialize Socket.IO
+export const io = new IOServer(server, {
+  cors: { origin: "https://waro.d.codetors.dev" },
+  transports: ["polling", "websocket"],
+  path: "/socket.io",
+});
+
+// Handle client connections
+io.on("connection", async (socket: Socket) => {
+  log("Client connected", { socketId: socket.id });
+
+  // HEALTH CHECK EVENT
   socket.on("ping_test", (msg) => {
     log("Received ping_test from client", { socketId: socket.id, msg });
     socket.emit("pong_test", { message: "pong", received: msg });
@@ -41,22 +45,27 @@ function log(step: string, data?: any) {
     log("Client disconnected", { socketId: socket.id, reason });
   });
 
-  // Handle any unexpected error
+  // Handle errors
   socket.on("error", (err) => {
     log("Socket error", { socketId: socket.id, error: err });
   });
 });
 
-// Broadcast route for new notifications
+// HTTP route to broadcast notifications
 app.post("/broadcast", (req, res) => {
   const notification = req.body;
+
   log("Broadcasting NEW_NOTIFICATION", notification);
+
   io.emit("NEW_NOTIFICATION", notification);
+
   res.status(200).json({ ok: true });
 });
 
-
 // Start server
-server.listen(4001, () => {
-  log("Server + Socket.IO running", { url: "http://localhost:4001", path: "/socket.io" });
+server.listen(3001, () => {
+  log("Server + Socket.IO running", {
+    url: "http://localhost:3001",
+    path: "/socket.io",
+  });
 });
