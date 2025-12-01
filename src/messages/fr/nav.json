@@ -10,7 +10,8 @@
   },
   "bottom": {
     "accountSettings": "Paramètres du compte",
-    "logout": "Se déconnecter"
+    "logout": "Se déconnecter",
+    "login": "Se connecter"
   },
   "tiers": {
     "welcomed": "Accueilli : Moins de 20 points",

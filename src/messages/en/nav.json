@@ -10,7 +10,8 @@
   },
   "bottom": {
     "accountSettings": "Account Settings",
-    "logout": "Logout"
+    "logout": "Logout",
+    "login": "Login"
   },
   "tiers": {
     "welcomed": "Welcomed: Less than 20 points",

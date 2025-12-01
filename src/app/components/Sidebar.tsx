@@ -13,7 +13,7 @@ const Sidebar = ({ open, setOpen }) => {
   const { navItems } = useNavData(t);;
   const bottomItems = [
     {
-      name: "Account Settings",
+      name: t("bottom.accountSettings"),
       icon: "/calendar.png",
       icon2: "/calendar-on.png",
       path: "/account-settings",
@@ -22,11 +22,11 @@ const Sidebar = ({ open, setOpen }) => {
 
   // ✅ Auth item changes automatically based on context
   const authItem = user
-    ? { name: "Logout", icon: "/logout-off.png", path: "/logout" }
-    : { name: "Login", icon: "/logout-off.png", path: "/login" };
+    ? { name: t("bottom.logout"), icon: "/logout-off.png", path: "/logout" }
+    : { name: t("bottom.login"), icon: "/logout-off.png", path: "/login" };
 
   const handleAuthClick = async (item) => {
-    if (item.name === "Logout") {
+    if (item.path === "/logout") {
 
       router.push("/logout");
     } else {
@@ -39,7 +39,7 @@ const Sidebar = ({ open, setOpen }) => {
     const isActive = pathname === item.path;
 
     const onClick =
-      item.name === "Login" || item.name === "Logout"
+      item.path === "/login" || item.path === "/logout"
         ? () => handleAuthClick(item)
         : () => {
           router.push(item.path);
