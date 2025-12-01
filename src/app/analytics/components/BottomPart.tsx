@@ -21,8 +21,9 @@ const BottomPart = ({
   loadingTier,
   pointsHistory,
   offersHistory,
-  activeCustomersHistory, // New prop
-  tierDistribution // New prop
+  activeCustomersHistory,
+  tierDistribution,
+  customerStatus // New prop
 }) => {
   // 👇 Default: "pointsIssued" is active
     console.log("Redemption Rate",redemptionRate);
@@ -70,7 +71,7 @@ const BottomPart = ({
       </div>
 
       <div className="flex-[1]">
-        <ActiveCustomersCard />
+        <ActiveCustomersCard customerStatus={customerStatus} />
       </div>
     </div>
   );

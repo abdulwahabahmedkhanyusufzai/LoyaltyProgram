@@ -5,33 +5,17 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
 const COLORS = ["#7B5C00", "#C2A46B"]; // Active / Inactive
 
-export const ActiveCustomersCard = () => {
+export const ActiveCustomersCard = ({ customerStatus }) => {
   const [data, setData] = useState<{ name: string; value: number }[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchActiveCustomers = async () => {
-      try {
-        const res = await fetch("/api/customers/usage"); // 👈 replace if you have a different route
-        const json = await res.json();
-
-        // Example split: 70% active, 30% inactive (adjust based on real API fields)
-        const active = Math.floor(json.count * 0.7);
-        const inactive = json.count - active;
-
-        setData([
-          { name: "Active Users", value: active },
-          { name: "Inactive Users", value: inactive },
-        ]);
-      } catch (err) {
-        console.error("Failed to fetch active customers:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchActiveCustomers();
-  }, []);
+    if (customerStatus) {
+      setData([
+        { name: "Active Users", value: customerStatus.active },
+        { name: "Inactive Users", value: customerStatus.inactive },
+      ]);
+    }
+  }, [customerStatus]);
 
   return (
     <div className="bg-[#F5F3EA] h-[280px] sm:h-[350px] lg:h-[450px] 2xl:h-[490px] rounded-2xl p-6 shadow-sm w-full flex flex-col items-center">
@@ -45,7 +29,7 @@ export const ActiveCustomersCard = () => {
 
       {/* Donut Chart / Loader */}
       <div className="relative w-60 h-60 flex items-center justify-center">
-        {loading ? (
+        {data.length === 0 ? (
           <div className="w-8 h-8 sm:w-10 sm:h-10 border-4 border-[#7B5C00] border-t-transparent rounded-full animate-spin"></div>
         ) : (
           <ResponsiveContainer>
@@ -68,7 +52,7 @@ export const ActiveCustomersCard = () => {
         )}
 
         {/* Center Label */}
-        {!loading && (
+        {data.length > 0 && (
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-lg font-bold text-[#2C2A25]">
               {(
