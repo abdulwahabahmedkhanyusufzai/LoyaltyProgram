@@ -160,7 +160,19 @@ function LoyalCustomersList() {
                 <tbody>
                   {currentCustomers.length > 0 ? (
                     currentCustomers.map((c: any, i: number) => (
-                      <tr key={i} className="border-b border-gray-100 hover:bg-gray-50 transition">
+                      <tr 
+                        key={i} 
+                        className="border-b border-gray-100 hover:bg-gray-50 transition cursor-pointer"
+                        onClick={() => {
+                          const url = new URL(window.location.href);
+                          url.searchParams.set("customerId", c.id);
+                          window.history.pushState({}, "", url.toString());
+                          
+                          setCustomerIdFromUrl(c.id);
+                          setStep(0);
+                          setSelectedTab(t("tabsClient"));
+                        }}
+                      >
                         <td className="py-2 px-2 sm:px-4">{c.lastName} {c.firstName}</td>
                         <td className="py-2 px-2 sm:px-4 text-gray-600">{c.email}</td>
                         <td className="py-2 px-2 sm:px-4">{c.numberOfOrders}</td>
