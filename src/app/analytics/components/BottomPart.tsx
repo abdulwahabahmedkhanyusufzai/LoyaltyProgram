@@ -37,7 +37,9 @@ const BottomPart = ({
         ) : activeChart === "pointsRedeemed" ? (
           <PointsRedeemedChart
           pointsRedeemed={pointsRedeemed}
-          loadingRedemption={loadingRedemption} />
+          loadingRedemption={loadingRedemption}
+          pointsHistory={pointsHistory}
+          />
         ) : activeChart === "ActiveOfferCampign" ? (
            <ActiveOffersChart totalOffers={offerCount} loadingOffers={loadingOffers}/>
         ) :activeChart === "AverageRedeemptionRate" ? (

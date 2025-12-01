@@ -15,27 +15,30 @@ import { useEffect, useState } from "react";
 interface PointsRedeemedChartProps {
   pointsRedeemed: number;
   loadingRedemption: boolean;
-  chartType?: "bar" | "line"; // optional, default "line"
+  chartType?: "bar" | "line";
+  pointsHistory?: { week: string; issued: number; redeemed: number }[]; // New prop
 }
 
 export const PointsRedeemedChart = ({
   pointsRedeemed,
   loadingRedemption,
   chartType = "line",
+  pointsHistory = [],
 }: PointsRedeemedChartProps) => {
   const [data, setData] = useState<{ name: string; redeemed: number }[]>([]);
 
   useEffect(() => {
-    if (!loadingRedemption) {
-      // Real data: just show the same total for each month (or zero if none)
-      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
-      const chartData = months.map((month) => ({
-        name: month,
-        redeemed: pointsRedeemed ?? 0, // use real data
+    if (!loadingRedemption && pointsHistory.length > 0) {
+      // Map history data to chart format
+      const chartData = pointsHistory.map((item) => ({
+        name: item.week,
+        redeemed: item.redeemed,
       }));
       setData(chartData);
+    } else if (!loadingRedemption) {
+        setData([]);
     }
-  }, [pointsRedeemed, loadingRedemption]);
+  }, [pointsHistory, loadingRedemption]);
 
   return (
     <div className="bg-[#E8E6D9] p-4 rounded-2xl shadow-md w-full h-[400px] flex flex-col">
