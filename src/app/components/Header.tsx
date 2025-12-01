@@ -85,7 +85,7 @@ export const Header = ({ onToggle }: HeaderProps) => {
                         <img 
                           src={n.imageUrl} 
                           alt="Product" 
-                          className="w-10 h-10 rounded-md object-cover border border-gray-200"
+                          className=" h-21 rounded-md object-cover border border-gray-200"
                         />
                       )}
                       <div className="flex-1">
