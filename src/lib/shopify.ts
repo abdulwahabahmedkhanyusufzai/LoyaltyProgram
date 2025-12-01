@@ -1,18 +1,26 @@
-const ADMIN_TOKEN = process.env.SHOPIFY_ADMIN_API_ACCESS_TOKEN;
-const SHOP = process.env.SHOPIFY_STORE_DOMAIN;
+import { prisma } from "./prisma";
+
+async function getShopCredentials() {
+  const shop = await prisma.shop.findFirst();
+  return shop;
+}
 
 async function shopifyQuery(query: string, variables: any = {}) {
-  if (!ADMIN_TOKEN || !SHOP) {
-    console.warn("⚠️ Missing Shopify admin API credentials.");
+  const shopData = await getShopCredentials();
+  
+  if (!shopData) {
+    console.warn("⚠️ No shop found in database.");
     return null;
   }
 
+  const { shop, accessToken } = shopData;
+
   try {
-    const response = await fetch(`https://${SHOP}/admin/api/2024-10/graphql.json`, {
+    const response = await fetch(`https://${shop}/admin/api/2024-10/graphql.json`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-Shopify-Access-Token": ADMIN_TOKEN,
+        "X-Shopify-Access-Token": accessToken,
       },
       body: JSON.stringify({ query, variables }),
     });
@@ -58,6 +66,7 @@ export async function fetchOrderProductImage(orderName: string): Promise<string 
 
   if (!productId) {
     console.log(`No product ID found for order ${orderName}`);
+    console.log("Order Data:", JSON.stringify(orderData, null, 2));
     return null;
   }
 
