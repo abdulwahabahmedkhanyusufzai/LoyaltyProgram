@@ -15,6 +15,8 @@ async function main() {
 
   console.log(`Found ${notifications.length} notifications to backfill.`);
 
+  for (const notification of notifications) {
+    const data = notification.data as any;
     if (data?.orderNumber) {
       console.log(`Processing notification ${notification.id} for order ${data.orderNumber}...`);
       
@@ -31,6 +33,7 @@ async function main() {
         console.log(`❌ No image found for order ${data.orderNumber}.`);
       }
     }
+  }
 
   console.log("Backfill complete.");
 }
