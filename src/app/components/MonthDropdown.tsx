@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useRef, useEffect } from "react";
 import { useTranslations } from "use-intl";
 
@@ -11,7 +12,7 @@ export default function MonthDropdown({
 }) {
   const t = useTranslations("loyaltyTable");
 
-  // map numbers 0-11 to translated month names
+  // Map 0-11 to translated month names
   const monthNames: string[] = Array.from({ length: 12 }, (_, i) => t(`months.${i}`));
 
   const currentIndex = monthNames.findIndex((m) => m === currentMonth);
@@ -22,6 +23,7 @@ export default function MonthDropdown({
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -42,30 +44,31 @@ export default function MonthDropdown({
     <div className="relative inline-block" ref={dropdownRef}>
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="cursor-pointer flex items-center justify-between gap-2 border rounded-[20px] sm:rounded-[25px] border-[#a59f9f] px-4 h-[40px] sm:h-[44px] text-[13px] sm:text-[14px] hover:bg-[#2C2A25] hover:text-white transition min-w-[80px]"
+        className="cursor-pointer flex items-center justify-between gap-2 border rounded-full border-[#a59f9f] px-4 h-[40px] sm:h-[44px] text-[13px] sm:text-[14px] hover:bg-[#2C2A25] hover:text-white transition min-w-[90px]"
       >
         <span>{monthNames[selectedMonthIndex]?.slice(0, 3)}</span>
-        {open ? (
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none"
-            viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-          </svg>
-        ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none"
-            viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-          </svg>
-        )}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-4 w-4 transition-transform"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+          style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
       </button>
 
       {open && (
-        <div className="absolute mt-2 w-[150px] bg-white border border-[#2C2A25] rounded-[12px] shadow-lg z-50">
+        <div className="absolute mt-2 w-[150px] bg-white border border-[#2C2A25] rounded-lg shadow-lg z-50">
           {monthNames.map((month, index) => (
             <div
               key={month}
               onClick={() => handleMonthSelect(index)}
-              className={`px-4 py-2 text-sm cursor-pointer hover:bg-[#2C2A25] hover:text-white transition ${selectedMonthIndex === index ? "bg-[#2C2A25] text-white" : ""
-                }`}
+              className={`px-4 py-2 text-sm cursor-pointer transition
+                ${selectedMonthIndex === index ? "bg-[#2C2A25] text-white rounded-lg" : "hover:bg-[#2C2A25] hover:text-white rounded-lg"}
+              `}
             >
               {month}
             </div>

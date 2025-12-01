@@ -18,6 +18,7 @@
     "errorSaveCustomer": "Failed to save customer.",
     "successUpdateCustomer": "Customer updated successfully!",
     "successRegisterCustomer": "Customer registered successfully!",
-    "errorSomethingWentWrong": "Something went wrong while saving customer."
+    "errorSomethingWentWrong": "Something went wrong while saving customer.",
+    "selectTier": "Select Tier"
   }
 }

@@ -3,10 +3,10 @@ import { prisma } from "../../../../lib/prisma";
 
 const API_VERSION = "2025-01";
 
-// Shopify GraphQL query
+// Shopify GraphQL query (with pagination)
 const ORDER_QUERY = `
   query GetOrders($first: Int!, $after: String) {
-    orders(first: $first, after: $after, sortKey: CREATED_AT, reverse: true) {
+    orders(first: $first, after: $after, sortKey: CREATED_AT, reverse: false) {
       pageInfo { hasNextPage endCursor }
       edges {
         node {
@@ -41,7 +41,6 @@ const ORDER_QUERY = `
   }
 `;
 
-// Fetch orders from Shopify
 async function fetchOrders(shop: string, token: string, first: number, after: string | null) {
   const domain = shop.replace(/^https?:\/\//, "").replace(/\/$/, "");
   const url = `https://${domain}/admin/api/${API_VERSION}/graphql.json`;
@@ -62,23 +61,27 @@ async function fetchOrders(shop: string, token: string, first: number, after: st
   return json.data.orders;
 }
 
-// API Route
 export async function GET(req: Request) {
   try {
-    const { searchParams } = new URL(req.url);
-    const first = Number(searchParams.get("first") ?? 20);
-    const after = searchParams.get("after") ?? null;
-
-    // 🔹 Fetch the only shop from DB
+    // Get shop credentials from DB
     const shop = await prisma.shop.findFirst();
     if (!shop) return NextResponse.json({ error: "No shop found" }, { status: 404 });
 
-    // Fetch orders
-    const orders = await fetchOrders(shop.shop, shop.accessToken, first, after);
+    // Paginate through all orders
+    let allOrders: any[] = [];
+    let after: string | null = null;
+    const PAGE_SIZE = 50; // adjust if needed
+
+    do {
+      const orders = await fetchOrders(shop.shop, shop.accessToken, PAGE_SIZE, after);
+      allOrders.push(...orders.edges);
+      after = orders.pageInfo.endCursor;
+    } while (after);
 
     // Aggregate products
     const productCount: Record<string, { info: any; count: number; purchaseDates: string[] }> = {};
-    orders.edges.forEach((order: any) => {
+
+    allOrders.forEach((order) => {
       const orderDate = order.node.createdAt;
       order.node.lineItems.edges.forEach((li: any) => {
         const product = li.node.product;
@@ -92,11 +95,12 @@ export async function GET(req: Request) {
       });
     });
 
+    // Sort products by total quantity sold
     const products = Object.entries(productCount)
       .map(([id, { info, count, purchaseDates }]) => ({ ...info, count, purchaseDates }))
       .sort((a, b) => b.count - a.count);
 
-    return NextResponse.json({ products }, { status: 200 });
+    return NextResponse.json({ products, totalProducts: products.length }, { status: 200 });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || "Unknown error" }, { status: 500 });
   }

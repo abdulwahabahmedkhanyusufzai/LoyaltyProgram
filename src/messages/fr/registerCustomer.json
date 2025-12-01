@@ -18,6 +18,7 @@
     "errorSaveCustomer": "Échec de l'enregistrement du client.",
     "successUpdateCustomer": "Client mis à jour avec succès !",
     "successRegisterCustomer": "Client enregistré avec succès !",
-    "errorSomethingWentWrong": "Une erreur est survenue lors de l'enregistrement du client."
+    "errorSomethingWentWrong": "Une erreur est survenue lors de l'enregistrement du client.",
+    "selectTier": "Sélectionnez un niveau"
   }
 }

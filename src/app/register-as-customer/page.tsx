@@ -23,7 +23,6 @@ const RegisterAsaCustomer = () => {
     fullName: "",
     email: "",
     phone: "",
-    password: "",
     activationMail: false,
     tier: "",
     points: "",
@@ -141,7 +140,6 @@ const RegisterAsaCustomer = () => {
       fullName: "",
       email: "",
       phone: "",
-      password: "",
       activationMail: false,
       tier: "",
       points: "",
@@ -174,7 +172,6 @@ const RegisterAsaCustomer = () => {
           <FloatingInput id="fullName" placeholder={t("fullName")} value={form.fullName} onChange={handleChange} />
           <FloatingInput id="email" type="email" placeholder={t("email")} value={form.email} onChange={handleChange} />
           <FloatingInput id="phone" type="tel" placeholder={t("phone")} value={form.phone} onChange={handleChange} />
-          <FloatingInput id="password" type="password" placeholder={t("password")} value={form.password} onChange={handleChange} />
 
           <label className="flex items-center gap-2 text-gray-700">
             <input
@@ -190,8 +187,22 @@ const RegisterAsaCustomer = () => {
 
         <div className="mt-8 space-y-4">
           <h3 className="text-lg font-bold text-[#2C2A25] mb-4">{t("loyaltyProgram")}</h3>
-          <FloatingInput id="tier" placeholder={t("tier")} value={form.tier} onChange={handleChange} />
-          <FloatingInput id="points" type="number" placeholder={t("pointsBalance")} value={form.points} onChange={handleChange} />
+ <label className="block text-gray-700">
+    {t("tier")}
+    <select
+      id="tier"
+      name="tier"
+      value={form.tier}
+      onChange={handleChange}
+      className="mt-1 block w-full border border-gray-300 rounded-full px-3 py-2 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#734A00] transition"
+    >
+      <option value="">{t("selectTier")}</option>
+      <option value="Bronze">Bronze</option>
+      <option value="Silver">Silver</option>
+      <option value="Gold">Gold</option>
+      <option value="Platinum">Platinum</option>
+    </select>
+  </label>          <FloatingInput id="points" type="number" placeholder={t("pointsBalance")} value={form.points} onChange={handleChange} />
           <ExpiryDatePicker form={form} setForm={setForm} />
         </div>
 
