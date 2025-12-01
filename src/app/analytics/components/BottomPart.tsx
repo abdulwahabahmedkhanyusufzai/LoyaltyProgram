@@ -18,7 +18,8 @@ const BottomPart = ({
   offerCount,
   loadingOffers,
   mostActiveTier,
-  loadingTier
+  loadingTier,
+  pointsHistory // New prop
 }) => {
   // 👇 Default: "pointsIssued" is active
     console.log("Redemption Rate",redemptionRate);
@@ -31,6 +32,7 @@ const BottomPart = ({
             pointsIssued={pointsIssued}
             pointsRedeemed={pointsRedeemed}
             loadingPoints={loadingPoints}
+            pointsHistory={pointsHistory}
           />
         ) : activeChart === "pointsRedeemed" ? (
           <PointsRedeemedChart
