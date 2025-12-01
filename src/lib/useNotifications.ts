@@ -23,7 +23,7 @@ export function useNotifications() {
     const WS_URL =
       process.env.NODE_ENV === "production"
         ? `https://${window.location.host}`
-        : "http://localhost:3001";
+        : "http://localhost:4001";
 
     const socket = io(WS_URL, {
       transports: ["websocket"],
