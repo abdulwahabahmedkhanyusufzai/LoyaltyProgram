@@ -80,6 +80,7 @@ export const Header = ({ onToggle }: HeaderProps) => {
                     className={`flex flex-col p-3 rounded-lg cursor-pointer shadow-sm transition ${n.read ? "bg-gray-50 hover:bg-gray-100" : "bg-yellow-50 hover:bg-yellow-100"
                       }`}
                   >
+                    <p className="text-gray-800 text-sm">{n.data?.customer} placed an order of Amount: ${n.data.amount}</p>
                     <div className="flex items-start gap-3">
                       {n.imageUrl && (
                         <img 
