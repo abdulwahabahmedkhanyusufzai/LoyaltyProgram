@@ -20,7 +20,9 @@ const BottomPart = ({
   mostActiveTier,
   loadingTier,
   pointsHistory,
-  offersHistory // New prop
+  offersHistory,
+  activeCustomersHistory, // New prop
+  tierDistribution // New prop
 }) => {
   // 👇 Default: "pointsIssued" is active
     console.log("Redemption Rate",redemptionRate);
@@ -48,11 +50,21 @@ const BottomPart = ({
             offersHistory={offersHistory}
            />
         ) :activeChart === "AverageRedeemptionRate" ? (
-          <AverageRedemptionRateChart redemptionRate={redemptionRate} loadingRedemption={loadingRedemption}/>
+          <AverageRedemptionRateChart
+            redemptionRate={redemptionRate}
+            loadingRedemption={loadingRedemption}
+            pointsHistory={pointsHistory}
+          />
         ):activeChart === "MostActiveTier" ? (
-          <MostActiveTierChart mostActiveTier={mostActiveTier} loadingTier={loadingTier}/>
+          <MostActiveTierChart
+            mostActiveTier={mostActiveTier}
+            loadingTier={loadingTier}
+            tierDistribution={tierDistribution}
+          />
         ):(
-          <CustomersUsageChart />
+          <CustomersUsageChart
+            activeCustomersHistory={activeCustomersHistory}
+          />
         )}
 
       </div>

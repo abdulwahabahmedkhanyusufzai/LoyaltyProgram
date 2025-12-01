@@ -9,23 +9,24 @@ import {
   CartesianGrid,
 } from "recharts";
 
-const AverageRedemptionRateChart = ({ redemptionRate, loadingRedemption }) => {
+const AverageRedemptionRateChart = ({ redemptionRate, loadingRedemption, pointsHistory = [] }) => {
   const [data, setData] = useState([]);
 
-  const MONTHS = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-  ];
-
   useEffect(() => {
-    if (!loadingRedemption && redemptionRate != null) {
-      const generatedData = MONTHS.map((month) => ({
-        name: month,
-        rate: Number(redemptionRate)
-      }));
+    if (!loadingRedemption && pointsHistory.length > 0) {
+      // Calculate weekly redemption rate
+      const generatedData = pointsHistory.map((item) => {
+        const rate = item.issued > 0 ? (item.redeemed / item.issued) * 100 : 0;
+        return {
+          name: item.week,
+          rate: Number(rate.toFixed(2)),
+        };
+      });
       setData(generatedData);
+    } else if (!loadingRedemption) {
+        setData([]);
     }
-  }, [redemptionRate, loadingRedemption]);
+  }, [pointsHistory, loadingRedemption]);
 
   return (
     <div className="bg-[#E8E6D9] p-4 rounded-2xl shadow-xl w-full h-[400px] flex flex-col">

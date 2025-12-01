@@ -9,21 +9,21 @@ import {
   LineChart,
 } from "recharts";
 
-const MostActiveTierChart = ({ mostActiveTier, loadingTier }) => {
+const MostActiveTierChart = ({ mostActiveTier, loadingTier, tierDistribution = [] }) => {
   const [data, setData] = useState([]);
 
-  const TIERS = ["Bronze", "Silver", "Gold", "Platinum", "Diamond"];
-
   useEffect(() => {
-    if (!loadingTier && mostActiveTier) {
-      // Highlight the selected tier, set others to 0
-      const generatedData = TIERS.map((tier) => ({
-        name: tier,
-        rate: tier === mostActiveTier ? 100 : 0,
-      }));
-      setData(generatedData);
+    if (!loadingTier && tierDistribution.length > 0) {
+      // Use real distribution data
+      // tierDistribution is [{ name: "Bronze", value: 10 }, ...]
+      // We want to show the count or percentage?
+      // The chart Y-axis was 0-120 (%), but now we have counts.
+      // Let's show counts for now.
+      setData(tierDistribution);
+    } else if (!loadingTier) {
+        setData([]);
     }
-  }, [mostActiveTier, loadingTier]);
+  }, [tierDistribution, loadingTier]);
 
   return (
     <div className="bg-[#E8E6D9] p-4 rounded-2xl shadow-xl w-full h-[400px] flex flex-col">
@@ -47,13 +47,13 @@ const MostActiveTierChart = ({ mostActiveTier, loadingTier }) => {
               tick={{ fontSize: 12, fontWeight: "500" }}
             />
             <YAxis
-              domain={[0, 120]}
-              tickFormatter={(val) => `${val}%`}
+              // domain={[0, 120]} // Remove fixed domain
+              // tickFormatter={(val) => `${val}%`} // Remove %
               stroke="#734A00"
               tick={{ fontSize: 12, fontWeight: "500" }}
             />
             <Tooltip
-              formatter={(val) => [`${val}%`, "Activity"]}
+              formatter={(val) => [val, "Customers"]}
               labelStyle={{ color: "#734A00", fontWeight: "bold" }}
               itemStyle={{ color: "#000000" }}
               contentStyle={{
@@ -65,7 +65,7 @@ const MostActiveTierChart = ({ mostActiveTier, loadingTier }) => {
             />
             <Line
               type="monotone"
-              dataKey="rate"
+              dataKey="value"
               stroke="#734A00"
               strokeWidth={3}
               dot={{ r: 6, stroke: "#734A00", strokeWidth: 2, fill: "#fff" }}

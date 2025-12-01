@@ -25,6 +25,8 @@ function useAnalyticsData() {
     mostActiveTier: "–",
     pointsHistory: [],
     offersHistory: [],
+    activeCustomersHistory: [],
+    tierDistribution: [],
   });
 
   const [loading, setLoading] = useState({
@@ -39,12 +41,14 @@ function useAnalyticsData() {
       setLoading({ offers: true, points: true, redemption: true, tier: true });
 
       // Fetch all data in parallel
-      const [offersRes, pointsRes, tierRes, historyRes, offersHistoryRes] = await Promise.all([
+      const [offersRes, pointsRes, tierRes, historyRes, offersHistoryRes, activeCustomersRes, tierDistRes] = await Promise.all([
         fetch("/api/offers"),
         fetch("/api/customers/points"),
         fetch("/api/customers/most-active-tier"),
         fetch("/api/analytics/points-history"),
         fetch("/api/analytics/offers-history"),
+        fetch("/api/analytics/active-customers-history"),
+        fetch("/api/analytics/tier-distribution"),
       ]);
 
       const offersData: OffersResponse = await offersRes.json();
@@ -52,6 +56,8 @@ function useAnalyticsData() {
       const tierData = await tierRes.json();
       const historyData = await historyRes.json();
       const offersHistoryData = await offersHistoryRes.json();
+      const activeCustomersData = await activeCustomersRes.json();
+      const tierDistData = await tierDistRes.json();
 
       // Compute points and redemption rate
       const totalPoints = pointsData.reduce(
@@ -67,6 +73,8 @@ function useAnalyticsData() {
         mostActiveTier: tierData?.mostActiveTier || "–",
         pointsHistory: historyData || [], // Store history
         offersHistory: offersHistoryData || [], // Store offers history
+        activeCustomersHistory: activeCustomersData || [],
+        tierDistribution: tierDistData || [],
       });
     } catch (err) {
       console.error("❌ Error fetching analytics data:", err);
@@ -78,6 +86,8 @@ function useAnalyticsData() {
         mostActiveTier: "–",
         pointsHistory: [],
         offersHistory: [],
+        activeCustomersHistory: [],
+        tierDistribution: [],
       });
     } finally {
       setLoading({
@@ -138,6 +148,8 @@ const Analytics = () => {
         loadingTier={loading.tier}
         pointsHistory={data.pointsHistory}
         offersHistory={data.offersHistory}
+        activeCustomersHistory={data.activeCustomersHistory}
+        tierDistribution={data.tierDistribution}
       />
     </div>
   );

@@ -11,35 +11,16 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-export const CustomersUsageChart = () => {
+export const CustomersUsageChart = ({ activeCustomersHistory = [] }) => {
   const [data, setData] = useState<{ date: string; customers: number }[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchCustomers = async () => {
-      try {
-        const res = await fetch("/api/customers/usage"); // 👈 your route
-        const json = await res.json();
-
-        // Just demo: mapping the count into fake weekly data
-        // Replace this with actual formatted backend data if available
-        const chartData = [
-          { date: "Week 1", customers: json.count },
-          { date: "Week 2", customers: Math.floor(json.count * 0.9) },
-          { date: "Week 3", customers: Math.floor(json.count * 1.1) },
-          { date: "Week 4", customers: json.count },
-        ];
-
-        setData(chartData);
-      } catch (err) {
-        console.error("Failed to fetch customers usage:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCustomers();
-  }, []);
+    if (activeCustomersHistory.length > 0) {
+        setData(activeCustomersHistory);
+    } else {
+        setData([]);
+    }
+  }, [activeCustomersHistory]);
 
   return (
     <div
@@ -50,9 +31,9 @@ export const CustomersUsageChart = () => {
 
       {/* Chart */}
       <ResponsiveContainer width="100%" height="100%">
-          {loading ? (
-          <div className="flex items-center justify-center w-full h-full">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 border-4 border-[#B07C0D] border-t-transparent rounded-full animate-spin"></div>
+          {data.length === 0 ? (
+          <div className="flex items-center justify-center w-full h-full text-gray-500">
+            No active customer data.
           </div>
         ) : (
           <LineChart
