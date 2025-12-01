@@ -1,8 +1,10 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
+import { useTranslations } from "next-intl";
 
 const PremiumLoyaltyProgram = () => {
+  const t = useTranslations("loyaltyProgram");
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -32,13 +34,14 @@ const PremiumLoyaltyProgram = () => {
           setTiers(data.program.tiers);
           setRows(data.program.rows);
           setConversion(data.program.conversion ?? { euro: 10, point: 1 });
-          toast.success("Loyalty Program loaded 🎉");
+          setConversion(data.program.conversion ?? { euro: 10, point: 1 });
+          toast.success(t("loadedSuccess"));
         } else {
-          toast.error("Failed to load program");
+          toast.error(t("loadFailed"));
         }
       } catch (err) {
         console.error("🔥 Error fetching program:", err);
-        toast.error("Error fetching program");
+        toast.error(t("fetchError"));
       } finally {
         setLoading(false);
       }
@@ -79,14 +82,14 @@ const PremiumLoyaltyProgram = () => {
       });
       const data = await res.json();
       if (data.success) {
-        toast.success("Program updated successfully ✅");
+        toast.success(t("updateSuccess"));
         setIsEditing(false);
       } else {
-        toast.error("Update failed ❌");
+        toast.error(t("updateFailed"));
       }
     } catch (err) {
       console.error("🔥 Error saving program:", err);
-      toast.error("Error saving program");
+      toast.error(t("saveError"));
     } finally {
       setSaving(false);
     }
@@ -108,7 +111,7 @@ const PremiumLoyaltyProgram = () => {
           <div className="flex items-center space-x-[10px] justify-start">
             <img src="PremiumLoyalty.png" alt="" className="h-[37px] w-[37px]" />
             <h2 className="text-[14px] sm:text-2xl font-bold text-[#2C2A25]">
-              Premium Loyalty Program
+              {t("title")}
             </h2>
           </div>
           <div className="flex justify-center items-center gap-3 sm:gap-5">
@@ -125,14 +128,14 @@ const PremiumLoyaltyProgram = () => {
                 {saving && (
                   <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
                 )}
-                {saving ? "Saving..." : "Save"}
+                {saving ? t("saving") : t("save")}
               </button>
             ) : (
               <button
                 onClick={() => setIsEditing(true)}
                 className="border rounded-[20px] sm:rounded-[25px] border-[#2C2A25] px-4 h-[36px] sm:h-[44px] text-[12px] sm:text-[14px] hover:bg-[#2C2A25] hover:text-white transition"
               >
-                Edit
+                {t("edit")}
               </button>
             )}
           </div>
@@ -160,10 +163,10 @@ const PremiumLoyaltyProgram = () => {
                 }
                 className="w-16 px-2 py-1 border rounded"
               />
-              points
+              {t("points")}
             </>
           ) : (
-            `€${conversion.euro} = ${conversion.point} point`
+            `€${conversion.euro} = ${conversion.point} ${t("points")}`
           )}
         </p>
 
@@ -180,7 +183,7 @@ const PremiumLoyaltyProgram = () => {
             <thead>
               <tr>
                 <th className="px-3 py-2 text-left text-sm sm:text-[14px] font-semibold text-[#2C2A25]">
-                  Advantages
+                  {t("advantages")}
                 </th>
                 {tiers.map((tier, idx) => (
                   <th

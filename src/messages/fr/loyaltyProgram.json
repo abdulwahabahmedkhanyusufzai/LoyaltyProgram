@@ -1,0 +1,16 @@
+{
+  "loyaltyProgram": {
+    "title": "Programme de fidélité Premium",
+    "save": "Enregistrer",
+    "saving": "Enregistrement...",
+    "edit": "Modifier",
+    "advantages": "Avantages",
+    "points": "points",
+    "loadedSuccess": "Programme de fidélité chargé 🎉",
+    "loadFailed": "Échec du chargement du programme",
+    "fetchError": "Erreur lors de la récupération du programme",
+    "updateSuccess": "Programme mis à jour avec succès ✅",
+    "updateFailed": "Échec de la mise à jour ❌",
+    "saveError": "Erreur lors de l'enregistrement du programme"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "loyaltyProgram": {
+    "title": "Premium Loyalty Program",
+    "save": "Save",
+    "saving": "Saving...",
+    "edit": "Edit",
+    "advantages": "Advantages",
+    "points": "points",
+    "loadedSuccess": "Loyalty Program loaded 🎉",
+    "loadFailed": "Failed to load program",
+    "fetchError": "Error fetching program",
+    "updateSuccess": "Program updated successfully ✅",
+    "updateFailed": "Update failed ❌",
+    "saveError": "Error saving program"
+  }
+}
