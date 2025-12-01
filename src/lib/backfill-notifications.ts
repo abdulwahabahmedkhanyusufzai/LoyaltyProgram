@@ -39,3 +39,5 @@ export async function runBackfill(prisma: PrismaClient) {
     console.error("Error running backfill:", error);
   }
 }
+
+runBackfill(prisma);
