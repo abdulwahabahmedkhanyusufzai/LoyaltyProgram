@@ -66,9 +66,14 @@ app.post("/broadcast", (req, res) => {
   res.status(200).json({ ok: true });
 });
 
+import { runBackfill } from "./backfill-notifications";
+
 // Start server
 server.listen(3001, () => {
   log("Server + Socket.IO running", { url: "http://localhost:3001", path: "/socket.io" });
+  
+  // Run backfill on startup
+  runBackfill().catch(err => log("Backfill failed", err));
 });
 
 // Catch unhandled promise rejections
