@@ -41,6 +41,11 @@ useEffect(() => {
         email: user.email || "",
         phone: user.phoneNumber || "",
         language: user.language || "English",
+        notifications: user.notifications || {
+            systemAlerts: false,
+            notifications: false,
+            weeklyReports: false,
+        },
       };
 
       // ✅ Update both states with the same data
