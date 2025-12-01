@@ -1,7 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import { fetchOrderProductImage } from "./shopify";
 
-export async function runBackfill(prisma: PrismaClient) {
+const prisma = new PrismaClient();
+
+export async function runBackfill() {
   console.log("Starting backfill of notification images...");
 
   try {
@@ -40,4 +42,4 @@ export async function runBackfill(prisma: PrismaClient) {
   }
 }
 
-runBackfill(prisma);
+runBackfill();
