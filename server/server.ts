@@ -72,6 +72,6 @@ app.post("/broadcast", (req, res) => {
 
 
 // Start server
-server.listen(3001, () => {
-  log("Server + Socket.IO running", { url: "http://localhost:3001", path: "/socket.io" });
+server.listen(4001, () => {
+  log("Server + Socket.IO running", { url: "http://localhost:4001", path: "/socket.io" });
 });
