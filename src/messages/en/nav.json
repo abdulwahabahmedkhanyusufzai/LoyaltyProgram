@@ -6,12 +6,12 @@
     "viewLoyalCustomers": "View the list of loyal customers",
     "addRemoveLoyal": "Add or remove a loyal customer",
     "sendEmail": "Send an email",
-    "adventCalendar": "Advent calendar"
-  },
-  "bottom": {
-    "accountSettings": "Account Settings",
-    "logout": "Logout",
-    "login": "Login"
+    "adventCalendar": "Advent calendar",
+    "bottom": {
+      "accountSettings": "Account Settings",
+      "logout": "Logout",
+      "login": "Login"
+    }
   },
   "tiers": {
     "welcomed": "Welcomed: Less than 20 points",

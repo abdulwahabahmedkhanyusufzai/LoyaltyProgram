@@ -6,12 +6,12 @@
     "viewLoyalCustomers": "Voir la liste des clients fidèles",
     "addRemoveLoyal": "Ajouter ou retirer un client fidèle",
     "sendEmail": "Envoyer un e-mail",
-    "adventCalendar": "Calendrier de l’Avent"
-  },
-  "bottom": {
-    "accountSettings": "Paramètres du compte",
-    "logout": "Se déconnecter",
-    "login": "Se connecter"
+    "adventCalendar": "Calendrier de l’Avent",
+    "bottom": {
+      "accountSettings": "Paramètres du compte",
+      "logout": "Se déconnecter",
+      "login": "Se connecter"
+    }
   },
   "tiers": {
     "welcomed": "Accueilli : Moins de 20 points",
