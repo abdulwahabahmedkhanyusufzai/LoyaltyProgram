@@ -7,6 +7,7 @@ export type Notification = {
   data: any;
   id: string;
   message: string;
+  imageUrl?: string | null;
   createdAt: string;
   read?: boolean;
 };
@@ -46,6 +47,8 @@ export function useNotifications() {
     socket.on("OLD_NOTIFICATIONS", (oldNotifications: Notification[]) => {
       console.log("Received old notifications:", oldNotifications.length);
       setNotifications(oldNotifications);
+      const unread = oldNotifications.filter((n) => !n.read).length;
+      setUnreadCount(unread);
     });
 
     socket.on("NEW_NOTIFICATION", (notification: Notification) => {

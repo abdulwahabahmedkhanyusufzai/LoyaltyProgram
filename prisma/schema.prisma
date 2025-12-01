@@ -212,6 +212,7 @@ model Notification {
   type      String
   title     String
   message   String
+  imageUrl  String?
   data      Json?
   createdAt DateTime @default(now())
   read      Boolean  @default(false)

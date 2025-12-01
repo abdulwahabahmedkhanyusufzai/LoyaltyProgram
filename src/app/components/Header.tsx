@@ -80,12 +80,19 @@ export const Header = ({ onToggle }: HeaderProps) => {
                     className={`flex flex-col p-3 rounded-lg cursor-pointer shadow-sm transition ${n.read ? "bg-gray-50 hover:bg-gray-100" : "bg-yellow-50 hover:bg-yellow-100"
                       }`}
                   >
-                    <p className="text-gray-800 text-sm"></p>
-                    {n.data?.customer && (
-                      <p className="text-gray-800 text-sm">Customer: {n.data.customer} placed an order of Amount: ${n.data.amount} {n.message}</p>
-                    )}
-
-                    <span className="text-gray-400 text-xs mt-1">{formatLocalTime(n.createdAt)}</span>
+                    <div className="flex items-start gap-3">
+                      {n.imageUrl && (
+                        <img 
+                          src={n.imageUrl} 
+                          alt="Product" 
+                          className="w-10 h-10 rounded-md object-cover border border-gray-200"
+                        />
+                      )}
+                      <div className="flex-1">
+                        <p className="text-gray-800 text-sm font-medium">{n.message}</p>
+                        <span className="text-gray-400 text-xs mt-1 block">{formatLocalTime(n.createdAt)}</span>
+                      </div>
+                    </div>
                   </div>
                 ))
               )}

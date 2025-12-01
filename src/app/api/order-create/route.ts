@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
 import { OrderStatus } from "@prisma/client";
 import { runOffers } from "../../../scripts/cronAppOffer";
+import { fetchOrderProductImage } from "../../../lib/shopify";
 
 const VERBOSE_DEBUG = process.env.DEBUG_SHOPIFY_WEBHOOK === "true";
 const ADMIN_TOKEN = process.env.SHOPIFY_ADMIN_API_ACCESS_TOKEN;
@@ -211,11 +212,16 @@ export async function POST(req: Request): Promise<Response> {
 
       step("Order Saved + Customer Updated");
 
+      // Fetch product image from Shopify
+      const imageUrl = await fetchOrderProductImage(orderData.name);
+      step("Fetched Product Image", { imageUrl });
+
       const notification = await prisma.notification.create({
         data: {
           type: "order",
           title: "New Order Received",
           message: `Order #${order.orderNumber} was created.`,
+          imageUrl: imageUrl, // Save image URL
           data: {
             orderNumber: order.orderNumber,
             amount: order.totalAmount,
