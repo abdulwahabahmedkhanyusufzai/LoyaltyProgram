@@ -10,22 +10,21 @@ import {
 } from "recharts";
 import { useEffect, useState } from "react";
 
-export const ActiveOffersChart = ({ totalOffers, loadingOffers }) => {
+export const ActiveOffersChart = ({ totalOffers, loadingOffers, offersHistory = [] }) => {
   const [data, setData] = useState<any[]>([]);
 
   useEffect(() => {
-    if (!loadingOffers) {
-      // SAME REAL VALUE FOR ALL MONTHS
-      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
-
-      const generatedData = months.map((m) => ({
-        name: m,
-        active: totalOffers, // REAL VALUE, NO MATH
+    if (!loadingOffers && offersHistory.length > 0) {
+      // Use real history data
+      const chartData = offersHistory.map((item) => ({
+        name: item.name,
+        active: item.active,
       }));
-
-      setData(generatedData);
+      setData(chartData);
+    } else if (!loadingOffers) {
+        setData([]);
     }
-  }, [totalOffers, loadingOffers]);
+  }, [offersHistory, loadingOffers]);
 
   return (
     <div className="bg-[#E8E6D9] p-4 rounded-2xl shadow-md w-full h-[400px] flex flex-col">
