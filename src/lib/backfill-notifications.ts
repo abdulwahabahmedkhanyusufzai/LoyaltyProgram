@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { fetchOrderProductImage } from "../src/lib/shopify";
+import { fetchOrderProductImage } from "./shopify";
 
 export async function runBackfill(prisma: PrismaClient) {
   console.log("Starting backfill of notification images...");
