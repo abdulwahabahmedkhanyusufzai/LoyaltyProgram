@@ -28,14 +28,30 @@ export const FieldRenderer = ({
   console.log(t("navigation.formSections.fullName"));
   const handleSecuritySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Assuming you need a different validation/submission function for security
-    // For now, we'll reuse handleRegister but you should adapt it later
-    await handleRegister(); 
+    try {
+      setLoading(true);
+      await formManager.submitProfile();
+      toast.success("✅ Profile & Password saved successfully!");
+      // Optional: Reset password fields only? Or keep form as is.
+    } catch (err: any) {
+      toast.error(`❌ ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGeneralSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await handleRegister();
+    try {
+      setLoading(true);
+      // Pass the current notifications state to the manager
+      await formManager.submitNotifications(form.notifications);
+      toast.success("✅ Notifications & Preferences saved successfully!");
+    } catch (err: any) {
+      toast.error(`❌ ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCancel = () => {
@@ -58,18 +74,8 @@ export const FieldRenderer = ({
     });
   };
 
-  const handleRegister = async () => {
-    try {
-      setLoading(true);
-      await formManager.submitForm();
-      toast.success("✅ User saved successfully!");
-      handleCancel();
-    } catch (err: any) {
-      toast.error(`❌ ${err.message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // handleRegister is deprecated/removed in favor of specific handlers
+  // keeping handleCancel for reset functionality
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -146,7 +152,7 @@ export const FieldRenderer = ({
         {/* ✅ Action Buttons */}
         <div className="mt-6 space-y-3">
           <button
-            onClick={handleRegister}
+            type="submit"
             className="w-full bg-[#734A00] text-white py-3 rounded-full font-semibold hover:bg-[#5a3800] transition"
           >
             Save Changes

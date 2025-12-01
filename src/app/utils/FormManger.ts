@@ -35,24 +35,47 @@ export class FormManager {
     return this.form;
   }
 
-  async submitForm() {
-    this.form.validateAll();
+  async submitProfile() {
+    this.form.validateAll(); // You might want to validate only profile fields here
 
     const formData = new FormData();
+    const payload = this.form.toPayload();
 
-    // Append all fields except profilePicFile
-    Object.entries(this.form.toPayload()).forEach(([key, value]) => {
-      if (value != null) formData.append(key, value as any);
-    });
-
+    // Append profile fields
+    if (payload.fullName) formData.append("fullName", payload.fullName);
+    if (payload.email) formData.append("email", payload.email);
+    if (payload.phone) formData.append("phone", payload.phone);
+    if (payload.password) formData.append("password", payload.password);
+    
     // Append the file if it exists
     if (this.form.profilePicFile) {
       formData.append("profilePic", this.form.profilePicFile);
     }
 
-    const res = await fetch("/api/user/update", {
+    const res = await fetch("/api/user/update-profile", {
       method: "POST",
       body: formData,
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Request failed");
+    return data;
+  }
+
+  async submitNotifications(notifications: any) {
+    // notifications object is passed from the component state because it's not in CustomerForm
+    const payload = {
+        email: this.form.email, // Needed to identify user
+        language: this.form.language,
+        notifications: notifications 
+    };
+
+    const res = await fetch("/api/user/update-notifications", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     });
 
     const data = await res.json();
