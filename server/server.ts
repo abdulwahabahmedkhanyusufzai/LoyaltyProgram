@@ -77,13 +77,17 @@ server.listen(3001, () => {
   log("Server + Socket.IO running", { url: "http://localhost:3001", path: "/socket.io" });
   
   // Run backfill on startup
-  runBackfill(prisma).catch(err => log("Backfill failed", err));
+  // runBackfill(prisma).catch(err => log("Backfill failed", err));
 
   // Run backfill every hour (3600000 ms)
-  setInterval(() => {
-    log("Running periodic backfill...");
-    runBackfill(prisma).catch(err => log("Periodic backfill failed", err));
-  }, 3600000);
+  // setInterval(() => {
+  //   log("Running periodic backfill...");
+  //   runBackfill(prisma).catch(err => log("Periodic backfill failed", err));
+  // }, 3600000);
+});
+
+app.get("/", (req, res) => {
+  res.send("Loyalty Server is Running");
 });
 
 // Catch unhandled promise rejections
