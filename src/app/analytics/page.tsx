@@ -130,7 +130,9 @@ const Analytics = () => {
         offerCount={data.offersCount}
         loadingOffers={loading.offers}
         mostActiveTier={data.mostActiveTier}
-        loadingTier={loading.tier} pointsHistory={undefined}      />
+        loadingTier={loading.tier}
+        pointsHistory={data.pointsHistory}
+      />
     </div>
   );
 };
