@@ -16,7 +16,7 @@ function LoyalCustomersList() {
   const t = useTranslations("loyalCustomers"); // translation namespace
 
   const [step, setStep] = useState(1);
-  const [selectedTab, setSelectedTab] = useState(t("tabs.home"));
+  const [selectedTab, setSelectedTab] = useState("home");
   const { customers, totalCount, loading } = useCustomers();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -31,13 +31,13 @@ function LoyalCustomersList() {
 
     if (emailParam) {
       setSelectedEmail(emailParam);
-      setSelectedTab(t("tabs.sendEmail"));
+      setSelectedTab("sendEmail");
       setStep(2);
     } else if (customerParam) {
-      setSelectedTab(t("tabs.customers"));
+      setSelectedTab("customers");
       setStep(1);
     } else {
-      setSelectedTab(t("tabs.home"));
+      setSelectedTab("home");
       setStep(0);
     }
   }, [typeof window !== "undefined" ? window.location.search : ""]);
@@ -62,7 +62,7 @@ function LoyalCustomersList() {
 
   const handleEmailClick = (email: string) => {
     setSelectedEmail(email);
-    setSelectedTab(t("tabs.sendEmail"));
+    setSelectedTab("sendEmail");
     setStep(2);
   };
 
@@ -86,14 +86,14 @@ function LoyalCustomersList() {
           type="emails"
           onChange={(tab) => {
             setSelectedTab(tab);
-            if (tab === t("tabs.sendEmail")) setStep(2);
-            if (tab === t("tabs.home")) setStep(0);
-            if (tab === t("tabs.customers")) setStep(1);
+            if (tab === "sendEmail") setStep(2);
+            if (tab === "home") setStep(0);
+            if (tab === "customers") setStep(1);
           }}
           activeTab={selectedTab}
         />
 
-        {selectedTab === t("tabs.customers") && step === 1 && (
+        {selectedTab === "customers" && step === 1 && (
           <CustomerSection
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
@@ -102,16 +102,16 @@ function LoyalCustomersList() {
           />
         )}
 
-        {selectedTab === t("tabs.home") && step === 0 && (
+        {selectedTab === "home" && step === 0 && (
           <HomeSection setStep={setStep} setSelectedTab={setSelectedTab} />
         )}
 
-        {selectedTab === t("tabs.sendEmail") && step === 2 && (
+        {selectedTab === "sendEmail" && step === 2 && (
           <SendEmail customers={customers} prefillEmail={selectedEmail} />
         )}
       </div>
 
-      {selectedTab === t("tabs.customers") && step === 1 && (
+      {selectedTab === "customers" && step === 1 && (
         <HandlePageChange
           page={page}
           setPage={setPage}

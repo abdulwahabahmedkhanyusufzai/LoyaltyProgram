@@ -11,18 +11,27 @@ type TabsProps = {
 export default function Tabs({ type = "default", activeTab, onChange }: TabsProps) {
   const t = useTranslations("tabs"); // Translation namespace
 
-  // Translated tab labels
-  const tabs = [t("home"), t("clients"), t("program")];
-  const emailsTabs = [t("home"), t("customers"), t("sendEmail")];
+  // Translated tab labels with stable IDs
+  const tabs = [
+    { id: "home", label: t("home") },
+    { id: "clients", label: t("clients") },
+    { id: "program", label: t("program") },
+  ];
+  
+  const emailsTabs = [
+    { id: "home", label: t("home") },
+    { id: "customers", label: t("customers") },
+    { id: "sendEmail", label: t("sendEmail") },
+  ];
 
   const tabList = type === "emails" ? emailsTabs : tabs;
 
-  const [internalActive, setInternalActive] = useState(tabList[0]);
+  const [internalActive, setInternalActive] = useState(tabList[0].id);
   const currentActive = activeTab ?? internalActive;
 
-  const handleClick = (tab: string) => {
-    if (onChange) onChange(tab);
-    else setInternalActive(tab);
+  const handleClick = (tabId: string) => {
+    if (onChange) onChange(tabId);
+    else setInternalActive(tabId);
   };
 
   return (
@@ -31,15 +40,15 @@ export default function Tabs({ type = "default", activeTab, onChange }: TabsProp
         <div className="inline-flex flex-nowrap rounded-full border border-gray-300 overflow-hidden shadow-sm min-w-max">
           {tabList.map((tab) => (
             <button
-              key={tab}
-              onClick={() => handleClick(tab)}
+              key={tab.id}
+              onClick={() => handleClick(tab.id)}
               className={`px-4 sm:px-6 py-2 rounded-full text-sm sm:text-base font-medium transition-colors whitespace-nowrap
-                ${currentActive === tab
+                ${currentActive === tab.id
                   ? "bg-[#6a4e1e] text-white"
                   : "bg-white text-gray-600 hover:bg-gray-100"
                 }`}
             >
-              {tab}
+              {tab.label}
             </button>
           ))}
         </div>
