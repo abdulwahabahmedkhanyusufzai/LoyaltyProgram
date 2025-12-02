@@ -7,6 +7,7 @@ import { Toaster } from "react-hot-toast";
 import { UserProvider } from "@/lib/UserContext";
 import { NextIntlClientProvider } from 'next-intl';
 import { cookies } from 'next/headers';
+import KlaviyoTracker from "../app/components/KlaviyoTracker";
 
 const interTight = Inter_Tight({
     subsets: ["latin"],
@@ -52,10 +53,9 @@ export default async function RootLayout({
             <body className={`${interTight.className} antialiased`}>
                 <UserProvider>
                     <NextIntlClientProvider locale={locale} messages={messages}>
+                        <KlaviyoTracker />
                         <ClientLayout>
-
                             {children}
-
                         </ClientLayout>
                     </NextIntlClientProvider>
                 </UserProvider>
