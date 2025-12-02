@@ -130,7 +130,7 @@ function AdventCalendar() {
             const cursorStyle = isEditable ? "cursor-pointer" : "cursor-default";
 
             // Check for holiday
-            const holidayInfo = hd.isHoliday(new Date(currentYear, monthMap[month]!, day));
+            const holidayInfo = hd.isHoliday(new Date(currentYear, monthMap[month]!, day)) as any;
             const holidayName = holidayInfo ? (Array.isArray(holidayInfo) ? holidayInfo[0].name : holidayInfo.name) : null;
             const isHoliday = !!holidayName;
 
