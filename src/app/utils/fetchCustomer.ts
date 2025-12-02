@@ -43,24 +43,13 @@ export function useCustomers() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchCustomers = useCallback(async (month?: number, year?: number) => {
+  const fetchCustomers = useCallback(async () => {
     try {
       setLoading(true);
 
-      // Default to current month/year if not provided
-      const now = new Date();
-      const payload = {
-        month: month ?? now.getMonth() + 1, // JS month is 0-based
-        year: year ?? now.getFullYear(),
-      };
-
-      const resCustomers = await fetch("/api/customers/byMonth", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      const customersData: { customers: CustomerApiResponse[] } = await resCustomers.json();
+      // Fetch all customers (generic endpoint)
+      const resCustomers = await fetch("/api/customers");
+      const customersData: { customers: CustomerApiResponse[]; count: number } = await resCustomers.json();
 
       const resPoints = await fetch(`/api/customers/points`);
       const pointsData: PointsResponse[] = await resPoints.json();
