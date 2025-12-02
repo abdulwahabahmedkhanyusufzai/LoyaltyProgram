@@ -139,3 +139,141 @@ export async function fetchProductImage(productId: string): Promise<string | nul
 
   return imageUrl || null;
 }
+
+export async function syncCustomerMetafields(shopifyCustomerId: string, points: number, tier: string) {
+  const gid = shopifyCustomerId.startsWith("gid://") ? shopifyCustomerId : `gid://shopify/Customer/${shopifyCustomerId}`;
+  
+  const query = `
+    mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {
+      metafieldsSet(metafields: $metafields) {
+        metafields { id key namespace value }
+        userErrors { field message }
+      }
+    }
+  `;
+
+  const variables = {
+    metafields: [
+      {
+        ownerId: gid,
+        namespace: "loyalty",
+        key: "points",
+        type: "number_integer",
+        value: points.toString(),
+      },
+      {
+        ownerId: gid,
+        namespace: "loyalty",
+        key: "tier",
+        type: "single_line_text_field",
+        value: tier,
+      },
+    ],
+  };
+
+  const result = await shopifyQuery(query, variables);
+  if (result?.metafieldsSet?.userErrors?.length > 0) {
+    console.error("Metafield Sync Errors:", result.metafieldsSet.userErrors);
+  } else {
+    console.log(`Synced metafields for ${gid}: Points=${points}, Tier=${tier}`);
+  }
+}
+
+export async function syncOrderMetafields(shopifyOrderId: string, pointsEarned: number) {
+  // Ensure ID is in GID format
+  // shopifyOrderId usually comes as "gid://shopify/Order/..." from DB, but let's be safe
+  const gid = shopifyOrderId.startsWith("gid://") ? shopifyOrderId : `gid://shopify/Order/${shopifyOrderId}`;
+  
+  const query = `
+    mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {
+      metafieldsSet(metafields: $metafields) {
+        metafields { id key namespace value }
+        userErrors { field message }
+      }
+    }
+  `;
+
+  const variables = {
+    metafields: [
+      {
+        ownerId: gid,
+        namespace: "loyalty",
+        key: "points",
+        type: "number_integer",
+        value: pointsEarned.toString(),
+      },
+    ],
+  };
+
+  const result = await shopifyQuery(query, variables);
+  if (result?.metafieldsSet?.userErrors?.length > 0) {
+    console.error("Order Metafield Sync Errors:", result.metafieldsSet.userErrors);
+  } else {
+    console.log(`Synced order metafields for ${gid}: Points=${pointsEarned}`);
+  }
+}
+
+export async function createDiscountCode(value: number, prefix: string = "REWARD"): Promise<string | null> {
+  const shopData = await getShopCredentials();
+  if (!shopData) return null;
+
+  const { shop, accessToken } = shopData;
+  const code = `${prefix}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+  
+  try {
+    // 1. Create Price Rule
+    const priceRuleRes = await fetch(`https://${shop}/admin/api/2024-10/price_rules.json`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Shopify-Access-Token": accessToken,
+      },
+      body: JSON.stringify({
+        price_rule: {
+          title: `Loyalty Reward $${value} Off`,
+          target_type: "line_item",
+          target_selection: "all",
+          allocation_method: "across",
+          value_type: "fixed_amount",
+          value: `-${value}.00`,
+          customer_selection: "all",
+          starts_at: new Date().toISOString(),
+        }
+      }),
+    });
+
+    const priceRuleJson = await priceRuleRes.json();
+    if (priceRuleJson.errors) {
+      console.error("Price Rule Error:", priceRuleJson.errors);
+      return null;
+    }
+
+    const priceRuleId = priceRuleJson.price_rule.id;
+
+    // 2. Create Discount Code
+    const discountRes = await fetch(`https://${shop}/admin/api/2024-10/price_rules/${priceRuleId}/discount_codes.json`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Shopify-Access-Token": accessToken,
+      },
+      body: JSON.stringify({
+        discount_code: {
+          code: code
+        }
+      }),
+    });
+
+    const discountJson = await discountRes.json();
+    if (discountJson.errors) {
+      console.error("Discount Code Error:", discountJson.errors);
+      return null;
+    }
+
+    return code;
+
+  } catch (err) {
+    console.error("Failed to create discount code:", err);
+    return null;
+  }
+}

@@ -1,5 +1,5 @@
 <!-- sections/loyalty-dashboard.liquid -->
-<div class="loyalty-dashboard">
+<div class="loyalty-dashboard" data-customer-id="{{ customer.id }}" data-api-url="https://waro.d.codetors.dev">
   <!-- Dashboard Header -->
   <div class="dashboard-header">
     <h2>Loyalty Program</h2>
@@ -90,7 +90,7 @@
           <!-- Actions -->
           <div class="points-actions">
             <button class="earn-btn">Shop & Earn More</button>
-            <button class="redeem-btn">Redeem Points</button>
+            <button class="redeem-btn" onclick="openRedemptionModal()">Redeem Points</button>
           </div>
         </div>
       </div>
@@ -103,7 +103,7 @@
       <div class="transactions">
         <h3>Recent Transactions</h3>
         <div class="points-actions3">
-          <button class="redeem-btn">Redeem Points</button>
+          <button class="redeem-btn" onclick="openRedemptionModal()">Redeem Points</button>
           <button class="earn-btn">Shop & Earn More</button>
         </div>
       </div>
@@ -149,12 +149,232 @@
         </table>
       </div>
     </div>
+    <!-- Redemption Modal -->
+    <div class="redemption-modal" style="display: none;">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Redeem Your Points</h2>
+        <p>Select a reward to redeem:</p>
+        
+        <div class="rewards-list">
+          <div class="reward-item" data-id="5_off" data-points="500" data-title="$5 Off Coupon">
+            <div class="reward-info">
+              <h4>$5 Off Coupon</h4>
+              <p>500 Points</p>
+            </div>
+            <button class="redeem-confirm-btn">Redeem</button>
+          </div>
+          
+          <div class="reward-item" data-id="10_off" data-points="1000" data-title="$10 Off Coupon">
+            <div class="reward-info">
+              <h4>$10 Off Coupon</h4>
+              <p>1000 Points</p>
+            </div>
+            <button class="redeem-confirm-btn">Redeem</button>
+          </div>
+
+          <div class="reward-item" data-id="25_off" data-points="2500" data-title="$25 Off Coupon">
+            <div class="reward-info">
+              <h4>$25 Off Coupon</h4>
+              <p>2500 Points</p>
+            </div>
+            <button class="redeem-confirm-btn">Redeem</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   {% endif %}
 </div>
 
 <!-- JS / CSS -->
 {{ 'loyalty-dashboard.css' | asset_url | stylesheet_tag }}
 {{ 'loyalty_program.css' | asset_url | stylesheet_tag }}
+{{ 'loyalty-dashboard.css' | asset_url | stylesheet_tag }}
+{{ 'loyalty_program.css' | asset_url | stylesheet_tag }}
+
+<script>
+  // Global fallback function
+  window.openRedemptionModal = function() {
+    const modal = document.querySelector(".redemption-modal");
+    if (modal) modal.style.display = "flex";
+  };
+
+  document.addEventListener("DOMContentLoaded", () => {
+    console.log("Loyalty Dashboard JS Loaded (Inline)");
+
+    const customerMetafieldPoints = "{{ points }}";
+    const customerMetafieldTier = "{{ tier }}";
+    
+    // -----------------------------
+    // Initial UI Setup (Progress Bar)
+    // -----------------------------
+    const progressBar = document.querySelector(".tier-bar");
+    const fill = progressBar?.querySelector(".tier-fill");
+    const pointsEl = document.querySelector(".points-info h1");
+    const tierText = document.querySelector(".tier-text");
+    const tierProgressContainer = document.querySelector(".tier-progress");
+    const badgeUnfulfilled = document.querySelector(".unfulfilled");
+
+    if (progressBar && fill && tierProgressContainer) {
+      // Loader
+      const loader = document.createElement("div");
+      loader.className = "loyalty-loader";
+      loader.style.cssText = `
+        width: 40px; height: 40px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #734A00;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+      `;
+      progressBar.parentElement.insertBefore(loader, progressBar);
+      progressBar.style.display = "none";
+
+      // Tiers Setup
+      const tiers = [
+        { name: "Bronze", min: 200 },
+        { name: "Silver", min: 500 },
+        { name: "Gold", min: 750 },
+        { name: "Platinum", min: 1000 },
+      ];
+      const tierElements = Array.from(tierProgressContainer.querySelectorAll(".tier"));
+      const maxPoints = tiers[tiers.length - 1].min;
+
+      tierElements.forEach((el, i) => {
+        el.style.left = `${(tiers[i].min / maxPoints) * 100}%`;
+        el.dataset.tier = tiers[i].name;
+      });
+
+      // Helpers
+      const animateBar = (percent, instant = false) => {
+        fill.style.transition = instant ? "none" : "width 0.5s ease-in-out";
+        fill.style.width = `${percent}%`;
+      };
+
+      const highlightActiveTier = (tierName) => {
+        tierElements.forEach(el => {
+          el.classList.toggle("active-tier", el.dataset.tier === tierName);
+        });
+      };
+
+      const updateUI = (points, currentTierName) => {
+        const currentTier = tiers.find(t => t.name === currentTierName) || { name: "Welcome", min: 0 };
+        const nextTier = tiers.find(t => t.min > points);
+        const progressPercent = nextTier
+          ? ((points - currentTier.min) / (nextTier.min - currentTier.min)) * 100
+          : 100;
+        const tierMessage = nextTier
+          ? `You're ${nextTier.min - points} points away from ${nextTier.name} Tier`
+          : `You've reached the ${currentTier.name} Tier!`;
+
+        if(pointsEl) pointsEl.textContent = points;
+        if(tierText) tierText.textContent = tierMessage;
+        if(badgeUnfulfilled) badgeUnfulfilled.textContent = `+${points}`;
+
+        animateBar(progressPercent);
+        highlightActiveTier(currentTier.name);
+      };
+
+      const hideLoader = () => {
+        loader.remove();
+        progressBar.style.display = "";
+      };
+
+      // Load Data
+      const loadLoyaltyData = () => {
+        try {
+          const points = parseInt(customerMetafieldPoints || "0", 10);
+          const tier = customerMetafieldTier || "Welcome";
+          updateUI(points, tier);
+        } catch (err) {
+          console.error("❌ Error updating loyalty UI:", err);
+          updateUI(0, "Welcome");
+        } finally {
+          hideLoader();
+        }
+      };
+
+      updateUI(0, "Welcome");
+      if (typeof customerMetafieldPoints !== "undefined") {
+        loadLoyaltyData();
+      } else {
+        hideLoader();
+      }
+    }
+  });
+
+  // -----------------------------
+  // Global Event Delegation
+  // -----------------------------
+  document.addEventListener("click", async (e) => {
+    const dashboard = document.querySelector(".loyalty-dashboard");
+    const modal = document.querySelector(".redemption-modal");
+    
+    // 1. Earn Button
+    if (e.target.closest(".earn-btn")) {
+      const saleSection = document.querySelector(".loyalty-sale-product") || document.querySelector(".loyal-2");
+      if (saleSection) {
+        saleSection.scrollIntoView({ behavior: "smooth" });
+      } else {
+        window.location.href = "/collections/all";
+      }
+    }
+
+    // 2. Redeem Button (Open Modal) - handled by onclick fallback too, but good to have delegation
+    if (e.target.closest(".redeem-btn")) {
+      if (modal) {
+        modal.style.display = "flex";
+      }
+    }
+
+    // 3. Close Modal
+    if (e.target.closest(".close-modal") || e.target === modal) {
+      if (modal) modal.style.display = "none";
+    }
+
+    // 4. Confirm Redemption
+    const confirmBtn = e.target.closest(".redeem-confirm-btn");
+    if (confirmBtn) {
+      const item = confirmBtn.closest(".reward-item");
+      const rewardId = item.dataset.id;
+      const pointsCost = parseInt(item.dataset.points);
+      const title = item.dataset.title;
+      const customerId = dashboard?.dataset.customerId;
+      const apiUrl = dashboard?.dataset.apiUrl;
+
+      if (!confirm(`Are you sure you want to redeem ${pointsCost} points for ${title}?`)) return;
+
+      const originalText = confirmBtn.textContent;
+      confirmBtn.textContent = "Processing...";
+      confirmBtn.disabled = true;
+
+      try {
+        const res = await fetch(`${apiUrl}/api/redeem`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ customerId, rewardId })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          alert(`Success! Your discount code is: ${data.code}`);
+          if (modal) modal.style.display = "none";
+          window.location.reload(); 
+        } else {
+          alert(`Error: ${data.error}`);
+        }
+      } catch (err) {
+        console.error("Redemption failed", err);
+        alert("Something went wrong. Please try again.");
+      } finally {
+        confirmBtn.textContent = originalText;
+        confirmBtn.disabled = false;
+      }
+    }
+  });
+</script>
 <script type="module" src="{{ 'loyalty_program.js' | asset_url }}"></script>
 
 {% schema %}

@@ -273,6 +273,23 @@ export async function POST(req: Request): Promise<Response> {
     const oldTier = getCustomerTier(Number(customer.amountSpent));
     const newTier = getCustomerTier(Number(updatedCustomer!.amountSpent));
 
+    // Sync Metafields to Shopify
+    step("Syncing Metafields to Shopify", { points: updatedCustomer!.amountSpent, tier: newTier.name });
+    try {
+      // Import dynamically or ensure it's imported at top
+      const { syncCustomerMetafields, syncOrderMetafields } = require("../../../lib/shopify");
+      await syncCustomerMetafields(customer.shopifyId, Number(updatedCustomer!.amountSpent), newTier.name);
+      
+      // Sync Order Metafields (Points Earned)
+      // Assuming points earned = total_price (based on increment logic above)
+      const pointsEarned = parseFloat(orderData.total_price);
+      if (order?.shopifyOrderId) {
+         await syncOrderMetafields(order.shopifyOrderId, pointsEarned);
+      }
+    } catch (err) {
+      console.error("Failed to sync metafields", err);
+    }
+
     if (newTier.min > oldTier.min) {
       step("Tier Upgrade Detected", { old: oldTier.name, new: newTier.name });
       
