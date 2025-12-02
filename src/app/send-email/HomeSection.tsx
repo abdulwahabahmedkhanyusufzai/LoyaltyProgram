@@ -51,12 +51,14 @@ const HomeSection = ({ setStep, setSelectedTab, onSelectGroup }) => {
             if (onSelectGroup) {
               onSelectGroup(selectedOption);
             }
-            if (selectedOption === "specificPerson") {
+            // Manual selection groups
+            if (["specificPerson", "test", "hosts", "guests"].includes(selectedOption)) {
               setStep(1);
               setSelectedTab("customers");
             } else {
+              // Bulk selection groups
               setStep(2);
-              setSelectedTab("sendEmail"); // Use string directly to match parent logic
+              setSelectedTab("sendEmail");
             }
           }}
           className="w-full sm:w-[474px] px-8 py-2 rounded-full bg-[#6a4e1e] text-white font-medium shadow-md hover:bg-[#5a3f19] transition"

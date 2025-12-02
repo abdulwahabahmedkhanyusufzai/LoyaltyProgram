@@ -71,23 +71,45 @@ function LoyalCustomersList() {
     setRecipientGroup(group);
   };
 
-  // Filter customers based on selected group
+  // Filter customers based on selected group and search query
+  const filteredCustomers = customers.filter((c) => {
+    // 1. Filter by Group
+    let groupMatch = true;
+    const title = c.loyaltyTitle?.toLowerCase() || "";
+    const email = c.email?.toLowerCase() || "";
+
+    if (recipientGroup === "hosts") groupMatch = title === "host";
+    else if (recipientGroup === "guests") groupMatch = title === "guest";
+    else if (recipientGroup === "test") groupMatch = email.includes("test");
+    // "welcomed", "all", "specificPerson" show all in list (or handled in bulk step)
+    
+    if (!groupMatch) return false;
+
+    // 2. Filter by Search Query
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      c.firstName?.toLowerCase().includes(query) ||
+      c.lastName?.toLowerCase().includes(query) ||
+      c.email?.toLowerCase().includes(query)
+    );
+  });
+
+  // Calculate target customers for BULK sending (Step 2)
   const targetCustomers = customers.filter((c) => {
     if (recipientGroup === "all") return true;
-    if (recipientGroup === "specificPerson") return true; // Handled by manual selection
-    if (recipientGroup === "test") return false; // TODO: Define test group logic
     
-    // Map groups to loyalty titles
     const title = c.loyaltyTitle?.toLowerCase() || "";
-    if (recipientGroup === "hosts") return title === "host";
-    if (recipientGroup === "guests") return title === "guest";
-    if (recipientGroup === "welcomed") return title === "welcomed";
+    if (recipientGroup === "welcomed") return title === "welcomed" || title === "";
     
-    return true;
+    // For manual groups (hosts, guests, test, specific), targetCustomers isn't used for bulk
+    // unless we want to allow "Send to All Hosts" from Step 2? 
+    // The requirement is manual selection for these, so targetCustomers might be empty or unused here.
+    return false; 
   });
 
   const PAGE_SIZE = 10;
-  const currentCustomers = customers.slice(
+  const currentCustomers = filteredCustomers.slice(
     (page - 1) * PAGE_SIZE,
     page * PAGE_SIZE
   );
