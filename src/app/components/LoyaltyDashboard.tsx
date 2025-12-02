@@ -57,20 +57,6 @@ const LoyaltyDashboard = ({ currentCustomers }) => {
 
     // Calculate total absolute percentage offset for Bronze+ tiers:
     if (!isNoTier && currentTier.min > 0 && LOYALTY_TIERS.length > 1) {
-        const bronzeMin = LOYALTY_TIERS[1].min;
-        const totalPointRange = LOYALTY_TIERS.slice(-1)[0].min; // Use max tier min (1000) for scale end
-
-        // This is complex and depends heavily on how your tiers are visually mapped.
-        // For a uniform, equally spaced visual, we assume 4 equal segments (25% each).
-        const tierSegmentWidth = 100 / (LOYALTY_TIERS.length - 1); // e.g., 100/4 = 25%
-        const currentTierIndex = LOYALTY_TIERS.findIndex(t => t.name === currentTier.name);
-        const baseOffset = (currentTierIndex - 1) * tierSegmentWidth;
-        
-        // Final visual position: base position of current tier + progress within that segment
-        progressForVisualization = baseOffset + (relativeProgress * (tierSegmentWidth / 100));
-        
-        // Ensure it doesn't exceed 100% for the Platinum tier
-        progressForVisualization = Math.min(progressForVisualization, 100);
     }
     
     // ⭐ SAFETY CLAMP for marker (use the newly scaled value for position)
