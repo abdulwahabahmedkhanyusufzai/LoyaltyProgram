@@ -33,13 +33,19 @@ function LoyalCustomersList() {
 
   useEffect(() => {
     const term = searchTerm.toLowerCase();
-    const filtered = customers.filter(
-      (c) =>
-        c.firstName?.toLowerCase().includes(term) ||
-        c.lastName?.toLowerCase().includes(term) ||
-        c.email?.toLowerCase().includes(term) ||
-        c.loyaltyTitle?.toLowerCase().includes(term)
-    );
+    const filtered = customers.filter((c) => {
+      const first = c.firstName?.toLowerCase() || "";
+      const last = c.lastName?.toLowerCase() || "";
+      const email = c.email?.toLowerCase() || "";
+      const title = c.loyaltyTitle?.toLowerCase() || "";
+      
+      return (
+        first.includes(term) ||
+        last.includes(term) ||
+        email.includes(term) ||
+        title.includes(term)
+      );
+    });
     setFilteredCustomers(filtered);
     setPage(1);
     setTotalCount(filtered.length);
@@ -167,7 +173,44 @@ function LoyalCustomersList() {
       </div>
 
       {/* Pagination */}
-      {/* ...pagination logic stays the same... */}
+      <div className="mt-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+        {/* Left */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+          <select
+            value={page}
+            onChange={handlePageChange}
+            className="border border-[#DEDEDE] rounded-full px-2 py-1 w-full sm:w-auto"
+          >
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+              <option key={p} value={p}>{p}</option>
+            ))}
+          </select>
+          <span className="text-sm text-gray-700">
+            {t("showingEntries", { page, endIndex, total: filteredCustomers.length })}
+          </span>
+        </div>
+
+        {/* Right */}
+        <div className="flex overflow-x-auto space-x-2 sm:space-x-3 py-1">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
+            if (p === 1 || p === totalPages || (p >= page - 1 && p <= page + 1)) {
+              return (
+                <button
+                  key={p}
+                  onClick={() => setPage(p)}
+                  style={{ boxShadow: "2px 2px 2px 0px #00000040" }}
+                  className={`px-3 py-1 rounded min-w-[40px] text-center ${page === p ? "bg-[#FEFCED] text-black" : "bg-[#FEFCED] text-gray-500"
+                    }`}
+                >
+                  {p}
+                </button>
+              );
+            } else if (p === page - 2 || p === page + 2) {
+              return <span key={p} className="px-2 text-gray-400">...</span>;
+            } else return null;
+          })}
+        </div>
+      </div>
 
       <DeletedDialog
         selectedCustomer={selectedCustomer}
