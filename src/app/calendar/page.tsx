@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useTranslations } from "use-intl";
 import toast from "react-hot-toast";
+import Holidays from "date-holidays";
 
 // Helper functions
 const monthMap: Record<string, number> = { "Aug": 7, "Sep": 8, "Oct": 9, "Nov": 10, "Dec": 11 };
@@ -15,6 +16,7 @@ const getFirstDayOfWeek = (monthStr: string, year: number) =>
 function AdventCalendar() {
   const t = useTranslations(); // Translation hook
   const currentYear = new Date().getFullYear();
+  const hd = new Holidays('US');
 
   const [month, setMonth] = useState("Aug");
   const [isEditable, setIsEditable] = useState(false);
@@ -127,10 +129,18 @@ function AdventCalendar() {
             const isEditing = editingDay === day;
             const cursorStyle = isEditable ? "cursor-pointer" : "cursor-default";
 
+            // Check for holiday
+            const holidayInfo = hd.isHoliday(new Date(currentYear, monthMap[month]!, day));
+            const holidayName = holidayInfo ? (Array.isArray(holidayInfo) ? holidayInfo[0].name : holidayInfo.name) : null;
+            const isHoliday = !!holidayName;
+
             return (
               <div
                 key={day}
-                className={`relative border-[0.8px] p-2 text-center text-sm border-[#E3E3E3] h-[60px] lg:h-24 flex flex-col justify-between transition-colors ${cursorStyle} ${info ? "bg-[#734A00] text-white border-[#734A00]" : "bg-[#fdfdf9] text-[#8B8B8B]" + (isEditable ? "hover:bg-gray-50" : "")
+                className={`relative border-[0.8px] p-2 text-center text-sm border-[#E3E3E3] h-[60px] lg:h-24 flex flex-col justify-between transition-colors ${cursorStyle} 
+                  ${info ? "bg-[#734A00] text-white border-[#734A00]" : 
+                    isHoliday ? "bg-[#FFF8E1] text-[#8B8B8B] border-yellow-200" : 
+                    "bg-[#fdfdf9] text-[#8B8B8B]" + (isEditable ? " hover:bg-gray-50" : "")
                   }`}
                 onClick={() => handleDayClick(day)}
               >
@@ -143,9 +153,16 @@ function AdventCalendar() {
                       <p className="flex justify-end font-bold text-center text-[11px] px-2 py-1 leading-tight text-black bg-white rounded-full">{info.event}</p>
                     </div>
                   )}
+                  {!info && isHoliday && (
+                    <div className="flex items-end justify-end pointer-events-none">
+                      <p className="flex justify-end font-bold text-center text-[10px] px-2 py-1 leading-tight text-white bg-yellow-600 rounded-full truncate max-w-[80px]" title={holidayName}>
+                        {holidayName}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
-                {!info && (
+                {!info && !isHoliday && (
                   <div className="flex items-center justify-center pointer-events-none">
                     <p className="flex justify-center font-bold text-center text-[11px] px-2 py-1 leading-tight text-[#8B8B8B] rounded-full">{t("messages.nothingToDo")}</p>
                   </div>

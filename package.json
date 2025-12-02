@@ -24,6 +24,7 @@
     "cookie": "^1.0.2",
     "csv-parser": "^3.2.0",
     "date-fns": "^4.1.0",
+    "date-holidays": "^3.26.5",
     "effect": "^3.18.4",
     "jose": "^6.1.0",
     "jsonwebtoken": "^9.0.2",
