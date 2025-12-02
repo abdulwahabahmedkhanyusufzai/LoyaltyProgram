@@ -4,6 +4,8 @@ import { prisma } from "../../../lib/prisma";
 import { OrderStatus } from "@prisma/client";
 import { runOffers } from "../../../scripts/cronAppOffer";
 import { fetchOrderProductImage } from "../../../lib/shopify";
+import axios from "axios";
+import { getCustomerTier, TIER_BENEFITS } from "../../../constants/loyaltyTier";
 
 const VERBOSE_DEBUG = process.env.DEBUG_SHOPIFY_WEBHOOK === "true";
 const ADMIN_TOKEN = process.env.SHOPIFY_ADMIN_API_ACCESS_TOKEN;
@@ -264,6 +266,52 @@ export async function POST(req: Request): Promise<Response> {
     });
 
     step("Customer After Update", updatedCustomer);
+
+    // =============================================================
+    //         TIER UPGRADE CHECK
+    // =============================================================
+    const oldTier = getCustomerTier(Number(customer.amountSpent));
+    const newTier = getCustomerTier(Number(updatedCustomer!.amountSpent));
+
+    if (newTier.min > oldTier.min) {
+      step("Tier Upgrade Detected", { old: oldTier.name, new: newTier.name });
+      
+      const benefits = TIER_BENEFITS[newTier.name as keyof typeof TIER_BENEFITS];
+      if (benefits && process.env.KLAVIYO_API_KEY) {
+        try {
+          await axios.post("https://a.klaviyo.com/api/events/", {
+            data: {
+              type: "event",
+              attributes: {
+                profile: {
+                  data: { type: "profile", attributes: { email: customerEmail } },
+                },
+                metric: {
+                  data: { type: "metric", attributes: { name: "Tier Upgraded" } },
+                },
+                properties: {
+                  tier_name: newTier.name,
+                  benefits: benefits.benefits,
+                  discount_code: benefits.discountCode,
+                  old_tier: oldTier.name,
+                  points_balance: Number(updatedCustomer!.amountSpent)
+                },
+                time: new Date().toISOString(),
+              },
+            },
+          }, {
+            headers: {
+              Authorization: `Klaviyo-API-Key ${process.env.KLAVIYO_API_KEY}`,
+              "Content-Type": "application/json",
+              Revision: "2024-07-15",
+            },
+          });
+          step("Tier Upgrade Email Sent to Klaviyo");
+        } catch (err) {
+          console.error("Failed to send Tier Upgrade email", err);
+        }
+      }
+    }
 
     const discountAmount = parseFloat(orderData.total_discounts || "0");
     step("Checking Discount Amount", { discountAmount });

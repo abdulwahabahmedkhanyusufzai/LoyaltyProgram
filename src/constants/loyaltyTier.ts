@@ -11,5 +11,24 @@ export const LOYALTY_TIERS = [
  * @param {number} points - The customer's loyalty points.
  * @returns {object} The current tier object.
  */
-export const getCustomerTier = (points) =>
+export const getCustomerTier = (points: number) =>
   LOYALTY_TIERS.find((tier) => points >= tier.min && points <= tier.max) || LOYALTY_TIERS[0];
+
+export const TIER_BENEFITS = {
+  "Bronze": {
+    benefits: ["Free Shipping on orders over $50", "Early access to sales"],
+    discountCode: "WELCOME_BRONZE_10"
+  },
+  "Silver": {
+    benefits: ["Free Shipping on all orders", "1.5x Points Multiplier", "Birthday Gift"],
+    discountCode: "SILVER_STATUS_20"
+  },
+  "Gold": {
+    benefits: ["Priority Support", "2x Points Multiplier", "Exclusive Events"],
+    discountCode: "GOLD_MEMBER_25"
+  },
+  "Platinum": {
+    benefits: ["Personal Concierge", "2.5x Points Multiplier", "All previous benefits"],
+    discountCode: "PLATINUM_ELITE_30"
+  }
+};
