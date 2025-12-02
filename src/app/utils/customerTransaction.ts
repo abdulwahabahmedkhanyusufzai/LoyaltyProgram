@@ -61,25 +61,44 @@ const useCustomerTransactions = (customerId: string | null | undefined) => {
 
         const { orders = [], loyaltyLedger = [] } = data;
 
-        // Create a map of orders for easy lookup if needed (e.g. to get order amount)
-        const orderMap = new Map<string, Order>(orders.map((o: Order) => [o.id, o]));
+        // Create a map of ledger entries by orderId for easy lookup
+        const ledgerMap = new Map<string, LedgerEntry>();
+        const manualLedgerEntries: LedgerEntry[] = [];
 
-        // Map ledger data to transaction format
-        const ledgerTxs: Transaction[] = loyaltyLedger.map((entry: LedgerEntry) => {
-          const relatedOrder = entry.orderId ? orderMap.get(entry.orderId) : null;
-          
+        loyaltyLedger.forEach((entry: LedgerEntry) => {
+          if (entry.orderId) {
+            ledgerMap.set(entry.orderId, entry);
+          } else {
+            manualLedgerEntries.push(entry);
+          }
+        });
+
+        // 1. Map Orders to Transactions
+        const orderTxs: Transaction[] = orders.map((order: Order) => {
+          const ledgerEntry = ledgerMap.get(order.id);
           return {
-            date: new Date(entry.earnedAt).toLocaleDateString(),
-            action: entry.sourceType || "Adjustment", // e.g. "ORDER", "MANUAL", "REFERRAL"
-            description: entry.reason || (relatedOrder ? `Order #${relatedOrder.orderNumber}` : "Points Adjustment"),
-            amount: relatedOrder ? Number(relatedOrder.totalAmount) : 0, // Show amount only if linked to an order
-            points: entry.change,
-            id: entry.id,
+            id: order.id, // Use order ID for uniqueness
+            date: new Date(order.createdAt).toLocaleDateString(),
+            action: "Order",
+            description: `Order #${order.orderNumber}`,
+            amount: Number(order.totalAmount),
+            // Use ledger points if available, otherwise 0 (since we want to show real DB state)
+            points: ledgerEntry ? ledgerEntry.change : 0, 
           };
         });
 
-        // Sort by date (newest first)
-        const combinedTxs = ledgerTxs.sort(
+        // 2. Map Manual/Unlinked Ledger Entries to Transactions
+        const manualTxs: Transaction[] = manualLedgerEntries.map((entry: LedgerEntry) => ({
+          id: entry.id,
+          date: new Date(entry.earnedAt).toLocaleDateString(),
+          action: entry.sourceType || "Adjustment",
+          description: entry.reason || "Points Adjustment",
+          amount: 0,
+          points: entry.change,
+        }));
+
+        // Combine and Sort
+        const combinedTxs = [...orderTxs, ...manualTxs].sort(
           (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
         );
 
