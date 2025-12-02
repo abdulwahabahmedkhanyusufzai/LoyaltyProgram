@@ -50,6 +50,7 @@ export function useCustomers() {
       let customersData: { customers: CustomerApiResponse[] };
 
       if (month) {
+        console.log("Fetching customers by month:", month, year);
         // Fetch by month (for TableLoyalty)
         const now = new Date();
         const payload = {
@@ -64,15 +65,19 @@ export function useCustomers() {
         });
         customersData = await resCustomers.json();
       } else {
+        console.log("Fetching ALL customers");
         // Fetch all customers (for Add/Remove page)
         const resCustomers = await fetch("/api/customers");
         const data = await resCustomers.json();
+        console.log("Received all customers data:", data);
         // Normalize response: /api/customers returns { customers: [], count: number }
         customersData = { customers: data.customers };
       }
 
       const resPoints = await fetch(`/api/customers/points`);
       const pointsData: PointsResponse[] = await resPoints.json();
+
+      console.log(`Processing ${customersData.customers?.length} customers`);
 
       if (customersData.customers) {
         const formatted: Customer[] = customersData.customers.map((c) => {
