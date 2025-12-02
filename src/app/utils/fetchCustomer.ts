@@ -43,13 +43,33 @@ export function useCustomers() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchCustomers = useCallback(async () => {
+  const fetchCustomers = useCallback(async (month?: number, year?: number) => {
     try {
       setLoading(true);
 
-      // Fetch all customers (generic endpoint)
-      const resCustomers = await fetch("/api/customers");
-      const customersData: { customers: CustomerApiResponse[]; count: number } = await resCustomers.json();
+      let customersData: { customers: CustomerApiResponse[] };
+
+      if (month) {
+        // Fetch by month (for TableLoyalty)
+        const now = new Date();
+        const payload = {
+          month: month,
+          year: year ?? now.getFullYear(),
+        };
+
+        const resCustomers = await fetch("/api/customers/byMonth", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        customersData = await resCustomers.json();
+      } else {
+        // Fetch all customers (for Add/Remove page)
+        const resCustomers = await fetch("/api/customers");
+        const data = await resCustomers.json();
+        // Normalize response: /api/customers returns { customers: [], count: number }
+        customersData = { customers: data.customers };
+      }
 
       const resPoints = await fetch(`/api/customers/points`);
       const pointsData: PointsResponse[] = await resPoints.json();
