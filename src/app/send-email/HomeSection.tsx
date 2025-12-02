@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "use-intl";
 
-const HomeSection = ({ setStep, setSelectedTab }) => {
+const HomeSection = ({ setStep, setSelectedTab, onSelectGroup }) => {
   const t = useTranslations("homeSection");
 
   const [selectedOption, setSelectedOption] = useState("hosts");
@@ -48,8 +48,16 @@ const HomeSection = ({ setStep, setSelectedTab }) => {
       <div className="my-10 flex justify-center">
         <button
           onClick={() => {
-            setStep(2);
-            setSelectedTab(t("sendEmailTab"));
+            if (onSelectGroup) {
+              onSelectGroup(selectedOption);
+            }
+            if (selectedOption === "specificPerson") {
+              setStep(1);
+              setSelectedTab("customers");
+            } else {
+              setStep(2);
+              setSelectedTab("sendEmail"); // Use string directly to match parent logic
+            }
           }}
           className="w-full sm:w-[474px] px-8 py-2 rounded-full bg-[#6a4e1e] text-white font-medium shadow-md hover:bg-[#5a3f19] transition"
         >

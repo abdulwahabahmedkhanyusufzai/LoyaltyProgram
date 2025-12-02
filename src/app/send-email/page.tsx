@@ -23,6 +23,7 @@ function LoyalCustomersList() {
   const [selectedEmail, setSelectedEmail] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
+  const [recipientGroup, setRecipientGroup] = useState("all");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -66,6 +67,25 @@ function LoyalCustomersList() {
     setStep(2);
   };
 
+  const handleGroupSelect = (group: string) => {
+    setRecipientGroup(group);
+  };
+
+  // Filter customers based on selected group
+  const targetCustomers = customers.filter((c) => {
+    if (recipientGroup === "all") return true;
+    if (recipientGroup === "specificPerson") return true; // Handled by manual selection
+    if (recipientGroup === "test") return false; // TODO: Define test group logic
+    
+    // Map groups to loyalty titles
+    const title = c.loyaltyTitle?.toLowerCase() || "";
+    if (recipientGroup === "hosts") return title === "host";
+    if (recipientGroup === "guests") return title === "guest";
+    if (recipientGroup === "welcomed") return title === "welcomed";
+    
+    return true;
+  });
+
   const PAGE_SIZE = 10;
   const currentCustomers = customers.slice(
     (page - 1) * PAGE_SIZE,
@@ -103,11 +123,19 @@ function LoyalCustomersList() {
         )}
 
         {selectedTab === "home" && step === 0 && (
-          <HomeSection setStep={setStep} setSelectedTab={setSelectedTab} />
+          <HomeSection 
+            setStep={setStep} 
+            setSelectedTab={setSelectedTab} 
+            onSelectGroup={handleGroupSelect}
+          />
         )}
 
         {selectedTab === "sendEmail" && step === 2 && (
-          <SendEmail customers={customers} prefillEmail={selectedEmail} />
+          <SendEmail 
+            customers={customers} 
+            targetCustomers={targetCustomers}
+            prefillEmail={selectedEmail} 
+          />
         )}
       </div>
 

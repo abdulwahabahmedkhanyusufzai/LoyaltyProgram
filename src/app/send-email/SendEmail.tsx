@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "use-intl";
 import { FloatingInput } from "../components/FloatingInput";
 
-const SendEmail = ({ customers, prefillEmail }) => {
+const SendEmail = ({ customers, prefillEmail, targetCustomers }) => {
   const t = useTranslations("sendEmail");
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -20,6 +20,8 @@ const SendEmail = ({ customers, prefillEmail }) => {
   // Editable template texts
   const [bannerText, setBannerText] = useState(t("bannerText"));
   const [pointsText, setPointsText] = useState("25");
+
+  const isBulk = targetCustomers && targetCustomers.length > 0 && !prefillEmail;
 
   const generateHtml = () => `
     <div style="font-family: Arial, sans-serif; background:#fffef9; padding:16px; border-radius:16px; border:1px solid #ddd;">
@@ -42,13 +44,18 @@ const SendEmail = ({ customers, prefillEmail }) => {
   `;
 
   const handleSend = async () => {
-    if (!form.recipient || !form.subject) {
+    if (!form.subject) {
+      setStatus({ type: "error", msg: t("errors.fillAllFields") });
+      return;
+    }
+
+    if (!isBulk && !form.recipient) {
       setStatus({ type: "error", msg: t("errors.fillAllFields") });
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(form.recipient)) {
+    if (!isBulk && !emailRegex.test(form.recipient)) {
       setStatus({ type: "error", msg: t("errors.invalidEmail") });
       return;
     }
@@ -57,18 +64,34 @@ const SendEmail = ({ customers, prefillEmail }) => {
       setLoading(true);
       setStatus(null);
 
-      const res = await fetch("/api/send-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          to: form.recipient,
-          subject: form.subject,
-          points: pointsText,
-        }),
-      });
+      const recipients = isBulk ? targetCustomers : [{ email: form.recipient }];
+      let successCount = 0;
+      let failCount = 0;
 
-      if (!res.ok) throw new Error(t("errors.sendFailed"));
-      setStatus({ type: "success", msg: t("success.sentTo", { email: form.recipient }) });
+      for (const recipient of recipients) {
+        try {
+          const res = await fetch("/api/send-email", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              to: recipient.email,
+              subject: form.subject,
+              points: pointsText,
+            }),
+          });
+          if (res.ok) successCount++;
+          else failCount++;
+        } catch (e) {
+          failCount++;
+        }
+      }
+
+      if (failCount === 0) {
+        setStatus({ type: "success", msg: t("success.sentTo", { email: isBulk ? `${successCount} recipients` : form.recipient }) });
+      } else {
+        setStatus({ type: "warning", msg: `Sent to ${successCount}, failed ${failCount}` });
+      }
+
     } catch (err) {
       setStatus({ type: "error", msg: err.message || t("errors.sendFailed") });
     } finally {
@@ -110,26 +133,34 @@ const SendEmail = ({ customers, prefillEmail }) => {
     <div className="space-y-4">
       {/* Recipient input */}
       <div className="relative">
-        <FloatingInput
-          id="recipient"
-          placeholder={t("placeholders.recipient")}
-          type="text"
-          value={searchQuery}
-          onChange={handleRecipientSearch}
-        />
-        {showSuggestions && suggestions.length > 0 && (
-          <ul className="absolute z-10 bg-white border border-gray-300 rounded-lg w-full mt-1 max-h-48 overflow-y-auto shadow-md">
-            {suggestions.map((c, idx) => (
-              <li
-                key={idx}
-                onClick={() => handleSelectRecipient(c)}
-                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-              >
-                {c.firstName} {c.lastName} —{" "}
-                <span className="text-gray-600">{c.email}</span>
-              </li>
-            ))}
-          </ul>
+        {isBulk ? (
+          <div className="p-3 bg-gray-100 rounded-lg border border-gray-300 text-gray-700">
+            Sending to <strong>{targetCustomers.length}</strong> recipients
+          </div>
+        ) : (
+          <>
+            <FloatingInput
+              id="recipient"
+              placeholder={t("placeholders.recipient")}
+              type="text"
+              value={searchQuery}
+              onChange={handleRecipientSearch}
+            />
+            {showSuggestions && suggestions.length > 0 && (
+              <ul className="absolute z-10 bg-white border border-gray-300 rounded-lg w-full mt-1 max-h-48 overflow-y-auto shadow-md">
+                {suggestions.map((c, idx) => (
+                  <li
+                    key={idx}
+                    onClick={() => handleSelectRecipient(c)}
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  >
+                    {c.firstName} {c.lastName} —{" "}
+                    <span className="text-gray-600">{c.email}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </>
         )}
       </div>
 
@@ -191,6 +222,8 @@ const SendEmail = ({ customers, prefillEmail }) => {
         <div
           className={`text-sm font-medium p-2 rounded ${status.type === "success"
               ? "bg-green-100 text-green-800"
+              : status.type === "warning"
+              ? "bg-yellow-100 text-yellow-800"
               : "bg-red-100 text-red-800"
             }`}
         >
