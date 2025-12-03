@@ -16,13 +16,32 @@ const RegisterAsaCustomer = () => {
     expiry: "",
     notifications: {
       systemAlerts: false,
+"use client";
+import { useEffect, useState } from "react";
+import { FieldRenderer } from "../components/FieldRenderer";
+import { FormManager } from "../utils/FormManger";
+
+const RegisterAsaCustomer = () => {
+  const [formManager] = useState(new FormManager());
+  const [formData, setFormData] = useState({
+    profilePicPreview: "",
+    fullName: "",
+    email: "",
+    phone: "",
+    currentPassword: "",
+    tier: "",
+    points: "",
+    expiry: "",
+    notifications: {
+      systemAlerts: false,
       notifications: false,
       weeklyReports: false,
     },
     language: "English",
   });
 
-  const [loading, setLoading] = useState(false); // button loading
+  const [securityLoading, setSecurityLoading] = useState(false);
+  const [generalLoading, setGeneralLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true); // whole page loader
 
 useEffect(() => {
@@ -84,8 +103,10 @@ useEffect(() => {
               form={formData}
              setFormData={setFormData}
              formManager={formManager}
-             loading={loading}
-             setLoading={setLoading}
+             securityLoading={securityLoading}
+             setSecurityLoading={setSecurityLoading}
+             generalLoading={generalLoading}
+             setGeneralLoading={setGeneralLoading}
             />
               
       </div>

@@ -13,8 +13,10 @@ export const FieldRenderer = ({
   form,
   setFormData,
   formManager,
-  loading,
-  setLoading
+  securityLoading,
+  setSecurityLoading,
+  generalLoading,
+  setGeneralLoading
 }: any) => {
   const t = useTranslations("formSections");
   const { formSections } = useNavData(t);
@@ -29,28 +31,28 @@ export const FieldRenderer = ({
   const handleSecuritySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      setLoading(true);
+      setSecurityLoading(true);
       await formManager.submitProfile();
       toast.success("✅ Profile & Password saved successfully!");
       // Optional: Reset password fields only? Or keep form as is.
     } catch (err: any) {
       toast.error(`❌ ${err.message}`);
     } finally {
-      setLoading(false);
+      setSecurityLoading(false);
     }
   };
 
   const handleGeneralSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      setLoading(true);
+      setGeneralLoading(true);
       // Pass the current notifications state to the manager
       await formManager.submitNotifications(form.notifications);
       toast.success("✅ Notifications & Preferences saved successfully!");
     } catch (err: any) {
       toast.error(`❌ ${err.message}`);
     } finally {
-      setLoading(false);
+      setGeneralLoading(false);
     }
   };
 
@@ -148,7 +150,7 @@ export const FieldRenderer = ({
             </div>
           </Section>
         )}
-        <LoadingButton loading={loading} type="submit">
+        <LoadingButton loading={securityLoading} type="submit">
           Save Password
         </LoadingButton>
          
@@ -166,9 +168,10 @@ export const FieldRenderer = ({
         <div className="mt-6 space-y-3">
           <button
             type="submit"
-            className="w-full bg-[#734A00] text-white py-3 rounded-full font-semibold hover:bg-[#5a3800] transition"
+            disabled={generalLoading}
+            className="w-full bg-[#734A00] text-white py-3 rounded-full font-semibold hover:bg-[#5a3800] transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Save Changes
+            {generalLoading ? "Saving..." : "Save Changes"}
           </button>
           <button
             onClick={handleCancel}
