@@ -102,12 +102,7 @@ export const ActivityCalendar = () => {
                 >
                   {day || ""}
 
-                  {/* Tooltip for unmarked days */}
-                  {day && !isMarked && (
-                    <div className="absolute bottom-full mb-1 hidden group-hover:block w-max px-2 py-1 text-xs text-white bg-black rounded z-50 whitespace-nowrap">
-                      No events
-                    </div>
-                  )}
+                  {/* Tooltip removed as per user request */}
                 </div>
               );
             })}
