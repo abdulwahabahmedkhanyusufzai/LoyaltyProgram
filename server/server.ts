@@ -52,6 +52,20 @@ io.on("connection", async (socket: Socket) => {
     socket.emit("pong_test", { message: "pong", received: msg });
   });
 
+  // Mark all as read
+  socket.on("MARK_ALL_READ", async () => {
+    log("Received MARK_ALL_READ from client", { socketId: socket.id });
+    try {
+      await prisma.notification.updateMany({
+        where: { read: false },
+        data: { read: true },
+      });
+      log("Marked all notifications as read in DB");
+    } catch (err) {
+      log("Error marking notifications as read", err);
+    }
+  });
+
   // Handle disconnect
   socket.on("disconnect", (reason) => {
     log("Client disconnected", { socketId: socket.id, reason });

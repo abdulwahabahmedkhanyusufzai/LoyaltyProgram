@@ -70,6 +70,7 @@ export function useNotifications() {
   const markAllRead = useCallback(() => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     setUnreadCount(0);
+    wsRef.current?.emit("MARK_ALL_READ");
   }, []);
 
   return {

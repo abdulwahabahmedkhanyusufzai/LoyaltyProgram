@@ -4,5 +4,6 @@
   "noNotifications": "No notifications",
    "notifPointsUpdated": "Your loyalty points have been updated!",
   "notifNewOffer": "New offer: 20% off selected items",
-  "notifSubscriptionExpire": "Your subscription will expire in 5 days"
+  "notifSubscriptionExpire": "Your subscription will expire in 5 days",
+  "markAllRead": "Mark all as read"
 }
