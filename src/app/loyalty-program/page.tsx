@@ -116,20 +116,28 @@ const PremiumLoyaltyProgram = () => {
           </div>
           <div className="flex justify-center items-center gap-3 sm:gap-5">
             {isEditing ? (
-              <button
-                onClick={handleSave}
-                disabled={saving}
-                className={`border rounded-[20px] sm:rounded-[25px] px-4 h-[36px] sm:h-[44px] text-[12px] sm:text-[14px] flex items-center gap-2 transition ${
-                  saving
-                    ? "bg-gray-400 border-gray-400 text-white cursor-not-allowed"
-                    : "bg-[#734A00] border-[#734A00] text-white hover:bg-[#734A00]"
-                }`}
-              >
-                {saving && (
-                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                )}
-                {saving ? t("saving") : t("save")}
-              </button>
+              <>
+                <button
+                  onClick={() => setIsEditing(false)}
+                  className="border rounded-[20px] sm:rounded-[25px] border-[#2C2A25] px-4 h-[36px] sm:h-[44px] text-[12px] sm:text-[14px] hover:bg-[#2C2A25] hover:text-white transition"
+                >
+                  {t("cancel")}
+                </button>
+                <button
+                  onClick={handleSave}
+                  disabled={saving}
+                  className={`border rounded-[20px] sm:rounded-[25px] px-4 h-[36px] sm:h-[44px] text-[12px] sm:text-[14px] flex items-center gap-2 transition ${
+                    saving
+                      ? "bg-gray-400 border-gray-400 text-white cursor-not-allowed"
+                      : "bg-[#734A00] border-[#734A00] text-white hover:bg-[#734A00]"
+                  }`}
+                >
+                  {saving && (
+                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  )}
+                  {saving ? t("saving") : t("save")}
+                </button>
+              </>
             ) : (
               <button
                 onClick={() => setIsEditing(true)}
