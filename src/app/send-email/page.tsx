@@ -102,9 +102,11 @@ function LoyalCustomersList() {
     const title = c.loyaltyTitle?.toLowerCase() || "";
     if (recipientGroup === "welcomed") return title === "welcomed" || title === "";
     
-    // For manual groups (hosts, guests, test, specific), targetCustomers isn't used for bulk
-    // unless we want to allow "Send to All Hosts" from Step 2? 
-    // The requirement is manual selection for these, so targetCustomers might be empty or unused here.
+    if (recipientGroup === "test") {
+      return c.email?.toLowerCase().includes("test");
+    }
+    
+    // For manual groups (hosts, guests, specific), targetCustomers isn't used for bulk
     return false; 
   });
 
