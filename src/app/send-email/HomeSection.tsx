@@ -52,7 +52,7 @@ const HomeSection = ({ setStep, setSelectedTab, onSelectGroup }) => {
               onSelectGroup(selectedOption);
             }
             // Manual selection groups
-            if (["specificPerson", "test", "hosts", "guests"].includes(selectedOption)) {
+            if (["specificPerson", "hosts", "guests"].includes(selectedOption)) {
               setStep(1);
               setSelectedTab("customers");
             } else {

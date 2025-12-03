@@ -80,7 +80,7 @@ function LoyalCustomersList() {
 
     if (recipientGroup === "hosts") groupMatch = title === "host";
     else if (recipientGroup === "guests") groupMatch = title === "guest";
-    else if (recipientGroup === "test") groupMatch = email.includes("test");
+    else if (recipientGroup === "test") groupMatch = (c.numberOfOrders || 0) === 0;
     // "welcomed", "all", "specificPerson" show all in list (or handled in bulk step)
     
     if (!groupMatch) return false;
@@ -103,7 +103,7 @@ function LoyalCustomersList() {
     if (recipientGroup === "welcomed") return title === "welcomed" || title === "";
     
     if (recipientGroup === "test") {
-      return c.email?.toLowerCase().includes("test");
+      return (c.numberOfOrders || 0) === 0;
     }
     
     // For manual groups (hosts, guests, specific), targetCustomers isn't used for bulk
