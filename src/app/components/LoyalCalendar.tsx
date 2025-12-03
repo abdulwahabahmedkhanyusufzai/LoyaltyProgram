@@ -86,7 +86,10 @@ export const ActivityCalendar = () => {
       ) : (
         <>
           {/* Calendar Grid */}
-          <div className="grid grid-cols-7 gap-1 sm:gap-2 mt-3 sm:mt-4 text-center text-[12px] sm:text-[14px] flex-1">
+          <div 
+            className="grid grid-cols-7 gap-1 sm:gap-2 mt-3 sm:mt-4 text-center text-[12px] sm:text-[14px] flex-1"
+            onMouseLeave={() => setHoveredEvent(null)}
+          >
             {["Sn", "M", "Tue", "W", "Thu", "F", "St"].map((day) => (
               <div key={day} className="font-medium text-[#757575]">{day}</div>
             ))}
@@ -99,13 +102,10 @@ export const ActivityCalendar = () => {
                   key={i}
                   onMouseEnter={() => {
                     if (day && isMarked) {
-                      console.log("Hovering day:", day, "Event:", calendarEvents[day]);
                       setHoveredEvent({ date: day, label: calendarEvents[day].event });
+                    } else {
+                      setHoveredEvent(null);
                     }
-                  }}
-                  onMouseLeave={() => {
-                    console.log("Mouse leave");
-                    setHoveredEvent(null);
                   }}
                   className={`relative group h-[26px] sm:h-[30px] 2xl:h-[50px] flex items-center justify-center rounded-full text-[13px] sm:text-[15px]
                     ${day ? "cursor-pointer transition" : ""}

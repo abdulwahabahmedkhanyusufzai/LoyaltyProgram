@@ -39,7 +39,6 @@ interface RewardsRowProps {
 }
 
 const RewardsRow = ({ calendarEvents, hoveredEvent }: RewardsRowProps) => {
-  console.log("RewardsRow render. Hovered:", hoveredEvent);
   let badgesToShow;
 
   if (hoveredEvent) {
