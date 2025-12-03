@@ -71,6 +71,12 @@ const PremiumLoyaltyProgram = () => {
     setRows(updatedRows);
   };
 
+  const handleLabelChange = (rowIdx: number, value: string) => {
+    const updatedRows = [...rows];
+    updatedRows[rowIdx].label = value;
+    setRows(updatedRows);
+  };
+
   // Save API call
   const handleSave = async () => {
     try {
@@ -211,7 +217,16 @@ const PremiumLoyaltyProgram = () => {
                   className="text-xs sm:text-sm lg:text-[12px] 2xl:text-[14px]"
                 >
                   <td className="px-3 py-2 font-medium text-[#2C2A25] whitespace-normal">
-                    {row.label}
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        value={row.label}
+                        onChange={(e) => handleLabelChange(rowIdx, e.target.value)}
+                        className="w-full px-2 py-1 border rounded text-xs sm:text-sm"
+                      />
+                    ) : (
+                      row.label
+                    )}
                   </td>
                   {row.values.map((val: string, colIdx: number) => (
                     <td
