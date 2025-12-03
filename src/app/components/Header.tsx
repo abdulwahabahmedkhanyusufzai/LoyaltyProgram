@@ -25,7 +25,7 @@ export const Header = ({ onToggle }: HeaderProps) => {
   const router = useRouter();
   const t = useTranslations();
   const { user } = useUser();
-  const { notifications, unreadCount, markAllRead, toggleNotifications, bellRef, notificationsOpen, dropdownRef } = useNotifications();
+  const { notifications, unreadCount, markAllRead, markRead, toggleNotifications, bellRef, notificationsOpen, dropdownRef } = useNotifications();
   const toggleSidebar = () => {
     const newOpen = !open;
     setOpen(newOpen);
@@ -85,6 +85,12 @@ export const Header = ({ onToggle }: HeaderProps) => {
                 notifications.map((n) => (
                   <div
                     key={n.id}
+                    onClick={() => {
+                      markRead(n.id);
+                      if (n.data?.customer) {
+                        router.push(`/loyal-customers?search=${encodeURIComponent(n.data.customer)}`);
+                      }
+                    }}
                     className={`flex flex-col p-3 rounded-lg cursor-pointer shadow-sm transition ${n.read ? "bg-gray-50 hover:bg-gray-100" : "bg-yellow-50 hover:bg-yellow-100"
                       }`}
                   >

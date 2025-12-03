@@ -66,6 +66,20 @@ io.on("connection", async (socket: Socket) => {
     }
   });
 
+  // Mark single as read
+  socket.on("MARK_READ", async (id: string) => {
+    log("Received MARK_READ from client", { socketId: socket.id, id });
+    try {
+      await prisma.notification.update({
+        where: { id },
+        data: { read: true },
+      });
+      log(`Marked notification ${id} as read in DB`);
+    } catch (err) {
+      log("Error marking notification as read", err);
+    }
+  });
+
   // Handle disconnect
   socket.on("disconnect", (reason) => {
     log("Client disconnected", { socketId: socket.id, reason });

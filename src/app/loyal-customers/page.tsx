@@ -20,14 +20,20 @@ function LoyalCustomersList() {
 
   const PAGE_SIZE = 10;
 
-  // Detect URL param for customerId
+  // Detect URL param for customerId or search
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("customerId");
-    setCustomerIdFromUrl(id);
+    const search = params.get("search");
+
     if (id) {
+      setCustomerIdFromUrl(id);
       setStep(0);
       setSelectedTab("clients");
+    } else if (search) {
+      setSearchTerm(search);
+      setStep(1);
+      setSelectedTab("home");
     } else {
       setStep(1);
       setSelectedTab("home");

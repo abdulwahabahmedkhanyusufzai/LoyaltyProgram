@@ -73,6 +73,14 @@ export function useNotifications() {
     wsRef.current?.emit("MARK_ALL_READ");
   }, []);
 
+  const markRead = useCallback((id: string) => {
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+    );
+    setUnreadCount((prev) => Math.max(0, prev - 1));
+    wsRef.current?.emit("MARK_READ", id);
+  }, []);
+
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -102,5 +110,6 @@ export function useNotifications() {
     dropdownRef,
     toggleNotifications,
     markAllRead,
+    markRead,
   };
 }
