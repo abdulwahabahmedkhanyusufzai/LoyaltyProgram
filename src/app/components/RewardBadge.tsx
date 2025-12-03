@@ -35,17 +35,24 @@ const RewardBadge = ({ date, label }: RewardBadgeProps) => {
 
 interface RewardsRowProps {
   calendarEvents: Record<number, { event: string; type: string }>;
+  hoveredEvent: { date: number; label: string } | null;
 }
 
-const RewardsRow = ({ calendarEvents }: RewardsRowProps) => {
-  // Convert object to array, sort by date, and take first 3
-  const badgesToShow = Object.entries(calendarEvents)
-    .map(([date, data]) => ({
-      date: Number(date),
-      label: data.event,
-    }))
-    .sort((a, b) => a.date - b.date)
-    .slice(0, 3);
+const RewardsRow = ({ calendarEvents, hoveredEvent }: RewardsRowProps) => {
+  let badgesToShow;
+
+  if (hoveredEvent) {
+    badgesToShow = [hoveredEvent];
+  } else {
+    // Convert object to array, sort by date, and take first 3
+    badgesToShow = Object.entries(calendarEvents)
+      .map(([date, data]) => ({
+        date: Number(date),
+        label: data.event,
+      }))
+      .sort((a, b) => a.date - b.date)
+      .slice(0, 3);
+  }
 
   return (
     <div className="flex justify-center items-center space-x-2 sm:space-x-1 lg:space-x-2 overflow-x-auto py-2">

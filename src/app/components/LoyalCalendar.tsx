@@ -9,6 +9,7 @@ export const ActivityCalendar = () => {
   const router = useRouter();
   const [currentDate] = useState(new Date());
   const [calendarEvents, setCalendarEvents] = useState<Record<number, { event: string; type: string }>>({});
+  const [hoveredEvent, setHoveredEvent] = useState<{ date: number; label: string } | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Current month/year
@@ -96,6 +97,12 @@ export const ActivityCalendar = () => {
               return (
                 <div
                   key={i}
+                  onMouseEnter={() => {
+                    if (day && isMarked) {
+                      setHoveredEvent({ date: day, label: calendarEvents[day].event });
+                    }
+                  }}
+                  onMouseLeave={() => setHoveredEvent(null)}
                   className={`relative group h-[26px] sm:h-[30px] 2xl:h-[50px] flex items-center justify-center rounded-full text-[13px] sm:text-[15px]
                     ${day ? "cursor-pointer transition" : ""}
                     ${isMarked ? "bg-[#2C2A25] text-white" : "hover:bg-[#2C2A25] hover:text-white"}
@@ -110,7 +117,7 @@ export const ActivityCalendar = () => {
           </div>
 
           {/* Rewards Row */}
-          <RewardsRow calendarEvents={calendarEvents} />
+          <RewardsRow calendarEvents={calendarEvents} hoveredEvent={hoveredEvent} />
         </>
       )}
     </div>
