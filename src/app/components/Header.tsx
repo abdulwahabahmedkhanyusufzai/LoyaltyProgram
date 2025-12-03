@@ -25,7 +25,7 @@ export const Header = ({ onToggle }: HeaderProps) => {
   const router = useRouter();
   const t = useTranslations();
   const { user } = useUser();
-  const { notifications, unreadCount, markAllRead, toggleNotifications, bellRef, notificationsOpen } = useNotifications();
+  const { notifications, unreadCount, markAllRead, toggleNotifications, bellRef, notificationsOpen, dropdownRef } = useNotifications();
   const toggleSidebar = () => {
     const newOpen = !open;
     setOpen(newOpen);
@@ -63,7 +63,7 @@ export const Header = ({ onToggle }: HeaderProps) => {
 
         {/* Notifications Dropdown */}
         {notificationsOpen && (
-          <div className="absolute top-12 right-30 w-80 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
+          <div ref={dropdownRef} className="absolute top-12 right-30 w-80 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
             <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200">
               <h2 className="text-lg font-bold text-gray-800">{t("notifications")}</h2>
               {unreadCount > 0 && (

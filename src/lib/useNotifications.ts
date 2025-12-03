@@ -73,11 +73,33 @@ export function useNotifications() {
     wsRef.current?.emit("MARK_ALL_READ");
   }, []);
 
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        notificationsOpen &&
+        bellRef.current &&
+        !bellRef.current.contains(event.target as Node) &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setNotificationsOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [notificationsOpen]);
+
   return {
     notifications,
     unreadCount,
     notificationsOpen,
     bellRef,
+    dropdownRef,
     toggleNotifications,
     markAllRead,
   };
