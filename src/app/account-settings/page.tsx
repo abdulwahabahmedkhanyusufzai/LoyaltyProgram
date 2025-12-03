@@ -16,24 +16,6 @@ const RegisterAsaCustomer = () => {
     expiry: "",
     notifications: {
       systemAlerts: false,
-"use client";
-import { useEffect, useState } from "react";
-import { FieldRenderer } from "../components/FieldRenderer";
-import { FormManager } from "../utils/FormManger";
-
-const RegisterAsaCustomer = () => {
-  const [formManager] = useState(new FormManager());
-  const [formData, setFormData] = useState({
-    profilePicPreview: "",
-    fullName: "",
-    email: "",
-    phone: "",
-    currentPassword: "",
-    tier: "",
-    points: "",
-    expiry: "",
-    notifications: {
-      systemAlerts: false,
       notifications: false,
       weeklyReports: false,
     },
@@ -44,41 +26,41 @@ const RegisterAsaCustomer = () => {
   const [generalLoading, setGeneralLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true); // whole page loader
 
-useEffect(() => {
-  const fetchUserFromAPI = async () => {
-    try {
-      const res = await fetch("/api/user/me", { credentials: "include" });
-      if (!res.ok) throw new Error(`Failed to fetch user: ${res.status}`);
+  useEffect(() => {
+    const fetchUserFromAPI = async () => {
+      try {
+        const res = await fetch("/api/user/me", { credentials: "include" });
+        if (!res.ok) throw new Error(`Failed to fetch user: ${res.status}`);
 
-      const user = await res.json();
+        const user = await res.json();
 
-      console.log("Fetched user:", user);
+        console.log("Fetched user:", user);
 
-      const prefilled = {
-        profilePicPreview: user.profilePicUrl || "",
-        fullName: user.fullName || "",
-        email: user.email || "",
-        phone: user.phoneNumber || "",
-        language: user.language || "English",
-        notifications: user.notifications || {
+        const prefilled = {
+          profilePicPreview: user.profilePicUrl || "",
+          fullName: user.fullName || "",
+          email: user.email || "",
+          phone: user.phoneNumber || "",
+          language: user.language || "English",
+          notifications: user.notifications || {
             systemAlerts: false,
             notifications: false,
             weeklyReports: false,
-        },
-      };
+          },
+        };
 
-      // ✅ Update both states with the same data
-      setFormData((prev) => ({ ...prev, ...prefilled }));
-      formManager.setFormValues(prefilled);
-    } catch (err) {
-      console.error("Error fetching user:", err);
-    } finally {
-      setPageLoading(false);
-    }
-  };
+        // ✅ Update both states with the same data
+        setFormData((prev) => ({ ...prev, ...prefilled }));
+        formManager.setFormValues(prefilled);
+      } catch (err) {
+        console.error("Error fetching user:", err);
+      } finally {
+        setPageLoading(false);
+      }
+    };
 
-  fetchUserFromAPI();
-}, [formManager]);
+    fetchUserFromAPI();
+  }, [formManager]);
 
 
   if (pageLoading) {
@@ -99,16 +81,16 @@ useEffect(() => {
         </div>
 
         {/* Security Section */}
-            <FieldRenderer
-              form={formData}
-             setFormData={setFormData}
-             formManager={formManager}
-             securityLoading={securityLoading}
-             setSecurityLoading={setSecurityLoading}
-             generalLoading={generalLoading}
-             setGeneralLoading={setGeneralLoading}
-            />
-              
+        <FieldRenderer
+          form={formData}
+          setFormData={setFormData}
+          formManager={formManager}
+          securityLoading={securityLoading}
+          setSecurityLoading={setSecurityLoading}
+          generalLoading={generalLoading}
+          setGeneralLoading={setGeneralLoading}
+        />
+
       </div>
     </div>
   );
