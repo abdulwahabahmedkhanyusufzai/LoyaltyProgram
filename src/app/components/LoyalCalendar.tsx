@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 export const ActivityCalendar = () => {
   const router = useRouter();
   const [currentDate] = useState(new Date());
-  const [markedDates, setMarkedDates] = useState<number[]>([]);
+  const [calendarEvents, setCalendarEvents] = useState<Record<number, { event: string; type: string }>>({});
   const [loading, setLoading] = useState(true);
 
   // Current month/year
@@ -34,8 +34,7 @@ export const ActivityCalendar = () => {
       const res = await fetch(`/api/get-calendar?month=${monthName}`);
       if (!res.ok) throw new Error("Failed to fetch calendar data");
       const data = await res.json();
-      const dates = Object.keys(data.calendarData || {}).map(Number);
-      setMarkedDates(dates);
+      setCalendarEvents(data.calendarData || {});
     } catch (err) {
       console.error(err);
       toast.error("Failed to load calendar data");
@@ -47,6 +46,8 @@ export const ActivityCalendar = () => {
   useEffect(() => {
     fetchCalendarData();
   }, [year, month]);
+
+  const markedDates = Object.keys(calendarEvents).map(Number);
 
   return (
     <div className="w-full h-auto sm:w-[300px] sm:h-[400px] lg:w-[340px] lg:h-[500px] 2xl:w-[502px] 2xl:h-[526px] border border-[#a59f9f] rounded-[32px] p-4 sm:p-6 flex flex-col">
@@ -109,7 +110,7 @@ export const ActivityCalendar = () => {
           </div>
 
           {/* Rewards Row */}
-          <RewardsRow markedDates={markedDates} />
+          <RewardsRow calendarEvents={calendarEvents} />
         </>
       )}
     </div>

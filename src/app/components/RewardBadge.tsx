@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
-import { useNavData } from "../data/customData";
-import { useTranslations } from "next-intl";
+
 
 interface RewardBadgeProps {
   date: number; // always a marked date
@@ -35,22 +34,23 @@ const RewardBadge = ({ date, label }: RewardBadgeProps) => {
 };
 
 interface RewardsRowProps {
-  markedDates: number[];
+  calendarEvents: Record<number, { event: string; type: string }>;
 }
 
-const RewardsRow = ({ markedDates }: RewardsRowProps) => {
-  const t = useTranslations();
-  const { rewards } = useNavData(t);
-  // Filter only rewards that have marked dates
-  const badgesToShow = rewards
-    .map((reward, idx) => ({ ...reward, date: markedDates[idx] }))
-    .filter((r) => r.date !== undefined)
-    .slice(0, 3); // show at most 3 badges
+const RewardsRow = ({ calendarEvents }: RewardsRowProps) => {
+  // Convert object to array, sort by date, and take first 3
+  const badgesToShow = Object.entries(calendarEvents)
+    .map(([date, data]) => ({
+      date: Number(date),
+      label: data.event,
+    }))
+    .sort((a, b) => a.date - b.date)
+    .slice(0, 3);
 
   return (
     <div className="flex justify-center items-center space-x-2 sm:space-x-1 lg:space-x-2 overflow-x-auto py-2">
       {badgesToShow.map((reward, idx) => (
-        <RewardBadge key={idx} date={reward.date!} label={reward.label} />
+        <RewardBadge key={idx} date={reward.date} label={reward.label} />
       ))}
     </div>
   );
