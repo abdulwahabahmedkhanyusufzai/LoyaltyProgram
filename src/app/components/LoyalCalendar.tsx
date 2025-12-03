@@ -95,7 +95,15 @@ export const ActivityCalendar = () => {
             ))}
 
             {daysArray.map((day, i) => {
+              const dateObj = day ? new Date(year, month, day) : null;
+              const isWeekend = dateObj ? dateObj.getDay() === 0 || dateObj.getDay() === 6 : false;
+              const isToday =
+                day === new Date().getDate() &&
+                month === new Date().getMonth() &&
+                year === new Date().getFullYear();
+
               const isMarked = day !== null && markedDates.includes(day);
+              const eventLabel = day && calendarEvents[day] ? calendarEvents[day].event : "";
 
               return (
                 <div
@@ -109,9 +117,12 @@ export const ActivityCalendar = () => {
                       }
                     }
                   }}
+                  title={eventLabel} // Show event on hover (native tooltip)
                   className={`relative group h-[26px] sm:h-[30px] 2xl:h-[50px] flex items-center justify-center rounded-full text-[13px] sm:text-[15px]
                     ${day ? "cursor-pointer transition" : ""}
                     ${isMarked ? "bg-[#2C2A25] text-white" : "hover:bg-[#2C2A25] hover:text-white"}
+                    ${!isMarked && isToday ? "border border-[#734A00] font-bold" : ""}
+                    ${!isMarked && isWeekend ? "text-red-500" : ""}
                   `}
                 >
                   {day || ""}
