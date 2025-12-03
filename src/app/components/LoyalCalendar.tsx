@@ -101,10 +101,12 @@ export const ActivityCalendar = () => {
                 <div
                   key={i}
                   onMouseEnter={() => {
-                    if (day && isMarked) {
-                      setHoveredEvent({ date: day, label: calendarEvents[day].event });
-                    } else {
-                      setHoveredEvent(null);
+                    if (day) {
+                      if (isMarked) {
+                        setHoveredEvent({ date: day, label: calendarEvents[day].event });
+                      } else {
+                        setHoveredEvent({ date: day, label: "No event" });
+                      }
                     }
                   }}
                   className={`relative group h-[26px] sm:h-[30px] 2xl:h-[50px] flex items-center justify-center rounded-full text-[13px] sm:text-[15px]
