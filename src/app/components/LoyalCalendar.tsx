@@ -122,7 +122,6 @@ export const ActivityCalendar = () => {
                     ${day ? "cursor-pointer transition" : ""}
                     ${isMarked ? "bg-[#2C2A25] text-white" : "hover:bg-[#2C2A25] hover:text-white"}
                     ${!isMarked && isToday ? "border border-[#734A00] font-bold" : ""}
-                    ${!isMarked && isWeekend ? "text-red-500" : ""}
                   `}
                 >
                   {day || ""}
