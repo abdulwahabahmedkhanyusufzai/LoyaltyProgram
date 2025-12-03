@@ -56,9 +56,28 @@ export function useNotifications() {
       setUnreadCount((prev) => prev + 1);
     });
 
+    socket.on("NOTIFICATION_UPDATED", ({ id, read }: { id: string; read: boolean }) => {
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, read } : n))
+      );
+      // Recalculate unread count to be safe
+      setNotifications((prev) => {
+        const unread = prev.filter((n) => !n.read).length;
+        setUnreadCount(unread);
+        return prev;
+      });
+    });
+
+    socket.on("ALL_NOTIFICATIONS_READ", () => {
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+      setUnreadCount(0);
+    });
+
     return () => {
       socket.off("NEW_NOTIFICATION");
       socket.off("OLD_NOTIFICATIONS");
+      socket.off("NOTIFICATION_UPDATED");
+      socket.off("ALL_NOTIFICATIONS_READ");
       socket.disconnect();
     };
   }, []);

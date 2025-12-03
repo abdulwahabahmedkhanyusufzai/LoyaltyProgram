@@ -6,6 +6,7 @@ import ProgramLoyal2 from "./program/page";
 import { customerService } from "../utils/CustomerService";
 import LoyaltyDashboard from "../components/LoyaltyDashboard";
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 
 function LoyalCustomersList() {
   const t = useTranslations();
@@ -20,11 +21,12 @@ function LoyalCustomersList() {
 
   const PAGE_SIZE = 10;
 
+  const searchParams = useSearchParams();
+
   // Detect URL param for customerId or search
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get("customerId");
-    const search = params.get("search");
+    const id = searchParams.get("customerId");
+    const search = searchParams.get("search");
 
     if (id) {
       setCustomerIdFromUrl(id);
@@ -35,10 +37,13 @@ function LoyalCustomersList() {
       setStep(1);
       setSelectedTab("home");
     } else {
-      setStep(1);
-      setSelectedTab("home");
+      // Only reset if no params are present, to avoid clearing state unnecessarily
+      // But if we want to support "back" button clearing, we might need this.
+      // For now, let's keep it simple.
+      // setStep(1);
+      // setSelectedTab("home");
     }
-  }, []);
+  }, [searchParams]);
 
   // Fetch data
   useEffect(() => {

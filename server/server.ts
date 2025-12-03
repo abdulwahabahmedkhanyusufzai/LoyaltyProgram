@@ -61,6 +61,8 @@ io.on("connection", async (socket: Socket) => {
         data: { read: true },
       });
       log("Marked all notifications as read in DB");
+      // Broadcast to all clients (including sender) to ensure sync
+      io.emit("ALL_NOTIFICATIONS_READ");
     } catch (err) {
       log("Error marking notifications as read", err);
     }
@@ -75,6 +77,8 @@ io.on("connection", async (socket: Socket) => {
         data: { read: true },
       });
       log(`Marked notification ${id} as read in DB`);
+      // Broadcast to all clients
+      io.emit("NOTIFICATION_UPDATED", { id, read: true });
     } catch (err) {
       log("Error marking notification as read", err);
     }
