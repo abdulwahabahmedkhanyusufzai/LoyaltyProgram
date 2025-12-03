@@ -99,10 +99,14 @@ export const ActivityCalendar = () => {
                   key={i}
                   onMouseEnter={() => {
                     if (day && isMarked) {
+                      console.log("Hovering day:", day, "Event:", calendarEvents[day]);
                       setHoveredEvent({ date: day, label: calendarEvents[day].event });
                     }
                   }}
-                  onMouseLeave={() => setHoveredEvent(null)}
+                  onMouseLeave={() => {
+                    console.log("Mouse leave");
+                    setHoveredEvent(null);
+                  }}
                   className={`relative group h-[26px] sm:h-[30px] 2xl:h-[50px] flex items-center justify-center rounded-full text-[13px] sm:text-[15px]
                     ${day ? "cursor-pointer transition" : ""}
                     ${isMarked ? "bg-[#2C2A25] text-white" : "hover:bg-[#2C2A25] hover:text-white"}
