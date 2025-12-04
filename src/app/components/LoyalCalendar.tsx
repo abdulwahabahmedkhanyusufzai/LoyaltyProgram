@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import RewardsRow from "./RewardBadge";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -52,6 +52,20 @@ export const ActivityCalendar = () => {
   }, [year, month]);
 
   const markedDates = Object.keys(calendarEvents).map(Number);
+
+  const mergedEvents = useMemo(() => {
+    const holidays: Record<number, { event: string; type: string }> = {};
+    const allHolidays = hd.getHolidays(year);
+    
+    allHolidays.forEach((h: any) => {
+      const hDate = new Date(h.date);
+      if (hDate.getFullYear() === year && hDate.getMonth() === month) {
+        holidays[hDate.getDate()] = { event: h.name, type: 'holiday' };
+      }
+    });
+
+    return { ...holidays, ...calendarEvents };
+  }, [year, month, calendarEvents]);
 
   return (
     <div className="w-full h-auto sm:w-[300px] sm:h-[400px] lg:w-[340px] lg:h-[500px] 2xl:w-[502px] 2xl:h-[526px] border border-[#a59f9f] rounded-[32px] p-4 sm:p-6 flex flex-col">
@@ -150,20 +164,7 @@ export const ActivityCalendar = () => {
 
           {/* Rewards Row */}
           <RewardsRow 
-            calendarEvents={{
-              ...calendarEvents,
-              ...(() => {
-                const holidays: Record<number, { event: string; type: string }> = {};
-                const allHolidays = hd.getHolidays(year);
-                allHolidays.forEach((h: any) => {
-                  const hDate = new Date(h.date);
-                  if (hDate.getMonth() === month) {
-                    holidays[hDate.getDate()] = { event: h.name, type: 'holiday' };
-                  }
-                });
-                return holidays;
-              })()
-            }} 
+            calendarEvents={mergedEvents} 
             hoveredEvent={hoveredEvent} 
           />
         </>
