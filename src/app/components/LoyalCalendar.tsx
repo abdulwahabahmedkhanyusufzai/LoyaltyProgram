@@ -59,6 +59,9 @@ export const ActivityCalendar = () => {
       {/* Header */}
       <div className="border-b border-[#D2D1CA] pb-[8px] sm:pb-[10px] flex justify-between items-center">
         <h1 className="text-[16px] sm:text-[18px] font-semibold">Activity</h1>
+        <div className="text-xs text-red-500 hidden">
+          Ev: {markedDates.length}, Hol: {hd.getHolidays(year).length}
+        </div>
         <button
           onClick={() => router.push("/calendar")}
           className="cursor-pointer hover:bg-[#D9D9D9] w-[38px] h-[38px] sm:w-[48px] sm:h-[48px] rounded-full border flex items-center justify-center border-[#a59f9f]"
