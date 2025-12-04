@@ -59,9 +59,6 @@ export const ActivityCalendar = () => {
       {/* Header */}
       <div className="border-b border-[#D2D1CA] pb-[8px] sm:pb-[10px] flex justify-between items-center">
         <h1 className="text-[16px] sm:text-[18px] font-semibold">Activity</h1>
-        <div className="text-xs text-red-500 hidden">
-          Ev: {markedDates.length}, Hol: {hd.getHolidays(year).length}
-        </div>
         <button
           onClick={() => router.push("/calendar")}
           className="cursor-pointer hover:bg-[#D9D9D9] w-[38px] h-[38px] sm:w-[48px] sm:h-[48px] rounded-full border flex items-center justify-center border-[#a59f9f]"
@@ -139,7 +136,7 @@ export const ActivityCalendar = () => {
                   title={eventLabel || holidayName} // Show event on hover (native tooltip)
                   className={`relative group h-[26px] sm:h-[30px] 2xl:h-[50px] flex items-center justify-center rounded-full text-[13px] sm:text-[15px]
                     ${day ? "cursor-pointer transition" : ""}
-                    ${isMarked ? "bg-[#2C2A25] text-white" : isHoliday ? "bg-[#FFF8E1] text-[#8B8B8B] border border-yellow-200" : "hover:bg-[#2C2A25] hover:text-white"}
+                    ${isMarked || isHoliday ? "bg-[#2C2A25] text-white" : "hover:bg-[#2C2A25] hover:text-white"}
                     ${isToday ? "ring-2 ring-inset ring-[#734A00] font-bold" : ""}
                   `}
                 >
@@ -152,7 +149,23 @@ export const ActivityCalendar = () => {
           </div>
 
           {/* Rewards Row */}
-          <RewardsRow calendarEvents={calendarEvents} hoveredEvent={hoveredEvent} />
+          <RewardsRow 
+            calendarEvents={{
+              ...calendarEvents,
+              ...(() => {
+                const holidays: Record<number, { event: string; type: string }> = {};
+                const allHolidays = hd.getHolidays(year);
+                allHolidays.forEach((h: any) => {
+                  const hDate = new Date(h.date);
+                  if (hDate.getMonth() === month) {
+                    holidays[hDate.getDate()] = { event: h.name, type: 'holiday' };
+                  }
+                });
+                return holidays;
+              })()
+            }} 
+            hoveredEvent={hoveredEvent} 
+          />
         </>
       )}
     </div>
