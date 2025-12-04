@@ -171,14 +171,14 @@ function LoyalCustomersList() {
                 <tbody>
                   {currentCustomers.length > 0 ? (
                     currentCustomers.map((c: any, i: number) => (
-                      <tr 
-                        key={i} 
+                      <tr
+                        key={i}
                         className="border-b border-gray-100 hover:bg-gray-50 transition cursor-pointer"
                         onClick={() => {
                           const url = new URL(window.location.href);
                           url.searchParams.set("customerId", c.id);
                           window.history.pushState({}, "", url.toString());
-                          
+
                           setCustomerIdFromUrl(c.id);
                           setStep(0);
                           setSelectedTab("clients");
@@ -267,5 +267,3 @@ function LoyalCustomersList() {
 }
 
 export default LoyalCustomersList;
-
-
