@@ -121,7 +121,7 @@ export const ActivityCalendar = () => {
                   className={`relative group h-[26px] sm:h-[30px] 2xl:h-[50px] flex items-center justify-center rounded-full text-[13px] sm:text-[15px]
                     ${day ? "cursor-pointer transition" : ""}
                     ${isMarked ? "bg-[#2C2A25] text-white" : "hover:bg-[#2C2A25] hover:text-white"}
-                    ${!isMarked && isToday ? "border border-[#734A00] font-bold" : ""}
+                    ${isToday ? "ring-2 ring-inset ring-[#734A00] font-bold" : ""}
                   `}
                 >
                   {day || ""}
