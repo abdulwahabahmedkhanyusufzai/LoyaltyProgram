@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import RewardsRow from "./RewardBadge";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import Holidays from "date-holidays";
 
 export const ActivityCalendar = () => {
   const router = useRouter();
@@ -11,6 +12,8 @@ export const ActivityCalendar = () => {
   const [calendarEvents, setCalendarEvents] = useState<Record<number, { event: string; type: string }>>({});
   const [hoveredEvent, setHoveredEvent] = useState<{ date: number; label: string } | null>(null);
   const [loading, setLoading] = useState(true);
+  
+  const hd = new Holidays('US');
 
   // Current month/year
   const year = currentDate.getFullYear();
@@ -104,6 +107,17 @@ export const ActivityCalendar = () => {
 
               const isMarked = day !== null && markedDates.includes(day);
               const eventLabel = day && calendarEvents[day] ? calendarEvents[day].event : "";
+              
+              // Check for holiday
+              let isHoliday = false;
+              let holidayName = "";
+              if (day) {
+                 const holidayInfo = hd.isHoliday(new Date(year, month, day)) as any;
+                 if (holidayInfo) {
+                     isHoliday = true;
+                     holidayName = Array.isArray(holidayInfo) ? holidayInfo[0].name : holidayInfo.name;
+                 }
+              }
 
               return (
                 <div
@@ -112,15 +126,17 @@ export const ActivityCalendar = () => {
                     if (day) {
                       if (isMarked) {
                         setHoveredEvent({ date: day, label: calendarEvents[day].event });
+                      } else if (isHoliday) {
+                        setHoveredEvent({ date: day, label: holidayName });
                       } else {
                         setHoveredEvent({ date: day, label: "No event" });
                       }
                     }
                   }}
-                  title={eventLabel} // Show event on hover (native tooltip)
+                  title={eventLabel || holidayName} // Show event on hover (native tooltip)
                   className={`relative group h-[26px] sm:h-[30px] 2xl:h-[50px] flex items-center justify-center rounded-full text-[13px] sm:text-[15px]
                     ${day ? "cursor-pointer transition" : ""}
-                    ${isMarked ? "bg-[#2C2A25] text-white" : "hover:bg-[#2C2A25] hover:text-white"}
+                    ${isMarked ? "bg-[#2C2A25] text-white" : isHoliday ? "bg-[#FFF8E1] text-[#8B8B8B] border border-yellow-200" : "hover:bg-[#2C2A25] hover:text-white"}
                     ${isToday ? "ring-2 ring-inset ring-[#734A00] font-bold" : ""}
                   `}
                 >
