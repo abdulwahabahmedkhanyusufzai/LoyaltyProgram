@@ -6,16 +6,22 @@ import { getCustomerTier } from "../../../constants/loyaltyTier";
 
 export async function POST(req: Request) {
   try {
+    const corsHeaders = {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    };
+
     const { customerId, rewardId } = await req.json();
 
     if (!customerId || !rewardId) {
-      return NextResponse.json({ success: false, error: "Missing customerId or rewardId" }, { status: 400 });
+      return NextResponse.json({ success: false, error: "Missing customerId or rewardId" }, { status: 400, headers: corsHeaders });
     }
 
     // 1. Find Reward
     const reward = REWARDS.find(r => r.id === rewardId);
     if (!reward) {
-      return NextResponse.json({ success: false, error: "Invalid reward" }, { status: 400 });
+      return NextResponse.json({ success: false, error: "Invalid reward" }, { status: 400, headers: corsHeaders });
     }
 
     // 2. Find Customer
@@ -32,7 +38,7 @@ export async function POST(req: Request) {
     }
 
     if (!customer) {
-      return NextResponse.json({ success: false, error: "Customer not found" }, { status: 404 });
+      return NextResponse.json({ success: false, error: "Customer not found" }, { status: 404, headers: corsHeaders });
     }
 
     // 3. Check Balance
@@ -51,13 +57,13 @@ export async function POST(req: Request) {
     const currentBalance = lastLedger?.balanceAfter || 0;
 
     if (currentBalance < reward.points) {
-      return NextResponse.json({ success: false, error: "Insufficient points" }, { status: 400 });
+      return NextResponse.json({ success: false, error: "Insufficient points" }, { status: 400, headers: corsHeaders });
     }
 
     // 4. Create Discount Code
     const code = await createDiscountCode(reward.value);
     if (!code) {
-      return NextResponse.json({ success: false, error: "Failed to generate discount code" }, { status: 500 });
+      return NextResponse.json({ success: false, error: "Failed to generate discount code" }, { status: 500, headers: corsHeaders });
     }
 
     // 5. Deduct Points
