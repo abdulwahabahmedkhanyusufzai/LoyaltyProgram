@@ -65,11 +65,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Insufficient points" }, { status: 400, headers: corsHeaders });
     }
 
-    // 4. Create Discount Code
-    const code = await createDiscountCode(reward.value);
-    if (!code) {
-      return NextResponse.json({ success: false, error: "Failed to generate discount code" }, { status: 500, headers: corsHeaders });
-    }
+    // 4. (Skipped) Create Discount Code
+    // User logic: Discounts are handled via Shopify segments/metafields.
+    // We just need to deduct points and sync metafields to trigger the segment update.
+    const code = "AUTOMATIC"; // Placeholder or indicator that no manual code is needed
 
     // 5. Deduct Points
     const newBalance = currentBalance - reward.points;
