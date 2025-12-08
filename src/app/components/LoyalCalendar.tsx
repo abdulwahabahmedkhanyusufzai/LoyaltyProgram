@@ -68,7 +68,7 @@ export const ActivityCalendar = () => {
   }, [year, month, calendarEvents]);
 
   return (
-    <div className="w-full h-auto sm:w-[300px] sm:h-[400px] lg:w-[340px] lg:h-[500px] 2xl:w-[502px] 2xl:h-[526px] border border-[#a59f9f] rounded-[32px] p-4 sm:p-6 flex flex-col">
+    <div className="w-full min-h-[400px] sm:w-[300px] sm:h-[400px] lg:w-[340px] lg:h-[500px] 2xl:w-[502px] 2xl:h-[526px] border border-[#a59f9f] rounded-[32px] p-4 sm:p-6 flex flex-col">
       
       {/* Header */}
       <div className="border-b border-[#D2D1CA] pb-[8px] sm:pb-[10px] flex justify-between items-center">

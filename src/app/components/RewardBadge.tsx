@@ -12,21 +12,21 @@ const RewardBadge = ({ date, label }: RewardBadgeProps) => {
   return (
     <div
       className="flex items-center bg-[#2C2A25] text-white border border-[#2C2A25] 
-                 rounded-[20px] w-[100px] sm:w-[120px] lg:w-[100px] 
-                 h-[30px] sm:h-[36px] lg:h-[34px]"
+                 rounded-[20px] min-w-[100px] max-w-[140px] sm:w-auto lg:w-auto 
+                 h-[30px] sm:h-[36px] lg:h-[34px] px-2"
     >
       {/* White Circle showing marked date */}
       <div
         className="flex justify-center items-center flex-shrink-0 
                    w-[22px] h-[22px] sm:w-[26px] sm:h-[26px] lg:w-[28px] lg:h-[28px] 
                    rounded-full border border-[#FEFCED] bg-[#FEFCED] 
-                   text-[10px] sm:text-[12px] lg:text-[12px] font-semibold text-black ml-1"
+                   text-[10px] sm:text-[12px] lg:text-[12px] font-semibold text-black"
       >
         {date}
       </div>
 
       {/* Label */}
-      <div className="ml-2 sm:ml-3 lg:ml-1 text-[10px] sm:text-[12px] lg:text-[12px] font-medium truncate">
+      <div className="ml-2 text-[10px] sm:text-[12px] lg:text-[12px] font-medium truncate">
         {label}
       </div>
     </div>
@@ -55,7 +55,12 @@ const RewardsRow = ({ calendarEvents, hoveredEvent }: RewardsRowProps) => {
   }
 
   return (
-    <div className="flex justify-center items-center space-x-2 sm:space-x-1 lg:space-x-2 overflow-x-auto py-2">
+    <div className="flex justify-center items-center space-x-2 sm:space-x-1 lg:space-x-2 overflow-x-auto py-2 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+      <style jsx>{`
+        div::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
       {badgesToShow.map((reward, idx) => (
         <RewardBadge key={idx} date={reward.date} label={reward.label} />
       ))}
