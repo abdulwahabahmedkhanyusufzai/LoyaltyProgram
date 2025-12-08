@@ -293,29 +293,6 @@
   // Global Event Delegation (Handles dynamic elements)
   // -----------------------------
   
-  // Tier Configuration mapping to codes
-  const TIER_CODES = {
-    "Bronze": [
-      { type: "Fixed Amount", code: "BRONZE14", label: "€14 Off" },
-      { type: "Percentage", code: "BRONZE10", label: "10% Off" },
-    ],
-    "Silver": [
-      { type: "Fixed Amount", code: "SILVER35", label: "€35 Off" },
-      { type: "Percentage", code: "SILVER10", label: "10% Off" },
-      { type: "Free Shipping", code: "SILVERFREESHIP", label: "Free Shipping" }
-    ],
-    "Gold": [
-      { type: "Fixed Amount", code: "GOLD49", label: "€49 Off" },
-      { type: "Percentage", code: "GOLD10", label: "10% Off" },
-      { type: "Free Shipping", code: "GOLDFREESHIP", label: "Free Shipping" }
-    ],
-    "Platinum": [
-      { type: "Fixed Amount", code: "PLATINUM80", label: "€80 Off" },
-      { type: "Percentage", code: "PLATINUM15", label: "15% Off" },
-      { type: "Free Shipping", code: "PLATINUMFREESHIP", label: "Free Shipping" }
-    ]
-  };
-
   document.addEventListener("click", async (e) => {
     const dashboard = document.querySelector(".loyalty-dashboard");
     const modal = document.querySelector(".redemption-modal");
@@ -330,7 +307,7 @@
       }
     }
 
-    // 2. Redeem Button (Open Modal & Populate UI)
+    // 2. Redeem Button (Open Modal & Fetch Dynamic Rewards)
     if (e.target.closest(".redeem-btn")) {
       console.log("Redeem button clicked");
       if (modal) {
@@ -341,7 +318,6 @@
         if (activeTierEl) {
           currentTier = activeTierEl.dataset.tier;
         } else {
-          // Fallback: Check text content
           const tierText = document.querySelector(".tier-text")?.textContent || "";
           if (tierText.includes("Bronze")) currentTier = "Bronze";
           if (tierText.includes("Silver")) currentTier = "Silver";
@@ -353,29 +329,58 @@
 
         const listContainer = document.getElementById("tier-rewards-list");
         const noRewardsMsg = document.getElementById("no-tier-rewards-msg");
+        const apiUrl = dashboard?.dataset.apiUrl;
         
         if (listContainer) {
-          listContainer.innerHTML = ""; // Clear old
-          const rewards = TIER_CODES[currentTier] || [];
+          listContainer.innerHTML = '<p style="text-align:center;">Loading rewards...</p>';
           
-          if (rewards.length === 0) {
-            if(noRewardsMsg) noRewardsMsg.style.display = "block";
-          } else {
-            if(noRewardsMsg) noRewardsMsg.style.display = "none";
-            rewards.forEach(r => {
-              const li = document.createElement("div");
-              li.className = "reward-item";
-              li.style.cssText = "display:flex; justify-content:space-between; align-items:center; border:1px solid #ddd; padding:10px; margin-bottom:10px; border-radius:8px; background:#fff;";
-              li.innerHTML = `
-                <div class="reward-info">
-                  <h4 style="margin:0; font-weight:bold;">${r.label}</h4>
-                  <p style="margin:0; font-size:12px; color:#555;">${r.type}</p>
-                  <code style="background:#eee; padding:2px 4px; border-radius:4px; font-weight:bold;">${r.code}</code>
-                </div>
-                <button class="copy-btn" data-code="${r.code}" style="cursor:pointer; padding:5px 12px; background:#2C2A25; color:#fff; border:none; border-radius:20px; font-size:12px;">Copy</button>
-              `;
-              listContainer.appendChild(li);
+          try {
+            // Call dynamic API
+            const res = await fetch(`${apiUrl}/api/rewards`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ tier: currentTier })
             });
+
+            const data = await res.json();
+            console.log("Fetched rewards:", data);
+
+            listContainer.innerHTML = ""; // Clear loader
+            const rewards = data.rewards || [];
+
+            if (rewards.length === 0) {
+              if(noRewardsMsg) noRewardsMsg.style.display = "block";
+              if(noRewardsMsg) noRewardsMsg.textContent = `No rewards found for ${currentTier} tier.`;
+            } else {
+              if(noRewardsMsg) noRewardsMsg.style.display = "none";
+              
+              rewards.forEach(r => {
+                // Determine label if possible
+                let label = r.title;
+                if (!label || label.includes(r.code)) {
+                     // Try to construct a better label from properties
+                     if (r.type === "DiscountCodeFreeShipping") label = "Free Shipping";
+                     else if (r.value?.percentage) label = `${r.value.percentage * 100}% Off`;
+                     else if (r.value?.amount) label = `€${r.value.amount.amount} Off`;
+                }
+
+                const li = document.createElement("div");
+                li.className = "reward-item";
+                li.style.cssText = "display:flex; justify-content:space-between; align-items:center; border:1px solid #ddd; padding:10px; margin-bottom:10px; border-radius:8px; background:#fff;";
+                li.innerHTML = `
+                  <div class="reward-info">
+                    <h4 style="margin:0; font-weight:bold;">${label}</h4>
+                    <p style="margin:0; font-size:12px; color:#555;">${r.code}</p>
+                    <span style="font-size:10px; background:#f0f0f0; padding:2px 5px; border-radius:4px;">${currentTier} Exclusive</span>
+                  </div>
+                  <button class="copy-btn" data-code="${r.code}" style="cursor:pointer; padding:5px 12px; background:#2C2A25; color:#fff; border:none; border-radius:20px; font-size:12px;">Copy</button>
+                `;
+                listContainer.appendChild(li);
+              });
+            }
+          } catch (err) {
+            console.error("Failed to fetch rewards", err);
+            listContainer.innerHTML = '<p style="color:red; text-align:center;">Failed to load rewards.</p>';
           }
         }
 
