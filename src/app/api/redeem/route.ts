@@ -25,19 +25,24 @@ export async function POST(req: Request) {
     }
 
     // 2. Find Customer
-    // customerId here is the Shopify ID (gid://shopify/Customer/...) or our DB ID?
-    // The frontend usually sends Shopify ID. Let's handle both or assume Shopify ID.
-    // Let's assume we look up by shopifyId first.
-    let customer = await prisma.customer.findUnique({
-      where: { shopifyId: customerId.toString() }
+    // Handle both GID and numeric ID formats
+    const idString = customerId.toString();
+    const numericId = idString.match(/\d+/)?.[0] || idString;
+    const gid = `gid://shopify/Customer/${numericId}`;
+
+    let customer = await prisma.customer.findFirst({
+      where: {
+        OR: [
+          { shopifyId: idString }, // Exact match
+          { shopifyId: numericId }, // Numeric match
+          { shopifyId: gid },       // GID match
+          { id: idString }          // Internal DB ID match
+        ]
+      }
     });
 
     if (!customer) {
-        // Fallback: try by DB ID
-        customer = await prisma.customer.findUnique({ where: { id: customerId } });
-    }
-
-    if (!customer) {
+      console.log(`Customer not found for input: ${idString}. Tried: ${numericId}, ${gid}`);
       return NextResponse.json({ success: false, error: "Customer not found" }, { status: 404, headers: corsHeaders });
     }
 
