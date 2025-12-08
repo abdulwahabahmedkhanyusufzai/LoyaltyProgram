@@ -121,6 +121,10 @@ export function useNotifications() {
     };
   }, [notificationsOpen]);
 
+  const closeNotifications = useCallback(() => {
+    setNotificationsOpen(false);
+  }, []);
+
   return {
     notifications,
     unreadCount,
@@ -128,6 +132,7 @@ export function useNotifications() {
     bellRef,
     dropdownRef,
     toggleNotifications,
+    closeNotifications,
     markAllRead,
     markRead,
   };
