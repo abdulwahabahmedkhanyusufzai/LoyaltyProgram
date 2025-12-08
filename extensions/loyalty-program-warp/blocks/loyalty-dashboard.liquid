@@ -289,6 +289,33 @@
   // -----------------------------
   // Global Event Delegation
   // -----------------------------
+  // -----------------------------
+  // Global Event Delegation (Handles dynamic elements)
+  // -----------------------------
+  
+  // Tier Configuration mapping to codes
+  const TIER_CODES = {
+    "Bronze": [
+      { type: "Fixed Amount", code: "BRONZE14", label: "€14 Off" },
+      { type: "Percentage", code: "BRONZE10", label: "10% Off" },
+    ],
+    "Silver": [
+      { type: "Fixed Amount", code: "SILVER35", label: "€35 Off" },
+      { type: "Percentage", code: "SILVER10", label: "10% Off" },
+      { type: "Free Shipping", code: "SILVERFREESHIP", label: "Free Shipping" }
+    ],
+    "Gold": [
+      { type: "Fixed Amount", code: "GOLD49", label: "€49 Off" },
+      { type: "Percentage", code: "GOLD10", label: "10% Off" },
+      { type: "Free Shipping", code: "GOLDFREESHIP", label: "Free Shipping" }
+    ],
+    "Platinum": [
+      { type: "Fixed Amount", code: "PLATINUM80", label: "€80 Off" },
+      { type: "Percentage", code: "PLATINUM15", label: "15% Off" },
+      { type: "Free Shipping", code: "PLATINUMFREESHIP", label: "Free Shipping" }
+    ]
+  };
+
   document.addEventListener("click", async (e) => {
     const dashboard = document.querySelector(".loyalty-dashboard");
     const modal = document.querySelector(".redemption-modal");
@@ -303,9 +330,55 @@
       }
     }
 
-    // 2. Redeem Button (Open Modal) - handled by onclick fallback too, but good to have delegation
+    // 2. Redeem Button (Open Modal & Populate UI)
     if (e.target.closest(".redeem-btn")) {
+      console.log("Redeem button clicked");
       if (modal) {
+        // Find active tier
+        const activeTierEl = document.querySelector(".tier.active") || document.querySelector(".tier.active-tier");
+        let currentTier = "Welcome"; 
+        
+        if (activeTierEl) {
+          currentTier = activeTierEl.dataset.tier;
+        } else {
+          // Fallback: Check text content
+          const tierText = document.querySelector(".tier-text")?.textContent || "";
+          if (tierText.includes("Bronze")) currentTier = "Bronze";
+          if (tierText.includes("Silver")) currentTier = "Silver";
+          if (tierText.includes("Gold")) currentTier = "Gold";
+          if (tierText.includes("Platinum")) currentTier = "Platinum";
+        }
+
+        console.log("Detected Tier for Rewards:", currentTier);
+
+        const listContainer = document.getElementById("tier-rewards-list");
+        const noRewardsMsg = document.getElementById("no-tier-rewards-msg");
+        
+        if (listContainer) {
+          listContainer.innerHTML = ""; // Clear old
+          const rewards = TIER_CODES[currentTier] || [];
+          
+          if (rewards.length === 0) {
+            if(noRewardsMsg) noRewardsMsg.style.display = "block";
+          } else {
+            if(noRewardsMsg) noRewardsMsg.style.display = "none";
+            rewards.forEach(r => {
+              const li = document.createElement("div");
+              li.className = "reward-item";
+              li.style.cssText = "display:flex; justify-content:space-between; align-items:center; border:1px solid #ddd; padding:10px; margin-bottom:10px; border-radius:8px; background:#fff;";
+              li.innerHTML = `
+                <div class="reward-info">
+                  <h4 style="margin:0; font-weight:bold;">${r.label}</h4>
+                  <p style="margin:0; font-size:12px; color:#555;">${r.type}</p>
+                  <code style="background:#eee; padding:2px 4px; border-radius:4px; font-weight:bold;">${r.code}</code>
+                </div>
+                <button class="copy-btn" data-code="${r.code}" style="cursor:pointer; padding:5px 12px; background:#2C2A25; color:#fff; border:none; border-radius:20px; font-size:12px;">Copy</button>
+              `;
+              listContainer.appendChild(li);
+            });
+          }
+        }
+
         modal.style.display = "flex";
       }
     }
@@ -315,44 +388,21 @@
       if (modal) modal.style.display = "none";
     }
 
-    // 4. Confirm Redemption
-    const confirmBtn = e.target.closest(".redeem-confirm-btn");
-    if (confirmBtn) {
-      const item = confirmBtn.closest(".reward-item");
-      const rewardId = item.dataset.id;
-      const pointsCost = parseInt(item.dataset.points);
-      const title = item.dataset.title;
-      const customerId = dashboard?.dataset.customerId;
-      const apiUrl = dashboard?.dataset.apiUrl;
-
-      if (!confirm(`Are you sure you want to redeem ${pointsCost} points for ${title}?`)) return;
-
-      const originalText = confirmBtn.textContent;
-      confirmBtn.textContent = "Processing...";
-      confirmBtn.disabled = true;
-
+    // 4. Copy Code Action
+    if (e.target.closest(".copy-btn")) {
+      const btn = e.target.closest(".copy-btn");
+      const code = btn.dataset.code;
+      const originalText = btn.textContent;
+      
       try {
-        const res = await fetch(`${apiUrl}/api/redeem`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ customerId, rewardId })
-        });
-
-        const data = await res.json();
-
-        if (data.success) {
-          alert(`Success! Your discount code is: ${data.code}`);
-          if (modal) modal.style.display = "none";
-          window.location.reload(); 
-        } else {
-          alert(`Error: ${data.error}`);
-        }
+        await navigator.clipboard.writeText(code);
+        btn.textContent = "Copied!";
+        setTimeout(() => {
+          btn.textContent = originalText;
+        }, 2000);
       } catch (err) {
-        console.error("Redemption failed", err);
-        alert("Something went wrong. Please try again.");
-      } finally {
-        confirmBtn.textContent = originalText;
-        confirmBtn.disabled = false;
+        console.error("Failed to copy", err);
+        prompt("Copy this code:", code);
       }
     }
   });
