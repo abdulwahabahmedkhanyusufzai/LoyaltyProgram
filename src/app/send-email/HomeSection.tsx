@@ -6,7 +6,7 @@ import { useTranslations } from "use-intl";
 const HomeSection = ({ setStep, setSelectedTab, onSelectGroup }) => {
   const t = useTranslations("homeSection");
 
-  const [selectedOption, setSelectedOption] = useState("hosts");
+  const [selectedOption, setSelectedOption] = useState("");
 
   const radioOptions = [
     "hosts",
@@ -47,6 +47,7 @@ const HomeSection = ({ setStep, setSelectedTab, onSelectGroup }) => {
 
       <div className="my-10 flex justify-center">
         <button
+          disabled={!selectedOption}
           onClick={() => {
             if (onSelectGroup) {
               onSelectGroup(selectedOption);
@@ -61,7 +62,11 @@ const HomeSection = ({ setStep, setSelectedTab, onSelectGroup }) => {
               setSelectedTab("sendEmail");
             }
           }}
-          className="w-full sm:w-[474px] px-8 py-2 rounded-full bg-[#6a4e1e] text-white font-medium shadow-md hover:bg-[#5a3f19] transition"
+          className={`w-full sm:w-[474px] px-8 py-2 rounded-full font-medium shadow-md transition
+            ${!selectedOption 
+              ? "bg-gray-300 text-gray-500 cursor-not-allowed" 
+              : "bg-[#6a4e1e] text-white hover:bg-[#5a3f19]"
+            }`}
         >
           {t("nextButton")}
         </button>
