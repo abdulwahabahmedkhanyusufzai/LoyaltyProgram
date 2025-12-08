@@ -156,30 +156,12 @@
         <h2>Redeem Your Points</h2>
         <p>Select a reward to redeem:</p>
         
-        <div class="rewards-list">
-          <div class="reward-item" data-id="5_off" data-points="500" data-title="$5 Off Coupon">
-            <div class="reward-info">
-              <h4>$5 Off Coupon</h4>
-              <p>500 Points</p>
-            </div>
-            <button class="redeem-confirm-btn">Redeem</button>
-          </div>
-          
-          <div class="reward-item" data-id="10_off" data-points="1000" data-title="$10 Off Coupon">
-            <div class="reward-info">
-              <h4>$10 Off Coupon</h4>
-              <p>1000 Points</p>
-            </div>
-            <button class="redeem-confirm-btn">Redeem</button>
-          </div>
-
-          <div class="reward-item" data-id="25_off" data-points="2500" data-title="$25 Off Coupon">
-            <div class="reward-info">
-              <h4>$25 Off Coupon</h4>
-              <p>2500 Points</p>
-            </div>
-            <button class="redeem-confirm-btn">Redeem</button>
-          </div>
+        <div class="rewards-list-container">
+          <!-- Dynamic Rewards injected by JS -->
+          <ul id="tier-rewards-list" class="rewards-list"></ul>
+          <p id="no-tier-rewards-msg" style="display:none; text-align:center; color:#666;">
+            No specific rewards available for your current tier.
+          </p>
         </div>
       </div>
     </div>
