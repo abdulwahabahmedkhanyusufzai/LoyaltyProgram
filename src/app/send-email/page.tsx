@@ -69,6 +69,7 @@ function LoyalCustomersList() {
 
   const handleGroupSelect = (group: string) => {
     setRecipientGroup(group);
+    setSelectedEmail(""); // Clear any previously selected email
   };
 
   // Filter customers based on selected group and search query
@@ -131,8 +132,14 @@ function LoyalCustomersList() {
           onChange={(tab) => {
             setSelectedTab(tab);
             if (tab === "sendEmail") setStep(2);
-            if (tab === "home") setStep(0);
-            if (tab === "customers") setStep(1);
+            if (tab === "home") {
+              setStep(0);
+              setSelectedEmail("");
+            }
+            if (tab === "customers") {
+              setStep(1);
+              setSelectedEmail("");
+            }
           }}
           activeTab={selectedTab}
         />
