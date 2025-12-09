@@ -163,9 +163,7 @@
           <p id="no-tier-rewards-msg" style="display:none; text-align:center; color:#666;">
             No specific rewards available for your current tier.
           </p>
-          <div id="debug-claim-info" style="margin-top:20px; border:1px solid red; background:#fff0f0; padding:10px; font-size:10px; color:red; max-height:200px; overflow:auto;">
-            <strong>Debug Info:</strong><br>
-          </div>
+
         </div>
       </div>
     </div>
@@ -372,9 +370,7 @@
             } else {
               if(noRewardsMsg) noRewardsMsg.style.display = "none";
               
-              // Remove debug box if present
-              const debugInfo = document.getElementById("debug-claim-info");
-              if (debugInfo) debugInfo.innerHTML = "";
+
               
               rewards.forEach(r => {
                 // Determine label if possible
@@ -408,7 +404,7 @@
                 // li.style.cssText removed to rely on CSS grid implementation
                 li.innerHTML = `
                   <div class="reward-info">
-                    <h4 style="margin:0; font-weight:bold;">${label}</h4>
+                    <h3 style="margin:0; font-weight:bold; font-size:16px;">${label}</h3>
                     <span style="font-size:11px; color:#666; display:block; margin-bottom:2px;">${discountType}</span>
                     <p style="margin:0; font-size:12px; color:#555;">${r.code}</p>
                     <span style="font-size:10px; background:#f0f0f0; padding:2px 5px; border-radius:4px;">${currentTiers.includes('Bronze') ? 'Tier Exclusive' : 'Reward'}</span>

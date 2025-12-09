@@ -14,13 +14,14 @@ const corsHeaders = {
 // Query matches both Basic (Fixed/Percent) and FreeShipping discount types
 const GET_DISCOUNTS_QUERY = `
   query GetAppDiscounts {
-    discountNodes(first: 50, query: "status:active") {
+    discountNodes(first: 50, sortKey: CREATED_AT, reverse: true, query: "status:active") {
       nodes {
         id
         discount {
           __typename
           ... on DiscountCodeBasic {
             title
+            createdAt
             codes(first: 1) { nodes { code } }
             customerSelection {
               ... on DiscountCustomerSegments {
@@ -36,6 +37,7 @@ const GET_DISCOUNTS_QUERY = `
           }
           ... on DiscountCodeFreeShipping {
              title
+             createdAt
              codes(first: 1) { nodes { code } }
              customerSelection {
               ... on DiscountCustomerSegments {
@@ -152,6 +154,7 @@ export async function POST(req: Request) {
           title: d.title,
           code: code,
           type: d.__typename,
+          createdAt: d.createdAt, // Capture Date
           segments: d.customerSelection?.segments?.map((s: any) => s.name) || [],
           value: d.customerGets?.value,
           isClaimed: code ? usedCodes.has(code.toUpperCase()) : false
@@ -170,7 +173,13 @@ export async function POST(req: Request) {
              console.log(`Included reward: ${r.title} for tiers ${activeTiers.join(', ')}`);
          }
          return match;
+      })
+      .sort((a: any, b: any) => {
+          // Explicit JS Sort: Newest First
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       });
+
+    console.log("Sort Result in API:", validRewards.map((r: any) => r.title).join(", "));
 
     return NextResponse.json({ success: true, rewards: validRewards }, { status: 200, headers: corsHeaders });
 
