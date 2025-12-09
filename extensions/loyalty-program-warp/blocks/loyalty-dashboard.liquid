@@ -121,7 +121,8 @@
             </tr>
           </thead>
           <tbody>
-            {% for order in customer.orders limit: 20 %}
+            {% assign sorted_orders = customer.orders | sort: 'created_at' | reverse %}
+            {% for order in sorted_orders limit: 20 %}
               <tr>
                 <td>{{ order.created_at | date: '%b %d, %Y' }}</td>
                 <td>
