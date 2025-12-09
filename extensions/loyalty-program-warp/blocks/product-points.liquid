@@ -1,27 +1,34 @@
 
-{% if product %}
   <div class="reward-points">
     <img
       src="https://cdn.shopify.com/s/files/1/0921/8428/1416/files/Star1.svg?v=1760786787"
       alt="Star Icon"
     />
     {% assign ratio = section.settings.earning_ratio | default: 0.1 | plus: 0.0 %}
-    {% assign product_price_cents = product.price %}
+    
+    {% comment %} Try Variant Price first, then Product Price {% endcomment %}
+    {% assign product_price_cents = product.selected_or_first_available_variant.price | default: product.price %}
+    
     {% assign product_price_float = product_price_cents | divided_by: 100.0 %}
     {% assign points_earned = product_price_float | times: ratio | round %}
     
-    <p>Earn <strong>{{ points_earned }} Points</strong> with this purchase!</p>
-    
-    <!-- Debug: Price: {{ product_price }}, Ratio: {{ ratio }}, Calc: {{ points_earned }} -->
+    {% if product_price_cents > 0 %}
+      <p>Earn <strong>{{ points_earned }} Points</strong> with this purchase!</p>
+    {% else %}
+      <p>Earn Points with this purchase! (Price unavailable)</p>
+    {% endif %}
+
+    <!-- Debug: Price: {{ product_price_cents }}, Variant: {{ product.selected_or_first_available_variant.price }} -->
     <script>
       console.log("Loyalty Debug:", {
-        priceCents: {{ product.price }},
+        priceCents: "{{ product_price_cents }}",
+        variantPrice: "{{ product.selected_or_first_available_variant.price }}",
+        productPrice: "{{ product.price }}",
         ratio: "{{ section.settings.earning_ratio }}",
         points: "{{ points_earned }}"
       });
     </script>
   </div>
-{% endif %}
 
 <style>
   .reward-points {
