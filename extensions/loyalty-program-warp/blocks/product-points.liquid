@@ -1,8 +1,9 @@
 
-  <div class="reward-points">
     <img
       src="https://cdn.shopify.com/s/files/1/0921/8428/1416/files/Star1.svg?v=1760786787"
       alt="Star Icon"
+      width="18"
+      height="18"
     />
     {% assign ratio = section.settings.earning_ratio | default: 0.1 | plus: 0.0 %}
     
@@ -15,13 +16,17 @@
     {% if product_price_cents > 0 %}
       <p>Earn <strong>{{ points_earned }} Points</strong> with this purchase!</p>
     {% else %}
-      <p>Earn Points with this purchase! (Price unavailable)</p>
+      {% if request.design_mode %}
+        <p>Earn Points (Price unavailable - verify Product Page)</p>
+      {% endif %}
     {% endif %}
 
-    <!-- VISIBLE DEBUG FOR USER -->
-    <div style="border: 1px solid red; color: red; font-size: 10px; padding: 5px; margin-top: 5px;">
-      DEBUG: Price={{ product_price_cents }}, Ratio={{ ratio }}, ProductID={{ product.id }}
-    </div>
+    <!-- VISIBLE DEBUG ONLY IN EDITOR -->
+    {% if request.design_mode %}
+      <div style="border: 1px solid red; color: red; font-size: 10px; padding: 5px; margin-top: 5px;">
+        DEBUG: Price={{ product_price_cents }}, Ratio={{ ratio }}, ProductID={{ product.id }}
+      </div>
+    {% endif %}
   </div>
 
 <style>
