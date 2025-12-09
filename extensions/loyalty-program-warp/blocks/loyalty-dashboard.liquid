@@ -163,6 +163,9 @@
           <p id="no-tier-rewards-msg" style="display:none; text-align:center; color:#666;">
             No specific rewards available for your current tier.
           </p>
+          <div id="debug-claim-info" style="margin-top:20px; border:1px solid red; background:#fff0f0; padding:10px; font-size:10px; color:red; max-height:200px; overflow:auto;">
+            <strong>Debug Info:</strong><br>
+          </div>
         </div>
       </div>
     </div>
@@ -177,18 +180,6 @@
 {% comment %}
   Prepare list of used discount codes for JS
 {% endcomment %}
-{% assign used_codes = "" %}
-{% if customer %}
-  {% for order in customer.orders %}
-    {% for discount_application in order.discount_applications %}
-      {% if discount_application.type == 'discount_code' %}
-         {% assign used_codes = used_codes | append: "," | append: discount_application.title %}
-      {% endif %}
-    {% endfor %}
-  {% endfor %}
-{% endif %}
-{% assign used_codes_array = used_codes | remove_first: "," | split: "," | json %}
-
 <script>
 
   // Global fallback function
@@ -199,13 +190,6 @@
 
   const customerMetafieldPoints = "{{ points }}";
   const customerMetafieldTier = "{{ tier }}";
-  
-  // Parse used codes safely (Global Scope for this script)
-  const usedCodesRaw = {{ used_codes_array }};
-  const previouslyUsedCodes = Array.isArray(usedCodesRaw) 
-    ? usedCodesRaw.map(c => c.trim().toUpperCase()) 
-    : [];
-  console.log("Global Previously Used Codes:", previouslyUsedCodes);
 
   document.addEventListener("DOMContentLoaded", () => {
     console.log("Loyalty Dashboard JS Loaded (Inline)");
@@ -354,6 +338,7 @@
         const listContainer = document.getElementById("tier-rewards-list");
         const noRewardsMsg = document.getElementById("no-tier-rewards-msg");
         const apiUrl = dashboard?.dataset.apiUrl;
+        const customerId = dashboard?.dataset.customerId;
         
         if (listContainer) {
           listContainer.innerHTML = '<p style="text-align:center;">Loading rewards...</p>';
@@ -365,7 +350,8 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
                   tiers: currentTiers,
-                  tier: currentTiers[0] || "" // Fallback for older server versions
+                  tier: currentTiers[0] || "",
+                  customerId: customerId
                 })
             });
 
@@ -386,14 +372,12 @@
             } else {
               if(noRewardsMsg) noRewardsMsg.style.display = "none";
               
+              // Remove debug box if present
+              const debugInfo = document.getElementById("debug-claim-info");
+              if (debugInfo) debugInfo.innerHTML = "";
+              
               rewards.forEach(r => {
                 // Determine label if possible
-                // Check claim status
-                const codeToCheck = r.code ? r.code.toUpperCase() : "";
-                const isClaimed = previouslyUsedCodes.includes(codeToCheck);
-                
-                console.log(`Reward Code: [${codeToCheck}], Claimed: ${isClaimed}`);
-                if (isClaimed) console.log("Match found in used codes:", previouslyUsedCodes);
                 
                 let label = r.title;
                 if (!label || label.includes(r.code)) {
@@ -407,6 +391,9 @@
                 if (r.type === "DiscountCodeFreeShipping") discountType = "Free Shipping";
                 else if (r.value?.percentage) discountType = "Percentage Off";
                 else if (r.value?.amount) discountType = "Fixed Amount Off";
+
+                // Check claim status from API response
+                const isClaimed = r.isClaimed === true;
 
                 // UI Logic for Claimed Button
                 const btnText = isClaimed ? "Claimed" : "Copy";
