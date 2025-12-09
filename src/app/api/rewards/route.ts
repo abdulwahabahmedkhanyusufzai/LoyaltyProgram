@@ -1,7 +1,9 @@
+// ... imports
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
+// Move PrismaClient init to function scope or singleton pattern in a separate file preferably, 
+// but for now moving inside POST to avoid top-level failures.
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -48,10 +50,13 @@ const GET_DISCOUNTS_QUERY = `
 `;
 
 export async function OPTIONS() {
+  console.log("OPTIONS request to /api/rewards");
   return NextResponse.json({}, { status: 200, headers: corsHeaders });
 }
 
 export async function POST(req: Request) {
+  console.log("POST request to /api/rewards");
+  const prisma = new PrismaClient();
   try {
     const body = await req.json(); // This might throw if body is empty or invalid
     const { tier } = body;

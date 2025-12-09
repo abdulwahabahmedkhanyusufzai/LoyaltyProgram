@@ -7,9 +7,10 @@
   </div>
 
   {% if customer %}
+    {% assign discount = customer.discount %}
     {% assign points = customer.metafields.loyalty.points | default: 0 %}
     {% assign tier = customer.metafields.loyalty.tier | default: 'Welcome' %}
-
+    {{ discount }}
     {% comment %}
       Define tiers with min points
     {% endcomment %}
@@ -176,6 +177,7 @@
 {{ 'loyalty_program.css' | asset_url | stylesheet_tag }}
 
 <script>
+
   // Global fallback function
   window.openRedemptionModal = function() {
     const modal = document.querySelector(".redemption-modal");

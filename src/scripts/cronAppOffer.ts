@@ -32,3 +32,5 @@ runOffers();
 
 // Schedule to run every day at midnight
 cron.schedule("0 0 * * *", runOffers);
+
+
