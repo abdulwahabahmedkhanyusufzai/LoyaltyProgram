@@ -291,6 +291,8 @@
   border-radius: 12px;
   width: 90%;
   max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
   position: relative;
   box-shadow: 0 4px 20px rgba(0,0,0,0.2);
   text-align: center;
@@ -307,20 +309,22 @@
 }
 
 .rewards-list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
   margin-top: 20px;
 }
 
 .reward-item {
   display: flex;
+  flex-direction: column; /* Stack info and button vertically in narrow column */
   justify-content: space-between;
-  align-items: center;
+  align-items: stretch; /* Stretch to fill width */
   background: #fff;
   padding: 15px;
   border: 1px solid #ddd;
   border-radius: 8px;
+  gap: 10px;
 }
 
 .reward-info h4 {

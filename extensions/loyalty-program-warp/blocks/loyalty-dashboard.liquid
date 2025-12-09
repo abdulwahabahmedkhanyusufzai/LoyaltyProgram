@@ -345,8 +345,16 @@
             const res = await fetch(`${apiUrl}/api/rewards`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ tiers: currentTiers }) // Sending Array now
+                body: JSON.stringify({ 
+                  tiers: currentTiers,
+                  tier: currentTiers[0] || "" // Fallback for older server versions
+                })
             });
+
+            if (!res.ok) {
+              const errData = await res.json().catch(() => ({}));
+              throw new Error(errData.error || `Server Error: ${res.status}`);
+            }
 
             const data = await res.json();
             console.log("Fetched rewards:", data);
@@ -356,7 +364,7 @@
 
             if (rewards.length === 0) {
               if(noRewardsMsg) noRewardsMsg.style.display = "block";
-              if(noRewardsMsg) noRewardsMsg.textContent = `No rewards found for ${currentTier} tier.`;
+              if(noRewardsMsg) noRewardsMsg.textContent = `No rewards found for ${currentTiers.join(', ')} tier(s).`;
             } else {
               if(noRewardsMsg) noRewardsMsg.style.display = "none";
               
@@ -370,14 +378,20 @@
                      else if (r.value?.amount) label = `€${r.value.amount.amount} Off`;
                 }
 
+                let discountType = "Discount";
+                if (r.type === "DiscountCodeFreeShipping") discountType = "Free Shipping";
+                else if (r.value?.percentage) discountType = "Percentage Off";
+                else if (r.value?.amount) discountType = "Fixed Amount Off";
+
                 const li = document.createElement("div");
                 li.className = "reward-item";
-                li.style.cssText = "display:flex; justify-content:space-between; align-items:center; border:1px solid #ddd; padding:10px; margin-bottom:10px; border-radius:8px; background:#fff;";
+                // li.style.cssText removed to rely on CSS grid implementation
                 li.innerHTML = `
                   <div class="reward-info">
                     <h4 style="margin:0; font-weight:bold;">${label}</h4>
+                    <span style="font-size:11px; color:#666; display:block; margin-bottom:2px;">${discountType}</span>
                     <p style="margin:0; font-size:12px; color:#555;">${r.code}</p>
-                    <span style="font-size:10px; background:#f0f0f0; padding:2px 5px; border-radius:4px;">${currentTier} Exclusive</span>
+                    <span style="font-size:10px; background:#f0f0f0; padding:2px 5px; border-radius:4px;">${currentTiers.includes('Bronze') ? 'Tier Exclusive' : 'Reward'}</span>
                   </div>
                   <button class="copy-btn" data-code="${r.code}" style="cursor:pointer; padding:5px 12px; background:#2C2A25; color:#fff; border:none; border-radius:20px; font-size:12px;">Copy</button>
                 `;
@@ -386,7 +400,7 @@
             }
           } catch (err) {
             console.error("Failed to fetch rewards", err);
-            listContainer.innerHTML = '<p style="color:red; text-align:center;">Failed to load rewards.</p>';
+            listContainer.innerHTML = `<p style="color:red; text-align:center;">Failed to load rewards: ${err.message}</p>`;
           }
         }
 
