@@ -18,16 +18,10 @@
       <p>Earn Points with this purchase! (Price unavailable)</p>
     {% endif %}
 
-    <!-- Debug: Price: {{ product_price_cents }}, Variant: {{ product.selected_or_first_available_variant.price }} -->
-    <script>
-      console.log("Loyalty Debug:", {
-        priceCents: "{{ product_price_cents }}",
-        variantPrice: "{{ product.selected_or_first_available_variant.price }}",
-        productPrice: "{{ product.price }}",
-        ratio: "{{ section.settings.earning_ratio }}",
-        points: "{{ points_earned }}"
-      });
-    </script>
+    <!-- VISIBLE DEBUG FOR USER -->
+    <div style="border: 1px solid red; color: red; font-size: 10px; padding: 5px; margin-top: 5px;">
+      DEBUG: Price={{ product_price_cents }}, Ratio={{ ratio }}, ProductID={{ product.id }}
+    </div>
   </div>
 
 <style>
