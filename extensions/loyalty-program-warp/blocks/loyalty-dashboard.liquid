@@ -312,22 +312,26 @@
     // 2. Redeem Button (Open Modal & Fetch Dynamic Rewards)
     if (e.target.closest(".redeem-btn")) {
       console.log("Redeem button clicked");
-      if (modal) {
-        // Find active tier
-        const activeTierEl = document.querySelector(".tier.active") || document.querySelector(".tier.active-tier");
-        let currentTier = "Welcome"; 
-        
-        if (activeTierEl) {
-          currentTier = activeTierEl.dataset.tier;
-        } else {
-          const tierText = document.querySelector(".tier-text")?.textContent || "";
-          if (tierText.includes("Bronze")) currentTier = "Bronze";
-          if (tierText.includes("Silver")) currentTier = "Silver";
-          if (tierText.includes("Gold")) currentTier = "Gold";
-          if (tierText.includes("Platinum")) currentTier = "Platinum";
-        }
+        if (modal) {
+        // Collect ALL active tiers
+        const activeTierEls = Array.from(document.querySelectorAll(".tier.active, .tier.active-tier"));
+        let currentTiers = [];
 
-        console.log("Detected Tier for Rewards:", currentTier);
+        if (activeTierEls.length > 0) {
+          currentTiers = activeTierEls.map(el => el.dataset.tier).filter(Boolean);
+        } else {
+             // Fallback: try to guess from text if DOM elements aren't ready/styled
+            const tierText = document.querySelector(".tier-text")?.textContent || "";
+            if (tierText.includes("Bronze")) currentTiers.push("Bronze");
+            if (tierText.includes("Silver")) currentTiers.push("Silver");
+            if (tierText.includes("Gold")) currentTiers.push("Gold");
+            if (tierText.includes("Platinum")) currentTiers.push("Platinum");
+        }
+        
+        // Ensure unique
+        currentTiers = [...new Set(currentTiers)];
+
+        console.log("Detected Tiers for Rewards:", currentTiers);
 
         const listContainer = document.getElementById("tier-rewards-list");
         const noRewardsMsg = document.getElementById("no-tier-rewards-msg");
@@ -341,7 +345,7 @@
             const res = await fetch(`${apiUrl}/api/rewards`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ tier: currentTier })
+                body: JSON.stringify({ tiers: currentTiers }) // Sending Array now
             });
 
             const data = await res.json();

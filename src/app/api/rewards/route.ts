@@ -59,10 +59,18 @@ export async function POST(req: Request) {
   const prisma = new PrismaClient();
   try {
     const body = await req.json(); // This might throw if body is empty or invalid
-    const { tier } = body;
+    let { tier, tiers } = body;
 
-    if (!tier) {
-      return NextResponse.json({ error: "Tier is required" }, { status: 400, headers: corsHeaders });
+    // Normalize to array
+    let activeTiers: string[] = [];
+    if (Array.isArray(tiers)) {
+      activeTiers = tiers;
+    } else if (tier) {
+      activeTiers = [tier];
+    }
+
+    if (activeTiers.length === 0) {
+      return NextResponse.json({ error: "No tiers provided" }, { status: 400, headers: corsHeaders });
     }
 
     const shop = await prisma.shop.findFirst();
@@ -83,8 +91,9 @@ export async function POST(req: Request) {
     const nodes = data.data?.discountNodes?.nodes || [];
 
     console.log(`Fetched ${nodes.length} total discounts`);
+    console.log(`Filtering for active tiers: ${activeTiers.join(", ")}`);
     
-    // Filter discounts that target the user's tier segment
+    // Filter discounts that target the user's tier segment (cumulative)
     const validRewards = nodes
       .map((n: any) => {
         const d = n.discount;
@@ -98,13 +107,16 @@ export async function POST(req: Request) {
         };
       })
       .filter((r: any) => {
-         const match = r.segments.some((segName: string) => 
-            segName.toLowerCase().includes(tier.toLowerCase())
-         );
+         // Check if ANY of the reward segments match ANY of the active tiers
+         const match = r.segments.some((segName: string) => {
+            const segLower = segName.toLowerCase();
+            return activeTiers.some(t => segLower.includes(t.toLowerCase()));
+         });
+
          if (!match) {
-             console.log(`Excluded reward: ${r.title} (Segments: ${r.segments.join(', ')}) doesn't match tier: ${tier}`);
+             console.log(`Excluded reward: ${r.title} (Segments: ${r.segments.join(', ')}) matches none of: ${activeTiers.join(', ')}`);
          } else {
-             console.log(`Included reward: ${r.title} for tier ${tier}`);
+             console.log(`Included reward: ${r.title} for tiers ${activeTiers.join(', ')}`);
          }
          return match;
       });
