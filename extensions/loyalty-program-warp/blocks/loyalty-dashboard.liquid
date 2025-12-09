@@ -173,8 +173,21 @@
 <!-- JS / CSS -->
 {{ 'loyalty-dashboard.css' | asset_url | stylesheet_tag }}
 {{ 'loyalty_program.css' | asset_url | stylesheet_tag }}
-{{ 'loyalty-dashboard.css' | asset_url | stylesheet_tag }}
-{{ 'loyalty_program.css' | asset_url | stylesheet_tag }}
+
+{% comment %}
+  Prepare list of used discount codes for JS
+{% endcomment %}
+{% assign used_codes = "" %}
+{% if customer %}
+  {% for order in customer.orders %}
+    {% for discount_application in order.discount_applications %}
+      {% if discount_application.type == 'discount_code' %}
+         {% assign used_codes = used_codes | append: "," | append: discount_application.title %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+{% endif %}
+{% assign used_codes_array = used_codes | remove_first: "," | split: "," | json %}
 
 <script>
 
@@ -183,6 +196,16 @@
     const modal = document.querySelector(".redemption-modal");
     if (modal) modal.style.display = "flex";
   };
+
+  const customerMetafieldPoints = "{{ points }}";
+  const customerMetafieldTier = "{{ tier }}";
+  
+  // Parse used codes safely (Global Scope for this script)
+  const usedCodesRaw = {{ used_codes_array }};
+  const previouslyUsedCodes = Array.isArray(usedCodesRaw) 
+    ? usedCodesRaw.map(c => c.trim().toUpperCase()) 
+    : [];
+  console.log("Global Previously Used Codes:", previouslyUsedCodes);
 
   document.addEventListener("DOMContentLoaded", () => {
     console.log("Loyalty Dashboard JS Loaded (Inline)");
@@ -301,12 +324,7 @@
     
     // 1. Earn Button
     if (e.target.closest(".earn-btn")) {
-      const saleSection = document.querySelector(".loyalty-sale-product") || document.querySelector(".loyal-2");
-      if (saleSection) {
-        saleSection.scrollIntoView({ behavior: "smooth" });
-      } else {
-        window.location.href = "/collections/all";
-      }
+      window.location.href = "/collections/all";
     }
 
     // 2. Redeem Button (Open Modal & Fetch Dynamic Rewards)
@@ -370,6 +388,13 @@
               
               rewards.forEach(r => {
                 // Determine label if possible
+                // Check claim status
+                const codeToCheck = r.code ? r.code.toUpperCase() : "";
+                const isClaimed = previouslyUsedCodes.includes(codeToCheck);
+                
+                console.log(`Reward Code: [${codeToCheck}], Claimed: ${isClaimed}`);
+                if (isClaimed) console.log("Match found in used codes:", previouslyUsedCodes);
+                
                 let label = r.title;
                 if (!label || label.includes(r.code)) {
                      // Try to construct a better label from properties
@@ -383,6 +408,14 @@
                 else if (r.value?.percentage) discountType = "Percentage Off";
                 else if (r.value?.amount) discountType = "Fixed Amount Off";
 
+                // UI Logic for Claimed Button
+                const btnText = isClaimed ? "Claimed" : "Copy";
+                // Grey if claimed, Dark if copy
+                const btnStyle = isClaimed 
+                  ? "cursor:default; padding:5px 12px; background:#ccc; color:#666; border:none; border-radius:20px; font-size:12px;"
+                  : "cursor:pointer; padding:5px 12px; background:#2C2A25; color:#fff; border:none; border-radius:20px; font-size:12px;";
+                const btnDisabled = isClaimed ? "disabled" : "";
+
                 const li = document.createElement("div");
                 li.className = "reward-item";
                 // li.style.cssText removed to rely on CSS grid implementation
@@ -393,7 +426,7 @@
                     <p style="margin:0; font-size:12px; color:#555;">${r.code}</p>
                     <span style="font-size:10px; background:#f0f0f0; padding:2px 5px; border-radius:4px;">${currentTiers.includes('Bronze') ? 'Tier Exclusive' : 'Reward'}</span>
                   </div>
-                  <button class="copy-btn" data-code="${r.code}" style="cursor:pointer; padding:5px 12px; background:#2C2A25; color:#fff; border:none; border-radius:20px; font-size:12px;">Copy</button>
+                  <button class="copy-btn" data-code="${r.code}" ${btnDisabled} style="${btnStyle}">${btnText}</button>
                 `;
                 listContainer.appendChild(li);
               });

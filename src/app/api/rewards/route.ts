@@ -100,7 +100,7 @@ export async function POST(req: Request) {
         return {
           id: n.id,
           title: d.title,
-          code: d.codes?.nodes?.[0]?.code,
+          code: d.codes?.nodes?.[0]?.code ? d.codes.nodes[0].code.trim() : null, // Trim backend code
           type: d.__typename,
           segments: d.customerSelection?.segments?.map((s: any) => s.name) || [],
           value: d.customerGets?.value
