@@ -82,6 +82,8 @@ export async function POST(req: Request) {
     const data = await response.json();
     const nodes = data.data?.discountNodes?.nodes || [];
 
+    console.log(`Fetched ${nodes.length} total discounts`);
+    
     // Filter discounts that target the user's tier segment
     const validRewards = nodes
       .map((n: any) => {
@@ -96,9 +98,15 @@ export async function POST(req: Request) {
         };
       })
       .filter((r: any) => {
-         return r.segments.some((segName: string) => 
+         const match = r.segments.some((segName: string) => 
             segName.toLowerCase().includes(tier.toLowerCase())
          );
+         if (!match) {
+             console.log(`Excluded reward: ${r.title} (Segments: ${r.segments.join(', ')}) doesn't match tier: ${tier}`);
+         } else {
+             console.log(`Included reward: ${r.title} for tier ${tier}`);
+         }
+         return match;
       });
 
     return NextResponse.json({ success: true, rewards: validRewards }, { status: 200, headers: corsHeaders });
