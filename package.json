@@ -29,7 +29,7 @@
     "jose": "^6.1.0",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.543.0",
-    "next": "^16.0.1",
+    "next": "^16.0.8",
     "next-intl": "^4.5.5",
     "node-cron": "^4.2.1",
     "node-fetch": "^3.3.2",
